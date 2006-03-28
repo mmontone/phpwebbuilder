@@ -6,6 +6,7 @@ class Controller extends Component
 {
 	var $view;
   	var $model;
+  	var $form;
 	/**
 	 * Special var, for get_subclass
 	 */
@@ -16,7 +17,11 @@ class Controller extends Component
 		$ret .=		"<input name=\"exec$name\" type=\"submit\" /></form>";
 		return $ret;
 	}
-
+	function setForm($form){
+		if ($this->form === NULL){
+			$this->form = $form;
+		}
+	}
     function initialize() {
     	/* put initialization code here, in the subclass */
     }
@@ -34,19 +39,19 @@ class Controller extends Component
 		return "";
 	}
 	function noPermission ($form){ // The user has no permission
-		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded ($form), TRUE);
+		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
 		trace($err);
 	}
 	function begin($form){
-		echo("Class ".get_class($this). "didn't define begin");
-		backtrace();
+		return $this->start($form);
 	}
-	function execute ($action, $form) {
+	function execute ($action,$form) {
 		  if ($form==NULL) print_backtrace("The form is empty");
-          if ($this->hasPermission($form))
-            return $this->$action($form);
+		  $this->setForm($form);
+          if ($this->hasPermission($this->form))
+            return $this->$action($this->form);
           else
-            return $this->noPermission($form);
+            return $this->noPermission($this->form);
         }
 
 	function render_on(&$html) {
@@ -77,4 +82,4 @@ class Controller extends Component
 
         function aboutToLoadView(&$params) {}
 }
-?> 
+?>

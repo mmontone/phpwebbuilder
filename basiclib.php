@@ -12,7 +12,7 @@ function includefile($file) {
 			}
 	} else {
 		if (ereg(".*php$",$file)){
-                 //echo ( "Including file: " . $file . " </br>");
+          //       echo ( "Including file: " . $file . " </br>");
                   require_once($file);
 		}
 	}
@@ -21,7 +21,7 @@ function includefile($file) {
 function includemodule ($module){
 	$moddir = pwbdir."/".$module;
 	if (file_exists($moddir."/".$module.".php")){
-		trace("including ".$moddir);
+		//echo ("Including module: ".$moddir . "</br>");
 		require_once($moddir."/".$module.".php");
 	} else{
 		includefile($moddir);

@@ -6,7 +6,7 @@ require_once dirname(__FILE__) . '/UrlManager.class.php';
 require_once dirname(__FILE__) . '/BackButtonManager.class.php';
 require_once dirname(__FILE__) . '/ErrorReporter.class.php';
 require_once dirname(__FILE__) . '/ComponentRenderer.class.php';
-require_once dirname(__FILE__) . '/../flowviews/html/HtmlRenderer.class.php';
+require_once dirname(__FILE__) . '/../flowviews/html/HTMLRenderer.class.php';
 
 class Application extends ComponentHolder
 {
