@@ -1,0 +1,17 @@
+<?/*
+[alex.develop]
+serverhost=localhost
+basename=piunlpo_cefi
+baseuser=piunlpo_cefi
+basepass=piunlpo_cefi
+basedir=/var/www/cefi
+appdir=/var/www/cefi/MyInstances
+app_class=CEFIApplication
+site_url=http://localhost/cefi
+DBObject=MySQLdb
+baseprefix=cefi_
+sitename=WebCEFI
+pwbdir=/var/www/cefi/admin
+icons_url=http://localhost/cefi/admin/icons/
+peardir=
+*/?>

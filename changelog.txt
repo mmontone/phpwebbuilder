@@ -1,0 +1,18 @@
+---
+date: 2006-02-07
+bugs:
+refactoring:
+	- title: ObjSQL goes deprecated. Use PersitentObject instead.
+	  author: Marian
+	  comments:
+	- title: SQLColec goes deprecated. User PersistentCollection instead.
+	  author: Marian
+	  comments:
+
+date: 2006-02-07
+bugs:
+refactoring:
+	- title: Default name for table: class name.
+	  author: Alex
+	  comments:
+

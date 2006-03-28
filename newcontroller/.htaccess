@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine off
+    #RewriteRule   ^$   launch_application.php  [L]
+    #RewriteRule  ^(.*)$  "phpwebbuilder/launch_application.php&app_path=a"
+</IfModule>

@@ -1,0 +1,285 @@
+<?
+
+class ObjSQL {
+	/**
+	 * @var string The table this object is related to
+	 */
+    var $table; 
+	/**
+	 * @var string The form that manages this object
+	 * @deprecated
+	 */
+    var $formphp = "Action.php"; 
+    /**
+     * @var Array(String) The names of the fields
+     */
+	var $fieldNames=array();
+	/**
+     * @var Bool Controls if the object exists in the database
+     * @deprecated
+     */
+    var $existsObject = FALSE;
+    /**
+     * @return Array(DataField)
+     */
+	function allFields() {
+		$arr= array();
+    	foreach ($this->fieldNames as $name) {
+                $arr[$name]=$this->fieldNamed($name);
+        }
+    	return $arr;
+	}
+    function fieldNames($operation) {
+        $fieldnames = "";
+        foreach ($this->allFields() as $name=>$field) {
+                $fieldnames .= $field->fieldName($operation);
+        }
+        $fieldnames = substr($fieldnames, 0, -2);
+        return $fieldnames;
+    }
+
+    function fieldNamed($name) {
+        return $this->$name;
+    }
+
+    function setField($name, &$field) {
+        $this->$name = $field;
+    }
+
+    function setID($id) {
+        foreach ($this->allFields() as $index=>$field) {
+            $this->$index->setID($id);
+        }
+    }
+
+	function getID() {
+		$f = $this->id;
+		return $f->getValue();
+
+	}
+	function getField ($f) {
+		return $this->$f;
+	}
+	function getFields ($fs) {
+		$arr = array();
+		foreach($fs as $f){
+			$arr[]= $this->getField($f);
+		}
+		return $arr;
+	}
+
+    function loadFrom ($reg) {
+
+        foreach ($this->allFields() as $index=>$field) {
+                $field->loadFrom($reg);
+                $this->$index = $field;
+        }
+        $this->setID($reg["id"]);
+        $this->existsObject = TRUE;
+    }
+
+      function voidOption(){
+
+      	return $this->voidOption;
+
+      }
+
+    function tableName() {
+
+      return baseprefix . $this->table;
+
+    }
+
+    function save () {
+
+    if ($this->existsObject) {
+
+    $this->update();}
+
+    else {
+
+    $this->insert();}
+
+    }
+
+    function load () {
+
+        $sql = "SELECT ".$this->fieldNames("SELECT")." FROM ". $this->tableName() ." WHERE id=". $this->getID() .";";
+
+		$db = new mysqldb;
+
+        $record = $db->fetchRecord($db->SQLExec($sql, FALSE, $this));
+
+        $this->loadFrom($record);
+
+        $this->obj->existsObject = TRUE;
+
+    }
+
+    function insert () {
+
+        $values = "";
+
+        foreach ($this->allFields() as $index=>$field) {
+
+                $values .= $field->SQLvalue();
+
+        }
+
+        $values = substr($values, 0, -2);
+
+        $sql = "INSERT INTO ". $this->tableName() ."(".$this->fieldNames("INSERT").") VALUES ($values)";
+
+	    $db = new mysqldb;
+
+        $db->SQLExec($sql, TRUE, &$this);
+
+        $this->existsObject = TRUE;
+
+    }
+
+    function update () {
+
+        $values = "";
+
+        foreach ($this->allFields() as $index=>$field) {
+
+             $values .= $field->updateString();
+
+        }
+
+        $values = substr($values, 0, -2);
+
+        $sql = "UPDATE ".$this->tableName()." SET $values WHERE id=". $this->getID();
+
+        //echo $sql ."<BR>";
+
+	    $db = new mysqldb;
+
+        $db->SQLExec($sql, FALSE, $this);
+
+        $this->obj->existsObject = TRUE;
+
+    }
+
+    function delete() {
+      $this->load();
+      $sql = "DELETE FROM ".$this->tableName()." WHERE id=". $this->getId();
+	  //echo $sql;
+      $db = new mysqldb;
+      $can = TRUE;
+	  foreach($this->allFields() as $f) {
+      	 $can = $can & $f->canDelete();
+	  }
+	  if ($can) $db->SQLExec($sql, FALSE, $this); else {echo "The object is not erasable<BR>\n";}
+    }
+
+
+
+
+
+
+
+    function addField ($field) {
+		$name = $field->colName;
+        $this->$name = $field;
+        $this->fieldNames[]=$name;
+    }
+
+	function visit($obj) {
+
+		return $obj->visitedObjSQL($this);
+
+	}
+
+    function findIndexField () {
+
+      $i = 0;
+
+      foreach ($this->allFields() as $index=>$field) {
+
+        if ($field->isIndex) {$ind[$i] = $field; $i++;}
+
+      }
+
+      return $ind;
+
+    }
+
+    function indexValues(){
+
+      $ret ="";
+
+      $idFields = $this->findIndexField();
+
+      foreach($idFields as $index=>$field) {
+
+         $ret .= $field->viewValue() . ", ";
+
+      }
+
+      $ret = substr($ret, 0, -2);
+
+      return $ret;
+
+    }
+
+
+
+    function field($s) {
+
+       return $this->$s;
+
+    }
+
+    function fieldID($s) {
+
+       return $s;
+
+    }
+
+
+	function check_not_null($fields, &$error_msgs) {
+		$ret = true;
+		$is_valid = false;
+		foreach ($fields as $field) {
+			$is_valid = $this->$field->value != "";
+
+			if (!$is_valid) {
+				$error_msgs[$field] =  "Fill in the " . $field . ", please";
+			}
+			$ret &= $is_valid;
+		}
+
+		return $ret;
+	}
+
+	function check_one_of($fields, $error_msg, &$error_msgs) {
+		$ret=false;
+		foreach ($fields as $field) {
+			if (!isset($first_field)) $first_field = $field;
+			$ret |= $this->$field->value != "";
+		}
+		if (!$ret) {
+			$error_msgs[$first_field]=$error_msg;
+		}
+		return $ret;
+	}
+
+
+    function validate(&$error_msgs) {
+		return true;
+	}
+
+    function toArray () {
+	   $arr = array();
+	   foreach ($this->allFields() as $index=>$field) {
+
+        	$arr[$index]=$field->toArrayValue();
+
+      	}
+
+	return $arr;
+    }
+}
+?>

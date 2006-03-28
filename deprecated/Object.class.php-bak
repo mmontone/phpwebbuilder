@@ -1,0 +1,9 @@
+<?
+
+class Object extends PersistentObject {
+    function initialize () {
+         $this->table = "Objects";
+         $this->addField(new textField("object", TRUE));
+    }    
+}
+?>

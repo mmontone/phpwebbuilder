@@ -1,0 +1,237 @@
+Bueno, aqui va un intento de pequeño tutorial. Probablemente esto no sirva en un tiempo ;).
+
+
+Componentes y delegacion de control
+-----------------------------------
+
+La aplicación se estructura a traves de componentes. Un componente esta compuesto, valga la redundancia, en su forma más general, por un metodo render_on para mostrarse, variables de instancia que representan al modelo, y varios metodos que describen las acciones que el componenete puede ejecutar.
+
+Ejemplo:
+
+Ejecutar http://localhost/newcontroller/phpwebbuilder/launch_application.php?app_path=counter para ver el ejemplo andando.
+
+Un componente Counter. El objetivo es llevar un contador.
+
+// Creamos el contador
+class Counter extends Component
+{
+	// Nuestro modelo (un entero)
+        var $counter;
+
+	function Counter($value=0) {
+		parent::Component();
+		$this->counter = $value;
+	}
+
+	// Mostramos el valor del contador junto con dos posibles acciones, question_incrementation y question_decrementation
+        function render_on(&$out) {
+		$out .= "<h1>" . $this->counter . "</h1></br>\n";
+		$out .= "<a href=" . $this->render_action_link('question_incrementation') . ">Incrementar</a></br>\n";
+		$out .= "<a href=" . $this->render_action_link('question_decrementation') . ">Decrementar</a></br>\n";
+	}
+
+	// Declaramos los metodos que representan acciones (esto es por una cuestion de seguridad, para que el usuario no pueda ejecutar otra cosa que metodos que representan acciones sobre los componentes)
+        function declare_actions() {
+		return array('question_incrementation', 'question_decrementation');
+
+	}
+
+	// Cuando el usuario haga click en incrementar, se ejecutara la siguiente accion sobre el componente
+        function question_incrementation() {
+                 // Lo que queremos hacer ahora es pasar el control temporariamente a un dialogo que pregunte si realmente se quiere incrementar. Hacemos esto mediante call y el componente predefinido QuestionDialog. 'on_accept' => 'notify_indentation' es la especificacion del callback. Significa si el usuario acepta, se invoque el metodo notify_incrementation y el contador, es decir, este componente, retome el control
+		$this->call (new QuestionDialog("¿Realmente quiere incrementar?", array('on_accept' => 'notify_incrementation',
+		                                                                        'on_cancel' => 'user_cancelled')));
+	}
+
+	function question_decrementation() {
+		$this->call (new QuestionDialog("¿Realmente quiere decrementar?", array('on_accept' => 'notify_decrementation',
+		                                                                        'on_cancel' => 'user_cancelled')));
+	}
+
+	function notify_incrementation() {
+	         // Ahora notificamos. Cuando se termina de notificar, se ejecuta increment, y se recupera el control
+		$this->call (new NotificationDialog('Voy a incrementar', array('on_accept' => 'increment')));
+	}
+
+	function notify_decrementation() {
+		$this->call (new NotificationDialog('Voy a decrementar', array('on_accept' => 'decrement')));
+	}
+
+	function user_cancelled() {
+	}
+
+        // Se acaba de notificar, ahora incrementamos el contador
+	function increment() {
+
+		$this->counter = $this->counter + 1;
+	}
+
+	function decrement() {
+		$this->counter = $this->counter - 1;
+	}
+}
+
+
+Lo importante de todo esto es que estamos reusando otros componentes, es decir, otras vistas, modelos, y flujos de control.
+
+Veamos el componente de pregunta:
+
+class QuestionDialog extends Component
+{
+	// La pregunta
+        var $question;
+
+	function QuestionDialog($question, $callback_actions=array('on_accept'=>'question_accepted', 'on_cancel' => 'question_cancelled')) {
+		parent::Component($callback_actions);
+		$this->question = $question;
+	}
+
+	function declare_actions() {
+		return array('accept', 'cancel');
+	}
+
+	function render_on(&$out) {
+		$out .= "<h1>" . $this->question . "</h1></br>\n";
+		// Creamos un formulario que invoca la accion accept cuando se submite
+		$this->begin_form_for_action('accept', $out);
+		$out .= "    <input type='submit' value='Aceptar'/>\n";
+		$out .= "</form>\n";
+		// Creamos un formulario que invoca la accion cancel cuando se submite
+		$this->begin_form_for_action('cancel', $out);
+		$out .= "    <input type='submit' value='Cancelar'/>\n";
+		$out .= "</form>\n";
+	}
+
+	// El usuario acepto. Retomamos el control al componente que llamo mediante el metodo callback configurado en 'on_accept' (ver rendering de Counter anterior)
+        function accept() {
+		$this->callback('on_accept');
+	}
+
+	function cancel() {
+		$this->callback('on_cancel');
+	}
+}
+
+
+Multiples flujos de control
+---------------------------
+
+Ahora algo aun mas interesante. Pueden tenerse multiples flujos de control.
+Ejemplo:
+
+http://localhost/newcontroller/phpwebbuilder/launch_application.php?app_path=multicounter para ver el ejemplo andando.
+
+class MultiCounter extends Component
+{
+	var $count;
+
+	function MultiCounter($count=3) {
+		parent::Component();
+		$this->count = $count;
+		// Agregamos tres counters como componentes hijos mediante add_component. El segundo parametro, $i, indica bajo que identificador lo guardamos, en este caso, un entero.
+		for ($i = 0; $i < $count; $i++) {
+		 	$this->add_component(new Counter(0), $i);
+		}
+	}
+
+	// Rendereamos los tres Counters
+        function render_on(&$out) {
+		for ($i = 0; $i < $this->count; $i++) {
+		        // Accedemos al componente hijo mediante su identificador
+			$counter =& $this->component_at($i);
+			$counter->render_on($out);
+			$out .= "</br></br>\n";
+		}
+	}
+}
+
+Lo que se obtiene son 3 Counters corriendo "concurrentemente" gratis. Son independientes unos de otro, y nunca se pierde el contexto. Esto es muy util por ejemplo para ir recorriendo una lista de elementos dentro de otro componente, sin perder el contexto :).
+
+
+
+Manejo de parametros
+--------------------
+
+Ejemplo: ejecutar http://localhost/newcontroller/phpwebbuilder/launch_application.php?app_path=prompt
+
+Ahora un pequeño ejemplo para ver como se pasan parametros de un componente a otro.
+Definimos un componente que pide que usuario ingrese algo y despues lo muestra:
+
+class PromptTest extends Component
+ {
+ 	var $message;
+
+ 	function start() {
+ 	         // Al comienzo pedimos al usuario que escriba algo y cuando termine se invoque a show_message
+ 		$this->call(new PromptDialog("Escribi algo: ", array('done' => 'show_message')));
+ 	}
+
+ 	function show_message($params) {
+ 	         // Aqui tenemos a disposicion los parametros. Notar que solo obtenemos los parametros que conciernen al dialogo mostrado, en este caso el texto ingresado, que se encuentra en 'text'
+		$this->message = $params['text'];
+ 	}
+
+ 	function render_on(&$out) {
+ 	         // Mostramos lo que ingreso el ususario
+ 		$out .= "<h1>" . $this->message . "</h1>";
+ 	}
+}
+
+
+PromptDialog es un componente reusable y esta es la implementacion:
+
+class PromptDialog extends Component
+{
+	var $message;
+
+	function PromptDialog($message, $callback_actions=array('done' => 'text_filled_in')) {
+		parent::Component($callback_actions);
+		$this->message = $message;
+	}
+
+	function render_on(&$out) {
+		$out .= "<h1>" . $this->message . "</h1>\n";
+		$this->begin_form_for_action('done', $out);
+		// En la siguiente linea, notar el uso del metodo form_param
+		$out .= "    <input type=text name=" . $this->form_param('text') . " /></br>";
+		$out .= "    <input type='submit' value='Aceptar' />\n";
+		$out .= "</form>";
+	}
+
+	function declare_actions() {
+		return array('done');
+	}
+
+	function done($params) {
+	         // Cuando el usuario ingreso el mensaje, pasamos los parametros a la funcion callback
+		$this->callback('done',$params);
+	}
+}
+
+Un simple controller
+--------------------
+
+Ahora veamos como hacer un simple controller. Es decir, meternos solo con el flujo de la aplicación y no preocuparnos de renderear html nosotros:
+
+Para correr el ejemplo:
+http://localhost/newcontroller/phpwebbuilder/launch_application.php?app_path=controller
+
+class ControllerTest extends Component
+ {
+ 	 // Aqui invocamos a un prompt para obtener un input del usuario
+         function start() {
+ 		$this->call(new PromptDialog("Escribi algo: ", array('on_accept' => 'show_message')));
+ 	}
+
+ 	 // Notificamos lo entrado y volvemos a empezar
+         function show_message($params) {
+		$this->call(new NotificationDialog($params['text'], array('on_accept' => 'start')));
+ 	}
+ }
+
+Notar que no implementamos ningun metodo render_on ni definimos acciones. Solo trabajamos a traves del despacho de callbacks.
+
+
+
+Despues escribire mas...(falta la parte de backtracking y pretty urls ;))
+IDEA: estaria bueno levantar un wiki en la pagina (se puede ;)). Para escribir este tipo de tutoriales.
