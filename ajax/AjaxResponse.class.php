@@ -29,7 +29,7 @@ class AjaxResponse
     $xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
     $xml .= "\n<ajax_response>";
     foreach ($this->actions as $action) {
-      $xml .= toXML(toHTML($action->render()));
+      $xml .= toXML($action->render());
     }
     $xml .= "</ajax_response>";
     echo $xml;
