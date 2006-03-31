@@ -10,11 +10,12 @@ class DataField {
 	   $this->owner->renderAction($action);
 	}
 
-    function ConvHTML($s) {
+    /*function ConvHTML($s) {
         return mb_convert_encoding($s,"HTML-ENTITIES","auto");
-    }
+    }*/
 
-    function ConvHTMLDeprecated ($s) {
+
+    function ConvHTML2 ($s) {
 		$s = str_replace ("ï¿½", "&aacute;", $s);
 		$s = str_replace ("ï¿½", "&eacute;", $s);
 		$s = str_replace ("ï¿½", "&iacute;", $s);
@@ -37,7 +38,9 @@ class DataField {
 		/*$s = ereg_replace("(\\n| )*$", " ", $s);*/
 		return $s;
 	}
-	function convFromHTML($s) {
+
+
+	 function convFromHTML($s) {
 		$s = str_replace ("ï¿½", "&aacute;", $s);
 		$s = str_replace ("&eacute;", "ï¿½", $s);
 		$s = str_replace ("&iacute;", "ï¿½", $s);
@@ -102,7 +105,7 @@ class DataField {
 }
 
 function toHTML($s) {
-        return mb_convert_encoding($s,"HTML-ENTITIES","auto");
+       return mb_convert_encoding($s,"HTML-ENTITIES","auto");
     }
 
     function toXML($s) {
