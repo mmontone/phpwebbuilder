@@ -28,7 +28,7 @@ class WikiArea extends TextArea
         if (preg_match('/^' . $command_path . '$/', $href,  $matches)) {
           $obj_type = $matches[1];
           $obj_id = $matches[2];
-          $new_href = site_url . "admin/Action.php?Controller=ShowController&ObjType=$obj_type&ObjID=$obj_id";
+          $new_href = site_url . "admin/action.php?Controller=ShowController&ObjType=$obj_type&ObjID=$obj_id";
           return '<a href="' . $new_href . '"';
         }
         else {

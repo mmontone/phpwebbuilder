@@ -11,10 +11,7 @@ class TextField extends DataField {
                parent::Datafield($name, $isIndex);
       }
 
-      function asHTML() {
-        return $this->ConvHtml($this->value);
-    }
-      function SQLvalue() {
+     function SQLvalue() {
          return "'".$this->getValue()."'" . ", " ;
       }
 
@@ -28,9 +25,7 @@ class TextArea extends DataField {
         return $obj->visitedTextArea($this);
     }
 
-    function asHTML() {
-        return $this->ConvHtml($this->value);
-    }
+
 
       function SQLvalue() {
          return "'".$this->getValue()."'". ", " ;

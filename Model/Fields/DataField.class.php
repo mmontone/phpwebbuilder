@@ -13,6 +13,7 @@ class DataField {
     function ConvHTML($s) {
         return mb_convert_encoding($s,"HTML-ENTITIES","auto");
     }
+
     function ConvHTMLDeprecated ($s) {
 		$s = str_replace ("ï¿½", "&aacute;", $s);
 		$s = str_replace ("ï¿½", "&eacute;", $s);
@@ -100,5 +101,29 @@ class DataField {
     }
 }
 
+function toHTML($s) {
+        return mb_convert_encoding($s,"HTML-ENTITIES","auto");
+    }
+
+    function toXML($s) {
+        $s = str_replace('&aacute;', '&#225;', $s);
+        $s = str_replace('&eacute;', '&#233;', $s);
+        $s = str_replace('&iacute;', '&#237;', $s);
+        $s = str_replace('&oacute;', '&#243;', $s);
+        $s = str_replace('&uacute;', '&#250;', $s);
+        $s = str_replace('&uuml;', '&#252;', $s);
+        $s = str_replace('&ntilde;', '&#241;', $s);
+
+        $s = str_replace('&Aacute;', '&#193;', $s);
+        $s = str_replace('&Eacute;', '&#201;', $s);
+        $s = str_replace('&Iacute;', '&#205;', $s);
+        $s = str_replace('&Ooacute;', '&#211;', $s);
+        $s = str_replace('&Uacute;', '&#218;', $s);
+        $s = str_replace('&Uuml;', '&#220;', $s);
+        $s = str_replace('&Ntilde;', '&#209;', $s);
+
+        $s = str_replace('&quote;', '&#34;', $s);
+        return $s;
+    }
 
 ?>

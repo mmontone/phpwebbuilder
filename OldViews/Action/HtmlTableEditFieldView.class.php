@@ -1,7 +1,9 @@
 <?
 
-require_once(dirname(__FILE__)."/HtmlEditFieldView.class.php");
-//require_once(dirname(__FILE__)."/HtmlEditHtmlAreaView.class.php");
+//require_once dirname(__FILE__). '/HtmlEditHtmlAreaView.class.php';
+require_once dirname(__FILE__). '/HtmlEditFieldView.class.php';
+//require_once dirname(__FILE__) . '/HtmlTableEditTextAreaView.class.php';
+require_once dirname(__FILE__) . '/../../extra/FCKeditor/fckeditor.php';
 
 class HtmlTableEditFieldView extends HtmlEditFieldView {
 	function readForm ($object, $form) {
@@ -201,6 +203,19 @@ class HtmlTableEditEmbedFieldView extends HtmlTableEditFieldView {
 	}
 }
 
+class HtmlTableEditTextAreaView extends HtmlTableEditFieldView {
+    function listObject () {
+        return "\n<td>". $this->field->getValue()."</td>";
+    }
+    function formObject ($object) {
+        $ret = "\n<textarea name=\"";
+        $ret .= $this->frmName($object);
+        $ret .= "\" cols=\"50\" rows=\"15\">";
+        $ret .= $this->field->convFromHTML($this->field->getValue());
+        $ret .= "\n</textarea>";
+        return $ret;
+    }
+}
 
 class HtmlTableEditDateTimeFieldView extends HtmlTableEditFieldView {
 	function dateFormObject($object){
@@ -321,19 +336,6 @@ class HtmlTableEditIdFieldView extends HtmlTableEditFieldView {
 	}
 }
 
-class HtmlTableEditTextAreaView extends HtmlTableEditFieldView {
-	function listObject () {
-		return "\n<td>". $this->field->getValue()."</td>";
-	}
-	function formObject ($object) {
-		$ret = "\n<textarea name=\"";
-		$ret .= $this->frmName($object);
-		$ret .= "\" cols=\"50\" rows=\"15\">";
-		$ret .= $this->field->convFromHTML($this->field->getValue());
-		$ret .= "\n</textarea>";
-		return $ret;
-	}
-}
 
 class HtmlTableEditBoolFieldView extends HtmlTableEditFieldView {
 	function listObject () {
@@ -349,6 +351,33 @@ class HtmlTableEditBoolFieldView extends HtmlTableEditFieldView {
 		$name = $this->frmName($object);
 		if (isset($form[$name]) AND ($form[$name]=="on")) {$this->field->value=1; } else {$this->field->value=0; };
 	}
+}
+
+class HtmlEditHtmlAreaView extends HtmlEditFieldView
+{
+    function HtmlEditHtmlAreaView() {
+    }
+
+    function formObject ($object) {
+        $editor =& new FCKeditor($this->frmName($object));
+        $editor->BasePath = site_url . 'admin/pwb/extra/FCKeditor/';
+        $editor->Value = $this->field->getValue();
+        return $editor->CreateHtml();
+    }
+}
+
+class HtmlTableEditHtmlAreaView extends HtmlTableEditTextAreaView
+{
+    function HtmlTableEditHtmlAreaView() {}
+
+    function formObject ($object) {
+        $editor =& new FCKeditor($this->frmName($object));
+        $editor->BasePath = site_url . 'admin/pwb/extra/FCKeditor/';
+        $editor->Value = $this->field->getValue();
+        $editor->Width = '700px';
+        $editor->Height = '700px';
+        return $editor->CreateHtml();
+    }
 }
 
 ?>
