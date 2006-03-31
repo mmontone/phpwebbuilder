@@ -33,10 +33,14 @@ if(!isset($formm["serverhost"])){
 	$_SESSION[sitename]["Username"] = "guest";
 	if(file_exists($configfile)){
 		echo "Loading existing configuration";
-		require_once dirname(__FILE__)."/ConfigReader.class.php";
+		require_once dirname(__FILE__)."/BaseDirExample/Configuration/ConfigReader.class.php";
 		$conf = new ConfigReader;
+		$act = $conf->read($configfile, "global");
+		foreach($act as $data=>$name){
+			$default[$data] = $act[$data];	
+		}
 		$act = $conf->read($configfile);
-		foreach($datas as $data=>$name){
+		foreach($act as $data=>$name){
 			$default[$data] = $act[$data];	
 		}
 	} else {
@@ -71,6 +75,7 @@ if(!isset($formm["serverhost"])){
 	foreach($datas as $data=>$name){
 		$form[$data] =$formm[$data];
 	}
+	copy(dirname(__FILE__)."/BaseDirExample/Configuration/ConfigReader.class.php",$formm["basedir"]."/Configuration/ConfigReader.class.php");
 	require_once $formm["basedir"]."/Configuration/ConfigReader.class.php";
 	$_SESSION[$form["sitename"]]=$_SESSION[sitename];
 	$conf = new ConfigReader;

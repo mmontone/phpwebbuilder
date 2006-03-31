@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/Component.class.php';
+
 class FlowController extends Component
 {
 	var $model;

@@ -15,14 +15,13 @@ class DefaultCMS extends Component{
  	function render_on(&$html){
  		$this->menu->renderContent($html);
  		$html->text("<div class=\"body\" style=\"float:left;max-width:75%\">");
- 		$_REQUEST=$this->lastParams;
  		$this->body->renderContent($html);
  		$html->text("</div>");
  	}
  	function changeBody($menu,$params){
  		$this->add_component(new $params["Controller"], 1);
  		$this->body =& $this->component_at(1);
- 		$this->lastParams = $params;
+ 		$this->body->setForm($params);
  	}
 }
 

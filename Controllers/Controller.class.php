@@ -18,8 +18,15 @@ class Controller extends Component
 		return $ret;
 	}
 	function setForm($form){
-		if ($this->form === NULL){
-			$this->form = $form;
+		$this->form = $form;
+	}
+	function getForm(){
+		if ($this->form == NULL){
+			return $_REQUEST;
+		} else {
+			$temp = $this->form; 
+			$this->form = NULL;
+			return $temp;
 		}
 	}
     function initialize() {
@@ -47,11 +54,10 @@ class Controller extends Component
 	}
 	function execute ($action,$form) {
 		  if ($form==NULL) print_backtrace("The form is empty");
-		  $this->setForm($form);
-          if ($this->hasPermission($this->form))
-            return $this->$action($this->form);
+          if ($this->hasPermission($form))
+            return $this->$action($form);
           else
-            return $this->noPermission($this->form);
+            return $this->noPermission($form);
         }
 
 	function render_on(&$html) {
@@ -59,7 +65,8 @@ class Controller extends Component
  			$this->stopAndCall(new $_REQUEST["Controller"]);
  			$this->holder->component->renderContent($html);
  		} else {
-			$html->text($this->execute("begin",$_REQUEST));
+ 			$form = $this->getForm();
+			$html->text($this->execute("begin",$form));
  		}
 
 	}

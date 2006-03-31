@@ -1,15 +1,14 @@
 <?php
 
+require_once dirname(__FILE__) . '/../Controller.class.php';
+
 class Login extends Controller
 {
 	function begin ($form){
 		if (isset($form["Username"])) {
 			User::login($form["Username"], $form["Password"]);
 			if ($_SESSION[sitename]["Username"]) {
-				return "Logged in " .
-						"<script>
-								window.top.location=\"Action.php\";
-						</script>";
+				return "Logged in";
 			} else { 
 				return "Error Logging in ".$this->showForm();
 			}

@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/DataField.class.php';
+
 class DateTimeField extends DataField {
     function DateTimeField ($name, $isIndex) {
         parent::Datafield($name, $isIndex);

@@ -1,7 +1,7 @@
 <?
 define('modules',
-	"Model,Instances,database,Controllers,deprecated," .
-	"newcontroller,flowviews");
+	"Model,newcontroller,Instances,database,Controllers,deprecated," .
+	"flowviews");
 require_once "pwb.php";
 
 ?>

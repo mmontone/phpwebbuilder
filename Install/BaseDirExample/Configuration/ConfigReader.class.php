@@ -7,9 +7,13 @@
 
 class ConfigReader
 {
-    function read($file_name) {
+    function read($file_name, $section="") {
     	$configuration = $this->readAll($file_name);
-    	return $configuration[$this->sectionName($file_name)];
+    	if ($section==""){
+    		return $configuration[$this->sectionName($file_name)];
+    	} else {
+    		return $configuration[$section];
+    	}
     }
     function readAll($file_name) {
     	if (file_exists($file_name)){
@@ -18,25 +22,32 @@ class ConfigReader
     		return array();
     	}
     }
+    function readAct($file_name){
+    	return array_merge($this->read($file_name,"global"),$this->read($file_name));
+    }
     function load($file_name){
-    	$conf = $this->read($file_name);
+    	$conf = $this->readAct($file_name);
         foreach ($conf as $key => $value) {
         	define($key, $value);
         }
     }
     function write($file_name, $configuration) {
     	$str = "<?/*\n";
-    	$this->load($file_name);
-    	$nochanges = true;
+    	$present = $this->readAct($file_name) ;
     	$changes ="";
-		foreach($configuration as $data=>$name){
-			if ($name != constant($data)){
-				$nochanges = false;
-				$changes .= $data.":".constant($data)."=>".$name.",<br/>\n"; 
-			}
-		}		
+		$diff = array_diff_assoc($present, $configuration);
+		$nochanges = count($diff)==0;
+		$changes .= print_r($diff, TRUE); 
 		$conf = $this->readAll($file_name);
-		$conf[$this->sectionName($file_name)] = $configuration;
+		$sect = $this->sectionName($file_name);
+		$global_keys=array_keys($conf["global"]);
+		$global_conf=array();
+		foreach($global_keys as $key){
+			$global_conf[$key] = $configuration[$key];
+			unset($configuration[$key]);
+		}
+		$conf[$sect] = $configuration;
+		$conf["global"] = $global_conf;
     	foreach ($conf as $sectName=>$sect){
     		$str .= "[".$sectName."]\n";
     		foreach ($sect as $key => $value) {
