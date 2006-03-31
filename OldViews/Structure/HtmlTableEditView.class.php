@@ -2,7 +2,6 @@
 
 require_once(dirname(__FILE__) . "/../Action/HtmlTableEditFieldView.class.php");
 require_once("HtmlFormEditView.class.php");
-require_once dirname(__FILE__) . '/FileHtmlTableEditView.class.php';
 
 class HtmlTableEditView extends HtmlFormEditView {
 	function fieldShowObjectFactory () {
@@ -21,7 +20,8 @@ class HtmlTableEditView extends HtmlFormEditView {
 
     function visitedFile(&$file) {
         trigger_error('Vistando la vista del file');
-        $view = new FileHtmlTableEditView;
+        $f = 'FileHtmlTableEditView';
+        $view = new $f;
         $view->obj = $file;
         return $view;
     }
@@ -206,5 +206,7 @@ class PersistentCollectionHtmlTableEditView extends HtmlTableEditView  {
 	}
 
 }
+
+require_once dirname(__FILE__) . '/FileHtmlTableEditView.class.php';
 
 ?>
