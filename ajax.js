@@ -1,17 +1,17 @@
 function getHTTPObject() {
-	var xmlhttp; /** Special IE only code ... */
-	/*@cc_on @if (@_jscript_version >= 5) try
-		{ xmlhttp = new ActiveXObject("Msxml2.XMLHTTP"); }
-		catch (e) { try { xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); }
-		 catch (E) { xmlhttp = false; } } @else
-		xmlhttp = false; @end @*/
-		/** Every other browser on the planet */
-		if (!xmlhttp && typeof XMLHttpRequest != 'undefined')
-		{ try { xmlhttp = new XMLHttpRequest(); }
-		catch (e)
-		{ xmlhttp = false; }
-		}
-		return xmlhttp; }
+  var xmlhttp; /** Special IE only code ... */
+  /*@cc_on @if (@_jscript_version >= 5) try
+    { xmlhttp = new ActiveXObject("Msxml2.XMLHTTP"); }
+    catch (e) { try { xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); }
+     catch (E) { xmlhttp = false; } } @else
+    xmlhttp = false; @end @*/
+    /** Every other browser on the planet */
+    if (!xmlhttp && typeof XMLHttpRequest != 'undefined')
+    { try { xmlhttp = new XMLHttpRequest(); }
+    catch (e)
+    { xmlhttp = false; }
+    }
+    return xmlhttp; }
 
 var color;
 function loadingStart(){
@@ -25,46 +25,53 @@ function loadingStop(){
 }
 
 function goAjaxMethod(met, url, func, obj) {
-	   loadingStart();
- 	   var http = getHTTPObject();
-  	   http.abort();
+     loadingStart();
+      var http = getHTTPObject();
+       http.abort();
        url = url;
        try {
                http.open(met, url, true);
        } catch (e) {
-	       alert("El sistema no esta funcionando, "+e);
+         alert("El sistema no esta funcionando, "+e);
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
-                       		func(http.responseText, http.responseXML, obj);
-                       	    loadingStop();
+                             loadingStop();
+                           if (http.responseXML == null || !func(http.responseText, http.responseXML, obj))
+                             ajaxError();
                        }
                };
        try {
              http.send(null);
        } catch (e) {
-       		alert("El sistema no est? funcionando, "+e);
+           alert("El sistema no est? funcionando, "+e);
        }
 }
 
 function goAjax(url, func, obj) {
-	goAjaxMethod("GET", url, func, obj);
+  goAjaxMethod("GET", url, func, obj);
+}
+
+function ajaxError() {
+  // Nota: para que esta funcion no sea invocada, retornar true en la funcion handler.
+  // Para que deje de joder, documentar el siguiente alert
+  //alert("Hubo un error. Intente nuevamente");
 }
 
 function encodeForm(formName) {
-	var form = document.getElementById(formName);
-	var ret = "";
-	var elems = form.elements;
-	for(var i = 0;i< elems.length; i++) {
-		if (!(elems[i].type=='checkbox' && elems[i].checked==false))
-			ret += "&" + elems[i].name + "=" + elems[i].value;
-	}
-	return ret;
+  var form = document.getElementById(formName);
+  var ret = "";
+  var elems = form.elements;
+  for(var i = 0;i< elems.length; i++) {
+    if (!(elems[i].type=='checkbox' && elems[i].checked==false))
+      ret += "&" + elems[i].name + "=" + elems[i].value;
+  }
+  return ret;
 }
 
 function postAjax(url, func, formName, obj) {
- 	   var http = getHTTPObject();
-  	   http.abort();
+      var http = getHTTPObject();
+       http.abort();
        url = url;
        var params = encodeForm(formName);
 
@@ -74,21 +81,21 @@ function postAjax(url, func, formName, obj) {
        //prompt("url",url);prompt("paramans",params);
        try {
               http.open("POST", url, true);
-		      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		      http.setRequestHeader("Content-length", params.length);
-		      http.setRequestHeader("Connection", "close");
+          http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          http.setRequestHeader("Content-length", params.length);
+          http.setRequestHeader("Connection", "close");
        } catch (e) {
-	       alert("El sistema no esta funcionando, "+e);
+         alert("El sistema no esta funcionando, "+e);
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
-                       		func(http.responseText, http.responseXML, obj);
+                           func(http.responseText, http.responseXML, obj);
                        }
                };
        try {
              http.send(params);
        } catch (e) {
-       		alert("El sistema no esta funcionando, "+e);
+           alert("El sistema no esta funcionando, "+e);
        }
 }
 
@@ -96,29 +103,29 @@ function postAjax(url, func, formName, obj) {
 //------------------------------------
 
 function xml2html(xml){
-		if (xml.nodeName=="#text") {
-			return document.createTextNode(xml.nodeValue);
-		}else{
-		var html = document.createElement(xml.tagName);
-		var childs = xml.childNodes;
-		var i=0;
-		for (; i< childs.length; i++) {
-			var child = xml2html(childs[i]);
-			html.appendChild(child);
-		}
-		var attrs = xml.attributes;
-		for (var i=0; i<  attrs.length; i++) {
-			html.setAttribute(attrs[i].nodeName, attrs[i].nodeValue);
-		}
-		return html;
-		}
+    if (xml.nodeName=="#text") {
+      return document.createTextNode(xml.nodeValue);
+    }else{
+    var html = document.createElement(xml.tagName);
+    var childs = xml.childNodes;
+    var i=0;
+    for (; i< childs.length; i++) {
+      var child = xml2html(childs[i]);
+      html.appendChild(child);
+    }
+    var attrs = xml.attributes;
+    for (var i=0; i<  attrs.length; i++) {
+      html.setAttribute(attrs[i].nodeName, attrs[i].nodeValue);
+    }
+    return html;
+    }
 }
 
 function callAjax(url) {
   if (navigator.appName == "Microsoft Internet Explorer")
-	  goAjax(url, ie_updatePage);
+    goAjax(url, ie_updatePage);
   else
-   	  goAjax(url, updatePage);
+       goAjax(url, updatePage);
 }
 
 function submitAjax(form_id, url) {
@@ -131,14 +138,16 @@ function updatePage(text, xml) {
   for (; i< actions.length; i++) {
     eval("ajax" + actions[i].tagName + "(actions[i]);");
   }
+  return true;
 }
 
 function ie_updatePage(text, xml) {
-	var actions = xml.firstChild.nextSibling.childNodes;
-	var i=0;
-  	for (; i< actions.length; i++) {
-    	eval("ie_ajax" + actions[i].nodeName + "(actions[i]);");
-	  }
+  var actions = xml.firstChild.nextSibling.childNodes;
+  var i=0;
+    for (; i< actions.length; i++) {
+      eval("ie_ajax" + actions[i].nodeName + "(actions[i]);");
+    }
+  return true;
 }
 
 function getActionTarget(action) {
@@ -152,8 +161,8 @@ function ajaxreplace(replace_action) {
 }
 
 function ie_ajaxreplace(replace_action) {
-	var target = getActionTarget(replace_action);
-	var html = xml2html(replace_action.firstChild);
+  var target = getActionTarget(replace_action);
+  var html = xml2html(replace_action.firstChild);
     target.parentNode.replaceChild(html, target);
 }
 
