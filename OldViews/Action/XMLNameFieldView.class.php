@@ -57,6 +57,11 @@ class XMLNameFieldView extends AbstractFieldView {
 		$view->field = $field;
 		return $view;
 	}
+	function visitedSuperField($field) {
+		$view = new XMLNameSuperFieldView;
+		$view->field = $field;
+		return $view;
+	}
 	function visitedIdField($field) {
 		$view = new XMLNameIdFieldView;
 		$view->field = $field;
@@ -94,24 +99,36 @@ class XMLNameIndexFieldView extends XMLNameFieldView {
 		return $html->asSelect($this->frmName($object), $this->field->getValue());
 	}
 	function show ($object, $linker, $objFields) {
-		/*if ($objFields) {*/
-		/* necesito obtener el objeto apuntado, y luego mostrarlo. */
 		$obj = new $this->field->collection->dataType;
-		/*$ret .= $this->field->collection->dataType;
-		$ret .= ($this->field->value);*/
-		
 		$obj->setId($this->field->value);
 		$obj->load();
-		/*$ret .= print_r($obj, TRUE);*/
-		 
 		$html = new XMLNameView;	
 		$html = $html->viewFor($obj);
 		$html->descentCount = $object->descentCount-1;
 		$ret .= $html->showObject($linker, $obj->fieldNames);
 		return $ret;
-//}
 	}
 }
+
+class XMLNameSuperFieldView extends XMLNameFieldView {
+	function formObject ($object, $linker) {
+		$html = $object->viewFor($this->field->collection);
+		return $html->asSelect($this->frmName($object), $this->field->getValue());
+	}
+	function show ($object, $linker, $objFields) {
+		$parclass = get_parent_class($object->obj);
+		$obj = new $parclass; 
+		$obj->id->value=$this->field->value;
+		$obj->load();
+		$html = new XMLNameView;	
+		$html = $html->viewFor($obj);
+		$html->descentCount = $object->descentCount-1;
+		$ret .= $html->showObject($linker, $obj->fieldNames);
+		return $ret;
+	}
+}
+
+
 class XMLNameUserFieldView extends XMLNameIndexFieldView {
 	function formObject ($object, $linker) {
 		$html = $object->viewFor($this->field->collection);
