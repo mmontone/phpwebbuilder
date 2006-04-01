@@ -1,17 +1,17 @@
-function getHTTPObject() { 
-	var xmlhttp; /** Special IE only code ... */ 
-	/*@cc_on @if (@_jscript_version >= 5) try 
-		{ xmlhttp = new ActiveXObject("Msxml2.XMLHTTP"); } 
+function getHTTPObject() {
+	var xmlhttp; /** Special IE only code ... */
+	/*@cc_on @if (@_jscript_version >= 5) try
+		{ xmlhttp = new ActiveXObject("Msxml2.XMLHTTP"); }
 		catch (e) { try { xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); }
-		 catch (E) { xmlhttp = false; } } @else 
-		xmlhttp = false; @end @*/ 
-		/** Every other browser on the planet */ 
-		if (!xmlhttp && typeof XMLHttpRequest != 'undefined') 
-		{ try { xmlhttp = new XMLHttpRequest(); } 
-		catch (e) 
-		{ xmlhttp = false; } 
-		} 
-		return xmlhttp; } 
+		 catch (E) { xmlhttp = false; } } @else
+		xmlhttp = false; @end @*/
+		/** Every other browser on the planet */
+		if (!xmlhttp && typeof XMLHttpRequest != 'undefined')
+		{ try { xmlhttp = new XMLHttpRequest(); }
+		catch (e)
+		{ xmlhttp = false; }
+		}
+		return xmlhttp; }
 
 var color;
 function loadingStart(){
@@ -39,7 +39,7 @@ function goAjaxMethod(met, url, func, obj) {
                        		func(http.responseText, http.responseXML, obj);
                        	    loadingStop();
                        }
-               };      
+               };
        try {
              http.send(null);
        } catch (e) {
@@ -67,10 +67,10 @@ function postAjax(url, func, formName, obj) {
   	   http.abort();
        url = url;
        var params = encodeForm(formName);
-       
+
        /*-------------------------------------------------------------------------
        ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
-       
+
        //prompt("url",url);prompt("paramans",params);
        try {
               http.open("POST", url, true);
@@ -84,7 +84,7 @@ function postAjax(url, func, formName, obj) {
                        if (http.readyState==4) {
                        		func(http.responseText, http.responseXML, obj);
                        }
-               };      
+               };
        try {
              http.send(params);
        } catch (e) {
@@ -115,7 +115,10 @@ function xml2html(xml){
 }
 
 function callAjax(url) {
-  goAjax(url, updatePage);
+  if (navigator.appName == "Microsoft Internet Explorer")
+	  goAjax(url, ie_updatePage);
+  else
+   	  goAjax(url, updatePage);
 }
 
 function submitAjax(form_id, url) {
@@ -130,6 +133,14 @@ function updatePage(text, xml) {
   }
 }
 
+function ie_updatePage(text, xml) {
+	var actions = xml.firstChild.nextSibling.childNodes;
+	var i=0;
+  	for (; i< actions.length; i++) {
+    	eval("ie_ajax" + actions[i].nodeName + "(actions[i]);");
+	  }
+}
+
 function getActionTarget(action) {
   return document.getElementById(action.getAttribute("id"));
 }
@@ -138,6 +149,12 @@ function ajaxreplace(replace_action) {
   var target = getActionTarget(replace_action);
   var html = xml2html(replace_action.firstChild);
   target.parentNode.replaceChild(html, target);
+}
+
+function ie_ajaxreplace(replace_action) {
+	var target = getActionTarget(replace_action);
+	var html = xml2html(replace_action.firstChild);
+    target.parentNode.replaceChild(html, target);
 }
 
 function ajaxadd(add_action) {

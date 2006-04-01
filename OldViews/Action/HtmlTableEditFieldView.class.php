@@ -1,9 +1,6 @@
 <?
 
-//require_once dirname(__FILE__). '/HtmlEditHtmlAreaView.class.php';
-require_once dirname(__FILE__). '/HtmlEditFieldView.class.php';
-//require_once dirname(__FILE__) . '/HtmlTableEditTextAreaView.class.php';
-require_once dirname(__FILE__) . '/../../extra/FCKeditor/fckeditor.php';
+require_once dirname(__FILE__) . '/HtmlEditFieldView.class.php';
 
 class HtmlTableEditFieldView extends HtmlEditFieldView {
 	function readForm ($object, $form) {
