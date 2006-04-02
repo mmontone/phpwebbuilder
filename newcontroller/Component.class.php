@@ -152,6 +152,10 @@ class Component extends PWBObject
 			}
 		}
 	}
+	function hasPermission($form){
+		return true;
+	}
+	function setForm($form){}
 }
 
 
