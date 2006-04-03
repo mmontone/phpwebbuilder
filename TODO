@@ -3,8 +3,10 @@
 * Document Controller Using
 * Document using with PHPTAL  
 * Document OOP
-* Work with action renderers (wikiarea links and template links)
+* Work with action renderers (wikiarea links and template links) --> To be used with Components
 * Ajax action renderer
 * Template engine view
 * Collection of files attached to objects.
-
+* Build PWB Web site
+* Create 1st release of the tool
+* 
