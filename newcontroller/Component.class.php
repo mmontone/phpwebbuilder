@@ -16,7 +16,7 @@ class Component extends PWBObject
 	var $__decorators;
 
 	function Component($registered_callbacks=array()) {
-		$app = $this->application();
+		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->configuration=array('use_component_namemangling' => false,
 		                           'use_action_namemangling' => false,
@@ -63,7 +63,7 @@ class Component extends PWBObject
 	}
 
         function registerCallbacks($callbacks) {
-          $this->registered_callbacks = $callbacks;
+          $this->registered_callbacks =& $callbacks;
         }
 
 	function call_action($action_selector, $params) {
@@ -153,7 +153,20 @@ class Component extends PWBObject
 		}
 	}
 	function hasPermission($form){
-		return true;
+		$id = $_SESSION[sitename]["id"];
+        $permission = $this->permissionNeeded($form);
+		if ($permission!=""){
+			$role = new Role;
+			return $role->userHasPermission($id, $permission);
+		} else
+			return true;
+	}
+	function permissionNeeded($form){
+		return "";
+	}
+	function noPermission ($form){ // The user has no permission
+		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
+		trace($err);
 	}
 	function setForm($form){}
 }

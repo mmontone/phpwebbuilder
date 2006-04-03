@@ -2,34 +2,32 @@
 
 require_once dirname(__FILE__) . '/../Controller.class.php';
 
-class Login extends Controller
-{
-	function begin ($form){
-		if (isset($form["Username"])) {
-			User::login($form["Username"], $form["Password"]);
-			if ($_SESSION[sitename]["Username"]) {
-				return "Logged in";
-			} else { 
-				return "Error Logging in ".$this->showForm();
-			}
-		} 
-		else return $this->showForm();
+class Login extends Component {
+	var $success = false;
+	function declare_actions(){
+		return array("login_do");
 	}
-	function showForm() {
-		return '<form method="post" action="Action.php">' .
-				'<input type="hidden" name="Controller" value="Login" />
-				  <table>
-				    <tr>
-				      <td>Username:</td>
-				      <td><input type="text" name="Username"></td>
-				    </tr>
-				    <tr>
-				      <td>Password:</td>
-				      <td><input type="password" name="Password"></td>
-				    </tr>
-				  </table>
-				    <input type="submit" name="Submit" value="Login">
-				</form>';
+	function login_do ($form){
+		$this->success =& User::login($form["Username"], $form["Password"]);
+	}
+	function render_on(&$html) {
+		if ($this->success) {
+			$html->text('');
+		} else { 
+			$html->begin_form_for_action("login_do");
+			$html->text('<table>
+					    <tr>
+					      <td>Username:</td>
+					      <td><input type="text" name="p_Username"></td>
+					    </tr>
+					    <tr>
+					      <td>Password:</td>
+					      <td><input type="password" name="p_Password"></td>
+					    </tr>
+					  </table>');
+			$html->text('<input type="submit" name="Submit" value="Login">');				  
+		    $html->text("</form>");
+		}
 	}
 }
 

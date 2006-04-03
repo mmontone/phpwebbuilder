@@ -32,25 +32,11 @@ class Controller extends Component
     function initialize() {
     	/* put initialization code here, in the subclass */
     }
-
-	function hasPermission($form){
-		$id = $_SESSION[sitename]["id"];
-        $permission = $this->permissionNeeded($form);
-		if ($permission!=""){
-			$role = new Role;
-			return $role->userHasPermission($id, $permission);
-		} else
-			return true;
-	}
-	function permissionNeeded($form){
-		return "";
-	}
-	function noPermission ($form){ // The user has no permission
-		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
-		trace($err);
-	}
+	function controller_action($form){}
+	function controller_display($form){}
 	function begin($form){
-		return $this->start($form);
+		$this->controller_action($form);
+		return $this->controller_display($form);
 	}
 	function execute ($action,$form) {
 		  if ($form==NULL) print_backtrace("The form is empty");
