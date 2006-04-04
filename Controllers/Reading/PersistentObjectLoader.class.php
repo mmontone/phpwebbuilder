@@ -101,6 +101,7 @@ class PersistentObjectLoader extends Loader  {
     function doDelete ($form, &$error_msgs) {
         $error_msgs = array(); // Array of strings
         if ($form["ObjID"]) { $this->obj->setID($form["ObjID"]); };
+        $this->obj->load();
         if (isset($form["Delete" . $this->obj->getId()])){
           $this->obj->delete();
           $this->linkColec($form);
