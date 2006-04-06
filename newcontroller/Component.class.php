@@ -50,11 +50,8 @@ class Component extends PWBObject
 	function &copy_for_backtracking() {
 		/* PHP4 */
         $my_copy =& parent::copy_for_backtracking();
-
         $my_copy->listener =& $this->listener->copy_for_backtracking();
-
         $my_copy->__children =& array_map(create_function('$x', 'return $x->copy_for_backtracking();'), $this->__children);
-
         return $my_copy;
     }
 
