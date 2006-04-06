@@ -1,7 +1,7 @@
 <?
 
 require_once dirname(__FILE__) . "/../Links/MixLinker.class.php";
-require_once(dirname(__FILE__) . "/../Action/TableCheckFieldView.class.php");
+require_once(dirname(__FILE__) . "/../Action/TableCheckAction.class.php");
 require_once("HtmlFormEditView.class.php");
 
 class TableCheckView extends HtmlFormEditView  {
@@ -52,6 +52,26 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 						$temp .= "\n    DROP COLUMN $name, ";
 					} 
 				}
+				$actunique = array();
+				$res =& $db->SQLExec("SHOW INDEX FROM $table", FALSE,$this);
+				$indexes = $db->fetchArray($res);
+				foreach ($indexes as $f) {
+					if ($f["Key_name"]!="PRIMARY") {
+						$actunique []= $f["Column_name"];
+					}
+				}
+				$a = count(array_diff($actunique,$this->obj->indexFields));
+				$b = count(array_diff($this->obj->indexFields,$actunique));
+				if ($a+$b>0){
+					$ex=false;
+					foreach($indexes as $ind){
+						$ex |= $ind["Key_name"]=="index$table";
+					}
+					if ($ex){
+						$temp .= "\n   DROP KEY index$table, ";
+					}
+					$temp .= "\n   ADD ".$this->uniques().", ";
+				}
 				if ($temp!="") {
 					//$ret .= "\n-- Object: ".get_class($this->obj);
 					$ret .= "\nALTER TABLE $table";
@@ -67,7 +87,8 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 				//$ret = "\n-- Object: ".get_class($this->obj);
 				$ret .=	"\nCREATE TABLE IF NOT EXISTS $table (" ;
 				$ret .= $this->fieldsForm(new MixLinker, $this->obj->fieldNames, TRUE);
-				$ret .= "\n   PRIMARY KEY  (`id`)";		
+				$ret .= "\n   PRIMARY KEY  (`id`),";
+				$ret .= "\n".$this->uniques();
 				$ret .= "\n);";
 			/*faltan los campos!*/
 			}
@@ -75,6 +96,19 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 			$ret="";
 		}
 		return $ret;
+	}
+	function uniques() {
+		$table = $this->obj->tablename();
+		$ifs =& $this->obj->findIndexField();
+		foreach ($this->obj->indexFields as $i){
+			$f =& $ifs[$i];
+			$tc =& new TableCheckAction;
+			$df =& $tc->viewFor($f);
+			$uni .= $i.$df->unique() . ", ";
+		}
+		$uni = substr($uni,0, -2);
+		$ret .= "UNIQUE index$table(".$uni.")";
+		return $ret; 
 	}
 	function showField(&$field){
 		return $field->creation($this);
