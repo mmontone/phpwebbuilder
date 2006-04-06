@@ -104,7 +104,7 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 			$f =& $ifs[$i];
 			$tc =& new TableCheckAction;
 			$df =& $tc->viewFor($f);
-			$uni .= $i.$df->unique() . ", ";
+			$uni .= "`".$i."`".$df->unique() . ", ";
 		}
 		$uni = substr($uni,0, -2);
 		$ret .= "UNIQUE index$table(".$uni.")";
