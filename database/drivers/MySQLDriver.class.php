@@ -8,7 +8,7 @@ class AbstractDB {
 	}
 	function batchExec($sqls) {
 		foreach($sqls as $sql) {
-			if ($sql!="") { //User Might have included a "" at the end
+			if (trim($sql)!="") { //User Might have included a "" at the end
 				$rec = $this->SQLExec($sql, FALSE, $this);
 				$ret []= $this->fetchArray($rec);
 			}
@@ -22,12 +22,13 @@ class AbstractDB {
 }
 
 class MySQLdb extends AbstractDB {
-    function SQLExec ($sql, $getID, $obj) {
+    function SQLExec ($sql, $getID, $obj, $rows=0) {
     	trace($sql. "<BR>");
         $this->openDatabase();
         $reg = mysql_query ($sql) or
         	die (print_backtrace(mysql_error() . ": $sql"));
         if ($getID) { $obj->setID(mysql_insert_id());};
+        $rows = mysql_affected_rows();
         $this->closeDatabase();
         return $reg;
     }
