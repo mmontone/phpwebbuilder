@@ -32,21 +32,24 @@ class PersistentObject extends Model
      */
     var $existsObject = FALSE;
     /**
+     * @var Array(String) The names of the index fields
+     */
+    var $indexFields = array();
+    /**
      * @category Fields
      */
     /**
      * @return Array(DataField)
      */
 	function &allFieldsThisLevel() {
-		$arr= array();
-    	foreach ($this->allFieldNamesThisLevel() as $name) {
-                $arr[$name]=&$this->fieldNamed($name);
-        }
-    	return $arr;
+    	return $this->fieldsWithNames($this->allFieldNamesThisLevel());
 	}
 	function &allFields() {
+    	return $this->fieldsWithNames($this->allFieldNames());
+	}
+	function &fieldsWithNames($names) {
 		$arr= array();
-    	foreach ($this->allFieldNames() as $name) {
+    	foreach ($names as $name) {
                 $arr[$name]=&$this->fieldNamed($name);
         }
     	return $arr;
@@ -86,16 +89,13 @@ class PersistentObject extends Model
 		$name = $field->colName;
         $this->$name =& $field;
         $this->fieldNames[$name]=$name;
+        if ($field->isIndex) {
+        	$this->indexFields[$name]=$name;
+        }
         $field->owner =& $this;
     }
     function &findIndexField () {
-      $i = 0;
-      $ind = array();
-      foreach ($this->allFieldNames() as $index) {
-      	$field =& $this->$index;
-        if ($field->isIndex) {$ind[$i] =& $field; $i++;}
-      }
-      return $ind;
+      return $this->fieldsWithNames($this->indexFields);
     }
     function &field($s) {
        return $this->$s;
@@ -161,10 +161,11 @@ class PersistentObject extends Model
            $values .= $field->insertValue();
         }
         $values = substr($values, 0, -2);
-        $sql = "INSERT INTO ". $this->tableName() ."(".$this->fieldNames("INSERT").") VALUES ($values)";
+        $sql = "INSERT IGNORE INTO ". $this->tableName() ."(".$this->fieldNames("INSERT").") VALUES ($values)";
 	    $db = new mysqldb;
-        $db->SQLExec($sql, TRUE, &$this);
+        $db->SQLExec($sql, TRUE, &$this, &$rows);
         $this->existsObject = TRUE;
+        return $rows > 0;
     }
     function updateString () {
         $values = "";
@@ -272,7 +273,7 @@ class PersistentObject extends Model
 	 * @category Inheritance
 	 */
 
-	function isNotTopClass($class){
+	function isNotTopClass(&$class){
 		return (strcasecmp(get_parent_class($class),'PersistentObject')!=0
 			&& strcasecmp(get_parent_class($class),'ObjSQL')!=0
 			&& strcasecmp(get_parent_class($class),'Model')!=0);
@@ -347,7 +348,7 @@ class PersistentObject extends Model
 	function basicInitialize(){
 		$this->addField(new idField("id", FALSE));
 		if ($this->isNotTopClass($this)){
-			$this->addField(new superField("super", TRUE));
+			$this->addField(new superField("super", FALSE));
 		}
 		$this->initialize();
 	}
