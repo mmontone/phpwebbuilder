@@ -9,6 +9,9 @@ class Login extends Component {
 	}
 	function login_do ($form){
 		$this->success =& User::login($form["Username"], $form["Password"]);
+		if ($this->success){
+			$this->triggerEvent('menuChanged');
+		}
 	}
 	function render_on(&$html) {
 		if ($this->success) {
