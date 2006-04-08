@@ -4,9 +4,7 @@ require_once dirname(__FILE__).'/../newcontroller/Component.class.php';
 
 class Controller extends Component
 {
-	var $view;
-  	var $model;
-  	var $form;
+   	var $form;
 	/**
 	 * Special var, for get_subclass
 	 */
@@ -60,19 +58,11 @@ class Controller extends Component
 		return array();
 	}
 
-        function callAction(&$action) {
-          $controller =& new $action->controller;
-          $action_selector = $action->action_selector;
-          return $controller->$action_selector($action->params);
-        }
+    function callAction(&$action) {
+      $controller =& new $action->controller;
+      $action_selector = $action->action_selector;
+      return $controller->$action_selector($action->params);
+    }
 
-        function loadView($params) {
-          $this->aboutToLoadView($params);
-          assert($params['view']);
-          $this->view = new $params['view']($params);
-          $this->view->controller =& $this;
-        }
-
-        function aboutToLoadView(&$params) {}
 }
 ?>

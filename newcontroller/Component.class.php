@@ -7,6 +7,8 @@ require_once dirname(__FILE__) . '/ComponentHolder.class.php';
 
 class Component extends PWBObject
 {
+	var $view;
+ 	var $model;	
 	var $listener;
 	var $holder;
 	var $registered_callbacks;
@@ -166,8 +168,14 @@ class Component extends PWBObject
 		trace($err);
 	}
 	function setForm($form){}
+    function loadView($params) {
+      $this->aboutToLoadView($params);
+      assert($params['view']);
+      $this->view = new $params['view']($params);
+      $this->view->controller =& $this;
+    }
+    function aboutToLoadView(&$params) {}
 }
-
 
 
 ?>
