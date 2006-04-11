@@ -19,6 +19,7 @@ require_once dirname(__FILE__) . '/Loader.class.php';
 class PersistentObjectLoader extends Loader  {
 
     function readForm ($form, &$error_msgs) {
+    	assert($form["Action"]!="");
     	$func = "do".$form["Action"];
     	trace ($form["Action"]."ing...");
     	return $this->$func($form, $error_msgs);
