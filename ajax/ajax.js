@@ -122,6 +122,46 @@ function submitAjax(form_id, url) {
   postAjax(url, updatePage, form_id);
 }
 
+function callAction(action_id) {
+	   url = "new_dispatch.php?"+action_id+"=execute";
+	   //func = updatePage;
+  	   formName = "app";
+		var form = document.getElementById(formName);
+		form.setAttribute('action', url);
+		form.submit();
+/*		alert("sumbitted");
+ 	   var http = getHTTPObject();
+  	   http.abort();
+       url = url;
+       var params = encodeForm(formName);
+       params+="&"+action_id+"=execute";
+       /*-------------------------------------------------------------------------
+       ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
+       
+       //prompt("url",url);prompt("paramans",params);
+/*       try {
+              http.open("POST", url, true);
+		      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		      http.setRequestHeader("Content-length", params.length);
+		      http.setRequestHeader("Connection", "close");
+       } catch (e) {
+	       alert("El sistema no esta funcionando, "+e);
+       }
+       http.onreadystatechange = function () {
+                       if (http.readyState==4) {
+                       		func(http.responseText, http.responseXML);
+                       }
+               };      
+       try {
+             http.send(params);
+       } catch (e) {
+       		alert("El sistema no esta funcionando, "+e);
+       }*/
+}
+function reloadPage(text, xml) {
+	window.location="Action.php";
+}
+
 function updatePage(text, xml) {
   var actions = xml.firstChild.childNodes;
   var i=0;

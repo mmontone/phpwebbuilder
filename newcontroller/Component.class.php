@@ -16,7 +16,6 @@ class Component extends PWBObject
 	var $__children;
 	var $__actions;
 	var $__decorators;
-
 	function Component($registered_callbacks=array()) {
 		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
@@ -83,8 +82,9 @@ class Component extends PWBObject
     	$this->render_action_link($action);
     }
 
-	function add_component(&$component, $index) {
-		$this->__children[$index] =& new ComponentHolder($component,$index);
+	function add_component(&$component, $index=null) {
+		if ($index===null){$index = count($this->__children);}
+		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 	}
 
 	function &component_at($index) {
@@ -122,11 +122,12 @@ class Component extends PWBObject
 		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
         // Give control to $component
 		$component->listener =& $this;
-        $this->holder->hold($component);
-		$component->start();
+        $this->stopAndCall($component);
 	}
 
     function stopAndCall(&$component) {
+        $component->createView(get_class($this->view));
+		$this->replaceView($component);
     	$this->holder->hold($component);
         $component->start();
     }
@@ -135,9 +136,11 @@ class Component extends PWBObject
 		$app =& $this->application();
 		$app->invalid_callback($callback);
 	}
-
 	function callback($callback=null, $parameters=array()) {
 		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
+		$v =& $this->view->parent;
+		$this->replaceView($this->listener);
+		//$v->childNodes=array();
         if ($callback == null) {
 			$this->holder->hold($this->listener);
 		}
@@ -175,7 +178,43 @@ class Component extends PWBObject
       $this->view->controller =& $this;
     }
     function aboutToLoadView(&$params) {}
+    
+    /**
+     * Functions for the new type of views.
+     */
+    
+	function viewUpdated ($params){}
+	function &createView($viewClass){
+		$this->view =& new $viewClass;
+		$this->view->controller =& $this;
+		$ks = array_keys($this->__children);
+		foreach ($ks as $key){
+			$comp =& $this->component_at($key);
+			$this->view->append_child($comp->createView($viewClass));
+			$v =& $comp->view;
+		}
+		return $this->view;
+	}
+	function replaceView(&$other){
+		$p =& $this->view->parent();
+		$p->replace_child(
+					$this->view, 
+					$other->view
+			);
+	}
+	function getId(){
+		return $this->holder->getId();
+	}
+	function prepareToRender(){
+		$ks = array_keys($this->__children);
+		foreach ($ks as $key){
+			$comp =& $this->component_at($key);
+			$comp->prepareToRender();
+		}
+	}
+	
 }
+
 
 
 ?>

@@ -13,7 +13,7 @@ class Application extends ComponentHolder
   var $configuration;
 
   function Application() {
-    parent::ComponentHolder($this->set_root_component());
+    parent::ComponentHolder($this->set_root_component(), 0,$this);
 
     $this->set_default_configuration();
     $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
@@ -85,16 +85,26 @@ class Application extends ComponentHolder
 	function render_action_link(&$action) {
 		return $this->url_manager->render_action_link($action);
 	}
-
+/*
 	function render() {
 		$html =& new HtmlRenderer();
 		$this->component->render_on($html);
 		echo $html->render();
 	}
-
+*/	
+	function render() {
+		$viewClass = 'HTMLRendererNew';
+		$xml =& $this->component->createView($viewClass);
+		$this->component->prepareToRender();
+		echo $xml->renderPage();
+//		echo $xml->showXML();
+	}
    	function run() {
 	  $this->start();
 	  $this->render();
+	}
+	function getId(){
+		return "app";
 	}
 }
 

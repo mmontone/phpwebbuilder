@@ -7,10 +7,11 @@ class ComponentHolder
 {
 	var $component;
 	var $__owner_index;
-
-	function ComponentHolder(&$component,$owner_index = null/*,&$owner=null,$owner_index=null*/) {
-		$this->hold($component);
+	var $parent;
+	function ComponentHolder(&$component,$owner_index = null, &$parent) {
+	   $this->hold($component);
 	   $this->__owner_index = $owner_index;
+	   $this->parent =& $parent;
 	}
 
 	function owner_index() {
@@ -27,6 +28,9 @@ class ComponentHolder
         $my_copy = $this;
         $my_copy->component = $this->component->copy_for_backtracking();
         return $my_copy;
+    }
+    function getId(){
+    	return $this->parent->getId()."/".$this->__owner_index;
     }
 }
 

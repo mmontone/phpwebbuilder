@@ -357,7 +357,7 @@ class HtmlEditHtmlAreaView extends HtmlEditFieldView
 
     function formObject ($object) {
         $editor =& new FCKeditor($this->frmName($object));
-        $editor->BasePath = site_url . 'admin/pwb/extra/FCKeditor/';
+        $editor->BasePath = site_url . '/admin/pwb/extra/FCKeditor/';
         $editor->Value = $this->field->getValue();
         return $editor->CreateHtml();
     }
@@ -369,7 +369,7 @@ class HtmlTableEditHtmlAreaView extends HtmlTableEditTextAreaView
 
     function formObject ($object) {
         $editor =& new FCKeditor($this->frmName($object));
-        $editor->BasePath = site_url . 'admin/pwb/extra/FCKeditor/';
+        $editor->BasePath = site_url . '/admin/pwb/extra/FCKeditor/';
         $editor->Value = $this->field->getValue();
         $editor->Width = '700px';
         $editor->Height = '700px';

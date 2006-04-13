@@ -9,7 +9,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 require_once dirname(__FILE__) . "/basiclib.php";
 
-//require_once($_SERVER["DOCUMENT_ROOT"].dirname(dirname($_SERVER['PHP_SELF']))."/MyConfig/Static_conf.php");
+//include_once($_SERVER["DOCUMENT_ROOT"].dirname(dirname($_SERVER['PHP_SELF']))."/Configuration/pwbapp.php");
 
 $config = array(
 	basedir."/MyConfig"

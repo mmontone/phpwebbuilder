@@ -4,7 +4,7 @@ require_once dirname(__FILE__) . "/ViewLinker.class.php";
 
 class MixLinker extends ViewLinker {
 	function linkSubmit($formid) {
-		return "<a class=\"operation\" " . "href=\"javascript: document.getElementById(%27" . $formid . "%27).submit()\"" ." >" .
+		return "<a class=\"operation\" " . "href=\"javascript: callAction(%27ControllerSubmit%27)\"" ." >" .
 						"<img class=\"operation\" title=\"Save changes\" src=\"" . icons_url . "stock_save.png\"/></a>";
 	}
 

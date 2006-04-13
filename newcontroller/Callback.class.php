@@ -6,7 +6,7 @@ class Callback
     var $method_name;
     var $params;
 
-    function Callback(&$target, $method_name, $params) {
+    function Callback(&$target, $method_name, $params=array()) {
         $this->target =& $target;
         $this->method_name = $method_name;
         $this->params = $params;
@@ -19,7 +19,7 @@ class Callback
     }
 }
 
-function &callback(&$target, $callback, $params) {
+function &callback(&$target, $callback, $params=array()) {
   return new Callback($target, $callback, $params);
 }
 

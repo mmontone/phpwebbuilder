@@ -27,8 +27,9 @@ class Controller extends Component
 			return $temp;
 		}
 	}
-    function initialize() {
-    	/* put initialization code here, in the subclass */
+	function Controller(){
+		parent::Component();	
+    	$this->add_component(new Text(""), "bodyController");
     }
 	function controller_action($form){}
 	function controller_display($form){}
@@ -36,28 +37,26 @@ class Controller extends Component
 		$this->controller_action($form);
 		return $this->controller_display($form);
 	}
+	function prepareToRender(){
+ 		if (isset ($_REQUEST["Controller"]) && (strcasecmp(get_class($this),$_REQUEST["Controller"])!=0)){
+ 			$this->stopAndCall(new $_REQUEST["Controller"]);
+ 			$this->holder->component->renderContent($html);
+ 		} else {
+ 			$form = $this->getForm();
+			$t =& $this->component_at("bodyController");
+			$t->setText($this->execute("begin",$form));
+ 		}
+	}
 	function execute ($action,$form) {
-		  if ($form==NULL) print_backtrace("The form is empty");
           if ($this->hasPermission($form))
             return $this->$action($form);
           else
             return $this->noPermission($form);
         }
 
-	function render_on(&$html) {
- 		if (isset ($_REQUEST["Controller"]) && (strcasecmp(get_class($this),$_REQUEST["Controller"])!=0)){
- 			$this->stopAndCall(new $_REQUEST["Controller"]);
- 			$this->holder->component->renderContent($html);
- 		} else {
- 			$form = $this->getForm();
-			$html->text($this->execute("begin",$form));
- 		}
-
-	}
 	function declare_actions(){
 		return array();
 	}
-
     function callAction(&$action) {
       $controller =& new $action->controller;
       $action_selector = $action->action_selector;

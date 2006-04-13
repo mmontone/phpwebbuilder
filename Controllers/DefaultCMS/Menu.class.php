@@ -6,26 +6,17 @@ class Menu extends Component
 	function declare_actions() {
 		return array('menuclick');
 	}
-	function initialize(){	}
+	function initialize(){
+		$this->add_component(new Text('<p>Management</p>
+		  <p>User: '.$_SESSION[sitename]["Username"].'</p>'));  
+		$this->additem(array('Controller'=>'Logout'),'<img src="'.icons_url .'stock_exit.png" alt="Logout"/>');
+		$this->menus(); 
+	}
 	function newmenu (){
-		$this->rendered="";
+		$this->__children=array();
+		$this->menus();
 	}
-    function render_on(&$html) {
-    	
-		$html->text("<div class=\"menu\" style=\"float:left;max-width:25%\">");
-		$ret = '<blockquote>
-		  <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>Management</strong></font></p>
-		</blockquote>
-		  <p><font size="2" face="Verdana, Arial, Helvetica, sans-serif"><strong>User: '.$_SESSION[sitename]["Username"].'</strong></font></p>';
-		  
-		$ret .= $this->additem(array('Controller'=>'Logout'),'<img src="'.icons_url .'stock_exit.png" alt="Logout"/>');
-		$ret .= $this->menus(); 
-		$html->text($ret);
-		$html->text("</div>");
-	}
-		
 	function menus (){
-		if ($this->rendered==""){
 			$menus = MenuSection::availableMenus();
 			$ret ="";
 			foreach ($menus as $m) {
@@ -50,14 +41,14 @@ class Menu extends Component
 			}
 			$ret .= "</ul>";
 			$this->rendered = $ret;
-		}
-		return  $this->rendered;
 	}
 	function addelement($obj, $text) {
   		return $this->additem(array("Controller"=>"ShowController","ObjType"=>$obj,"Action"=>"List"), $text);
 	}
 	function additem($con, $text){
-		return "<li><a href=\"".$this->render_action_link('menuclick',$con)."\">$text</a></li>";
+		$this->add_component(new Text('<li>'));
+		$this->add_component(new ActionLink($this, 'menuclick', $text, $con));
+		$this->add_component(new Text('</li>'));
 	}
 	function menuclick($params){
 		$this->triggerEvent('menuClicked', $params);

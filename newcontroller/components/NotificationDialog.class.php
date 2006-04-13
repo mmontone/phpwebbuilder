@@ -7,8 +7,8 @@ class NotificationDialog extends Component
 	var $message;
 
 	function NotificationDialog($message, $callback_actions=array('on_accept' => 'notification_accepted')) {
-		parent::Component($callback_actions);
 		$this->message = $message;
+		parent::Component($callback_actions);
 	}
 
 	function configure() {
@@ -19,11 +19,11 @@ class NotificationDialog extends Component
 		return array('accept');
 	}
 
-	function render_on(&$html) {
-		$html->text("<h1>" . $this->message . "</h1></br>");
-		$html->begin_form_for_action('accept');
-		$html->text("    <input type='submit'value=Accept />");
-		$html->text("</form>");
+	function initialize(&$html) {
+		$this->add_component(new Text("<h1>"));
+		$this->add_component(new Text($this->message));
+		$this->add_component(new Text("</h1></br>"));
+		$this->add_component(new ActionLink($this, 'accept', 'Accept'), "accept");
 	}
 
 	function accept() {

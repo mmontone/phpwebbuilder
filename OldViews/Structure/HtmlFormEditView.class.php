@@ -9,8 +9,8 @@ class HtmlFormEditView extends AbstractView {
 
 			// Refresh button
 			$ret .="<a href=\"javascript: location.reload()\"><img title=\"Refresh\" src=\"". icons_url . "stock_refresh.png\"/></a>";
-			$ret .= "\n</body>";
-			$ret .= "\n</html>";
+			//$ret .= "\n</body>";
+			//$ret .= "\n</html>";
 			return $ret;
 		}
 	function selForm ($default) {
@@ -32,8 +32,8 @@ class HtmlFormEditView extends AbstractView {
 		return $ret;
 	}
         function headers() {
-			$ret ="<html>\n";
-			$ret .="<head>\n";
+			//$ret ="<html>\n";
+			//$ret .="<head>\n";
 
 			// The style
 			if (isset($form["css"])) {
@@ -59,17 +59,17 @@ class HtmlFormEditView extends AbstractView {
 
 
 			// Close the header
-			$ret .= "</head>\n";
-			$ret .= "<body>\n";
+			//$ret .= "</head>\n";
+			//$ret .= "<body>\n";
 			return $ret;
 
 	}
 	function formHeader($hiddenFields=array()) {
 		$obj = $this->obj;
-		$ret = "\n<form name=\"";
+/*		$ret = "\n<form name=\"";
 		$ret .= $this->formName();
 		$ret .= "\" id=\"".$this->formId()."\"";
-		$ret .= " method=\"post\" action=\"".$obj->formphp."\" enctype=\"multipart/form-data\">";
+		$ret .= " method=\"post\" action=\"".$obj->formphp."\" enctype=\"multipart/form-data\">";*/
 		$ret .= "\n   <input type=\"hidden\" name=\"ViewType\" value=\"". get_class($this) ."\" />";
 		$ret .= "\n   <input type=\"hidden\" name=\"Controller\" value=\"ShowController\" />".		
 				"\n   <input type=\"hidden\" name=\"ObjType\" value=\"". get_class($obj) ."\" />";
@@ -84,7 +84,7 @@ class HtmlFormEditView extends AbstractView {
 		return $ret;
 	}
 	function formFooter() {
-        	$ret = "\n</form>";
+        	//$ret = "\n</form>";
 		return $ret;
 	}
 	function formName() {
