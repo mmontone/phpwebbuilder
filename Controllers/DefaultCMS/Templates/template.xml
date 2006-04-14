@@ -1,0 +1,15 @@
+<templates>
+	<template class="Menu">
+	  CMS
+		<template class="MenuItem">
+			<a href="algo"><container id="linkName"/></a>
+		</template>
+	</template>
+	<template class="Login">
+	    Ingrese su nombre de usuario y contraseña:
+	     Username:
+	     <input type="text" name="username" id="username" />
+	     Password:
+	     <input type="password" name="password" id="password" />
+	</template>
+</templates>

@@ -3,7 +3,6 @@
 require_once dirname(__FILE__) . '/../Controller.class.php';
 
 class Login extends Component {
-	var $success = false;
 	function declare_actions(){
 		return array("login_do");
 	}
@@ -14,22 +13,15 @@ class Login extends Component {
 			$this->add_component(new Password("Password"), "password");
 	        $this->add_component(new Text('</td></tr></table>'));  
 			$this->add_component(new ActionLink($this, 'login_do', "Login"), "login");
+			$this->add_component(new Text(''), "status");
 	}
-	function login_do ($form){
-		$u =& $this->component_at("username");
-		$p =& $this->component_at("password");
-		$this->success =& User::login($u->value, $p->value); 
-		if ($this->success){
+	function login_do(){
+		$success =& User::login($this->username->value, $this->password->value); 
+		if ($success){
 			$this->triggerEvent('menuChanged');
-			$this->add_component(new Text('success'), "status");
+			$this->status->text = 'success';
 		} else {
-			$this->add_component(new Text('failed'), "status");
-		}
-	}
-	function render_on(&$html) {
-		if ($this->success) {
-			$html->text('');
-		} else { 
+			$this->status->text = 'failed';
 		}
 	}
 }

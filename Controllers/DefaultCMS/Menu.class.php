@@ -14,7 +14,7 @@ class Menu extends Component
 	}
 	function newmenu (){
 		$this->__children=array();
-		$this->menus();
+		$this->initialize();
 	}
 	function menus (){
 			$menus = MenuSection::availableMenus();
