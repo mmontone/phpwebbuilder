@@ -9,9 +9,9 @@ class ComponentHolder
 	var $__owner_index;
 	var $parent;
 	function ComponentHolder(&$component,$owner_index = null, &$parent) {
-	   $this->hold($component);
 	   $this->__owner_index = $owner_index;
 	   $this->parent =& $parent;
+	   $this->hold($component);
 	}
 
 	function owner_index() {
@@ -19,6 +19,8 @@ class ComponentHolder
 	}
 
     function hold(&$component) {
+    	$i = $this->owner_index();
+	    $this->parent->$i=&$component;
 		$component->holder =& $this;
 		$this->component =& $component;
 	}

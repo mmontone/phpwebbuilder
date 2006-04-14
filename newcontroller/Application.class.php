@@ -11,7 +11,7 @@ require_once dirname(__FILE__) . '/../flowviews/html/HTMLRenderer.class.php';
 class Application extends ComponentHolder
 {
   var $configuration;
-
+  var $wholeView;
   function Application() {
     parent::ComponentHolder($this->set_root_component(), 0,$this);
 
@@ -93,14 +93,17 @@ class Application extends ComponentHolder
 	}
 */	
 	function render() {
-		$viewClass = 'HTMLRendererNew';
-		$xml =& $this->component->createView($viewClass);
 		$this->component->prepareToRender();
-		echo $xml->renderPage();
+		echo $this->wholeView->renderPage();
 //		echo $xml->showXML();
 	}
+	function createView(){
+		$viewClass = 'HTMLRendererNew';
+		$this->wholeView =& $this->component->createView($viewClass);
+	} 
    	function run() {
 	  $this->start();
+	  $this->createView();
 	  $this->render();
 	}
 	function getId(){

@@ -124,7 +124,10 @@ class Component extends PWBObject
 		$component->listener =& $this;
         $this->stopAndCall($component);
 	}
-
+	function setChild($index, &$component){
+		$this->__children[$index]->hold($component);
+		$this->$index=&$this->__children[$index]->component;
+	}
     function stopAndCall(&$component) {
         $component->createView(get_class($this->view));
 		$this->replaceView($component);
