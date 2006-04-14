@@ -12,6 +12,7 @@ class Application extends ComponentHolder
 {
   var $configuration;
   var $wholeView;
+  var $viewCreator;
   function Application() {
     parent::ComponentHolder($this->set_root_component(), 0,$this);
 
@@ -95,11 +96,12 @@ class Application extends ComponentHolder
 	function render() {
 		$this->component->prepareToRender();
 		echo $this->wholeView->renderPage();
-//		echo $xml->showXML();
+		echo $this->wholeView->showXML();
 	}
 	function createView(){
-		$viewClass = 'HTMLRendererNew';
-		$this->wholeView =& $this->component->createView($viewClass);
+		$this->viewCreator =& new ViewCreator($this); 
+		$this->viewCreator->createView(new HTMLRendererNew, $this->component);
+		$this->wholeView =& $this->component->view;
 	} 
    	function run() {
 	  $this->start();

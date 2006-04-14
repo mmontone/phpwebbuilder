@@ -21,7 +21,7 @@ $app = array(
 
 define('modules',"Model,OldViews,Controllers,deprecated," .
 				 "Instances,database,".
-            	 "templates,ajax"
+            	 "templates,ajax,NewTemplates"
       );
 
 define('app_class',"DefaultCMSApplication");

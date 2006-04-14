@@ -9,6 +9,7 @@ class Component extends PWBObject
 {
 	var $view;
  	var $model;	
+ 	var $app;
 	var $listener;
 	var $holder;
 	var $registered_callbacks;
@@ -129,7 +130,8 @@ class Component extends PWBObject
 		$this->$index=&$this->__children[$index]->component;
 	}
     function stopAndCall(&$component) {
-        $component->createView(get_class($this->view));
+    	$component->app =& $this->app;
+        $component->createView();
 		$this->replaceView($component);
     	$this->holder->hold($component);
         $component->start();
@@ -185,11 +187,12 @@ class Component extends PWBObject
     /**
      * Functions for the new type of views.
      */
-    
-	function viewUpdated ($params){}
-	function &createView($viewClass){
-		$this->view =& new $viewClass;
+    function setView(&$view){
+		$this->view =& $view;
 		$this->view->controller =& $this;
+    }
+	function viewUpdated ($params){}
+/*	function &createView($viewClass){
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->component_at($key);
@@ -197,6 +200,10 @@ class Component extends PWBObject
 			$v =& $comp->view;
 		}
 		return $this->view;
+	}*/
+	function &createView(){
+		return new HTMLRendererNew;
+		//$this->app->viewCreator->createView($this->parent);
 	}
 	function replaceView(&$other){
 		$p =& $this->view->parent();
@@ -207,6 +214,9 @@ class Component extends PWBObject
 	}
 	function getId(){
 		return $this->holder->getId();
+	}
+	function getSimpleId(){
+		return $this->holder->getSimpleId();
 	}
 	function prepareToRender(){
 		$ks = array_keys($this->__children);

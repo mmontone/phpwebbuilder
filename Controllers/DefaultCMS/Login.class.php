@@ -19,9 +19,9 @@ class Login extends Component {
 		$success =& User::login($this->username->value, $this->password->value); 
 		if ($success){
 			$this->triggerEvent('menuChanged');
-			$this->status->text = 'success';
+			$this->status->setText('success');
 		} else {
-			$this->status->text = 'failed';
+			$this->status->setText('failed');
 		}
 	}
 }

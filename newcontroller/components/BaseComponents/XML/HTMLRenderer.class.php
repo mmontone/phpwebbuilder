@@ -22,7 +22,30 @@ class HTMLRendererNew extends XMLNode{
 		$ret = str_replace("   ", "&nbsp;&nbsp;&nbsp;", $ret );
 		return $ret;
 	}
-	
+	function &instantiateFor(&$component){
+		$component->setView($this);
+		return $this; 
+	}
+	function &create_text_node($text,&$obj){
+		return new HtmlTextNode($text,&$obj);
+	}
+	function childrenWithId($id){
+		return array();
+	}
+	function templatesForClass($class){
+		return array();
+	}	
+}
+
+class HtmlTextNode extends HTMLRendererNew{
+	var $text;
+	function HtmlTextNode($text,&$obj){
+		$this->text = $text;
+		$this->controller =&$obj;
+	}
+	function render (){
+		return $this->text; 
+	} 
 }
 
 ?>

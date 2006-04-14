@@ -8,11 +8,6 @@ class DefaultCMS extends Component{
 		$this->menu->addEventListener(array('on menuClicked'=>'changeBody'),$this);
 		$this->add_component(new Login, "body");
 	} 
-	function prepareToRender(){
-		parent::prepareToRender();
-		$this->menu->view->setAttribute('style', "float:left");
-		$this->body->view->setAttribute('style', "float:left");
-	}
  	function declare_actions(){}
  	function changeBody($menu,$params){
  		$this->body->stopAndCall (new $params["Controller"]);

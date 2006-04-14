@@ -11,9 +11,9 @@ class Text extends FormComponent{
 		$this->value = $text;
 		$this->view->text=$text;
 	}
-	function createNode(){
-		$tn =& $this->view->create_text_node($this->value, $this);
-		$this->view =& $tn;
+	function &createView(){
+		$this->view =& new HTMLTextNode($this->value, $this);
+		return $this->view;
 	}
 }
 

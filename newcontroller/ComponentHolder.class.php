@@ -32,8 +32,12 @@ class ComponentHolder
         return $my_copy;
     }
     function getId(){
-    	return $this->parent->getId()."/".$this->__owner_index;
+    	return $this->parent->getId()."/".$this->getSimpleId();
     }
+    function getSimpleId(){
+    	return $this->__owner_index;
+    }
+
 }
 
 /* Component holder as a decorator */

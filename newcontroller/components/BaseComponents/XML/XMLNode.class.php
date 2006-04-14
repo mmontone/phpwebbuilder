@@ -6,6 +6,7 @@ class XMLNode {
 	var $tagName = "div";
 	var $attributes = array();
 	var $controller;
+	var $parentPosition = null;
 	function &create_element($tag, &$obj){
 		$cn = get_class($this);
 		$e =& new $cn;
@@ -28,23 +29,24 @@ class XMLNode {
 	}
 
 	function append_child(&$xml){
-		$this->childNodes[]=&$xml;
+		$this->insert_in($xml,count($this->childNodes));
+	}
+	function insert_in(&$xml, $position){
+		$this->childNodes[$position]=&$xml;
 		$xml->parent =& $this;
+		$xml->parentPosition = $position;
 	}
 	function replace_child(&$old, &$new){
-		$ks = array_keys($this->childNodes);
-		$countreps =0;
-		foreach($ks as $k){
-			if ($this->childNodes[$k]->getRealId()==$old->getRealId()){
-				$countreps++;
-				$this->childNodes[$k]=&$new;
-				$new->parent =& $this;
-				unset($old->parent);
-			}
-		}
-		if ($countreps ==0) echo "replace unsuccessful";
-		//echo $new->getRealId();
+		$this->insert_in($new, $old->parentChild);
 	}
+	function insert_before(&$old, &$new){
+		$pos = $old->parentPosition;
+		for($i=count($this->childNodes); $i>=$pos; $i--){
+			$this->insert_in($this->childNodes[$i-1], $i);
+		}
+		$this->insert_in($new, $pos);
+	}
+	
 	function setAttribute($name, $val){
 		$this->attributes[$name] = $val;
 	}
@@ -52,6 +54,7 @@ class XMLNode {
 		return $this->id = $id; 
 	} 
 	function getRealId(){
+		if (!$this->controller) backtrace();
 		return $this->controller->getId(); 
 	}
 	function render(){
@@ -75,6 +78,7 @@ class XMLNode {
 			return $ret; 
 		}
 	}
+
 }
 
 class XMLTextNode extends XMLNode{
@@ -86,8 +90,6 @@ class XMLTextNode extends XMLNode{
 	function render (){
 		return $this->text; 
 	} 
-	
-	
 }
 
 ?>
