@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../../../FieldView.class.php';
+
 class CollectionFieldEditView extends FieldView
 {
     function CollectionFieldEditView(&$field, $config) {

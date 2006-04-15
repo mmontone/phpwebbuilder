@@ -39,13 +39,20 @@ class ShowCollectionController extends Controller
 
     $this->model = new PersistentCollection();
     $this->model->dataType = $params['datatype'];
+    $this->model->conditions = $params['conditions'];
+
+    $size = $this->model->size();
+    if ($params['limit'] > $size)
+        $params['limit'] = $size;
+
     $this->model->limit = $params['limit'];
     $this->model->offset = $params['offset'];
-    $this->model->conditions = $params['conditions'];
     $this->model->order = $params['order'];
+    $this->modelLoaded();
   }
 
   function aboutToLoadModel(&$params) {}
+  function modelLoaded(){}
 
   function dispatchActions(&$target) {
     $this->dispatchPreviousPageAction($target);

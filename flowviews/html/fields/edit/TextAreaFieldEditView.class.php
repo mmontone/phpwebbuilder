@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__) . '/../../../FieldView.class.php';
+
 class TextAreaFieldEditView extends FieldView
 {
     function render(&$html) {
