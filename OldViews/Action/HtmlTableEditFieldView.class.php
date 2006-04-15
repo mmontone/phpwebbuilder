@@ -349,7 +349,7 @@ class HtmlTableEditBoolFieldView extends HtmlTableEditFieldView {
 		if (isset($form[$name]) AND ($form[$name]=="on")) {$this->field->value=1; } else {$this->field->value=0; };
 	}
 }
-
+/*
 class HtmlEditHtmlAreaView extends HtmlEditFieldView
 {
     function HtmlEditHtmlAreaView() {
@@ -376,5 +376,5 @@ class HtmlTableEditHtmlAreaView extends HtmlTableEditTextAreaView
         return $editor->CreateHtml();
     }
 }
-
+*/
 ?>
