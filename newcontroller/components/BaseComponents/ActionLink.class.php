@@ -21,7 +21,8 @@ class ActionLink extends FormComponent{
 	}
 	function prepareToRender(){
 		$link =& $this->view;
-		$link->setAttribute('href', 'javascript:callAction(&#34;'.$this->getId().'&#34;)');
+		$link->setAttribute('onclick', 'callAction(&#34;'.$this->getId().'&#34;);');
+		$link->setAttribute('href', 'javascript:callAction(&#34;'.$this->getId().'&#34;);');
 	}
 	function viewUpdated($params){
 		$act = $this->act; 

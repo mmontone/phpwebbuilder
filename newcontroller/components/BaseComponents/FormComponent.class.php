@@ -15,7 +15,7 @@ class FormComponent extends Component
 			$this->triggerEvent('changed');
 		}
 	}
-	function &createView(){
+	function &createDefaultView(){
 		$this->view =& new HTMLRendererNew;
 		$this->createNode();
 		return $this->view;

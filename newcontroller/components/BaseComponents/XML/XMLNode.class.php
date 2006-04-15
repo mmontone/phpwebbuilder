@@ -27,7 +27,9 @@ class XMLNode {
 	function &create_text_node($text,&$obj){
 		return new XMLTextNode($text,&$obj);
 	}
-
+	function &first_child(){
+		return $this->childNodes[0];
+	}
 	function append_child(&$xml){
 		$this->insert_in($xml,count($this->childNodes));
 	}
@@ -38,6 +40,14 @@ class XMLNode {
 	}
 	function replace_child(&$old, &$new){
 		$this->insert_in($new, $old->parentChild);
+	}
+	function remove_child(&$old){
+		$pos = $old->parentPosition;
+		$last =count($this->childNodes)-1; 
+		for($i=$last ; $i>=$pos; $i--){
+			$this->insert_in($this->childNodes[$i], $i-1);
+		}
+		unset($this->childNodes[$last]);
 	}
 	function insert_before(&$old, &$new){
 		$pos = $old->parentPosition;

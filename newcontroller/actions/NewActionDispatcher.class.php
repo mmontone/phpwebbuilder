@@ -109,6 +109,7 @@ class NewActionDispatcher
 			if ($comp ==null) echo $p;
 			$comp =& $comp->component_at($p);
 		}
+		if (!$comp) backtrace();
 		$comp->viewUpdated($param);
 	}
 }

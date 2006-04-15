@@ -30,11 +30,21 @@ class HTMLRendererNew extends XMLNode{
 		return new HtmlTextNode($text,&$obj);
 	}
 	function childrenWithId($id){
-		return array();
+		return array_filter($this->childNodes, 
+			create_function('$c', 
+				'return $c->id=='.$id.';'));	
 	}
 	function templatesForClass($class){
-		return array();
-	}	
+		return array_filter($this->childNodes, 
+			create_function('$c', 
+				'return $c->isTemplateForClass("'.$class.'");'));
+	}
+	function isTemplateForClass($class){
+		return false;
+	}
+	function isContainer(){
+		return false;
+	}
 }
 
 class HtmlTextNode extends HTMLRendererNew{

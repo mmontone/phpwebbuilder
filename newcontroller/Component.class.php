@@ -32,6 +32,14 @@ class Component extends PWBObject
 	}
 	function initialize(){}
 	function start() {}
+	function setApp(&$app){
+		$this->app =& $app;
+		$ks = array_keys($this->__children);
+		foreach($ks as $k){
+			$this->__children[$k]->component->setApp($app);
+		}
+	}
+	
 	function configure() {
 		return array();
 	}
@@ -130,13 +138,13 @@ class Component extends PWBObject
 		$this->$index=&$this->__children[$index]->component;
 	}
     function stopAndCall(&$component) {
-    	$component->app =& $this->app;
-        $component->createView();
-		$this->replaceView($component);
     	$this->holder->hold($component);
+    	$this->replaceView($component);
         $component->start();
     }
-
+	function dettachView(){
+		$this->view->parent->remove_child($this->view);	
+	}
 	function invalid_callback($callback) {
 		$app =& $this->application();
 		$app->invalid_callback($callback);
@@ -192,25 +200,27 @@ class Component extends PWBObject
 		$this->view->controller =& $this;
     }
 	function viewUpdated ($params){}
-/*	function &createView($viewClass){
-		$ks = array_keys($this->__children);
-		foreach ($ks as $key){
-			$comp =& $this->component_at($key);
-			$this->view->append_child($comp->createView($viewClass));
-			$v =& $comp->view;
-		}
-		return $this->view;
-	}*/
-	function &createView(){
+	function &createDefaultView(){
 		return new HTMLRendererNew;
 		//$this->app->viewCreator->createView($this->parent);
 	}
+	function &createView(&$parentView){
+		if (!$this->view) {
+			return $this->app->viewCreator->createView($parentView, $this);
+		} else {
+			return $this->view; 
+		} 
+	}
 	function replaceView(&$other){
-		$p =& $this->view->parent();
-		$p->replace_child(
-					$this->view, 
-					$other->view
-			);
+    	$other->setApp($this->app);
+    	$this->createContainer();
+        $other->createView($this->view->parent);
+	}
+	function createContainer(){
+    	$pos = $this->view->parentPosition;
+    	$cont =& new HTMLContainer;
+    	$cont->id=$this->getSimpleID();
+    	$this->view->parent->insert_in($cont, $pos);
 	}
 	function getId(){
 		return $this->holder->getId();

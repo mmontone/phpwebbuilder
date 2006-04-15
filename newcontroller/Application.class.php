@@ -48,6 +48,7 @@ class Application extends ComponentHolder
 
 	function start() {
 		$this->component->start();
+		$this->component->setApp($this);
 	}
 
     function &instance() {
@@ -100,9 +101,11 @@ class Application extends ComponentHolder
 	}
 	function createView(){
 		$this->viewCreator =& new ViewCreator($this); 
+		$this->loadTemplates();
 		$this->viewCreator->createView(new HTMLRendererNew, $this->component);
 		$this->wholeView =& $this->component->view;
-	} 
+	}
+	function loadTemplates(){}
    	function run() {
 	  $this->start();
 	  $this->createView();
