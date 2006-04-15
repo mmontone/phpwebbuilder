@@ -21,15 +21,19 @@ class ViewCreator {
 
 		/* First: Check if there's already an item with our id 
 		 */
-
-		$ids =& $parentView->childrenWithId($component->getSimpleId());
+		$ids = $parentView->childrenWithId(
+				$component->getSimpleId()
+			);
 		if (count($ids)>0){
-			if (!$ids[0]->isContainer()){
-				$component->setView($ids[0]);
-				return $ids[0];
+			$id =& array_pop($ids);
+/*			echo $component->getSimpleId() ."returned ";
+			print_r($ids);*/
+			if (!$id->isContainer()){
+				$component->setView($id);
+				return $id;
 			} else {
 				$view =& $this->createTemplate($component);
-				$parentView->replace_child($ids[0], $view);
+				$parentView->replace_child($id, $view);
 				return $view;
 			}
 		}
@@ -54,10 +58,16 @@ dentro del template del padre.*/
 /*- Se crea una vista default para el elemento.*/
 	}
 	function &templatesForClass(&$component){
-		return array($this->defaultTemplate($component));
+		$res = array_filter($this->templates, 
+			create_function('$t', 
+				'return $t->isTemplateForClass("'.get_class($component).'");'
+				)
+			);
+		array_push($res, $this->defaultTemplate($component));	
+		return $res;
 	}
 	function &defaultTemplate(&$component){
-		return $component->createView();
+		return $component->createDefaultView();
 	}
 }
 ?>
