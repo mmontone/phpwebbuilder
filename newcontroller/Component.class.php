@@ -94,6 +94,7 @@ class Component extends PWBObject
 	function add_component(&$component, $index=null) {
 		if ($index===null){$index = count($this->__children);}
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
+		$component->setApp($this->app);
 	}
 
 	function &component_at($index) {
@@ -205,7 +206,7 @@ class Component extends PWBObject
 		//$this->app->viewCreator->createView($this->parent);
 	}
 	function &createView(&$parentView){
-		if (!$this->view) {
+		if ($this->view==null) {
 			return $this->app->viewCreator->createView($parentView, $this);
 		} else {
 			return $this->view; 

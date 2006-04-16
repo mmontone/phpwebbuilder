@@ -20,6 +20,7 @@ class ActionLink extends FormComponent{
 		$link->append_child($l);
 	}
 	function prepareToRender(){
+		parent::prepareToRender();
 		$link =& $this->view;
 		$link->setAttribute('onclick', 'callAction(&#34;'.$this->getId().'&#34;);');
 		$link->setAttribute('href', 'javascript:callAction(&#34;'.$this->getId().'&#34;);');

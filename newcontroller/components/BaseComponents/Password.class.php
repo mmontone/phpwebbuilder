@@ -18,6 +18,12 @@ class Password extends FormComponent{
 		$in =& $this->view;
 		$in->setAttribute('value', $val);
 	}
+	function prepareToRender(){
+		parent::prepareToRender();
+		$this->value="";
+		$in =& $this->view;
+		$in->setAttribute('value', "");
+	}
 }
 
 ?>
