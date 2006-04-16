@@ -86,7 +86,6 @@ class NewActionDispatcher
 		$fs = array_merge($elems, $delayed);
 		$ks = array_keys($fs);
 		foreach ($ks as $k){
-			echo "<br/>sending " .get_class($fs[$k][0]) . " ".$fs[$k][1];
 			$fs[$k][0]->viewUpdated($fs[$k][1]);
 		}
 		
