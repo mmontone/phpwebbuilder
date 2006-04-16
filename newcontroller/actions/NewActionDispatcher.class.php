@@ -77,28 +77,35 @@ class NewActionDispatcher
 			$temp = array();
 			$temp[]=& $this->getComponent($dir);
 			$temp[]= $param;
+			$temp[]= $dir;
 			if ($param=="execute"){
 				$delayed[]=$temp;
 			} else {
 				$elems[]=$temp;
 			}
 		}
-		$fs = array_merge($elems, $delayed);
-		$ks = array_keys($fs);
+		$ks = array_keys($elems);
 		foreach ($ks as $k){
-			$fs[$k][0]->viewUpdated($fs[$k][1]);
+//			echo "<br/>".get_class($elems[$k][0])." with id ".$elems[$k][2]. " is getting ".$elems[$k][1];
+			$elems[$k][0]->viewUpdated($elems[$k][1]);
 		}
-		
-		
+//		echo "<br/>".get_class($delayed[0][0])." with id ".$delayed[0][2]." is executing";
+		$delayed[0][0]->viewUpdated("execute");
 	}
 	function &getComponent($path){		
 		$app =& Application::instance();
 		$comp=& $app->component;
 		$path = split("/", $path);
 		array_shift($path);
+//		echo "<br/>"."using path ".print_r($path, TRUE);
 		foreach($path as $p){
-			if ($comp ==null) echo $p;
-			$comp =& $comp->component_at($p);
+			$comp1 =& $comp->component_at($p);
+//			echo "<br/>".get_class($comp1)." is subelement ". $p;
+			if ($comp1 == null) {
+				echo "<br/>".$p ." does not exist";
+				print_r(array_keys($comp->__children));
+			}
+			$comp =& $comp1;
 		}
 		return $comp; 
 	}
