@@ -229,6 +229,7 @@ class Component extends PWBObject
 		return $this->holder->getSimpleId();
 	}
 	function prepareToRender(){
+		$this->createView($this->holder->parent->view);
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->component_at($key);

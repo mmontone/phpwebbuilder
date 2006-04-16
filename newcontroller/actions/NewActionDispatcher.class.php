@@ -2,21 +2,6 @@
 
 class NewActionDispatcher
 {
-	function is_action_parameter($request_parameter) {
-		return preg_match('/^p_/' , $request_parameter) ;
-	}
-
-	function collect_params() {
-		$param_keys = array_keys($_REQUEST);
-		$param_keys = array_filter($param_keys, array($this, 'is_action_parameter'));
-		$params = array();
-		foreach ($param_keys as $param_key) {
-			$new_param_key = preg_replace('/^p_/',  '', $param_key);
-			$params[$new_param_key] = $_REQUEST[$param_key];
-		}
-		return $params;
-	}
-
 	function &application() {
 		return Application::instance();
 	}
@@ -87,20 +72,27 @@ class NewActionDispatcher
 		unset($form["PHPSESSID"]);
 		unset($form["ControllerSubmit"]);
 		$delayed=array();
+		$elems = array();
 		foreach ($form as $dir=>$param){
+			$temp = array();
+			$temp[]=& $this->getComponent($dir);
+			$temp[]= $param;
 			if ($param=="execute"){
-				$delayed[$dir]=$param;
+				$delayed[]=$temp;
 			} else {
-				$this->dispatchTo($dir, $param);
+				$elems[]=$temp;
 			}
 		}
-		foreach ($delayed as $dir=>$param){
-			$this->dispatchTo($dir, $param);
+		$fs = array_merge($elems, $delayed);
+		$ks = array_keys($fs);
+		foreach ($ks as $k){
+			echo "<br/>sending " .get_class($fs[$k][0]) . " ".$fs[$k][1];
+			$fs[$k][0]->viewUpdated($fs[$k][1]);
 		}
 		
 		
 	}
-	function dispatchTo($path, $param){
+	function &getComponent($path){		
 		$app =& Application::instance();
 		$comp=& $app->component;
 		$path = split("/", $path);
@@ -109,8 +101,7 @@ class NewActionDispatcher
 			if ($comp ==null) echo $p;
 			$comp =& $comp->component_at($p);
 		}
-		if (!$comp) backtrace();
-		$comp->viewUpdated($param);
+		return $comp; 
 	}
 }
 
