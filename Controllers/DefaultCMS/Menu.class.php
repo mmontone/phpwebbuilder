@@ -18,9 +18,8 @@ class Menu extends Component
 	}
 	function menus (){
 			$menus = MenuSection::availableMenus();
-			$ret ="";
 			foreach ($menus as $m) {
-			    $ret .= "<h4>".$m->name->value."</h4><ul>";
+			    $this->add_component(new Text("<h4>".$m->name->value."</h4><ul>"));
 			    $col = $m->itemsVisible();
 			    foreach($col as $menu){
 					$ret .= $this->additem(
@@ -31,15 +30,15 @@ class Menu extends Component
 						$menu->name->value);
 	
 		    	}
-		    	$ret .="</ul>";
+		    	$this->add_component(new Text("</ul>"));
 			}
 			$arr = get_subclasses("PersistentObject");
-			$ret .= "<ul>";
+			$this->add_component(new Text("<ul>"));
 			foreach ($arr as $name){
 				if (fHasPermission($_SESSION[sitename]["id"], array("*","$name=>Menu")))
 					$ret .= $this->addelement($name, $name); 
 			}
-			$ret .= "</ul>";
+			$this->add_component(new Text("</ul>"));
 			$this->rendered = $ret;
 	}
 	function addelement($obj, $text) {

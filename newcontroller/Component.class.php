@@ -152,9 +152,6 @@ class Component extends PWBObject
 	}
 	function callback($callback=null, $parameters=array()) {
 		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
-		$v =& $this->view->parent;
-		$this->replaceView($this->listener);
-		//$v->childNodes=array();
         if ($callback == null) {
 			$this->holder->hold($this->listener);
 		}
@@ -167,6 +164,7 @@ class Component extends PWBObject
 				$this->registered_callbacks[$callback]->call($parameters);
 			}
 		}
+		$this->replaceView($this->listener);
 	}
 	function hasPermission($form){
 		$id = $_SESSION[sitename]["id"];
@@ -202,35 +200,42 @@ class Component extends PWBObject
     }
 	function viewUpdated ($params){}
 	function &createDefaultView(){
-		return new HTMLRendererNew;
-		//$this->app->viewCreator->createView($this->parent);
+		$v =& new HTMLRendererNew;
+		$ks = array_keys($this->__children);
+		foreach ($ks as $key){
+			$v->append_child($this->$key->myContainer());
+		}		
+		return $v;
 	}
 	function &createView(&$parentView){
-		if ($this->view==null) {
-			return $this->app->viewCreator->createView($parentView, $this);
-		} else {
-			return $this->view; 
-		} 
+		return $this->app->viewCreator->createView($parentView, $this);
 	}
 	function replaceView(&$other){
     	$other->setApp($this->app);
     	$this->createContainer();
-        $other->createView($this->view->parent);
+        $other->createView($this->parentView());
 	}
 	function createContainer(){
-    	$pos = $this->view->parentPosition;
-    	$cont =& new HTMLContainer;
+    	$cont=& $this->myContainer();
+    	$pv =& $this->parentView(); 
+    	$pv->replace_child($this->view, $cont);
+	}
+	function &myContainer(){
+		$cont =& new HTMLContainer;
     	$cont->id=$this->getSimpleID();
-    	$this->view->parent->insert_in($cont, $pos);
+    	return $cont; 
 	}
 	function getId(){
 		return $this->holder->getId();
+	}
+	function &parentView(){
+		return $this->holder->view();  
 	}
 	function getSimpleId(){
 		return $this->holder->getSimpleId();
 	}
 	function prepareToRender(){
-		$this->createView($this->holder->parent->view);
+		$this->createView($this->parentView());
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->component_at($key);

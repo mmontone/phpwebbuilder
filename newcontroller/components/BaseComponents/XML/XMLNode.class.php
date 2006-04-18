@@ -81,7 +81,9 @@ class XMLNode {
 			$childs = "";
 			$ks = array_keys($this->childNodes);
 			foreach($ks as $k){
-				$childs .=$this->childNodes[$k]->render();
+				if (get_class($this->childNodes[$k])==stdClass) $childs .=print_r(array_keys($this->childNodes[$k]));
+				else
+					$childs .=$this->childNodes[$k]->render();
 			}
 			$childs = str_replace("\n", "\n   ", $childs);
 			$ret .="\n<$this->tagName $attrs>".$childs."\n</$this->tagName>";

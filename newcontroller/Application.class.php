@@ -87,23 +87,22 @@ class Application extends ComponentHolder
 	function render_action_link(&$action) {
 		return $this->url_manager->render_action_link($action);
 	}
-/*
-	function render() {
-		$html =& new HtmlRenderer();
-		$this->component->render_on($html);
-		echo $html->render();
-	}
-*/	
 	function render() {
 		$this->component->prepareToRender();
-		echo $this->wholeView->renderPage();
-		echo $this->wholeView->showXML();
+		$v =& $this->wholeView;
+		echo $v->renderPage();
+		echo $v->showXML();
 	}
 	function createView(){
 		$this->viewCreator =& new ViewCreator($this); 
 		$this->loadTemplates();
-		$this->viewCreator->createView(new HTMLRendererNew, $this->component);
-		$this->wholeView =& $this->component->view;
+		$this->wholeView =& new HTMLRendererNew;
+		$this->wholeView->controller =& $this;
+		$this->wholeView->append_child($this->component->myContainer());
+		$this->viewCreator->createView($this->wholeView, $this->component);
+	}
+	function &view(){
+		return $this->wholeView;  
 	}
 	function loadTemplates(){}
    	function run() {

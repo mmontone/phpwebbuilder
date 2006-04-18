@@ -39,23 +39,17 @@ class HTMLRendererNew extends XMLNode{
 			create_function('$c', 
 				'return $c->isTemplateForClass("'.$class.'");'));
 	}
+	function containersForClass($class){
+		return array_filter($this->childNodes, 
+			create_function('$c', 
+				'return $c->isContainerForClass("'.$class.'");'));
+	}
 	function isTemplateForClass($class){
 		return false;
 	}
 	function isContainer(){
 		return false;
 	}
-}
-
-class HtmlTextNode extends HTMLRendererNew{
-	var $text;
-	function HtmlTextNode($text,&$obj){
-		$this->text = $text;
-		$this->controller =&$obj;
-	}
-	function render (){
-		return $this->text; 
-	} 
 }
 
 ?>

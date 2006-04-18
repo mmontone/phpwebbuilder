@@ -96,8 +96,8 @@ function backtrace_string($error) {
     $back_trace = debug_backtrace();
     $ret = "<h1>$error</h1>";
     foreach ($back_trace as $trace) {
-        $ret .= "<b> {$trace['file']}: {$trace['line']} ({$trace['function']})</b>" .
-        		print_r($trace['args'], TRUE)."</br>";
+        $ret .= "<br/><b> {$trace['file']}: {$trace['line']} ({$trace['function']})</b>";
+        		//$ret .= print_r($trace['args'], TRUE);
     }
     return $ret;
 }

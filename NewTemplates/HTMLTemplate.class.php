@@ -32,8 +32,8 @@ class HTMLTemplate extends HTMLRendererNew{
 
 class HTMLContainer extends HTMLRendererNew{
 	function render (){
-		return ""; 
-	} 
+		return "<container id=\"".$this->id."\"/>"; 
+	}
 	function isContainer(){
 		return true;
 	}
