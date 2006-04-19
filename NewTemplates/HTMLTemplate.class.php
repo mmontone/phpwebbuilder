@@ -18,7 +18,7 @@ class HTMLTemplate extends HTMLRendererNew{
 			$temp =& new HTMLRendererNew;
 		}
 		foreach ($html->childNodes as $c){
-			$temp->append_child($this->html2template($c));
+			$temp->append_child($this->xml2template($c));
 		}
 		$temp->id = $html->id;
 		$temp->attributes = $html->attributes;

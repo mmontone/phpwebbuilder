@@ -91,7 +91,7 @@ class Application extends ComponentHolder
 		$this->component->prepareToRender();
 		$v =& $this->wholeView;
 		echo $v->renderPage();
-		echo $v->showXML();
+		//echo $v->showXML();
 	}
 	function createView(){
 		$this->viewCreator =& new ViewCreator($this); 

@@ -12,8 +12,19 @@ class Menu extends Component
 		$this->menus(); 
 	}
 	function newmenu (){
-		$this->__children=array();
+		$ks = array_keys($this->__children);
+		foreach ($ks as $k){
+			$this->delete_component($k);
+		}
+		echo "items: ".count($this->__children);		
 		$this->initialize();
+		echo "items: ".count($this->__children);
+		
+	}
+	function prepateToRender(){
+		echo "preparing menu";
+		parent::prepateToRender();
+		echo "menu prepared";
 	}
 	function menus (){
 			$menus = MenuSection::availableMenus();

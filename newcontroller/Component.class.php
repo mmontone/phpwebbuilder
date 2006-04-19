@@ -96,7 +96,10 @@ class Component extends PWBObject
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 		$component->setApp($this->app);
 	}
-
+	function delete_component($index){
+		$this->view->remove_child($this->__children[$index]->component->view);
+		unset($this->__children[$index]);
+	}
 	function &component_at($index) {
 		$holder =& $this->__children[$index];
 		return $holder->component;
