@@ -13,6 +13,6 @@ TODO:
 
 - Template parsing from XML
 - A function to parse a text and create the corresponding template for an element.
-- Divide positioning and templateing in the view creator.
+- Separate positioning and templating in the view creator.
 - Make that Templates act as Containers for the class
 - Make sure we're using the most particular template for the class (sort them).

@@ -39,7 +39,10 @@ class XMLNode {
 		$xml->parentPosition = $position;
 	}
 	function replace_child(&$old, &$new){
-		$this->insert_in($new, $old->parentChild);
+		$this->insert_in($new, $old->parentPosition);
+		$n = null;
+		$old->parent =& $n;
+		$old->parentPosition =& $n;
 	}
 	function remove_child(&$old){
 		$pos = $old->parentPosition;
@@ -51,7 +54,7 @@ class XMLNode {
 	}
 	function insert_before(&$old, &$new){
 		$pos = $old->parentPosition;
-		for($i=count($this->childNodes); $i>=$pos; $i--){
+		for($i=count($this->childNodes); $i>$pos; $i--){
 			$this->insert_in($this->childNodes[$i-1], $i);
 		}
 		$this->insert_in($new, $pos);
@@ -81,9 +84,7 @@ class XMLNode {
 			$childs = "";
 			$ks = array_keys($this->childNodes);
 			foreach($ks as $k){
-				if (get_class($this->childNodes[$k])==stdClass) $childs .=print_r(array_keys($this->childNodes[$k]));
-				else
-					$childs .=$this->childNodes[$k]->render();
+				$childs .=$this->childNodes[$k]->render();
 			}
 			$childs = str_replace("\n", "\n   ", $childs);
 			$ret .="\n<$this->tagName $attrs>".$childs."\n</$this->tagName>";

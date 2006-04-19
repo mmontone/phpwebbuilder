@@ -25,9 +25,14 @@ class HTMLTemplate extends HTMLRendererNew{
 		$temp->tagName = $html->tagName;
 		return $temp; 
 	} 
-	function isTemplateForClass($class){
-		return strcasecmp($this->attributes["class"],$class)==0;
+	function isTemplateForClass(&$component){
+		$b = is_a($component, $this->attributes["class"]);
+		return $b;
 	}
+	function isContainerForClass(&$component){
+		return is_a($component, $this->attributes["class"]);
+	}	
+	
 }
 
 class HTMLContainer extends HTMLRendererNew{
@@ -37,7 +42,12 @@ class HTMLContainer extends HTMLRendererNew{
 	function isContainer(){
 		return true;
 	}
-	
+	function isContainerForClass(&$component){		
+		return is_a($component, $this->attributes["class"]);
+	}
+	function createCopy(){
+		return new HTMLContainer; 
+	}	
 }
 
 ?>

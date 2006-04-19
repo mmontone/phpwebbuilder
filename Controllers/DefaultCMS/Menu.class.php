@@ -7,8 +7,7 @@ class Menu extends Component
 		return array('menuclick');
 	}
 	function initialize(){
-		$this->add_component(new Text('<p>Management</p>
-		  <p>User: '.$_SESSION[sitename]["Username"].'</p>'));  
+		$this->add_component(new Text('<p>Management</p><p>User: '.$_SESSION[sitename]["Username"].'</p>'));  
 		$this->additem(array('Controller'=>'Logout'),'<img src="'.icons_url .'stock_exit.png" alt="Logout"/>');
 		$this->menus(); 
 	}

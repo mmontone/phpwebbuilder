@@ -14,7 +14,7 @@ class ComponentHolder
 	   $this->hold($component);
 	}
 	function &view(){
-		return $this->component->view;  
+		return $this->parent->view;  
 	}
 	function owner_index() {
 		return $this->__owner_index;

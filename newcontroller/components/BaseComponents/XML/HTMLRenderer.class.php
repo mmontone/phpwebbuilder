@@ -29,26 +29,51 @@ class HTMLRendererNew extends XMLNode{
 	function &create_text_node($text,&$obj){
 		return new HtmlTextNode($text,&$obj);
 	}
-	function childrenWithId($id){
-		return array_filter($this->childNodes, 
-			create_function('$c', 
-				'return $c->id=='.$id.';'));	
+	function &childrenWithId($id){
+		$res = array();
+		$ks = array_keys ($this->childNodes);
+		foreach ($ks as $k){
+			$t =& $this->childNodes[$k];
+			if ($t->hasId($id)){
+				$res[]=&$t;
+			}
+		}
+		return $res;
 	}
-	function templatesForClass($class){
-		return array_filter($this->childNodes, 
-			create_function('$c', 
-				'return $c->isTemplateForClass("'.$class.'");'));
+	function &templatesForClass(&$component){
+		$res = array();
+		$ks = array_keys ($this->childNodes);
+		foreach ($ks as $k){
+			$t =& $this->childNodes[$k];
+			if ($t->isTemplateForClass($component)){
+				$res[]=&$t;
+			}
+		}
+		return $res;
 	}
-	function containersForClass($class){
-		return array_filter($this->childNodes, 
-			create_function('$c', 
-				'return $c->isContainerForClass("'.$class.'");'));
+	function &containersForClass(&$component){
+		$res = array();
+		$ks = array_keys ($this->childNodes);
+		foreach ($ks as $k){
+			$t =& $this->childNodes[$k];
+			if ($t->isContainerForClass($component)){
+				$res[]=&$t;
+			}
+		}
+		return $res;
 	}
-	function isTemplateForClass($class){
+	function isTemplateForClass(&$component){
+		return false;
+	}
+	function isContainerForClass(&$component){
 		return false;
 	}
 	function isContainer(){
 		return false;
+	}
+	function hasId($id){
+		$b = ($this->id!==null && $this->id == $id);
+		return $b; 
 	}
 }
 

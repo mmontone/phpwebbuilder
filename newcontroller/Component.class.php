@@ -139,8 +139,8 @@ class Component extends PWBObject
 		$this->$index=&$this->__children[$index]->component;
 	}
     function stopAndCall(&$component) {
-    	$this->holder->hold($component);
     	$this->replaceView($component);
+    	$this->holder->hold($component);
         $component->start();
     }
 	function dettachView(){
@@ -152,6 +152,7 @@ class Component extends PWBObject
 	}
 	function callback($callback=null, $parameters=array()) {
 		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
+		$this->replaceView($this->listener);
         if ($callback == null) {
 			$this->holder->hold($this->listener);
 		}
@@ -164,7 +165,6 @@ class Component extends PWBObject
 				$this->registered_callbacks[$callback]->call($parameters);
 			}
 		}
-		$this->replaceView($this->listener);
 	}
 	function hasPermission($form){
 		$id = $_SESSION[sitename]["id"];
@@ -213,11 +213,10 @@ class Component extends PWBObject
 	function replaceView(&$other){
     	$other->setApp($this->app);
     	$this->createContainer();
-        $other->createView($this->parentView());
 	}
 	function createContainer(){
     	$cont=& $this->myContainer();
-    	$pv =& $this->parentView(); 
+    	$pv =& $this->parentView();
     	$pv->replace_child($this->view, $cont);
 	}
 	function &myContainer(){
