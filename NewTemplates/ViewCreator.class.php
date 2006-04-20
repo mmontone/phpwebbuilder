@@ -6,7 +6,22 @@ class ViewCreator {
 	function ViewCreator(&$app){
 		$this->app =& $app;
 	}
-	function setTemplates($templates){
+	function parseTemplates ($files){
+		$p =& new XMLParser;
+		$xs = array();
+		foreach($files as $f){
+			$x = file_get_contents($f);
+			$xml =& $p->parse($x);
+			$xs =& array_merge($xs, $xml->childNodes);
+		}
+		$tps = array();
+		$tpr =& new HTMLTemplate(); 
+		foreach($xs as $x){
+			$tps[]=&$tpr->xml2template($x);
+		}
+		$this->setTemplates($tps);
+	}
+	function setTemplates(&$templates){
 		$this->templates =& $templates;
 	}
 	function &createView(&$parentView, &$component){
@@ -76,7 +91,7 @@ class ViewCreator {
 	}
 	function &createTemplate(&$component){
 		$tps =& $this->templatesForClass($component);
-		$tp = array_shift($tps);
+		$tp =& array_shift($tps);
 		return $tp->instantiateFor($component);
 	}
 	function &templatesForClass(&$component){
@@ -86,9 +101,9 @@ class ViewCreator {
 			$t =& $this->templates[$k];
 			if ($t->isTemplateForClass($component)){
 				$res[]=&$t;
-			}
+			} 
 		}
-		array_push($res, $this->defaultTemplate($component));
+		$res[]=& $this->defaultTemplate($component);
 		return $res;
 	}
 	function &defaultTemplate(&$component){

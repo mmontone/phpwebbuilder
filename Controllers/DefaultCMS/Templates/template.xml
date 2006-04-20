@@ -1,15 +1,13 @@
 <templates>
 	<template class="Menu">
-	  CMS
-		<template class="MenuItem">
+		CMS loco
+		<template class="ActionLink">
 			<a href="algo"><container id="linkName"/></a>
 		</template>
 	</template>
 	<template class="Login">
-	    Ingrese su nombre de usuario y contraseña:
-	     Username:
 	     <input type="text" name="username" id="username" />
-	     Password:
+	    Ingrese su nombre de usuario y contrasena:
 	     <input type="password" name="password" id="password" />
 	</template>
 </templates>

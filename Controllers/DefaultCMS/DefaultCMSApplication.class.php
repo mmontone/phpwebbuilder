@@ -5,7 +5,8 @@ class DefaultCMSApplication extends Application{
  		return new DefaultCMS;
  	}
  	function loadTemplates (){
- 		$temp=& new HTMLTemplate;
+ 		$this->viewCreator->parseTemplates(array(pwbdir."/Controllers/DefaultCMS/Templates/template.xml"));
+/* 		$temp=& new HTMLTemplate;
  		$temp->setAttribute("class", "Menu");
  		$menu=& new HTMLRendererNew;
  		$menu->setAttribute("style", "min-width:25%;float:left");
@@ -15,7 +16,7 @@ class DefaultCMSApplication extends Application{
  		$link->setAttribute('class','Component');
  		$menu->append_child($link);
  		
- 		$this->viewCreator->setTemplates(array($temp));
+ 		$this->viewCreator->setTemplates(array($temp));*/
  	}
 }
 

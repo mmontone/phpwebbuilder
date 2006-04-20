@@ -47,7 +47,7 @@ class XMLNode {
 	function remove_child(&$old){
 		$pos = $old->parentPosition;
 		$last =count($this->childNodes)-1; 
-		for($i=$last ; $i>=$pos; $i--){
+		for($i=$last ; $i>$pos; $i--){
 			$this->insert_in($this->childNodes[$i], $i-1);
 		}
 		unset($this->childNodes[$last]);
@@ -67,7 +67,7 @@ class XMLNode {
 		return $this->id = $id; 
 	} 
 	function getRealId(){
-		if (!$this->controller) backtrace();
+		if (!$this->controller) return "";
 		return $this->controller->getId(); 
 	}
 	function render(){

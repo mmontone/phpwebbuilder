@@ -16,15 +16,11 @@ class Menu extends Component
 		foreach ($ks as $k){
 			$this->delete_component($k);
 		}
-		echo "items: ".count($this->__children);		
 		$this->initialize();
-		echo "items: ".count($this->__children);
-		
 	}
-	function prepateToRender(){
-		echo "preparing menu";
-		parent::prepateToRender();
-		echo "menu prepared";
+	function prepareToRender(){
+		echo "preparing to render";		
+		parent::prepareToRender();
 	}
 	function menus (){
 			$menus = MenuSection::availableMenus();

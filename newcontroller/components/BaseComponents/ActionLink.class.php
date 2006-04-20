@@ -12,11 +12,13 @@ class ActionLink extends FormComponent{
 		$this->act=$act; 
 		$this->link = $link;
 		$this->params = $params;
+		$this->add_component(new Text($link), "linkName");		
 	}
 	function createNode(){
 		$link =& $this->view;
 		$link->setTagName('a');
 		$l =& $this->view->create_text_node($this->link, $this);
+		$l->controller =& $this->linkName;
 		$link->append_child($l);
 	}
 	function prepareToRender(){
