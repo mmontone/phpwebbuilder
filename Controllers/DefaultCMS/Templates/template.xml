@@ -1,6 +1,9 @@
 <templates>
  	<template class="Menu">
- 		<div style="float:left">
+ 		<div style="float:left;
+ 				background-color:#DFDFDF;
+ 				max-width:25%;
+ 				border:thin inset #000000">
 		<container id="SiteName"/> CMS
 		<br/>
 		User: <container id="username"/>
@@ -16,14 +19,12 @@
 		</div>
 	</template>
 	<template class="Login">
-	<div>
-	<table><tbody>
+	<table style="background-color:#EFEFEF;border:thin outset #000000;"><tbody>
 		<tr><td colspan="2">Ingrese su nombre de usuario y contrasena:</td></tr>
 		<tr><td>Nombre de Usuario: <td></td> <input type="text" id="username" /></td></tr>
 		<tr><td>Contrasenia: <td></td> <input type="password" id="password" /></td></tr>
 		<tr><td><container id="status"/></td></tr>
 		<tr><td><td></td><input type="button" id="login" value="Entrar"/></td></tr>
 	</tbody></table>
-     </div>
 	</template>  
 </templates>
