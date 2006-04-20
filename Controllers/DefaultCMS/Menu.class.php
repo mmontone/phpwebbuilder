@@ -7,6 +7,8 @@ class Menu extends Component
 		return array('menuclick');
 	}
 	function initialize(){
+		$this->add_component(new Text($_SESSION[sitename]["Username"]), "username");		
+		$this->add_component(new Text(sitename), "SiteName");
 		$this->add_component(new Text('<p>Management</p><p>User: '.$_SESSION[sitename]["Username"].'</p>'));  
 		$this->additem(array('Controller'=>'Logout'),'<img src="'.icons_url .'stock_exit.png" alt="Logout"/>');
 		$this->menus(); 
@@ -17,10 +19,6 @@ class Menu extends Component
 			$this->delete_component($k);
 		}
 		$this->initialize();
-	}
-	function prepareToRender(){
-		echo "preparing to render";		
-		parent::prepareToRender();
 	}
 	function menus (){
 			$menus = MenuSection::availableMenus();
@@ -51,14 +49,26 @@ class Menu extends Component
   		return $this->additem(array("Controller"=>"ShowController","ObjType"=>$obj,"Action"=>"List"), $text);
 	}
 	function additem($con, $text){
-		$this->add_component(new Text('<li>'));
-		$this->add_component(new ActionLink($this, 'menuclick', $text, $con));
-		$this->add_component(new Text('</li>'));
+		$this->add_component(new MenuItemComponent($this, $text, $con));		
 	}
 	function menuclick($params){
 		$this->triggerEvent('menuClicked', $params);
 	}
 
+}
+
+class MenuItemComponent extends Component{
+	var $menu, $text, $item;
+	function MenuItemComponent (&$menu, $text, &$item){
+		$this->menu =& $menu;
+		$this->text = $text;
+		$this->item =& $item;
+		parent::Component();
+	}
+	function declare_actions(){}
+	function initialize(){ 
+		$this->add_component(new ActionLink($this->menu, 'menuclick', $this->text, $this->item), "link");
+	}
 }
 
 ?>

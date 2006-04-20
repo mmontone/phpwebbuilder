@@ -49,7 +49,7 @@ class ViewCreator {
 		 * - Else create the view and position it.
 		 * */
 		$view  =& $component->view;
-		$hasView = $view!=null;
+		$hasView = $view!=null && strcasecmp(get_class($view),"NullView")!=0;
 		if ($hasView){
 			if ($view->parent != null) return $view; 
 		}
@@ -57,7 +57,7 @@ class ViewCreator {
 				$component->getSimpleId()
 			);
 		if (count($vids)>0){
-			$vid =& array_pop($vids);
+			$vid =& $vids[0];
 			if (!$vid->isContainer()){
 				$component->setView($vid);
 				return $vid;
@@ -65,9 +65,9 @@ class ViewCreator {
 				$pos =& $vid;
 			}
 		} else {
-			$cts = $parentView->containersForClass($component);
+			$cts =& $parentView->containersForClass($component);
 			if (count($cts)>0){
-				$ct =& array_shift($cts);
+				$ct =& $cts[0];
 				$pos =& $ct->createCopy();
 				$parentView->insert_before($ct, $pos);
 			} else {
@@ -75,11 +75,11 @@ class ViewCreator {
 				$component->setView($v);
 				return $v;
 			}
-		}
+		}		
 		if (!$hasView) {
 			$tps =& $parentView->templatesForClass($component);
 			if (count($tps)>0){
-				$tp0 =& array_shift($tps);
+				$tp0 =& $tps[0];
 				$tp =& $tp0->instantiateFor($component);
 			} else {
 				$tp =& $this->createTemplate($component);
@@ -91,7 +91,7 @@ class ViewCreator {
 	}
 	function &createTemplate(&$component){
 		$tps =& $this->templatesForClass($component);
-		$tp =& array_shift($tps);
+		$tp =& $tps[0];
 		return $tp->instantiateFor($component);
 	}
 	function &templatesForClass(&$component){

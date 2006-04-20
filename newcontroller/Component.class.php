@@ -224,7 +224,7 @@ class Component extends PWBObject
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;
-    	$cont->id=$this->getSimpleID();
+    	$cont->setAttribute('id',$this->getSimpleID());
     	return $cont; 
 	}
 	function getId(){

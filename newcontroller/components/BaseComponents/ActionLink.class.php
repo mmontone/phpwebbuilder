@@ -17,7 +17,7 @@ class ActionLink extends FormComponent{
 	function createNode(){
 		$link =& $this->view;
 		$link->setTagName('a');
-		$l =& $this->view->create_text_node($this->link, $this);
+		$l =& $link->create_text_node($this->link, $this);
 		$l->controller =& $this->linkName;
 		$link->append_child($l);
 	}

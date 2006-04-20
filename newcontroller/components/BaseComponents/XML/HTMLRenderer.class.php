@@ -72,7 +72,7 @@ class HTMLRendererNew extends XMLNode{
 		return false;
 	}
 	function hasId($id){
-		$b = ($this->id!==null && $this->id == $id);
+		$b = ($this->attributes["id"]!==null && strcasecmp($this->attributes["id"],$id)==0);
 		return $b; 
 	}
 }

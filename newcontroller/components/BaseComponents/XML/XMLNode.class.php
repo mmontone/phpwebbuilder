@@ -64,16 +64,18 @@ class XMLNode {
 		$this->attributes[$name] = $val;
 	}
 	function setId($id) {
-		return $this->id = $id; 
+		$this->setAttribute('id', $id);
 	} 
 	function getRealId(){
-		if (!$this->controller) return "";
-		return $this->controller->getId(); 
+		if ($this->controller!=null) {
+			$id = $this->controller->getId();			
+			$this->setAttribute('id', $id); 
+			$this->setAttribute('name', $id);
+		} 
 	}
 	function render(){
-		$id = $this->getRealId();
-		$attrs='id="'.$id.'"';
-		$attrs.=' name="'.$id.'"';
+		$this->getRealId();
+		$attrs ="";
 		foreach ($this->attributes as $name=>$val){
 			$attrs .= ' '.$name.'="'.$val.'"';
 		}

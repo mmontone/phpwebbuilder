@@ -4,8 +4,9 @@ class HTMLTemplate extends HTMLRendererNew{
 	function &instantiateFor(&$component){
 		if (count($this->childNodes)!=1){
 			$tv =& new HTMLRendererNew;
-			foreach($this->childNodes as $c){
-				$tv->append_child($c);
+			foreach($this->childNodes as $k =>$h){
+				$t =& $this->xml2template($h);
+				$tv->append_child($t);
 			}
 		} else {
 			$tv = $this->first_child();
@@ -13,15 +14,19 @@ class HTMLTemplate extends HTMLRendererNew{
 		$component->setView($tv);
 		return $tv; 
 	}
+	function render(){
+		return "";
+	}
 	function &xml2template(&$xml){
-		if (strcasecmp($xml->tagName, "template")==0){
+		if (strcasecmp(get_class($xml), "XMLTextNode")==0){
+			$n = null;
+			$tn =& new HTMLTextNode($xml->text, $n);
+			return $tn;
+		} else if (strcasecmp($xml->tagName, "template")==0){
 			$temp =& new HTMLTemplate; 
 		} else if (strcasecmp($xml->tagName, "container")==0){
 			$temp =& new HTMLContainer;
-		} else if (strcasecmp(get_class($xml), "XMLTextNode")==0){
-			$n = null;
-			$temp =& new HTMLTextNode($xml->text, $n);
-		} else {
+		} else  {
 			$temp =& new HTMLRendererNew;
 		}
 		foreach ($xml->childNodes as $c){
@@ -46,7 +51,7 @@ class HTMLTemplate extends HTMLRendererNew{
 
 class HTMLContainer extends HTMLRendererNew{
 	function render (){
-		return "<container id=\"".$this->id."\"/>"; 
+		return ""; 
 	}
 	function isContainer(){
 		return true;

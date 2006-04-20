@@ -7,11 +7,8 @@ class Login extends Component {
 		return array("login_do");
 	}
 	function initialize(){
-			$this->add_component(new Text('<table><tr><td>Username:</td><td>'));
 			$this->add_component(new Input("Username"), "username");
-			$this->add_component(new Text('</td></tr><tr><td>Password:</td><td>'));
 			$this->add_component(new Password("Password"), "password");
-	        $this->add_component(new Text('</td></tr></table>'));  
 			$this->add_component(new ActionLink($this, 'login_do', "Login"), "login");
 			$this->add_component(new Text(''), "status");
 	}
