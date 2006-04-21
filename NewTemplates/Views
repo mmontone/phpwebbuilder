@@ -11,6 +11,5 @@ When a component wants to render:
 	
 TODO:
 
-- Template parsing from XML
 - A function to parse a text and create the corresponding template for an element.
 - Make sure we're using the most particular template for the class (sort them).

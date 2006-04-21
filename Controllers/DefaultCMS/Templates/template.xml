@@ -9,22 +9,25 @@
 		User: <container id="username"/>
 		<template class="MenuItemComponent">
 			<li>
-				 <template class="ActionLink">
-					<a id="link">
-						<container class="Text"/>
-					</a>
-				</template>
+				<template class="ActionLink">
+				    <a href="#" ><container id="linkName2" class="Text"/></a>
+				 </template>
 			</li>
 		</template>
 		</div>
 	</template>
 	<template class="Login">
-	<table style="background-color:#EFEFEF;border:thin outset #000000;"><tbody>
+<!-- 		Ingrese su nombre de usuario y contrasena:<br/>
+		Nombre de Usuario: <input type="text" id="username" /><br/>
+		Contrasenia: <input type="password" id="password" /><br/>
+		<container id="status"/>
+		<input type="button" id="login" value="Entrar"/> -->
+ <table style="background-color:#EFEFEF;border:thin outset #000000;"><tbody>
 		<tr><td colspan="2">Ingrese su nombre de usuario y contrasena:</td></tr>
-		<tr><td>Nombre de Usuario: <td></td> <input type="text" id="username" /></td></tr>
-		<tr><td>Contrasenia: <td></td> <input type="password" id="password" /></td></tr>
+		<tr><td>Nombre de Usuario: </td><td> <input type="text" id="username" /></td></tr>
+		<tr><td>Contrasenia: </td><td> <input type="password" id="password" /></td></tr>
 		<tr><td><container id="status"/></td></tr>
-		<tr><td><td></td><input type="button" id="login" value="Entrar"/></td></tr>
-	</tbody></table>
+		<tr><td></td><td><input type="button" id="login" value="Entrar"/></td></tr>
+	</tbody></table> 
 	</template>  
 </templates>

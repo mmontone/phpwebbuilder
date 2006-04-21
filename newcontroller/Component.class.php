@@ -49,9 +49,7 @@ class Component extends PWBObject
 	function backtrackable_objects() {
 		return array();
 	}
-	function declare_actions() {
-	  $this->subclassResponsibility();
-	}
+	function declare_actions() {}
 
 	function add_decorator(&$decorator) {
 		$this->__decorators[] = $decorator;

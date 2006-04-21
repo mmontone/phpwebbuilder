@@ -63,6 +63,7 @@ class ViewCreator {
 				return $vid;
 			} else {
 				$pos =& $vid;
+				$parentView =& $vid->parent;
 			}
 		} else {
 			$cts =& $parentView->containersForClass($component);

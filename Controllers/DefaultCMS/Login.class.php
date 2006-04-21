@@ -3,9 +3,6 @@
 require_once dirname(__FILE__) . '/../Controller.class.php';
 
 class Login extends Component {
-	function declare_actions(){
-		return array("login_do");
-	}
 	function initialize(){
 			$this->add_component(new Input("Username"), "username");
 			$this->add_component(new Password("Password"), "password");
@@ -13,10 +10,6 @@ class Login extends Component {
 			$this->add_component(new Text(''), "status");
 	}
 	function login_do(){
-		/*echo "<br/>loggin in with ".$this->username->value." and ".$this->password->value;
-		foreach  ($this->username as $n=>$i) {
-			echo ("<br/>".$n ." " .$i);
-		}*/
 		$success =& User::login($this->username->value, $this->password->value); 
 		if ($success){
 			$this->triggerEvent('menuChanged');

@@ -18,7 +18,8 @@ class HTMLTemplate extends HTMLRendererNew{
 		return "";
 	}
 	function &xml2template(&$xml){
-		if (strcasecmp(get_class($xml), "XMLTextNode")==0){
+		if (strcasecmp(get_class($xml), "XMLTextNode")==0 || 
+			strcasecmp(get_class($xml), "HTMLTextNode")==0){
 			$n = null;
 			$tn =& new HTMLTextNode($xml->text, $n);
 			return $tn;
