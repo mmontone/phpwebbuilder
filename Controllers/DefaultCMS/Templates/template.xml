@@ -3,25 +3,24 @@
  		<div style="float:left;
  				background-color:#DFDFDF;
  				max-width:25%;
- 				border:thin inset #000000">
+ 				border:thin inset #000000;
+ 				padding: 10px;
+ 				">
 		<container id="SiteName"/> CMS
 		<br/>
-		User: <container id="username"/>
+		User: <b><container id="username"/></b>
+		<ul style="list-style-type: square">
 		<template class="MenuItemComponent">
 			<li>
 				<template class="ActionLink">
-				    <a href="#" ><container id="linkName2" class="Text"/></a>
+				    <a href="#" ><container id="linkName" /></a>
 				 </template>
 			</li>
 		</template>
+		</ul>
 		</div>
 	</template>
 	<template class="Login">
-<!-- 		Ingrese su nombre de usuario y contrasena:<br/>
-		Nombre de Usuario: <input type="text" id="username" /><br/>
-		Contrasenia: <input type="password" id="password" /><br/>
-		<container id="status"/>
-		<input type="button" id="login" value="Entrar"/> -->
  <table style="background-color:#EFEFEF;border:thin outset #000000;"><tbody>
 		<tr><td colspan="2">Ingrese su nombre de usuario y contrasena:</td></tr>
 		<tr><td>Nombre de Usuario: </td><td> <input type="text" id="username" /></td></tr>

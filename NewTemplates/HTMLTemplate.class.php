@@ -9,7 +9,7 @@ class HTMLTemplate extends HTMLRendererNew{
 				$tv->append_child($t);
 			}
 		} else {
-			$tv = $this->first_child();
+			$tv =& $this->xml2template($this->first_child());
 		}
 		$component->setView($tv);
 		return $tv; 
@@ -47,7 +47,10 @@ class HTMLTemplate extends HTMLRendererNew{
 	}	
 	function createCopy(){
 		return new HTMLContainer; 
-	}	
+	}
+	function isTemplate(){
+		return false;
+	}		
 }
 
 class HTMLContainer extends HTMLRendererNew{

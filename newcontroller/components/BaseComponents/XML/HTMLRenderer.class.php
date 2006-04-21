@@ -53,6 +53,12 @@ class HTMLRendererNew extends XMLNode{
 			$t =& $this->childNodes[$k];
 			if ($t->isTemplateForClass($component)){
 				$res[]=&$t;
+			} else if (!$t->isTemplate()){
+				$res2 =& $t->templatesForClass($component);
+				$ks2 = array_keys ($res2);
+				foreach($ks2 as $k2){
+					$res []=& $res2[$k2];
+				}
 			}
 		}
 		return $res;
@@ -64,6 +70,12 @@ class HTMLRendererNew extends XMLNode{
 			$t =& $this->childNodes[$k];
 			if ($t->isContainerForClass($component)){
 				$res[]=&$t;
+			} else if (!$t->isTemplate()){
+				$res2 =& $t->containersForClass($component);
+				$ks2 = array_keys ($res2);
+				foreach($ks2 as $k2){
+					$res []=& $res2[$k2];
+				}
 			}
 		}
 		return $res;
@@ -75,6 +87,9 @@ class HTMLRendererNew extends XMLNode{
 		return false;
 	}
 	function isContainer(){
+		return false;
+	}
+	function isTemplate(){
 		return false;
 	}
 	function hasId($id){

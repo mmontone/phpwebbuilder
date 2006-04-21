@@ -32,16 +32,6 @@ class ViewCreator {
 		}
 		return $view;
 	}
-	function &createElemView2(&$parentView, &$component){
-		$view  =& $component->view;
-		if ($view!=null){
-			return $view; 
-		} else {
-			$v =& $this->createTemplate($component);
-			$parentView->append_child($v);
-			return $v;
-		}
-	}
 	function &createElemView(&$parentView, &$component){
 		/*
 		 * - If my view is in the parent, return it.
@@ -69,6 +59,7 @@ class ViewCreator {
 			$cts =& $parentView->containersForClass($component);
 			if (count($cts)>0){
 				$ct =& $cts[0];
+				$parentView =& $ct->parent; 
 				$pos =& $ct->createCopy();
 				$parentView->insert_before($ct, $pos);
 			} else {
@@ -81,6 +72,7 @@ class ViewCreator {
 			$tps =& $parentView->templatesForClass($component);
 			if (count($tps)>0){
 				$tp0 =& $tps[0];
+				$parentView =& $tp0->parent;
 				$tp =& $tp0->instantiateFor($component);
 			} else {
 				$tp =& $this->createTemplate($component);
