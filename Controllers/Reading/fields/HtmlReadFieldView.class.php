@@ -1,6 +1,6 @@
 <?
 
-require_once dirname(__FILE__) . '/../../../OldViews/Action/AbstractFieldView.class.php';
+require_once pwbdir.'/OldViews/Action/AbstractFieldView.class.php';
 
 class HtmlReadFieldView extends AbstractFieldView {
 	function readForm (&$object, $form) {
@@ -12,7 +12,7 @@ class HtmlReadFieldView extends AbstractFieldView {
 		return $this->field->check($val);
 	}
 	function frmName(&$object) {
-		$html =& new HtmlReadView;
+		$html =& new HtmlTableEditView;
 		$html =& $html->viewFor($object);
 		return $html->formName() . $this->field->colName;
 	}
