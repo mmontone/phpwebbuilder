@@ -14,7 +14,7 @@ class HTMLTemplate extends HTMLRendererNew{
 		$component->setView($tv);
 		return $tv; 
 	}
-	function render(){
+	function render () {
 		return "";
 	}
 	function &xml2template(&$xml){
@@ -54,8 +54,8 @@ class HTMLTemplate extends HTMLRendererNew{
 }
 
 class HTMLContainer extends HTMLRendererNew{
-	function render (){
-		return ""; 
+	function render () {
+		return "";
 	}
 	function isContainer(){
 		return true;

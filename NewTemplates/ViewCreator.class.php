@@ -30,18 +30,20 @@ class ViewCreator {
 	}
 	function &createView(&$parentView, &$component){
 		$view =& $this->createElemView($parentView, $component);
-		$ks = array_keys($component->__children); 
+		$ks = array_keys($component->__children);
+		$temp = array(); 
 		foreach ($ks as $k){
 			$this->createView($view, $component->$k);
 		}
 		return $view;
 	}
-	function &createElemView(&$parentView, &$component){
+	function &createElemView(&$pV, &$component){
 		/*
 		 * - If my view is in the parent, return it.
 		 * - If there is one, but there's no position, then position it
 		 * - Else create the view and position it.
 		 * */
+		$parentView =& $pV;
 		$view  =& $component->view;
 		$hasView = $view!=null && strcasecmp(get_class($view),"NullView")!=0;
 		if ($hasView){
@@ -76,7 +78,6 @@ class ViewCreator {
 			$tps =& $parentView->templatesForClass($component);
 			if (count($tps)>0){
 				$tp0 =& $tps[0];
-				$parentView =& $tp0->parent;
 				$tp =& $tp0->instantiateFor($component);
 			} else {
 				$tp =& $this->createTemplate($component);
