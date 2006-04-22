@@ -1,4 +1,7 @@
 <?
+
+require_once dirname(__FILE__)."/../ViewStructure.class.php";
+
 class HtmlTable extends ViewStructure {
 	function visitedPersistentCollection (&$obj) {
 		$view = new HTMLTablePersistentCollection;
