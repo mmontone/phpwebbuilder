@@ -1,15 +1,17 @@
-Controllers:
-- Hacer andar al menos alguna de las aplicaciones
-
 Model:
-- Que el PersistentObject tenga un "$indexFields", que es un array con los 
-	campos que son índice. En la base de daots estos campos quedarían como "unique". 
-	Habría que modificar el insert y el update para que no fallen, pero que devuelvan 
-	un booleano del ok de lo efectuado.
-- Modificar los fields para que no tengan el booleano, pero que sí tengan un "nombre lindo"	
+- Modificar los fields para que no tengan el booleano, pero que s? tengan un "nombre lindo"	
 
 Installer:
-- Hacer un installer general, que lea datos de la instalación del install.ini
+- Hacer un installer general, que lea datos de la instalaci?n del install.ini
 
 CMS: 
-- Ahora no hay un CMS por default para usar, habría que ver cómo hacer uno.
+- Ahora no hay un CMS por default para usar, habr?a que ver c?mo hacer uno.
+
+* Document OOP
+* Work with action renderers (wikiarea links and template links) --> To be used with Components
+* Ajax action renderer
+* Build PWB Web site
+* Create 1st release of the tool
+
+* Hacer andar los Controllers con los templates.
+* VEerificar lo que pasa con el WebCEFI, donde subcomponentes no usan sus templates.
