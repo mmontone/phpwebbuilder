@@ -14,12 +14,18 @@ class MenuSection extends PersistentObject {
 	    }
 	    return "<h4>".$this->name->value."</h4><ul>" . $ret ."</ul>";
 	}
-	function itemsVisible(){
+	function &itemsVisible(){
 	    $col =& $this->MenuItemsection->collection;
 	    $col->limit=0;
 	    $menus0 =& $col->objects();
 	    $menus = array();
-		$menus =& array_filter($menus0, create_function('$elem', 'return $elem->isVisible();'));
+	    $ks = array_keys($menus0);
+	    foreach($ks as $k){
+	    	$elem =& $menus0[$k];
+	    	if ($elem->isVisible()){
+				$menus []=& $elem;
+	    	}
+	    }
 		return $menus;
 	}
 	function isVisible(){
@@ -32,9 +38,9 @@ class MenuSection extends PersistentObject {
 		$menus = array();
 		for($i=0; $i<count($col2); $i++){
 			$elem =& $col2[$i];
-		/*	if ($elem->isVisible()){
+			if ($elem->isVisible()){
 				$menus []=&$elem;
-			}*/
+			}
 		}
 		return $menus;  
 	}

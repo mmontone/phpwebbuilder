@@ -9,7 +9,8 @@ class MenuItem extends PersistentObject {
          $this->addField(new indexField("section", TRUE, MenuSection));
     }
 	function isVisible(){
-		$con =&	new $this->controller->value;
+		$conclass = $this->controller->value;
+		$con =&	new $conclass;
 		$form = array();
 		parse_str($this->params->value, $form);
 		return $con->hasPermission($form);
