@@ -11,7 +11,7 @@ class Menu extends Component
 		$this->add_component(new Text(sitename), "SiteName");
 		$this->add_component(new Text('<p>Management</p><p>User: '.$_SESSION[sitename]["Username"].'</p>'));  
 		$this->additem(array('Controller'=>'Logout'),'<img src="'.icons_url .'stock_exit.png" alt="Logout"/>');
-		$this->menus(); 
+		$this->menus(); 		
 	}
 	function newmenu (){
 		$ks = array_keys($this->__children);
@@ -21,8 +21,9 @@ class Menu extends Component
 		$this->initialize();
 	}
 	function menus (){
+		
 			$menus = MenuSection::availableMenus();
-			foreach ($menus as $m) {
+		/*	foreach ($menus as $m) {
 			    $this->add_component(new Text("<h4>".$m->name->value."</h4><ul>"));
 			    $col = $m->itemsVisible();
 			    foreach($col as $menu){
@@ -43,7 +44,7 @@ class Menu extends Component
 					$ret .= $this->addelement($name, $name); 
 			}
 			$this->add_component(new Text("</ul>"));
-			$this->rendered = $ret;
+			$this->rendered = $ret;*/
 	}
 	function addelement($obj, $text) {
   		return $this->additem(array("Controller"=>"ShowController","ObjType"=>$obj,"Action"=>"List"), $text);

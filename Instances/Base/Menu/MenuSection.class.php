@@ -32,9 +32,9 @@ class MenuSection extends PersistentObject {
 		$menus = array();
 		for($i=0; $i<count($col2); $i++){
 			$elem =& $col2[$i];
-			if ($elem->isVisible()){
+		/*	if ($elem->isVisible()){
 				$menus []=&$elem;
-			}
+			}*/
 		}
 		return $menus;  
 	}

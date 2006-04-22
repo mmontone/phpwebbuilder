@@ -17,7 +17,7 @@ class Component extends PWBObject
 	var $__children;
 	var $__actions;
 	var $__decorators;
-	function Component($registered_callbacks=array()) {
+	function Component($registered_callbacks=array()) {		
 		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->configuration=array('use_component_namemangling' => false,
@@ -27,8 +27,8 @@ class Component extends PWBObject
 
 		$this->__children = array();
 		$this->__decorators = array();
-		$this->__actions = $this->declare_actions();
-		$this->initialize();
+		$this->__actions = $this->declare_actions();		
+		$this->initialize();				
 	}
 	function initialize(){}
 	function start() {}
