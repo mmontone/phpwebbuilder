@@ -27,8 +27,7 @@ class Controller extends Component
 			return $temp;
 		}
 	}
-	function Controller(){
-		parent::Component();	
+	function initialize(){
     	$this->add_component(new Text(""), "bodyController");
     }
 	function controller_action($form){}
@@ -38,14 +37,19 @@ class Controller extends Component
 		return $this->controller_display($form);
 	}
 	function prepareToRender(){
- 		if (isset ($_REQUEST["Controller"]) && (strcasecmp(get_class($this),$_REQUEST["Controller"])!=0)){
- 			$this->stopAndCall(new $_REQUEST["Controller"]);
- 			$this->holder->component->renderContent($html);
+		$form = $this->getForm();
+ 		if (isset ($form["Controller"]) && (strcasecmp(get_class($this),$form["Controller"])!=0)){
+ 			echo "new Controller"; 			
+ 			$newcon =& new $form["Controller"];
+ 			$newcon->setForm($form);
+ 			$this->stopAndCall($newcon);
+ 			$newcon->prepareToRender();
  		} else {
- 			$form = $this->getForm();
-			$t =& $this->component_at("bodyController");
-			$t->setText($this->execute("begin",$form));
+ 			echo "same Controller";
+ 			$res = $this->execute("begin",$form);
+			$this->bodyController->setText($res);
  		}
+		parent::prepareToRender();
 	}
 	function execute ($action,$form) {
           if ($this->hasPermission($form))
