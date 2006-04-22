@@ -3,20 +3,17 @@
 class XMLParser {
    var $parser;
    var $xmls = array();
-   function XMLParser()
+   function &parse($data)
    {
        $this->parser = xml_parser_create('ISO-8859-1');
 
        xml_set_object($this->parser, $this);
        xml_set_element_handler($this->parser, "tag_open", "tag_close");
        xml_set_character_data_handler($this->parser, "cdata");
-   }
-
-   function &parse($data)
-   {
+       $arr = array();
+       $this->xmls=&$arr;
        xml_parse($this->parser, $data);
        $x =& $this->xmls[0];
-       $this->xmls=array();
        return $x;
    }
 

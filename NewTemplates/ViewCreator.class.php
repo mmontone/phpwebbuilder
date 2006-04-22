@@ -12,7 +12,11 @@ class ViewCreator {
 		foreach($files as $f){
 			$x = file_get_contents($f);
 			$xml =& $p->parse($x);
-			$xs =& array_merge($xs, $xml->childNodes);
+			if (!$xml->childNodes) echo $f;
+			$ks = array_keys($xml->childNodes); 
+			foreach($ks as $k){
+				$xs []=& $xml->childNodes[$k];
+			}
 		}
 		$tps = array();
 		$tpr =& new HTMLTemplate(); 
