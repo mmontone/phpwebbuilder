@@ -213,7 +213,10 @@ class Component extends PWBObject
 	}
 	function replaceView(&$other){
     	$other->setApp($this->app);
+    	$par =& $this->view->parent;
+    	$pos = $this->view->parentPosition;
     	$this->createContainer();
+    	//print_r($par->childNodes[$pos]);
 	}
 	function createContainer(){
     	$cont=& $this->myContainer();

@@ -14,8 +14,10 @@ class Application extends ComponentHolder
   var $wholeView;
   var $viewCreator;
   function Application() {
-    parent::ComponentHolder($this->set_root_component(), 0,$this);
-
+  	$n = null;
+  	$rc =& $this->set_root_component();
+	//echo "done"; exit;  	
+    parent::ComponentHolder($rc, 0,$n);
     $this->set_default_configuration();
     $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
     $this->instantiate_configuration_objects();

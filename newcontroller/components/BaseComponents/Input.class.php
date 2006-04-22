@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/../../Component.class.php';
+require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class Input extends FormComponent{
 	function Input ($name){

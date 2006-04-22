@@ -10,7 +10,7 @@ class DefaultCMS extends Component{
 		$this->body->addEventListener(array('on menuChanged'=>'updateMenu'),$this);
 	} 
  	function declare_actions(){}
- 	function changeBody($menu,$params){
+ 	function changeBody(&$menu,$params){
  		$this->body->stopAndCall (new $params["Controller"]);
  		$this->body->addEventListener(array('on menuChanged'=>'updateMenu'),$this);
  		$this->body->setForm($params);

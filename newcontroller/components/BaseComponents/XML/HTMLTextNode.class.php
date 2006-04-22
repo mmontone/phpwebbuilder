@@ -1,5 +1,6 @@
 <?php
 
+require_once dirname(__FILE__)."/HTMLRenderer.class.php";
 
 class HTMLTextNode extends HTMLRendererNew{
 	var $text;
