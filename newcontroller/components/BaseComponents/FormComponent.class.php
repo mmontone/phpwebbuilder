@@ -20,9 +20,7 @@ class FormComponent extends Component
 		$this->createNode();
 		return $this->view;
 	}
-	function createNode(){
-		backtrace();
-	}
+	function createNode(){}
 }
 
 ?>

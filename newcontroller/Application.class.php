@@ -94,7 +94,7 @@ class Application extends ComponentHolder
 		$this->component->prepareToRender();
 		$v =& $this->wholeView;
 		echo $v->renderPage();
-		//echo $v->showXML();
+		echo $v->showXML();
 	}
 	function createView(){
 		$this->viewCreator =& new ViewCreator($this); 
@@ -102,7 +102,6 @@ class Application extends ComponentHolder
 		$this->wholeView =& new HTMLRendererNew;
 		$this->wholeView->controller =& $this;
 		$this->wholeView->append_child($this->component->myContainer());
-		$this->viewCreator->createView($this->wholeView, $this->component);
 	}
 	function &view(){
 		return $this->wholeView;  
