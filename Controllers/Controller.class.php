@@ -39,16 +39,15 @@ class Controller extends Component
 	function prepareToRender(){
 		$form = $this->getForm();
  		if (isset ($form["Controller"]) && (strcasecmp(get_class($this),$form["Controller"])!=0)){
- 			echo "new Controller"; 			
+ 			echo "new controller";
  			$newcon =& new $form["Controller"];
  			$newcon->setForm($form);
  			$this->stopAndCall($newcon);
  			$newcon->prepareToRender();
  		} else {
- 			echo "same Controller";
- 			$res = $this->execute("begin",$form);
+ 			$res = $this->begin($form);
 			$this->bodyController->setText($res);
- 		}
+		}
 		parent::prepareToRender();
 	}
 	function execute ($action,$form) {

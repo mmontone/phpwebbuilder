@@ -97,11 +97,13 @@ class Application extends ComponentHolder
 		echo $v->showXML();
 	}
 	function createView(){
-		$this->viewCreator =& new ViewCreator($this); 
-		$this->loadTemplates();
-		$this->wholeView =& new HTMLRendererNew;
-		$this->wholeView->controller =& $this;
-		$this->wholeView->append_child($this->component->myContainer());
+		if (!$this->viewCreator){
+			$this->viewCreator =& new ViewCreator($this); 
+			$this->loadTemplates();
+			$this->wholeView =& new HTMLRendererNew;
+			$this->wholeView->controller =& $this;
+			$this->wholeView->append_child($this->component->myContainer());
+		}
 	}
 	function &view(){
 		return $this->wholeView;  

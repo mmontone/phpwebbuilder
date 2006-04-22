@@ -75,39 +75,42 @@ class NewActionDispatcher
 		$elems = array();
 		foreach ($form as $dir=>$param){
 			$temp = array();
-			$temp[]=& $this->getComponent($dir);
-			$temp[]= $param;
-			$temp[]= $dir;
-			if ($param=="execute"){
-				$delayed[]=$temp;
-			} else {
-				$elems[]=$temp;
+			$c =& $this->getComponent($dir); 
+			if($c) {
+				$temp[]=& $c;
+				$temp[]= $param;
+				$temp[]= $dir;
+				if ($param=="execute"){
+					$delayed[]=$temp;
+				} else {
+					$elems[]=$temp;
+				}
 			}
 		}
 		$ks = array_keys($elems);
 		foreach ($ks as $k){
-//			echo "<br/>".get_class($elems[$k][0])." with id ".$elems[$k][2]. " is getting ".$elems[$k][1];
 			$elems[$k][0]->viewUpdated($elems[$k][1]);
 		}
-//		echo "<br/>".get_class($delayed[0][0])." with id ".$delayed[0][2]." is executing";
-		$delayed[0][0]->viewUpdated("execute");
+		$ks = array_keys($delayed);
+		foreach ($ks as $k){
+			$delayed[$k][0]->viewUpdated($delayed[$k][1]);
+		}
 	}
 	function &getComponent($path){		
 		$app =& Application::instance();
 		$comp=& $app->component;
 		$path = split("/", $path);
-		array_shift($path);
-//		echo "<br/>"."using path ".print_r($path, TRUE);
-		foreach($path as $p){
-			$comp1 =& $comp->component_at($p);
-//			echo "<br/>".get_class($comp1)." is subelement ". $p;
-			if ($comp1 == null) {
-				echo "<br/>".$p ." does not exist";
-				print_r(array_keys($comp->__children));
+		if ($path[0]=="app"){
+			array_shift($path);
+			foreach($path as $p){
+				$comp1 =& $comp->component_at($p);
+				$comp =& $comp1;
 			}
-			$comp =& $comp1;
+			return $comp; 
+		} else {
+			$n = null;
+			return $n;
 		}
-		return $comp; 
 	}
 }
 

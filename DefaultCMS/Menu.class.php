@@ -21,17 +21,14 @@ class Menu extends Component
 		$this->initialize();
 	}
 	function menus (){
-			//$menus =& MenuSection::availableMenus();
-			$menucol =& new PersistentCollection(MenuItem);
-			$menucol->conditions["section"] = array("=", "3");
-			$menus = $menucol->objects();
+			$menus =& MenuSection::availableMenus();
 			$ks = array_keys($menus);
 			foreach ($ks as $k) {
 				$menu =& $menus[$k];
-			    //$col =& $m->itemsVisible();
-			    //$ks2 = array_keys($col);
-			    //foreach($ks2 as $k2){
-			    	//$menu =& $col[$k2];
+			    $col =& $menu->itemsVisible();
+			    $ks2 = array_keys($col);
+			    foreach($ks2 as $k2){
+			    	$menu =& $col[$k2];
 					$this->additem(
 						array_merge(
 							array("Controller"=>$menu->controller->value),
@@ -39,7 +36,7 @@ class Menu extends Component
 							),
 						$menu->name->value);
 	
-		    	//}
+		    	}
 			}
 			$arr = get_subclasses("PersistentObject");
 			foreach ($arr as $name){
