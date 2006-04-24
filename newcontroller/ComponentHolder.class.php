@@ -33,7 +33,7 @@ class ComponentHolder
         $my_copy->component = $this->component->copy_for_backtracking();
         return $my_copy;
     }
-    function getId(){
+    function getRealId(){
     	return $this->parent->getId()."/".$this->getSimpleId();
     }
     function getSimpleId(){

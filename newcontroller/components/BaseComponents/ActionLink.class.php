@@ -31,6 +31,7 @@ class ActionLink extends FormComponent{
 		$act = $this->act; 
 		$this->obj->$act($this->params);
 	}
+	
 }
 
 ?>

@@ -93,8 +93,10 @@ class Application extends ComponentHolder
 	function render() {
 		$this->component->prepareToRender();
 		$v =& $this->wholeView;
+		//$v =& $this->component->view;
 		echo $v->renderPage();
-		echo $v->showXML();
+		//echo $this->component->printTree();
+		//echo $v->showXML();
 	}
 	function createView(){
 		if (!$this->viewCreator){
@@ -117,6 +119,9 @@ class Application extends ComponentHolder
 	function getId(){
 		return "app";
 	}
+	function getRealId(){
+		return "app/main";
+	}	
 }
 
 ?>

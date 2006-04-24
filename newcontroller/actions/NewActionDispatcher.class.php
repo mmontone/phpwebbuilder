@@ -102,6 +102,7 @@ class NewActionDispatcher
 		$path = split("/", $path);
 		if ($path[0]=="app"){
 			array_shift($path);
+			array_shift($path);
 			foreach($path as $p){
 				$comp1 =& $comp->component_at($p);
 				$comp =& $comp1;

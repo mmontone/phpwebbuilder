@@ -17,6 +17,9 @@ class Text extends FormComponent{
 		$this->view =& new HTMLTextNode($this->value, $this);
 		return $this->view;
 	}
+	function printTree(){
+		return $this->value;
+	}	
 }
 
 ?>

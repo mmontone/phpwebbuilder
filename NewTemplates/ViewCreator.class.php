@@ -49,8 +49,9 @@ class ViewCreator {
 		if ($hasView){
 			if ($view->parent != null) return $view; 
 		}
+		$id = $component->getSimpleId();
 		$vids = $parentView->childrenWithId(
-				$component->getSimpleId()
+				$id
 			);
 		if (count($vids)>0){
 			$vid =& $vids[0];

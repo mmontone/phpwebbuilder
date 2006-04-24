@@ -80,14 +80,14 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 					$ret .= ";";
 				} 
 		/*
-		Si está, hay que verificar los atributos y el tipo. Si no, hay que crearla. 
+		Si estï¿½, hay que verificar los atributos y el tipo. Si no, hay que crearla. 
 		*/	
 			} else {
-			//Si no está, crearla:
+			//Si no estï¿½, crearla:
 				//$ret = "\n-- Object: ".get_class($this->obj);
 				$ret .=	"\nCREATE TABLE IF NOT EXISTS $table (" ;
 				$ret .= $this->fieldsForm(new MixLinker, $this->obj->fieldNames, TRUE);
-				$ret .= "\n   PRIMARY KEY  (`id`),";
+				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$ret .= "\n".$this->uniques();
 				$ret .= "\n);";
 			/*faltan los campos!*/
@@ -107,8 +107,11 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 			$uni .= "`".$i."`".$df->unique() . ", ";
 		}
 		$uni = substr($uni,0, -2);
-		$ret .= "UNIQUE index$table(".$uni.")";
-		return $ret; 
+		if (trim($uni)!="") {
+			return  ", UNIQUE index$table(".$uni.")";
+		} else{
+			return "";
+		} 
 	}
 	function showField(&$field){
 		return $field->creation($this);

@@ -213,14 +213,13 @@ class Component extends PWBObject
 	}
 	function replaceView(&$other){
     	$other->setApp($this->app);
-    	$par =& $this->view->parent;
+    	$par =& $this->parentView();
     	$pos = $this->view->parentPosition;
     	$this->createContainer();
-    	//print_r($par->childNodes[$pos]);
 	}
 	function createContainer(){
     	$cont=& $this->myContainer();
-    	$pv =& $this->parentView();
+    	$pv =& $this->view->parent;
     	$pv->replace_child($this->view, $cont);
 	}
 	function &myContainer(){
@@ -229,7 +228,7 @@ class Component extends PWBObject
     	return $cont; 
 	}
 	function getId(){
-		return $this->holder->getId();
+		return $this->holder->getRealId();
 	}
 	function &parentView(){
 		return $this->holder->view();  
@@ -245,6 +244,17 @@ class Component extends PWBObject
 			$comp->prepareToRender();
 		}
 	}
+	/* For debugging */ 
+	function printTree(){
+		$ks = array_keys($this->__children);
+		foreach ($ks as $key){
+			$comp =& $this->component_at($key);
+			$ret .=  $key ."=>". $comp->printTree()."\n<br/>";
+		}
+		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);
+		return $ret;
+	}
+	
 	
 }
 

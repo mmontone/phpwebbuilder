@@ -1,6 +1,6 @@
 <?php
 
-require_once pwbdir.'/Controllers/Controller.class.php';
+require_once pwbdir.'/newcontroller/Component.class.php';
 
 class Login extends Component {
 	function initialize(){
