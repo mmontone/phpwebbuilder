@@ -39,7 +39,6 @@ class Controller extends Component
 	function prepareToRender(){
 		$form = $this->getForm();
  		if (isset ($form["Controller"]) && (strcasecmp(get_class($this),$form["Controller"])!=0)){
- 			echo "new controller";
  			$newcon =& new $form["Controller"];
  			$newcon->setForm($form);
  			$this->stopAndCall($newcon);
