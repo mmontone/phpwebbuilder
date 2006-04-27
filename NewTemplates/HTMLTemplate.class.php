@@ -12,19 +12,19 @@ class HTMLTemplate extends HTMLRendererNew{
 			$tv =& $this->xml2template($this->first_child());
 		}
 		$component->setView($tv);
-		return $tv; 
+		return $tv;
 	}
 	function render () {
 		return "";
 	}
 	function &xml2template(&$xml){
-		if (strcasecmp(get_class($xml), "XMLTextNode")==0 || 
+		if (strcasecmp(get_class($xml), "XMLTextNode")==0 ||
 			strcasecmp(get_class($xml), "HTMLTextNode")==0){
 			$n = null;
 			$tn =& new HTMLTextNode($xml->text, $n);
 			return $tn;
 		} else if (strcasecmp($xml->tagName, "template")==0){
-			$temp =& new HTMLTemplate; 
+			$temp =& new HTMLTemplate;
 		} else if (strcasecmp($xml->tagName, "container")==0){
 			$temp =& new HTMLContainer;
 		} else  {
@@ -36,21 +36,21 @@ class HTMLTemplate extends HTMLRendererNew{
 		$temp->id = $xml->id;
 		$temp->attributes = $xml->attributes;
 		$temp->tagName = $xml->tagName;
-		return $temp; 
-	} 
+		return $temp;
+	}
 	function isTemplateForClass(&$component){
 		$b = is_a($component, $this->attributes["class"]);
 		return $b;
 	}
 	function isContainerForClass(&$component){
 		return is_a($component, $this->attributes["class"]);
-	}	
+	}
 	function createCopy(){
-		return new HTMLContainer; 
+		return new HTMLContainer;
 	}
 	function isTemplate(){
-		return false;
-	}		
+		return true;
+	}
 }
 
 class HTMLContainer extends HTMLRendererNew{
@@ -60,12 +60,12 @@ class HTMLContainer extends HTMLRendererNew{
 	function isContainer(){
 		return true;
 	}
-	function isContainerForClass(&$component){		
+	function isContainerForClass(&$component){
 		return is_a($component, $this->attributes["class"]);
 	}
 	function createCopy(){
-		return new HTMLContainer; 
-	}	
+		return new HTMLContainer;
+	}
 }
 
 ?>

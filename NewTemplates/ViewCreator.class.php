@@ -12,26 +12,37 @@ class ViewCreator {
 		foreach($files as $f){
 			$x = file_get_contents($f);
 			$xml =& $p->parse($x);
-			if (!$xml->childNodes) echo $f;
-			$ks = array_keys($xml->childNodes); 
+			$cm =& $xml->childNodes;
+			if (!$cm) echo $f;
+			$ks = array_keys($cm);
 			foreach($ks as $k){
-				$xs []=& $xml->childNodes[$k];
+				$xs []=& $cm[$k];
 			}
 		}
 		$tps = array();
-		$tpr =& new HTMLTemplate(); 
+		$tpr =& new HTMLTemplate();
 		foreach($xs as $x){
 			$tps[]=&$tpr->xml2template($x);
 		}
 		$this->setTemplates($tps);
 	}
+	function loadTemplatesDir ($templatesdir){
+ 		$gestor=opendir($templatesdir);
+ 		$fs = array();
+		while (false !== ($f = readdir($gestor))) {
+			if (substr($f, -4)=='.xml'){
+				$fs []= $templatesdir."/".$f;
+			}
+		}
+ 		$this->parseTemplates($fs);
+ 	}
+
 	function setTemplates(&$templates){
 		$this->templates =& $templates;
 	}
 	function &createView(&$parentView, &$component){
 		$view =& $this->createElemView($parentView, $component);
 		$ks = array_keys($component->__children);
-		$temp = array(); 
 		foreach ($ks as $k){
 			$this->createView($view, $component->$k);
 		}
@@ -45,9 +56,9 @@ class ViewCreator {
 		 * */
 		$parentView =& $pV;
 		$view  =& $component->view;
-		$hasView = $view!=null && strcasecmp(get_class($view),"NullView")!=0;
+		$hasView = $view!=null && strcasecmp(get_class($view),'NullView')!=0;
 		if ($hasView){
-			if ($view->parent != null) return $view; 
+			if ($view->parent != null && $view->parent->getRealId() == $parentView->getRealId()) return $view;
 		}
 		$id = $component->getSimpleId();
 		$vids = $parentView->childrenWithId(
@@ -66,7 +77,7 @@ class ViewCreator {
 			$cts =& $parentView->containersForClass($component);
 			if (count($cts)>0){
 				$ct =& $cts[0];
-				$parentView =& $ct->parent; 
+				$parentView =& $ct->parent;
 				$pos =& $ct->createCopy();
 				$parentView->insert_before($ct, $pos);
 			} else {
@@ -74,7 +85,7 @@ class ViewCreator {
 				$component->setView($v);
 				return $v;
 			}
-		}		
+		}
 		if (!$hasView) {
 			$tps =& $parentView->templatesForClass($component);
 			if (count($tps)>0){
@@ -84,8 +95,10 @@ class ViewCreator {
 				$tp =& $this->createTemplate($component);
 			}
 			$view =& $tp;
+			$view->getTemplatesAndContainers();
 		}
 		$parentView->replace_child($pos, $view);
+		$pV->addTemplatesAndContainersChild($view);
 		return $view;
 	}
 	function &createTemplate(&$component){
@@ -100,7 +113,7 @@ class ViewCreator {
 			$t =& $this->templates[$k];
 			if ($t->isTemplateForClass($component)){
 				$res[]=&$t;
-			} 
+			}
 		}
 		$res[]=& $this->defaultTemplate($component);
 		return $res;
