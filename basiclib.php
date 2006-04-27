@@ -3,26 +3,28 @@
  * Some basic functions.
  */
 
-function includefile($file) {
+function includefile(&$file) {
 	if (is_dir($file)) {
 			$gestor=opendir($file);
 			while (false !== ($f = readdir($gestor))) {
-				if (!ereg($f,"\.$"))
-					includefile($file."/".$f);
+				//if (!ereg($f,"\.$"))
+				if (substr($f,-1)!='.')
+					includefile(implode(array($file,"/",$f)));
 			}
 	} else {
-		if (ereg(".*php$",$file)){
-          //       echo ( "Including file: " . $file . " </br>");
+		//if (ereg(".*php$",$file)){
+		if (substr($file, -4)=='.php') {
                   require_once($file);
 		}
 	}
 }
-
-function includemodule ($module){
-	$moddir = pwbdir."/".$module;
-	if (file_exists($moddir."/".$module.".php")){
-		//echo ("Including module: ".$moddir . "</br>");
-		require_once($moddir."/".$module.".php");
+function includemodule (&$module){
+	$moddir = implode(array(pwbdir,"/",$module));
+	$modf = implode(array($moddir,"/",$module,".php"));
+	//$moddir = pwbdir."/".$module;
+	//$modf = $moddir."/".$module.".php";
+	if (file_exists($modf)){
+		require_once($modf);
 	} else{
 		includefile($moddir);
 	}
