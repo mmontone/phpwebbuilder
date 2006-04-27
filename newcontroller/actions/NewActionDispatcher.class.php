@@ -1,5 +1,5 @@
 <?php
-
+ 
 class NewActionDispatcher
 {
 	function &application() {
