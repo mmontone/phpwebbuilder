@@ -9,6 +9,7 @@
 				</tr>
 			</template>
 		</tbody></table>
+		<a href="#" id="save">Save</a>
 	</template>
  	<template class="ShowCollectionComponent">
  		<div>

@@ -4,8 +4,8 @@ require_once pwbdir.'/newcontroller/Component.class.php';
 
 class Login extends Component {
 	function initialize(){
-			$this->add_component(new Input("Username"), "username");
-			$this->add_component(new Password("Password"), "password");
+			$this->add_component(new Input($u), "username");
+			$this->add_component(new Password($p), "password");
 			$n = null;
 			$this->add_component(new ActionLink($this, 'login_do', "Login", $n), "login");
 			$this->add_component(new Text(''), "status");

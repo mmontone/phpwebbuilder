@@ -3,6 +3,7 @@
 class EditObjectComponent extends Component {
 	var $obj;
 	var $class;
+	var $fields;
     function EditObjectComponent(&$class, $id=0) {
     	if (is_array($class)){
     		$this->obj =& PersistentObject::getWithId($class['ObjType'], $class['ObjID']);
@@ -27,6 +28,12 @@ class EditObjectComponent extends Component {
     		$fc->add_component(new Text($f), 'name');
     		$fc->add_component(new Input($obj->$f->value), 'value');
        	}
+       	$this->add_component(new ActionLink($this, 'save', 'save', $n), 'save');
+       	$this->fields =& $fs;
+    }
+    function save(){
+		$this->obj->save();
+		$this->callback();
     }
 }
 ?>
