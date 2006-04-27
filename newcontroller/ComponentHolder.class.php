@@ -8,13 +8,14 @@ class ComponentHolder
 	var $component;
 	var $__owner_index;
 	var $parent;
+	var $realId;
 	function ComponentHolder(&$component,$owner_index = null, &$parent) {
 	   $this->__owner_index = $owner_index;
 	   $this->parent =& $parent;
 	   $this->hold($component);
 	}
 	function &view(){
-		return $this->parent->view;  
+		return $this->parent->view;
 	}
 	function owner_index() {
 		return $this->__owner_index;
@@ -28,13 +29,15 @@ class ComponentHolder
 	}
 
     function &copy_for_backtracking() {
-        /* PHP4 */ 
+        /* PHP4 */
         $my_copy = $this;
         $my_copy->component = $this->component->copy_for_backtracking();
         return $my_copy;
     }
     function getRealId(){
-    	return $this->parent->getId()."/".$this->getSimpleId();
+    	if (!$this->realId)
+	   		$this->realId = implode(array($this->parent->getId(),"/",$this->__owner_index));
+    	return $this->realId;
     }
     function getSimpleId(){
     	return $this->__owner_index;

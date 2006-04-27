@@ -46,17 +46,17 @@ class PWBObject
         }
     }
 
-    function triggerEvent($event_selector, $params = array()) {
+    function triggerEvent($event_selector, &$params) {
         trigger_error('Triggering event: ' . $event_selector);
         if ($this->event_listeners[$event_selector] == null) return;
 
         /* Should this be DFS or BFS? (DFS now) */
-        for($i=0; $i<count($this->event_listeners[$event_selector]); $i++){
+        for($i=0, $max = count($this->event_listeners[$event_selector]); $i<$max; $i++){
         	$listener_data =& $this->event_listeners[$event_selector][$i];
             $callback =& $listener_data['callback'];
             $listener =& $listener_data['listener'];
             $listener->$callback(&$this, $params);
-            $listener->triggerEvent($event_selector, $params);
+            //$listener->triggerEvent($event_selector, $params);
         }
     }
 

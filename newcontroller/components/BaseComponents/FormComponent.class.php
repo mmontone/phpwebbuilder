@@ -11,12 +11,13 @@ class FormComponent extends Component
 	function declare_actions(){return array();}
 	function viewUpdated ($params){
 		if ($params!=$this->value){
+			$oldval =  $this->value;
 			$this->setValue($params);
-			$this->triggerEvent('changed');
+			$this->triggerEvent('changed', $oldval);
 		}
 	}
 	function &createDefaultView(){
-		$this->view =& new HTMLRendererNew;
+		$this->view =& parent::createDefaultView();
 		$this->createNode();
 		return $this->view;
 	}

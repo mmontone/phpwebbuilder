@@ -3,8 +3,11 @@
 
 class NullView extends HTMLRendererNew{
 	function render (){
-		return ""; 
-	} 
+		return "";
+	}
+	function getId (){
+		return "";
+	}
 }
 
 ?>

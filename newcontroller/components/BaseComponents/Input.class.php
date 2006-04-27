@@ -3,10 +3,9 @@
 require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class Input extends FormComponent{
-	function Input ($name){
+	function Input ($val=''){
 		parent::FormComponent();
-		$this->id = $name;
-		$this->value=''; 
+		$this->value=$val;
 	}
 	function createNode(){
 		$in =& $this->view;

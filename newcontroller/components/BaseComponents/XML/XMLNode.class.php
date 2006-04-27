@@ -7,6 +7,7 @@ class XMLNode {
 	var $attributes = array();
 	var $controller;
 	var $parentPosition = null;
+	var $nextNode = 0;
 	function &create_element($tag, &$obj){
 		$cn = get_class($this);
 		$e =& new $cn;
@@ -31,7 +32,7 @@ class XMLNode {
 		return $this->childNodes[0];
 	}
 	function append_child(&$xml){
-		$this->insert_in($xml,count($this->childNodes));
+		$this->insert_in($xml,$this->nextNode++);
 	}
 	function insert_in(&$xml, $position){
 		$this->childNodes[$position]=&$xml;
@@ -45,12 +46,16 @@ class XMLNode {
 		$old->parentPosition =& $n;
 	}
 	function remove_child(&$old){
-		$pos = $old->parentPosition;
-		$last =count($this->childNodes)-1; 
+		/*$pos = $old->parentPosition;
+		$last =count($this->childNodes)-1;
 		for($i=$last ; $i>$pos; $i--){
 			$this->insert_in($this->childNodes[$i], $i-1);
 		}
-		unset($this->childNodes[$last]);
+		unset($this->childNodes[$last]);*/
+		unset($this->childNodes[$old->parentPosition]);
+		$n = null;
+		$old->parentPosition =& $n;
+		$old->parent =& $n;
 	}
 	function insert_before(&$old, &$new){
 		$pos = $old->parentPosition;
@@ -59,19 +64,19 @@ class XMLNode {
 		}
 		$this->insert_in($new, $pos);
 	}
-	
+
 	function setAttribute($name, $val){
 		$this->attributes[$name] = $val;
 	}
 	function setId($id) {
 		$this->setAttribute('id', $id);
-	} 
+	}
 	function getRealId(){
 		if ($this->controller!=null) {
-			$id = $this->controller->getId();			
-			$this->setAttribute('id', $id); 
+			$id = $this->controller->getId();
+			$this->setAttribute('id', $id);
 			$this->setAttribute('name', $id);
-		} 
+		}
 	}
 	function render(){
 		$this->getRealId();
@@ -79,7 +84,7 @@ class XMLNode {
 		foreach ($this->attributes as $name=>$val){
 			$attrs .= ' '.$name.'="'.$val.'"';
 		}
-		
+
 		if (count($this->childNodes)==0){
 			return "\n<$this->tagName $attrs />";
 		} else {
@@ -90,7 +95,7 @@ class XMLNode {
 			}
 			$childs = str_replace("\n", "\n   ", $childs);
 			$ret .="\n<$this->tagName $attrs>".$childs."\n</$this->tagName>";
-			return $ret; 
+			return $ret;
 		}
 	}
 
@@ -103,8 +108,8 @@ class XMLTextNode extends XMLNode{
 		$this->controller =&$obj;
 	}
 	function render (){
-		return $this->text; 
-	} 
+		return $this->text;
+	}
 }
 
 ?>

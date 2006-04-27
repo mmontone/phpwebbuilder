@@ -6,13 +6,14 @@ class ActionLink extends FormComponent{
 	var $obj;
 	var $act;
 	var $link;
-	function ActionLink (&$obj,$act, $link, $params=array()){
+	var $params;
+	function ActionLink (&$obj,$act, $link, &$params){
 		parent::FormComponent();
 		$this->obj =& $obj;
-		$this->act=$act; 
+		$this->act=$act;
 		$this->link = $link;
-		$this->params = $params;
-		$this->add_component(new Text($link), "linkName");		
+		$this->params = &$params;
+		$this->add_component(new Text($link), "linkName");
 	}
 	function createNode(){
 		$link =& $this->view;
@@ -27,11 +28,11 @@ class ActionLink extends FormComponent{
 		if (!$link) print_backtrace();
 		$link->setAttribute('onclick', 'callAction(&#34;'.$this->getId().'&#34;);');
 	}
-	function viewUpdated($params){
-		$act = $this->act; 
+	function viewUpdated($exec){
+		$act = $this->act;
 		$this->obj->$act($this->params);
 	}
-	
+
 }
 
 ?>

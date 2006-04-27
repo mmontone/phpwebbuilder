@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . '/ComponentHolder.class.php';
 class Component extends PWBObject
 {
 	var $view;
- 	var $model;	
+ 	var $model;
  	var $app;
 	var $listener;
 	var $holder;
@@ -17,7 +17,7 @@ class Component extends PWBObject
 	var $__children;
 	var $__actions;
 	var $__decorators;
-	function Component($registered_callbacks=array()) {		
+	function Component($registered_callbacks=array()) {
 		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->configuration=array('use_component_namemangling' => false,
@@ -27,8 +27,8 @@ class Component extends PWBObject
 
 		$this->__children = array();
 		$this->__decorators = array();
-		$this->__actions = $this->declare_actions();		
-		$this->initialize();				
+		$this->__actions = $this->declare_actions();
+		$this->initialize();
 	}
 	function initialize(){}
 	function start() {}
@@ -39,7 +39,7 @@ class Component extends PWBObject
 			$this->__children[$k]->component->setApp($app);
 		}
 	}
-	
+
 	function configure() {
 		return array();
 	}
@@ -145,7 +145,7 @@ class Component extends PWBObject
         $component->start();
     }
 	function dettachView(){
-		$this->view->parent->remove_child($this->view);	
+		$this->view->parent->remove_child($this->view);
 	}
 	function invalid_callback($callback) {
 		$app =& $this->application();
@@ -191,7 +191,7 @@ class Component extends PWBObject
       $this->view->controller =& $this;
     }
     function aboutToLoadView(&$params) {}
-    
+
     /**
      * Functions for the new type of views.
      */
@@ -205,7 +205,7 @@ class Component extends PWBObject
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$v->append_child($this->$key->myContainer());
-		}		
+		}
 		return $v;
 	}
 	function &createView(&$parentView){
@@ -225,13 +225,14 @@ class Component extends PWBObject
 	function &myContainer(){
 		$cont =& new HTMLContainer;
     	$cont->setAttribute('id',$this->getSimpleID());
-    	return $cont; 
+    	return $cont;
 	}
 	function getId(){
+		if (!$this->holder) print_backtrace(get_class($this));
 		return $this->holder->getRealId();
 	}
 	function &parentView(){
-		return $this->holder->view();  
+		return $this->holder->view();
 	}
 	function getSimpleId(){
 		return $this->holder->getSimpleId();
@@ -244,7 +245,7 @@ class Component extends PWBObject
 			$comp->prepareToRender();
 		}
 	}
-	/* For debugging */ 
+	/* For debugging */
 	function printTree(){
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
@@ -254,8 +255,8 @@ class Component extends PWBObject
 		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);
 		return $ret;
 	}
-	
-	
+
+
 }
 
 
