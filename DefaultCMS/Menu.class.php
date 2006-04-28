@@ -8,7 +8,7 @@ class Menu extends Component
 	}
 	function initialize(){
 		$this->add_component(new Text($_SESSION[sitename]["Username"]), "username");
-		$this->add_component(new Text(sitename), "SiteName");
+		$this->add_component(new Text($s = sitename), "SiteName");
 		$log = array('Component'=>'Logout');
 		$this->additem($log,'Logout');
 		$this->menus();

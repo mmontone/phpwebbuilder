@@ -25,7 +25,7 @@ class EditObjectComponent extends Component {
     	foreach($fs as $f){
     		$fc =& new Obj;
     		$this->add_component($fc);
-    		$fc->add_component(new Text($f), 'name');
+    		$fc->add_component(new Text($fs[$f]), 'name');
     		$fc->add_component(new Input($obj->$f->value), 'value');
        	}
        	$this->add_component(new ActionLink($this, 'save', 'save', $n), 'save');
@@ -33,7 +33,6 @@ class EditObjectComponent extends Component {
     }
     function save(){
 		$this->obj->save();
-		$this->triggerEvent('ObjectUpdated', $n=null);
 		$this->callback();
     }
 }

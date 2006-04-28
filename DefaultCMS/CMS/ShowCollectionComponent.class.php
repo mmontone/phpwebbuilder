@@ -25,13 +25,12 @@ class ShowCollectionComponent extends Component {
     	$fs =& $obj->indexFields;
     	foreach($fs as $f){
     		$fc =& new Obj;
-    		$fc->add_component(new Text($f));
+    		$fc->add_component(new Text($fs[$f]));
     		$this->add_component($fc);
        	}
     	foreach($ks as $k){
     		$fc =& new ShowObjectComponent($objects[$k]);
     		$fc2 =& new EditObjectComponent($objects[$k]);
-    		$fc2->addEventListener(array('on ObjectUpdated'=>'updateValues'), $fc);
     		$this->add_component($fc);
     		$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $fc2), 'edit');
        	}

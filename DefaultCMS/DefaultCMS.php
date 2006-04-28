@@ -1,6 +1,7 @@
 <?php
 
 require_once(pwbdir.'/Controllers/DBController.php');
+require_once(pwbdir.'/Controllers/RolesController.php');
 
 require_once 'DefaultCMS.class.php';
 require_once 'DefaultCMSApplication.class.php';

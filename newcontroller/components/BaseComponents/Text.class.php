@@ -3,15 +3,15 @@
 require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class Text extends FormComponent{
-	function Text ($text){
+	function Text (&$text){
 		parent::FormComponent();
-		$this->value = $text; 
+		$this->value =& $text;
 	}
-	function setText($text){
-		$this->value = $text;		
+	function setText(&$text){
+		$this->value =& $text;
 	}
 	function prepareToRender(){
-		$this->view->text=$this->value;	
+		$this->view->text=&$this->value;
 	}
 	function &createDefaultView(){
 		$this->view =& new HTMLTextNode($this->value, $this);
@@ -19,7 +19,7 @@ class Text extends FormComponent{
 	}
 	function printTree(){
 		return $this->value;
-	}	
+	}
 }
 
 ?>

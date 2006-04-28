@@ -22,13 +22,13 @@ class Controller extends Component
 		if ($this->form == NULL){
 			return $_REQUEST;
 		} else {
-			$temp = $this->form; 
+			$temp = $this->form;
 			$this->form = NULL;
 			return $temp;
 		}
 	}
 	function initialize(){
-    	$this->add_component(new Text(""), "bodyController");
+    	$this->add_component(new Text($t=""), "bodyController");
     }
 	function controller_action($form){}
 	function controller_display($form){}
