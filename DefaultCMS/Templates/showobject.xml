@@ -1,6 +1,6 @@
 <templates>
  	<template class="EditObjectComponent">
-	 	<b>Object of Class <container id="class"/> id: <container id="id"/></b>
+	 	<b>Object of Class <container id="className"/> id: <container id="id"/></b>
 	 	<table><tbody>
 			<template class="Obj" >
 	 			<tr>
@@ -13,7 +13,7 @@
 	</template>
  	<template class="ShowCollectionComponent">
  		<div>
-		The class is <b><container id="class" /></b>
+		The class is <b><container id="className" /></b>
 	 	<table><tbody>
  			<tr>
 				<template class="Obj" >
@@ -22,6 +22,7 @@
 				</td>
 				</template>
 				<td>Edit Object</td>
+				<td>Delete Object</td>
 			</tr>
 			<template class="ShowObjectComponent">
 	 			<tr>
@@ -29,9 +30,11 @@
 						<td><container id="value"/></td>
 					</template>
 					<td><a href="#" id="edit">Edit</a></td>
+					<td><a href="#" id="delete">Delete</a></td>
 				</tr>
 			</template>
 		</tbody></table>
+		<a href="#" id="new">New</a>
 	 	</div>
 	</template>
 </templates>

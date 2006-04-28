@@ -17,6 +17,7 @@ class Component extends PWBObject
 	var $__children;
 	var $__actions;
 	var $__decorators;
+	var $nextChildrenPosition =0;
 	function Component($registered_callbacks=array()) {
 		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
@@ -90,13 +91,17 @@ class Component extends PWBObject
     }
 
 	function add_component(&$component, $index=null) {
-		if ($index===null){$index = count($this->__children);}
+		if ($index===null){$index = $this->nextChildrenPosition;}
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 		$component->setApp($this->app);
+		$this->nextChildrenPosition++;
 	}
-	function delete_component($index){
+	function delete_component_at($index){
 		$this->view->remove_child($this->__children[$index]->component->view);
 		unset($this->__children[$index]);
+	}
+	function delete(){
+		$this->holder->parent->delete_component_at($this->holder->__owner_index);
 	}
 	function &component_at($index) {
 		$holder =& $this->__children[$index];

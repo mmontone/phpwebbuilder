@@ -19,7 +19,7 @@ class EditObjectComponent extends Component {
     }
     function initialize(){
     	$obj =& $this->obj;
-    	$this->add_component(new Text($this->class), 'class');
+    	$this->add_component(new Text($this->class), 'className');
     	$this->add_component(new Text($obj->id->value), 'id');
     	$fs =& $obj->allFieldNames();
     	foreach($fs as $f){
