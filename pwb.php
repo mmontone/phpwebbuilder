@@ -19,10 +19,12 @@ $app = array(
    basedir."/MyControllers"
 );
 
-define('modules',"Model,OldViews,Controllers,deprecated," .
+/*define('modules',"Model,OldViews,Controllers,deprecated," .
 				 "Instances,database,".
             	 "templates,ajax,NewTemplates"
-      );
+      );*/
+
+define('modules',"Model,Instances,newcontroller,database,NewTemplates,DefaultCMS");
 
 define('app_class',"DefaultCMSApplication");
 

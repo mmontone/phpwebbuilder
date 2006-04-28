@@ -15,13 +15,13 @@ class Application extends ComponentHolder
   var $viewCreator;
   function Application() {
   	$n = null;
-	$_SESSION['app']['current_app'] =& $this;  	
-  	$rc =& $this->set_root_component();  	  	  	
+	$_SESSION['app']['current_app'] =& $this;
+  	$rc =& $this->set_root_component();
     parent::ComponentHolder($rc, 0,$n);
-     
-    $this->set_default_configuration();
-    $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
-    $this->instantiate_configuration_objects();
+
+    //$this->set_default_configuration();
+    //$this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
+    //$this->instantiate_configuration_objects();
   }
 
     function set_default_configuration() {
@@ -100,7 +100,7 @@ class Application extends ComponentHolder
 	}
 	function createView(){
 		if (!$this->viewCreator){
-			$this->viewCreator =& new ViewCreator($this); 
+			$this->viewCreator =& new ViewCreator($this);
 			$this->loadTemplates();
 			$this->wholeView =& new HTMLRendererNew;
 			$this->wholeView->controller =& $this;
@@ -108,7 +108,7 @@ class Application extends ComponentHolder
 		}
 	}
 	function &view(){
-		return $this->wholeView;  
+		return $this->wholeView;
 	}
 	function loadTemplates(){}
    	function run() {
@@ -121,7 +121,7 @@ class Application extends ComponentHolder
 	}
 	function getRealId(){
 		return "app/main";
-	}	
+	}
 }
 
 ?>

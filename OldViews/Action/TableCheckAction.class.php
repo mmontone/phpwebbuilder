@@ -1,5 +1,5 @@
 <?
- 
+
 require_once "ViewAction.class.php";
 
 class TableCheckAction extends ViewAction {
@@ -123,12 +123,6 @@ class TableCheckEnumFieldView extends TableCheckAction {
 	}
 }
 class EmbedFieldTableCheckAction extends TableCheckAction {}
-class PasswordFieldTableCheckAction extends TextFieldTableCheckAction {
-	function unique(){}
-	function type (){
-		return "TEXT";
-	}
-}
 
 class NumFieldTableCheckAction extends TableCheckAction {
 	function type (){
@@ -144,13 +138,22 @@ class UserFieldTableCheckAction extends IndexFieldTableCheckAction {}
 
 
 class TextFieldTableCheckAction extends TableCheckAction {
-	function unique(){	
+	function unique(){
 		return "(50)";
 	}
 	function type (){
 		return "TEXT";
 	}
 }
+
+class PasswordFieldTableCheckAction extends TextFieldTableCheckAction {
+	function unique(){}
+	function type (){
+		return "TEXT";
+	}
+}
+
+
 class EmailFieldTableCheckAction extends TextFieldTableCheckAction {
 	function type (){
 		return "TEXT";
