@@ -30,10 +30,7 @@ class ShowCollectionComponent extends Component {
 		}
 		$this->add_component(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		foreach ($ks as $k) {
-			$fc = & new ShowObjectComponent($objects[$k]);
-			$this->add_component($fc);
-			$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $objects[$k]), 'edit');
-			$fc->add_component(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
+			$this->addLine($objects[$k]);
 		}
 	}
 	function editObject(&$obj) {
@@ -41,13 +38,18 @@ class ShowCollectionComponent extends Component {
 	}
 	function newObject(&$n) {
 		$obj = & new $this->classN;
-		$fc = & new ShowObjectComponent($obj);
-		$this->add_component($fc);
+		$this->addLine($obj);
 		$this->editObject($obj);
 	}
 	function deleteObject(&$fc) {
 		$fc->obj->delete();
 		$fc->delete();
+	}
+	function addLine(&$obj) {
+		$fc = & new ShowObjectComponent($obj);
+		$this->add_component($fc);
+		$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $objects[$k]), 'edit');
+		$fc->add_component(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
 	}
 }
 
