@@ -1,16 +1,10 @@
 <templates>
  	<template class="Menu">
- 		<div style="float:left;
- 				background-color:#DFDFDF;
- 				max-width:25%;
- 				border:thin inset #000000;
- 				padding: 10px;
- 				margin: 10px;
- 				">
+ 		<div class="Menu">
 		<container id="SiteName"/> CMS
 		<br/>
-		User: <b><container id="username"/></b>
-		<ul style="list-style-type: square">
+		User: <container id="username"/>
+		<ul class="MenuList">
 		<template class="MenuItemComponent">
 			<li>
 				<template class="ActionLink">
@@ -28,6 +22,6 @@
 		<tr><td>Contrasenia: </td><td> <input type="password" id="password" /></td></tr>
 		<tr><td><container id="status"/></td></tr>
 		<tr><td></td><td><input type="button" id="login" value="Entrar"/></td></tr>
-	</tbody></table> 
-	</template>  
+	</tbody></table>
+	</template>
 </templates>

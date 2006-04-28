@@ -16,7 +16,7 @@ class Menu extends Component
 	function newmenu (){
 		$ks =& array_keys($this->__children);
 		foreach ($ks as $k){
-			$this->delete_component($k);
+			$this->delete_component_at($k);
 		}
 		$this->initialize();
 	}

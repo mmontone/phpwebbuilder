@@ -8,6 +8,9 @@ class DefaultCMSApplication extends Application{
  	function loadTemplates (){
  		$this->viewCreator->loadTemplatesDir(pwbdir."/DefaultCMS/Templates");
  	}
+ 	function &setCss(){
+ 		return array(site_url."/admin/DefaultCMS/standard.css");
+ 	}
 }
 
 ?>

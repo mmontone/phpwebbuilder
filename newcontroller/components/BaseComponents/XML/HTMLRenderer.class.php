@@ -5,21 +5,27 @@ require_once dirname(__FILE__) . '/XMLNode.class.php';
 class HTMLRendererNew extends XMLNode{
 	var $templates = array();
 	var $containers = array();
+	var $csss = array();
 	function renderPage(){
 		$this->tagName='form';
 		$this->setAttribute('action','new_dispatch.php');
 		$this->setAttribute('method','POST');
 		$this->setAttribute('enctype','multipart/form-data');
-		$ret='<html>'."\n" .
-				'   <head><script src="'.site_url.'/admin/ajax/ajax.js"></script></head><body>';
-		$ret .= str_replace("\n", "\n   ", $this->render());
-		$ret .="\n".'</body></html>';
+		$ret='<html>'.
+				'<head><script src="'.site_url.'/admin/ajax/ajax.js"></script>';
+		foreach($this->csss as $c){
+			$ret.='<link rel="stylesheet" href="'.$c.'" />';
+		}
+		$ret.= '</head><body>';
+		$ret .= $this->render();
+		$ret .='</body></html>';
 		return $ret;
 	}
 	function showXML(){
 		$ret = $this->renderPage();
 		$ret = str_replace("<", "&lt;", $ret );
 		$ret = str_replace(">", "&gt;", $ret);
+		$ret .= str_replace("\n", "\n   ", $ret);
 		$ret = str_replace("\n", "<br/>", $ret );
 		$ret = str_replace("   ", "&nbsp;&nbsp;&nbsp;", $ret );
 		return $ret;

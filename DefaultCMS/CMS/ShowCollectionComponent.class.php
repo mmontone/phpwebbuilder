@@ -17,10 +17,9 @@ class ShowCollectionComponent extends Component {
 		parent :: Component();
 	}
 	function initialize() {
-		$objects = & $this->col->objects();
-		$ks = & array_keys($objects);
 		$class = & $this->classN;
 		$this->add_component(new Text($class), 'className');
+		$this->add_component(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		$obj = & new $class;
 		$fs = & $obj->indexFields;
 		foreach ($fs as $f) {
@@ -28,7 +27,8 @@ class ShowCollectionComponent extends Component {
 			$fc->add_component(new Text($fs[$f]));
 			$this->add_component($fc);
 		}
-		$this->add_component(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
+		$objects = & $this->col->objects();
+		$ks = & array_keys($objects);
 		foreach ($ks as $k) {
 			$this->addLine($objects[$k]);
 		}
@@ -48,7 +48,7 @@ class ShowCollectionComponent extends Component {
 	function addLine(&$obj) {
 		$fc = & new ShowObjectComponent($obj);
 		$this->add_component($fc);
-		$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $objects[$k]), 'edit');
+		$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $obj), 'edit');
 		$fc->add_component(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
 	}
 }

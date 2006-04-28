@@ -1,0 +1,63 @@
+table{
+	background-color: #DEF3FE;
+}
+
+
+td {
+	border:inherit;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-family:"Courier New", Courier, mono;
+	font-size:12px;
+
+}
+
+td.operation {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+
+a.operation {
+	color: #DEF3FE;
+}
+
+td a {
+	color : Black;
+
+}
+td img {
+	background-color : transparent;
+
+}
+
+img {
+	border:none;
+	color: transparent;
+}
+
+.error_msgs {
+	background-color: White;
+	/*#FF6C6C;*/
+	color : Black;
+	/*font-size:large;*/
+	font-weight:bold;
+}
+
+div.Menu{
+        float:left;
+ 		background-color:#DEF3DE;
+ 		max-width:25%;
+ 		border:thin inset #000000;
+ 		padding: 10px;
+ 		margin: 10px;
+}
+ul.MenuList{
+    list-style-type: square;
+}
+a{
+        color: #899889;
+}
+a:hover{
+        color: #677667;
+}
