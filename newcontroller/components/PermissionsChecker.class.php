@@ -27,7 +27,7 @@ class PermissionsChecker extends Component
     }
 
     function notification_accepted() {
-    	$this->stopAndCall($target);
+    	$this->stopAndCall($this->target);
     }
 }
 

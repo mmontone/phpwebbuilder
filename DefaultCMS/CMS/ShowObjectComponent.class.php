@@ -17,7 +17,11 @@ class ShowObjectComponent extends Component {
     	parent::Component();
     }
     function initialize(){
-    	$obj =& $this->obj;
+    	$this->updateValues();
+    }
+    function updateValues(){
+    	//$this->deleteChildren();
+		$obj =& $this->obj;
     	$this->add_component(new Text($this->class), 'class');
     	$this->add_component(new Text($obj->id->value), 'id');
     	$fs =& $obj->indexFields;

@@ -1,14 +1,3 @@
-When a component wants to render:
-
-- It first checks for it's view. It should have one, and a location for it. 
-	If it doesn't, It gets one (via ViewCreator).
-	
-- It calls recursively.
-
-- When a component calls (or callbacks) another one, it creates a holder in 
-	it's position, with it's id. Then calls the other component for creating 
-	it's view.
-	
 TODO:
 
 - Make sure we're using the most particular template for the class (sort them).

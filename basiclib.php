@@ -7,22 +7,18 @@ function includefile(&$file) {
 	if (is_dir($file)) {
 			$gestor=opendir($file);
 			while (false !== ($f = readdir($gestor))) {
-				//if (!ereg($f,"\.$"))
 				if (substr($f,-1)!='.')
-					includefile(implode(array($file,"/",$f)));
+					includefile(implode(array($file,'/',$f)));
 			}
 	} else {
-		//if (ereg(".*php$",$file)){
 		if (substr($file, -4)=='.php') {
                   require_once($file);
 		}
 	}
 }
 function includemodule (&$module){
-	$moddir = implode(array(pwbdir,"/",$module));
-	$modf = implode(array($moddir,"/",$module,".php"));
-	//$moddir = pwbdir."/".$module;
-	//$modf = $moddir."/".$module.".php";
+	$moddir = implode(array(pwbdir,'/',$module));
+	$modf = implode(array($moddir,'/',$module,'.php'));
 	if (file_exists($modf)){
 		require_once($modf);
 	} else{

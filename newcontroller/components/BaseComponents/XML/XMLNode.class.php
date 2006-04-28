@@ -46,12 +46,6 @@ class XMLNode {
 		$old->parentPosition =& $n;
 	}
 	function remove_child(&$old){
-		/*$pos = $old->parentPosition;
-		$last =count($this->childNodes)-1;
-		for($i=$last ; $i>$pos; $i--){
-			$this->insert_in($this->childNodes[$i], $i-1);
-		}
-		unset($this->childNodes[$last]);*/
 		unset($this->childNodes[$old->parentPosition]);
 		$n = null;
 		$old->parentPosition =& $n;

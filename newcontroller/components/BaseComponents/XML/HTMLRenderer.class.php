@@ -7,13 +7,13 @@ class HTMLRendererNew extends XMLNode{
 	var $containers = array();
 	function renderPage(){
 		$this->tagName='form';
-		$this->setAttribute('action',"new_dispatch.php");
-		$this->setAttribute('method',"POST");
-		$this->setAttribute('enctype',"multipart/form-data");
-		$ret="<html>\n" .
-				"   <head><script src=\"".site_url."/admin/ajax/ajax.js\"></script></head><body>";
+		$this->setAttribute('action','new_dispatch.php');
+		$this->setAttribute('method','POST');
+		$this->setAttribute('enctype','multipart/form-data');
+		$ret='<html>'."\n" .
+				'   <head><script src="'.site_url.'/admin/ajax/ajax.js"></script></head><body>';
 		$ret .= str_replace("\n", "\n   ", $this->render());
-		$ret .="\n</body></html>";
+		$ret .="\n".'</body></html>';
 		return $ret;
 	}
 	function showXML(){

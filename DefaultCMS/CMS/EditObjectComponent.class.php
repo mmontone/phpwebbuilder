@@ -33,6 +33,7 @@ class EditObjectComponent extends Component {
     }
     function save(){
 		$this->obj->save();
+		$this->triggerEvent('ObjectUpdated', $n=null);
 		$this->callback();
     }
 }
