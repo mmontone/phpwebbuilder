@@ -1,0 +1,354 @@
+<templates>
+	<template class="DefaultCMS">
+		<!-- <script language="JavaScript"
+			src="admin/DefaultCMS/Templates/BFSalud/index_archivos/mm_config.js">
+			0;
+		</script>
+		<script language="JavaScript"
+			src="admin/DefaultCMS/Templates/BFSalud/index_archivos/mm_menu.js">
+			0;
+		</script>
+		<script language="JavaScript1.2">mmLoadMenus();</script>
+		<span id="menuContainer">
+			<div id="menuLayer0"
+				style="position: absolute; z-index: 1; left: -300px; top: -300px; visibility: hidden; color: rgb(255, 255, 255); background-color: rgb(255, 255, 255); width: 204px; height: 18px;">
+				<div id="menuLite0"
+					style="position: absolute; z-index: 1; left: 1px; top: 1px; height: 16px; width: 202px;"
+					onmouseout="mouseoutMenu();">
+					<div id="menuFg0"
+						style="position: absolute; left: 1px; top: 1px; height: 15px; width: 201px; background-color: rgb(173, 193, 218);">
+						<div id="menuItem0"
+							style="position: absolute; left: 0px; top: 0px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText0"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								Programa de Soporte al C�ncer
+							</div>
+							<div id="menuItemHilite0"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								Programa de Soporte al C�ncer
+							</div>
+						</div>
+						<div id="focusItem0"
+							style="position: absolute; left: 0px; top: -30px;"
+							onclick="onMenuItemAction(null,this);">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="menuLayer1"
+				style="position: absolute; z-index: 1; left: -300px; top: -300px; visibility: hidden; color: rgb(255, 255, 255); background-color: rgb(255, 255, 255); width: 204px; height: 63px;">
+				<div id="menuLite1"
+					style="position: absolute; z-index: 1; left: 1px; top: 1px; height: 61px; width: 202px;"
+					onmouseout="mouseoutMenu();">
+					<div id="menuFg1"
+						style="position: absolute; left: 1px; top: 1px; height: 60px; width: 201px; background-color: rgb(173, 193, 218);">
+						<div id="menuItem1"
+							style="position: absolute; left: 0px; top: 0px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText1"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								Salud
+							</div>
+							<div id="menuItemHilite1"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								Salud
+							</div>
+							<div id="childMenu1"
+								style="position: absolute; left: 189px; top: 3px;">
+								<img
+									src="admin/DefaultCMS/Templates/BFSalud/index_archivos/arrows.gif" />
+							</div>
+						</div>
+						<div id="menuItem2"
+							style="position: absolute; left: 0px; top: 15px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText2"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								Empresa
+							</div>
+							<div id="menuItemHilite2"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								Empresa
+							</div>
+						</div>
+						<div id="menuItem3"
+							style="position: absolute; left: 0px; top: 30px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText3"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								Formaci�n
+							</div>
+							<div id="menuItemHilite3"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								Formaci�n
+							</div>
+						</div>
+						<div id="menuItem4"
+							style="position: absolute; left: 0px; top: 45px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText4"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								Crecimiento Personal
+							</div>
+							<div id="menuItemHilite4"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								Crecimiento Personal
+							</div>
+						</div>
+						<div id="focusItem1"
+							style="position: absolute; left: 0px; top: -30px;"
+							onclick="onMenuItemAction(null,this);">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="menuLayer2"
+				style="position: absolute; z-index: 1; left: -300px; top: -300px; visibility: hidden; color: rgb(255, 255, 255); background-color: rgb(255, 255, 255); width: 137px; height: 33px;">
+				<div id="menuLite2"
+					style="position: absolute; z-index: 1; left: 1px; top: 1px; height: 31px; width: 135px;"
+					onmouseout="mouseoutMenu();">
+					<div id="menuFg2"
+						style="position: absolute; left: 1px; top: 1px; height: 30px; width: 134px; background-color: rgb(173, 193, 218);">
+						<div id="menuItem5"
+							style="position: absolute; left: 0px; top: 0px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 133px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText5"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								Equipo
+							</div>
+							<div id="menuItemHilite5"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								Equipo
+							</div>
+						</div>
+						<div id="menuItem6"
+							style="position: absolute; left: 0px; top: 15px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 133px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
+							<div id="menuItemText6"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
+								BioFeedback
+							</div>
+							<div id="menuItemHilite6"
+								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
+								BioFeedback
+							</div>
+						</div>
+						<div id="focusItem2"
+							style="position: absolute; left: 0px; top: -30px;"
+							onclick="onMenuItemAction(null,this);">
+						</div>
+					</div>
+				</div>
+			</div>
+		</span>
+		 -->
+		<table bgcolor="#cae6bd" border="0" cellpadding="0"
+			cellspacing="0" height="88" width="100%">
+			<tbody>
+				<tr>
+					<td>
+						<table align="center" bgcolor="#e9e9e9"
+							border="0" cellpadding="0" cellspacing="0" height="88"
+							width="660">
+							<tbody>
+								<tr>
+									<td>
+										<table align="center"
+											bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
+											height="88" width="654">
+											<tbody>
+												<tr>
+													<td align="center"
+														valign="top">
+														<img
+															src="admin/DefaultCMS/Templates/BFSalud/index_archivos/topbar.jpg"
+															height="125" width="650" />
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<table id="menu" bgcolor="#cae6bd" border="0" cellpadding="0"
+			cellspacing="0" height="25" width="100%">
+			<tbody>
+				<tr>
+					<td>
+						<table align="center" bgcolor="#e9e9e9"
+							border="0" cellpadding="0" cellspacing="0" height="25"
+							width="660">
+							<tbody>
+								<tr>
+									<td>
+										<table align="center"
+											background="admin/DefaultCMS/Templates/BFSalud/index_archivos/topbar2bg.jpg"
+											bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
+											height="25" width="654">
+											<tbody>
+												<tr>
+													<td>
+														<table
+															align="center" border="0" cellpadding="0"
+															cellspacing="0">
+															<tbody>
+																<tr id="menus">
+																	<template class="MenuItemComponent">
+																	<td
+																		class="txt1" align="center" width="12">
+																		<strong>
+																			�
+																		</strong>
+																	</td>
+																	<td
+																		class="txt1" align="center" width="3">
+																		<a
+																			href="#"
+																			class="azul" id="link">
+																			<strong>
+																				<container id="linkName" />
+																			</strong>
+																		</a>
+																	</td>
+																	</template>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<table align="center" bgcolor="#e9e9e9" border="0"
+			cellpadding="0" cellspacing="0" width="660">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<table align="center" bgcolor="#ffffff"
+							border="0" cellpadding="0" cellspacing="2" height="25"
+							width="654">
+							<tbody>
+								<tr>
+									<td
+										background="admin/DefaultCMS/Templates/BFSalud/index_archivos/topshadow.jpg">
+										<img
+											src="admin/DefaultCMS/Templates/BFSalud/index_archivos/topshadow.jpg"
+											height="11" width="1" />
+										<img
+											src="admin/DefaultCMS/Templates/BFSalud/index_archivos/sep1.gif"
+											height="3" width="1" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table border="0"
+											cellpadding="0" cellspacing="0" height="279" width="650">
+											<tbody>
+												<tr>
+													<td class="txt1"
+														background="admin/DefaultCMS/Templates/BFSalud/index_archivos/mainbgx.jpg"
+														valign="" width="346">
+														<br />
+														<br />
+														<br />
+														<table
+															border="0" cellpadding="0" cellspacing="0" height="61"
+															width="334">
+															<tbody>
+																<tr>
+																	<td
+																		height="61" width="16">
+																	</td>
+																	<td
+																		class="txt1" width="318">
+																		<table
+																			border="0" cellpadding="0" cellspacing="0">
+																			<tbody>
+																				<tr>
+																					<td
+																						class="txt6" width="309">
+																						<p>
+																							<strong>
+																								Bienvenido
+																							</strong>
+																							<br />
+																						</p>
+																					</td>
+																				</tr>
+																			</tbody>
+																		</table>
+																		<container
+																			id="body" />
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+						<table align="center" border="0" cellpadding="0"
+							cellspacing="0" width="654">
+							<tbody>
+								<tr>
+									<td>
+										<img
+											src="admin/DefaultCMS/Templates/BFSalud/index_archivos/bottomdec.gif"
+											height="22" width="654" />
+									</td>
+								</tr>
+								<tr>
+									<td
+										background="admin/DefaultCMS/Templates/BFSalud/index_archivos/bottomdec2.gif"
+										height="89" valign="middle">
+										<table border="0"
+											cellpadding="0" cellspacing="0" width="654">
+											<tbody>
+												<tr>
+													<td class="txt2"
+														align="center" height="45" width="642">
+														Copyright � 2006
+														BioFeedback
+														Salud, S.L.
+														Todos los
+														derechos
+														reservador
+														<br />
+														<span
+															class="txt3">
+															Sitio web
+															creado por
+															ForisurGroup
+														</span>
+														<br />
+														<br />
+													</td>
+													<td width="12"></td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td bgcolor="#e9e9e9" height="50">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+</templates>
