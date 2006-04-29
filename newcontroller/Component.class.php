@@ -97,11 +97,18 @@ class Component extends PWBObject
 		$this->nextChildrenPosition++;
 	}
 	function delete_component_at($index){
-		$this->view->remove_child($this->__children[$index]->component->view);
-		unset($this->__children[$index]);
+		$c =& $this->component_at($index);
+		$c->delete();
 	}
 	function delete(){
-		$this->holder->parent->delete_component_at($this->holder->__owner_index);
+		$pv =& $this->parentView();
+		$v =& $this->view;
+		$pv->remove_child($v);
+		$h =& $this->holder;
+		$p =& $h->parent;
+		$pos =&  $h->__owner_index;
+		unset($p->__children[$pos]);
+		unset($p->$pos);
 	}
 	function &component_at($index) {
 		$holder =& $this->__children[$index];

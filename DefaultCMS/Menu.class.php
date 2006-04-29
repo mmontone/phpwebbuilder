@@ -2,25 +2,28 @@
 
 class Menu extends Component
 {
-	var $rendered = "";
+	var $rendered = '';
 	function declare_actions() {
 		return array('menuclick');
 	}
 	function initialize(){
 		$this->add_component(new Text($_SESSION[sitename]["Username"]), "username");
 		$this->add_component(new Text($s = sitename), "SiteName");
-		$log = array('Component'=>'Logout');
-		$this->additem($log,'Logout');
+		$this->add_component(new FormComponent, 'menus');
 		$this->menus();
 	}
 	function newmenu (){
-		$ks =& array_keys($this->__children);
-		foreach ($ks as $k){
-			$this->delete_component_at($k);
+		$ms =& $this->menus;
+		$cs =& $ms->__children;
+		$ks = array_keys($cs);
+		foreach($ks as $k){
+			$ms->$k->delete();
 		}
-		$this->initialize();
+		$this->menus();
 	}
 	function menus (){
+			$log = array('Component'=>'Logout');
+			$this->additem($log,'Logout');
 			$menus =& MenuSection::availableMenus();
 			$ks =& array_keys($menus);
 			foreach ($ks as $k) {
@@ -50,7 +53,7 @@ class Menu extends Component
   		return $this->additem($comp, $text);
 	}
 	function additem(&$comp, $text){
-		$this->add_component(new MenuItemComponent($this, $text, $comp));
+		$this->menus->add_component(new MenuItemComponent($this, $text, $comp));
 	}
 	function menuclick(&$comp){
 		$c =& new $comp['Component']($comp);

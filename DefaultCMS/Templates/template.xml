@@ -4,7 +4,7 @@
 		<container id="SiteName"/> CMS
 		<br/>
 		User: <container id="username"/>
-		<ul class="MenuList">
+		<ul id="menus" class="MenuList">
 		<template class="MenuItemComponent">
 			<li>
 				<template class="ActionLink">
