@@ -56,8 +56,14 @@ ul.MenuList{
     list-style-type: square;
 }
 a{
-        color: #899889;
+        color: #677667;
 }
 a:hover{
-        color: #677667;
+        color: #899889;
+}
+
+table.login{
+    background-color:#EFEFEF;
+    border:thin outset #000000;
+    margin: 10px;
 }
