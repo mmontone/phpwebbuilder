@@ -1,0 +1,41 @@
+<templates>
+ 	<template class="EditObjectComponent">
+	 	Object of Class <container id="className"/> id: <container id="id"/>
+	 	<table><tbody>
+			<template class="Obj" >
+	 			<tr>
+					<td><container id="name"/></td>
+					<td><container id="value"/></td>
+				</tr>
+			</template>
+		</tbody></table>
+		<a href="#" id="save"><img class="operation" title="Save changes" src="admin/icons/stock_save.png"/></a>
+		<a href="#" id="cancel"><img class="operation" title="Cancel" src="admin/icons/stock_cancel.png"/></a>
+	</template>
+ 	<template class="ShowCollectionComponent">
+ 		<div>
+		<container id="className" /> class
+	 	<table><tbody>
+ 			<tr>
+				<template class="Obj" >
+				<td>
+				<container class="Text" />
+				</td>
+				</template>
+				<td>Edit</td>
+				<td>Delete</td>
+			</tr>
+			<template class="ShowObjectComponent">
+	 			<tr>
+					<template class="Obj" >
+						<td><container id="value"/></td>
+					</template>
+					<td><a href="#" id="edit"><img class="operation" title="Cancel" src="admin/icons/stock_edit.png"/></a></td>
+					<td><a href="#" id="delete"><img class="operation" title="Cancel" src="admin/icons/stock_delete.png"/></a></td>
+				</tr>
+			</template>
+		</tbody></table>
+		<a href="#" id="new"><img class="operation" title="Cancel" src="admin/icons/stock_new.png"/></a>
+	 	</div>
+	</template>
+</templates>
