@@ -1,143 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <templates>
 	<template class="DefaultCMS">
-		<!-- <script language="JavaScript"
-			src="admin/DefaultCMS/Templates/BFSalud/index_archivos/mm_config.js">
+		<script type="text/javascript" language="JavaScript"
+			src="admin/DefaultCMS/Templates/BFSalud/menus.js">
 			0;
 		</script>
-		<script language="JavaScript"
-			src="admin/DefaultCMS/Templates/BFSalud/index_archivos/mm_menu.js">
-			0;
-		</script>
-		<script language="JavaScript1.2">mmLoadMenus();</script>
-		<span id="menuContainer">
-			<div id="menuLayer0"
-				style="position: absolute; z-index: 1; left: -300px; top: -300px; visibility: hidden; color: rgb(255, 255, 255); background-color: rgb(255, 255, 255); width: 204px; height: 18px;">
-				<div id="menuLite0"
-					style="position: absolute; z-index: 1; left: 1px; top: 1px; height: 16px; width: 202px;"
-					onmouseout="mouseoutMenu();">
-					<div id="menuFg0"
-						style="position: absolute; left: 1px; top: 1px; height: 15px; width: 201px; background-color: rgb(173, 193, 218);">
-						<div id="menuItem0"
-							style="position: absolute; left: 0px; top: 0px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText0"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								Programa de Soporte al C�ncer
-							</div>
-							<div id="menuItemHilite0"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								Programa de Soporte al C�ncer
-							</div>
-						</div>
-						<div id="focusItem0"
-							style="position: absolute; left: 0px; top: -30px;"
-							onclick="onMenuItemAction(null,this);">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="menuLayer1"
-				style="position: absolute; z-index: 1; left: -300px; top: -300px; visibility: hidden; color: rgb(255, 255, 255); background-color: rgb(255, 255, 255); width: 204px; height: 63px;">
-				<div id="menuLite1"
-					style="position: absolute; z-index: 1; left: 1px; top: 1px; height: 61px; width: 202px;"
-					onmouseout="mouseoutMenu();">
-					<div id="menuFg1"
-						style="position: absolute; left: 1px; top: 1px; height: 60px; width: 201px; background-color: rgb(173, 193, 218);">
-						<div id="menuItem1"
-							style="position: absolute; left: 0px; top: 0px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText1"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								Salud
-							</div>
-							<div id="menuItemHilite1"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								Salud
-							</div>
-							<div id="childMenu1"
-								style="position: absolute; left: 189px; top: 3px;">
-								<img
-									src="admin/DefaultCMS/Templates/BFSalud/index_archivos/arrows.gif" />
-							</div>
-						</div>
-						<div id="menuItem2"
-							style="position: absolute; left: 0px; top: 15px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText2"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								Empresa
-							</div>
-							<div id="menuItemHilite2"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								Empresa
-							</div>
-						</div>
-						<div id="menuItem3"
-							style="position: absolute; left: 0px; top: 30px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText3"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								Formaci�n
-							</div>
-							<div id="menuItemHilite3"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								Formaci�n
-							</div>
-						</div>
-						<div id="menuItem4"
-							style="position: absolute; left: 0px; top: 45px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText4"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								Crecimiento Personal
-							</div>
-							<div id="menuItemHilite4"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								Crecimiento Personal
-							</div>
-						</div>
-						<div id="focusItem1"
-							style="position: absolute; left: 0px; top: -30px;"
-							onclick="onMenuItemAction(null,this);">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="menuLayer2"
-				style="position: absolute; z-index: 1; left: -300px; top: -300px; visibility: hidden; color: rgb(255, 255, 255); background-color: rgb(255, 255, 255); width: 137px; height: 33px;">
-				<div id="menuLite2"
-					style="position: absolute; z-index: 1; left: 1px; top: 1px; height: 31px; width: 135px;"
-					onmouseout="mouseoutMenu();">
-					<div id="menuFg2"
-						style="position: absolute; left: 1px; top: 1px; height: 30px; width: 134px; background-color: rgb(173, 193, 218);">
-						<div id="menuItem5"
-							style="position: absolute; left: 0px; top: 0px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 133px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText5"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								Equipo
-							</div>
-							<div id="menuItemHilite5"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								Equipo
-							</div>
-						</div>
-						<div id="menuItem6"
-							style="position: absolute; left: 0px; top: 15px; font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 133px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;">
-							<div id="menuItemText6"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(66, 88, 99);">
-								BioFeedback
-							</div>
-							<div id="menuItemHilite6"
-								style="position: absolute; left: 3px; top: 1px; color: rgb(255, 255, 255); visibility: hidden;">
-								BioFeedback
-							</div>
-						</div>
-						<div id="focusItem2"
-							style="position: absolute; left: 0px; top: -30px;"
-							onclick="onMenuItemAction(null,this);">
-						</div>
-					</div>
-				</div>
-			</div>
-		</span>
-		 -->
 		<table bgcolor="#cae6bd" border="0" cellpadding="0"
-			cellspacing="0" height="88" width="100%">
+			cellspacing="0" width="100%" style="height:88px;">
 			<tbody>
 				<tr>
 					<td>
@@ -149,7 +21,7 @@
 									<td>
 										<table align="center"
 											bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
-											height="88" width="654">
+											style="height:88px;" width="654">
 											<tbody>
 												<tr>
 													<td align="center"
@@ -192,22 +64,22 @@
 															cellspacing="0">
 															<tbody>
 																<tr id="menus">
-																	<template class="MenuItemComponent">
+																	<template class="MenuSectionComponent">
 																	<td
-																		class="txt1" align="center" width="12">
+																		class="txt1" align="center">
 																		<strong>
-																			�
+																			&nbsp;�
+																			<a onmouseover="showMenu(event.target)" onmouseout="hideMenu(event.target)">
+																				<container id="secName" />
+																			</a>
 																		</strong>
-																	</td>
-																	<td
-																		class="txt1" align="center" width="3">
-																		<a
-																			href="#"
-																			class="azul" id="link">
-																			<strong>
-																				<container id="linkName" />
-																			</strong>
-																		</a>
+																		<table style="visibility:hidden; position:absolute;z-index: 1;">
+																			<tbody>
+																				<template class="MenuItemComponent">
+																					<tr><td onmouseover="showMenuElem(event.target)" onmouseout="hideMenuElem(event.target)" style="font-family: Verdana,Arial,Helvetica,sans-serif; font-weight: bold; font-size: 10px; width: 200px; height: 14px; background-color: rgb(246, 246, 246); visibility: inherit;"><a id="link" style="color: rgb(66, 88, 99);"><container id="linkName" /></a></td></tr>
+																				</template>
+																			</tbody>
+																		</table>
 																	</td>
 																	</template>
 																</tr>

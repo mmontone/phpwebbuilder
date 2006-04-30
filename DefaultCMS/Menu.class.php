@@ -23,11 +23,14 @@ class Menu extends Component
 	}
 	function menus (){
 			$log = array('Component'=>'Logout');
-			$this->additem($log,'Logout');
 			$menus =& MenuSection::availableMenus();
 			$ks =& array_keys($menus);
+			$temp = array();
 			foreach ($ks as $k) {
+				$sect =& new MenuSectionComponent();
+				$this->add_component($sect);
 				$menu =& $menus[$k];
+				$sect->add_component(new Text($menu->name->value), 'secName');
 			    $col =& $menu->itemsVisible();
 			    $ks2 =& array_keys($col);
 			    foreach($ks2 as $k2){
@@ -37,23 +40,27 @@ class Menu extends Component
 							array('Component'=>$menu->controller->value),
 							parse_str($menu->params->value)
 							),
-						$menu->name->value);
+						$menu->name->value, $sect);
 
 		    	}
 			}
 			$arr = get_subclasses("PersistentObject");
+			$sect =& new MenuSectionComponent();
+			$this->add_component($sect);
+			$sect->add_component(new Text($t = 'Objects'), 'secName');
 			foreach ($arr as $name){
 				if (fHasPermission($_SESSION[sitename]["id"], array("*","$name=>Menu"))){
-					$this->addelement($name, $name);
+					$this->addelement($name, $name, $sect);
 				}
 			}
+			$this->additem($log,'Logout', $sect);
 	}
-	function addelement($obj, $text) {
+	function addelement($obj, $text, &$sect) {
 		$comp = array('Component'=>'ShowCollectionComponent','ObjType'=>$obj);
-  		return $this->additem($comp, $text);
+  		return $this->additem($comp, $text, $sect);
 	}
-	function additem(&$comp, $text){
-		$this->menus->add_component(new MenuItemComponent($this, $text, $comp));
+	function additem(&$comp, $text, &$sect){
+		$sect->add_component(new MenuItemComponent($this, $text, $comp));
 	}
 	function menuclick(&$comp){
 		$c =& new $comp['Component']($comp);
@@ -61,6 +68,8 @@ class Menu extends Component
 	}
 
 }
+
+class MenuSectionComponent extends Component{}
 
 class MenuItemComponent extends Component{
 	var $menu, $text, $item;

@@ -5,12 +5,15 @@
 		<br/>
 		User: <container id="username"/>
 		<ul id="menus" class="MenuList">
+		<template class="MenuSectionComponent">
+		<container id="secName" />
 		<template class="MenuItemComponent">
 			<li>
 				<template class="ActionLink">
 				    <a href="#" ><container id="linkName" /></a>
 				 </template>
 			</li>
+		</template>
 		</template>
 		</ul>
 		</div>
