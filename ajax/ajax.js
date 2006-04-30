@@ -159,7 +159,7 @@ function updatePage(text, xml) {
   var actions = xml.firstChild.childNodes;
   var i=0;
   for (; i< actions.length; i++) {
-    eval("ajax" + actions[i].tagName + "(actions[i]);");
+    eval("ajax_" + actions[i].tagName + "(actions[i]);");
   }
   return true;
 }
@@ -168,42 +168,81 @@ function ie_updatePage(text, xml) {
   var actions = xml.firstChild.nextSibling.childNodes;
   var i=0;
     for (; i< actions.length; i++) {
-      eval("ie_ajax" + actions[i].nodeName + "(actions[i]);");
+      eval("ie_ajax_" + actions[i].nodeName + "(actions[i]);");
     }
   return true;
 }
 
+// Improve this function, the way to access xml nodes
 function getActionTarget(action) {
   return document.getElementById(action.getAttribute("id"));
 }
 
-function ajaxreplace(replace_action) {
-  var target = getActionTarget(replace_action);
-  var html = xml2html(replace_action.firstChild);
-//  target.replaceChild(html, target.firstChild);
-	target.innerHTML = xml2str(replace_action.firstChild);
+function ajax_replace_node(action) {
+  var target = getActionTarget(action);
+  var html = xml2html(action.firstChild);
+  target.replaceChild(html, target.firstChild);
+//	target.innerHTML = xml2str(action.firstChild);
 }
 
-function ie_ajaxreplace(replace_action) {
-  var target = getActionTarget(replace_action);
-  var html = xml2html(replace_action.firstChild);
+/*
+function ie_ajax_replace_node(action) {
+  var target = getActionTarget(action);
+  var html = xml2html(action.firstChild);
 //  target.parentNode.replaceChild(html, target);
-	target.innerHTML = xml2str(replace_action.firstChild);
+	target.innerHTML = xml2str(action.firstChild);
 
 }
+*/
 
-function ajaxadd(add_action) {
-  var target = getActionTarget(add_action);
-  var html = xml2html(replace_action.firstChild);
-  target.parentNode.addChild(html);
+/*
+function ajax_replace_child(action) {
+  var target = getActionTarget(action);
+  var child = getActionChild(action);
+  var html = xml2html(action.firstChild);
+  target.replaceChild(html, child);
+//	target.innerHTML = xml2str(action.firstChild);
 }
 
-function ajaxremove(remove_action) {
-  var target = getActionTarget(remove_action);
+function ie_ajax_replace_child(action) {
+  var target = getActionTarget(action);
+  var child = getActionChild(action);
+  var html = xml2html(action.firstChild);
+  target.replaceChild(html, child);
+//	target.innerHTML = xml2str(action.firstChild);
+}
+*/
+
+function ajax_append_child(action) {
+  var target = getActionTarget(action);
+  var html = xml2html(action.firstChild);
+  target.parentNode.appendChild(html);
+}
+
+function ie_ajax_append_child(action) {
+    return ajax_append_child(action);
+}
+
+function ajax_remove_node(action) {
+  var target = getActionTarget(action);
   target.parentNode.removeChild(target);
 }
 
+function ie_ajax_remove_node(action) {
+    return ajax_remove_node(action);
+}
 
+/*
+function ajax_remove_child(action) {
+  var target = getActionTarget(action);
+  var child = getActionChild(action);
+  target.removeChild(child);
+}
+
+function ie_ajax_remove_child(action) {
+    return ajax_remove_child(action);
+}
+*/
 
 function xml2str (xml) {
 	if (xml.nodeName=="#text")
