@@ -213,7 +213,7 @@ class Component extends PWBObject
     }
 	function viewUpdated ($params){}
 	function &createDefaultView(){
-		$v =& new HTMLRendererNew;
+		$v =& new XMLNodeModificationsTracker;
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$v->append_child($this->$key->myContainer());

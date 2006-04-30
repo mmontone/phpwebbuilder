@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__FILE__) . '/FormComponent.class.php';
+require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class ActionLink extends FormComponent{
 	var $obj;
@@ -23,12 +24,17 @@ class ActionLink extends FormComponent{
 		parent::prepareToRender();
 		$link =& $this->view;
 		if (!$link) print_backtrace();
-		$link->setAttribute('onclick', 'callAction(&#34;'.$this->getId().'&#34;);');
+		$app =& Application::instance();
+		$action = $app->page_renderer->renderActionLinkAction($this);
+		$link->setAttribute('onclick', $action);
 	}
-	function viewUpdated($exec){
+
+	function viewUpdated($params){
 		$act = $this->act;
 		$this->obj->$act($this->params);
 	}
+
 }
+
 
 ?>

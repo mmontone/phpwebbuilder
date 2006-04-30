@@ -13,15 +13,16 @@ class Application extends ComponentHolder
   var $configuration;
   var $wholeView;
   var $viewCreator;
+  var $page_renderer;
+
   function Application() {
   	$n = null;
 	$_SESSION['app']['current_app'] =& $this;
   	$rc =& $this->set_root_component();
     parent::ComponentHolder($rc, 0,$n);
-
-    //$this->set_default_configuration();
-    //$this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
-    //$this->instantiate_configuration_objects();
+    $this->set_default_configuration();
+    $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
+    $this->instantiate_configuration_objects();
   }
 
     function set_default_configuration() {
@@ -35,14 +36,20 @@ class Application extends ComponentHolder
 		                             'error_reporter' => array('invalid_action' => 'InvalidActionReporter',
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
-		                                                       'paged_expired' => 'SimpleErrorReporter'));
+		                                                       'paged_expired' => 'SimpleErrorReporter'),
+		                             'page_renderer' => 'AjaxPageRenderer');
     }
 
     function instantiate_configuration_objects(){
-        $url_manager_class = $this->configuration['url_manager'] . 'UrlManager';
+        /*$url_manager_class = $this->configuration['url_manager'] . 'UrlManager';
         $this->url_manager =& new $url_manager_class($this);
         $backbutton_manager_class = $this->configuration['backbutton_manager'] . 'BackButtonManager';
-        $this->backbutton_manager =& new $backbutton_manager_class($this);
+        $this->backbutton_manager =& new $backbutton_manager_class($this);*/
+        // The following is not true, don't know why :):
+        // Interesting case for PHP like references: they are alias, so we can initialize a reference beafore
+        // the pointed object has any value. The refernce will be actualized automatically
+        $this->page_renderer =& new $this->configuration['page_renderer']($this->wholeView);
+        //$this->page_renderer =& new $this->configuration['page_renderer']($null);
     }
 
 	function configure() {
@@ -92,9 +99,11 @@ class Application extends ComponentHolder
 	}
 	function render() {
 		$this->component->prepareToRender();
-		$v =& $this->wholeView;
 		//$v =& $this->component->view;
-		echo $v->renderPage();
+		//$this->page_renderer->page =& $this->wholeView;
+		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
+		//echo $this->page_renderer->renderPage();
+		echo $initial_page_renderer->renderPage();
 		//echo $this->component->printTree();
 		//echo $v->showXML();
 	}
@@ -102,9 +111,10 @@ class Application extends ComponentHolder
 		if (!$this->viewCreator){
 			$this->viewCreator =& new ViewCreator($this);
 			$this->loadTemplates();
-			$this->wholeView =& new HTMLRendererNew;
+			$this->wholeView =& new XMLNodeModificationsTracker;
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
+			$this->page_render->page =& $this->wholeView;
 			$this->wholeView->csss =& $this->setCss();
 		}
 	}

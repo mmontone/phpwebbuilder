@@ -9,7 +9,6 @@ if (!(isset($_REQUEST["Controller"])))
 	$_REQUEST["Controller"] = "ShowController";
 
 $controller = new $_REQUEST["Controller"];
-
 $action = 'begin';
 if ($_REQUEST['action'])
   $action = $_REQUEST['action'];
