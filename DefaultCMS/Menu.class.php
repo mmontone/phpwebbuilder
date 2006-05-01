@@ -22,14 +22,19 @@ class Menu extends Component
 		$this->menus();
 	}
 	function menus (){
-			$log = array('Component'=>'Logout');
+		$this->realMenus();
+		$this->objMenus();
+	}
+	function realMenus (){
 			$menus =& MenuSection::availableMenus();
 			$ks =& array_keys($menus);
-			$temp = array();
 			foreach ($ks as $k) {
+				$this->realMenuSection($menus[$k]);
+			}
+	}
+	function realMenuSection(&$menu){
 				$sect =& new MenuSectionComponent();
 				$this->add_component($sect);
-				$menu =& $menus[$k];
 				$sect->add_component(new Text($menu->name->value), 'secName');
 			    $col =& $menu->itemsVisible();
 			    $ks2 =& array_keys($col);
@@ -41,9 +46,9 @@ class Menu extends Component
 							parse_str($menu->params->value)
 							),
 						$menu->name->value, $sect);
-
 		    	}
-			}
+	}
+	function objMenus(){
 			$arr = get_subclasses("PersistentObject");
 			$sect =& new MenuSectionComponent();
 			$this->add_component($sect);
@@ -53,6 +58,7 @@ class Menu extends Component
 					$this->addelement($name, $name, $sect);
 				}
 			}
+			$log = array('Component'=>'Logout');
 			$this->additem($log,'Logout', $sect);
 	}
 	function addelement($obj, $text, &$sect) {
@@ -61,6 +67,7 @@ class Menu extends Component
 	}
 	function additem(&$comp, $text, &$sect){
 		$sect->add_component(new MenuItemComponent($this, $text, $comp));
+		echo "<br/>used memory for $text:" .memory_get_usage();
 	}
 	function menuclick(&$comp){
 		$c =& new $comp['Component']($comp);
