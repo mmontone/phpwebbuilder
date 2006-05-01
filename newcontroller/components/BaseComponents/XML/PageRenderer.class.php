@@ -26,6 +26,7 @@ class StandardPageRenderer extends PageRenderer {
 		}
 		$ret.= '</head><body>';
 		$ret .= $this->page->render();
+		$this->page->flushModifications();
 		$ret .='</body></html>';
 		return $ret;
 	}
@@ -57,7 +58,6 @@ class AjaxPageRenderer extends PageRenderer {
 		$xml .= $this->renderAjaxResponseCommands($this->page);
 		$xml .= "</ajax_response>";
 
-		//echo get_class($this->page);
 		$this->page->flushModifications();
 
 		echo $xml;

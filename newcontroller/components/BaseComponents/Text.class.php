@@ -20,6 +20,13 @@ class Text extends FormComponent{
 	function printTree(){
 		return $this->value;
 	}
+
+	function changed() {
+		$new_view =& new HTMLTextNode($this->value, $this);
+		// No se porque falla este assert
+		assert($this->view->parentNode);
+		$this->view->parentNode->replace_child($this->view, $new_view);
+	}
 }
 
 ?>

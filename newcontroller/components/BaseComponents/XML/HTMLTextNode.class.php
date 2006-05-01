@@ -13,6 +13,11 @@ class HTMLTextNode extends XMLNodeModificationsTracker
 	function render (){
 		return $this->text;
 	}
+
+	function setText($text) {
+		$new_text_node =& new HTMLTextNode($text, $this->controller);
+		$this->parentNode->replace_child($this, $new_text_node);
+	}
 }
 
 ?>

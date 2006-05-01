@@ -58,7 +58,7 @@ class ViewCreator {
 		$view  =& $component->view;
 		$hasView = $view!=null && strcasecmp(get_class($view),'NullView')!=0;
 		if ($hasView){
-			if ($view->parent != null && $view->parent->getRealId() == $parentView->getRealId()) return $view;
+			if ($view->parentNode != null && $view->parentNode->getRealId() == $parentView->getRealId()) return $view;
 		}
 		$id = $component->getSimpleId();
 		$vids = $parentView->childrenWithId(
@@ -71,13 +71,13 @@ class ViewCreator {
 				return $vid;
 			} else {
 				$pos =& $vid;
-				$parentView =& $vid->parent;
+				$parentView =& $vid->parentNode;
 			}
 		} else {
 			$cts =& $parentView->containersForClass($component);
 			if (count($cts)>0){
 				$ct =& $cts[0];
-				$parentView =& $ct->parent;
+				$parentView =& $ct->parentNode;
 				$pos =& $ct->createCopy();
 				$parentView->insert_before($ct, $pos);
 			} else {

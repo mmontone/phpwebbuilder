@@ -1,5 +1,5 @@
 <?php
- 
+
 class NewActionDispatcher
 {
 	function &application() {
@@ -75,7 +75,7 @@ class NewActionDispatcher
 		$elems = array();
 		foreach ($form as $dir=>$param){
 			$temp = array();
-			$c =& $this->getComponent($dir); 
+			$c =& $this->getComponent($dir);
 			if($c) {
 				$temp[]=& $c;
 				$temp[]= $param;
@@ -96,7 +96,7 @@ class NewActionDispatcher
 			$delayed[$k][0]->viewUpdated($delayed[$k][1]);
 		}
 	}
-	function &getComponent($path){		
+	function &getComponent($path){
 		$app =& Application::instance();
 		$comp=& $app->component;
 		$path = split("/", $path);
@@ -107,7 +107,7 @@ class NewActionDispatcher
 				$comp1 =& $comp->component_at($p);
 				$comp =& $comp1;
 			}
-			return $comp; 
+			return $comp;
 		} else {
 			$n = null;
 			return $n;

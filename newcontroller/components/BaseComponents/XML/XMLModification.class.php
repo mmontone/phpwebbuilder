@@ -93,8 +93,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->fullPath!="");
-		$xml = '<set_attribute id="' . $target->fullPath . '">';
+		$xml = '<set_attribute path="' . $target->fullPath . '">';
 		$xml .= '<attribute>' . $this->attribute . '</attribute>';
 		$xml .= '<value> ' . $this->value . '</value>';
 		$xml .= '</set_attribute>';

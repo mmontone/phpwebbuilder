@@ -7,12 +7,13 @@ class DOMXMLNode //extends PWBObject
 	var $attributes = array ();
 	var $parentPosition = null;
 	var $nextNode = 0;
-	var $fullPath = null;
+	var $fullPath = '';
 
 	function DOMXMLNode($tag_name = "div", $attributes = array ()) {
 		$this->tagName = $tag_name;
 		$this->attributes = $attributes;
 		$this->nextNode = 0;
+		$this->fullPath = '';
 	}
 
 	function & create_element($tag_name) {
@@ -48,13 +49,13 @@ class DOMXMLNode //extends PWBObject
 	}
 	function insert_in(& $xml, $position) {
 		$this->childNodes[$position] = & $xml;
-		$xml->parent = & $this;
+		$xml->parentNode = & $this;
 		$xml->parentPosition = $position;
 		$xml->updateFullPath();
 	}
 
 	function updateFullPath() {
-		$this->fullPath = $this->parent->fullPath . '/'. $this->parentPosition;
+		$this->fullPath = $this->parentNode->fullPath . '/'. $this->parentPosition;
 
 		foreach (array_keys($this->childNodes) as $i) {
 			$this->childNodes[$i]->updateFullPath();
@@ -64,7 +65,7 @@ class DOMXMLNode //extends PWBObject
 	function replace_child(& $old, & $new) {
 		$this->insert_in($new, $old->parentPosition);
 		$n = null;
-		$old->parent = & $n;
+		$old->parentNode = & $n;
 		$old->parentPosition = & $n;
 		/*$this->triggerEvent('childReplaced', array (
 			'target' => $old,

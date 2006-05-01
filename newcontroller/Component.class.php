@@ -96,6 +96,10 @@ class Component extends PWBObject
 		$component->setApp($this->app);
 		$this->nextChildrenPosition++;
 	}
+
+	function &getComponent($index) {
+		return $this->__children[$index]->component;
+	}
 	function delete_component_at($index){
 		$c =& $this->component_at($index);
 		$c->delete();
@@ -105,7 +109,7 @@ class Component extends PWBObject
 		$v =& $this->view;
 		$pv->remove_child($v);
 		$h =& $this->holder;
-		$p =& $h->parent;
+		$p =& $h->parentNode;
 		$pos =&  $h->__owner_index;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
@@ -157,7 +161,7 @@ class Component extends PWBObject
         $component->start();
     }
 	function dettachView(){
-		$this->view->parent->remove_child($this->view);
+		$this->view->parentNode->remove_child($this->view);
 	}
 	function invalid_callback($callback) {
 		$app =& $this->application();
@@ -231,12 +235,13 @@ class Component extends PWBObject
 	}
 	function createContainer(){
     	$cont=& $this->myContainer();
-    	$pv =& $this->view->parent;
+    	$pv =& $this->view->parentNode;
     	$pv->replace_child($this->view, $cont);
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;
-    	$cont->setAttribute('id',$this->getSimpleID());
+    	//$cont->setAttribute('id',$this->getSimpleID());
+    	$cont->attributes['id'] = $this->getSimpleID();
     	return $cont;
 	}
 	function getId(){
