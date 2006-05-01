@@ -37,7 +37,7 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             'page_renderer' => 'StandardPageRenderer');
+		                             'page_renderer' => 'AjaxPageRenderer');
     }
 
     function instantiate_configuration_objects(){
@@ -97,16 +97,18 @@ class Application extends ComponentHolder
 	function render_action_link(&$action) {
 		return $this->url_manager->render_action_link($action);
 	}
+
+	function initialRender() {
+		$this->component->prepareToRender();
+		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
+		echo $initial_page_renderer->renderPage();
+	}
+
 	function render() {
 		$this->component->prepareToRender();
-		//$v =& $this->component->view;
-		//$this->page_renderer->page =& $this->wholeView;
-		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
-		//echo $this->page_renderer->renderPage();
-		echo $initial_page_renderer->renderPage();
-		//echo $this->component->printTree();
-		//echo $v->showXML();
+		echo $this->page_renderer->renderPage();
 	}
+
 	function createView(){
 		if (!$this->viewCreator){
 			$this->viewCreator =& new ViewCreator($this);
@@ -114,8 +116,8 @@ class Application extends ComponentHolder
 			$this->wholeView =& new XMLNodeModificationsTracker;
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
-			$this->page_render->page =& $this->wholeView;
 			$this->wholeView->csss =& $this->setCss();
+			$this->page_render->page =& $this->wholeView;
 		}
 	}
 	function setCss(){}
@@ -126,7 +128,7 @@ class Application extends ComponentHolder
    	function run() {
 	  $this->start();
 	  $this->createView();
-	  $this->render();
+	  $this->initialRender();
 	}
 	function getId(){
 		return "app";
