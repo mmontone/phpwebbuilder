@@ -54,7 +54,7 @@ class DOMXMLNode //extends PWBObject
 	}
 
 	function updateFullPath() {
-		$xml->fullPath = $this->fullPath . '/'. $this->parentPosition;
+		$this->fullPath = $this->parent->fullPath . '/'. $this->parentPosition;
 
 		foreach (array_keys($this->childNodes) as $i) {
 			$this->childNodes[$i]->updateFullPath();

@@ -23,7 +23,6 @@ class ActionLink extends FormComponent{
 	function prepareToRender(){
 		parent::prepareToRender();
 		$link =& $this->view;
-		if (!$link) print_backtrace();
 		$app =& Application::instance();
 		$action = $app->page_renderer->renderActionLinkAction($this);
 		$link->setAttribute('onclick', $action);

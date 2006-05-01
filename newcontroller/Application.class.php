@@ -32,6 +32,7 @@ class Application extends ComponentHolder
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
 		                             'page_renderer' => 'AjaxPageRenderer');
+		                             //'page_renderer' => 'StandardPageRenderer');
     }
 
     function instantiate_configuration_objects(){
@@ -99,10 +100,10 @@ class Application extends ComponentHolder
 	}
 
 	function render() {
+		$this->wholeView->updateFullPath();
 		$this->component->prepareToRender();
-		echo $this->page_renderer->renderPage();
+		$this->page_renderer->renderPage();
 	}
-
 	function createView(){
 		if (!$this->viewCreator){
 			$this->viewCreator =& new ViewCreator($this);

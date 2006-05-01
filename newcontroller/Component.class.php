@@ -240,7 +240,6 @@ class Component extends PWBObject
     	return $cont;
 	}
 	function getId(){
-		if (!$this->holder) print_backtrace(get_class($this));
 		return $this->holder->getRealId();
 	}
 	function &parentView(){
@@ -258,7 +257,7 @@ class Component extends PWBObject
 		}
 	}
 	/* For debugging */
-	function printTree(){
+/*	function printTree(){
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->component_at($key);
@@ -266,9 +265,7 @@ class Component extends PWBObject
 		}
 		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);
 		return $ret;
-	}
-
-
+	}*/
 }
 
 

@@ -19,7 +19,7 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->fullPath);
+		assert($target->fullPath!="");
 		$xml = '<replace_node path="' . $target->fullPath . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</replace_node>';
@@ -37,7 +37,7 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($this->child->fullPath);
+		assert($this->child->fullPath!="");
 		$xml = '<replace_node path="' . $this->child->fullPath . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</replace_node>';
@@ -53,7 +53,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->fullPath);
+		assert($target->fullPath!="");
 		$xml = '<append_child path="' . $target->fullPath . '">';
 		$xml .= $this->child->render();
 		$xml .= '</append_child>';
@@ -63,7 +63,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 
 class RemoveNodeXMLNodeModification extends XMLNodeModification {
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->fullPath);
+		assert($target->fullPath!="");
 		$xml = '<remove_node path="' . $target->fullPath . '" />';
 		return $xml;
 	}
@@ -77,7 +77,7 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($this->child->fullPath);
+		assert($this->child->fullPath!="");
 		$xml = '<remove_node path="' . $this->child->fullPath . '" />';
 		return $xml;
 	}
@@ -93,7 +93,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->fullPath);
+		assert($target->fullPath!="");
 		$xml = '<set_attribute id="' . $target->fullPath . '">';
 		$xml .= '<attribute>' . $this->attribute . '</attribute>';
 		$xml .= '<value> ' . $this->value . '</value>';

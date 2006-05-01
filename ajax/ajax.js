@@ -90,6 +90,10 @@ function postAjax(url, func, formName, obj) {
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
+                           if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
+                           t = document.createTextNode(http.responseText);
+                           form = document.getElementById(formName);
+                           form.appendChild(t);
                            func(http.responseText, http.responseXML, obj);
                        }
                };
@@ -142,7 +146,9 @@ function updatePage(text, xml) {
   var actions = xml.firstChild.childNodes;
   var i=0;
   for (; i< actions.length; i++) {
-    eval("ajax_" + actions[i].tagName + "(actions[i]);");
+    str = "ajax_" + actions[i].tagName + "(actions[i]);";
+    alert(str);
+    eval(str);
   }
   return true;
 }
