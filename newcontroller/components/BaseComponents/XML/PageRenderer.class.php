@@ -57,7 +57,7 @@ class AjaxPageRenderer extends PageRenderer {
 		$xml .= $this->renderAjaxResponseCommands($this->page);
 		$xml .= "</ajax_response>";
 
-		echo get_class($this->page);
+		//echo get_class($this->page);
 		$this->page->flushModifications();
 
 		echo $xml;

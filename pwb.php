@@ -23,11 +23,11 @@ $app = array(
 				 "Instances,database,".
             	 "templates,ajax,NewTemplates"
       );*/
-
+if (!defined('modules')) {
 define('modules',"Model,Instances,newcontroller,database,NewTemplates,DefaultCMS");
 
 define('app_class',"DefaultCMSApplication");
-
+}
 $modules = split(",",modules);
 
 foreach ($config as $dir) {

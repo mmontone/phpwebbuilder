@@ -102,7 +102,7 @@ class Application extends ComponentHolder
 	function render() {
 		$this->wholeView->updateFullPath();
 		$this->component->prepareToRender();
-		$this->page_renderer->renderPage();
+		echo $this->page_renderer->renderPage();
 	}
 	function createView(){
 		if (!$this->viewCreator){
