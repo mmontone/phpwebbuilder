@@ -1,12 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/Component.class.php';
 require_once dirname(__FILE__) . '/ComponentHolder.class.php';
-require_once dirname(__FILE__) . '/UrlManager.class.php';
-require_once dirname(__FILE__) . '/BackButtonManager.class.php';
-require_once dirname(__FILE__) . '/ErrorReporter.class.php';
-require_once dirname(__FILE__) . '/ComponentRenderer.class.php';
-require_once dirname(__FILE__) . '/../flowviews/html/HTMLRenderer.class.php';
 
 class Application extends ComponentHolder
 {
@@ -48,7 +42,7 @@ class Application extends ComponentHolder
         // The following is not true, don't know why :):
         // Interesting case for PHP like references: they are alias, so we can initialize a reference beafore
         // the pointed object has any value. The refernce will be actualized automatically
-        $this->page_renderer =& new $this->configuration['page_renderer']($this->wholeView);
+        $this->page_renderer =& new $this->configuration['page_renderer']($null);
         //$this->page_renderer =& new $this->configuration['page_renderer']($null);
     }
 
@@ -117,7 +111,7 @@ class Application extends ComponentHolder
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
 			$this->wholeView->csss =& $this->setCss();
-			$this->page_render->page =& $this->wholeView;
+			$this->page_renderer->page =& $this->wholeView;
 		}
 	}
 	function setCss(){}
