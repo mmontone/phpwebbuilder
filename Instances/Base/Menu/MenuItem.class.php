@@ -11,6 +11,7 @@ class MenuItem extends PersistentObject {
 	function isVisible(){
 		$conclass = $this->controller->value;
 		$con =&	new $conclass;
+		unset($conclass);
 		$form = array();
 		parse_str($this->params->value, $form);
 		return $con->hasPermission($form);
@@ -18,7 +19,7 @@ class MenuItem extends PersistentObject {
     function showMenu (){
 		if ($this->isVisible())
 			return "<li><a href=\"Action.php?Controller=".$this->controller->value.$this->params->value."\">".$this->name->value."</a></li>";
-		else 
+		else
 			return "";
 	}
 }

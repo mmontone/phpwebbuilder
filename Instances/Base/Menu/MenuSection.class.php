@@ -3,38 +3,44 @@ class MenuSection extends PersistentObject {
     function initialize () {
          $this->table = "MenuSection";
          $this->addField(new textField("name", TRUE));
-         $this->addField(new numField("menuorder", TRUE));         
+         $this->addField(new numField("menuorder", TRUE));
          $this->addField(new CollectionField("section", MenuItem));
     }
     function showMenu (){
-	    $ret ="";
-	    $col = $this->itemsVisible();
+	    $col =& $this->itemsVisible();
+	    ob_start();
 	    foreach($col as $menu){
-	        $ret .= $menu->showMenu();
+	        echo $menu->showMenu();
 	    }
+	    $ret = ob_get_contents();
 	    return "<h4>".$this->name->value."</h4><ul>" . $ret ."</ul>";
 	}
 	function &itemsVisible(){
-	    $col =& $this->MenuItemsection->collection;
-	    $col->limit=0;
-	    $menus0 =& $col->objects();
-	    $menus = array();
-	    $ks = array_keys($menus0);
-	    foreach($ks as $k){
-	    	$elem =& $menus0[$k];
-	    	if ($elem->isVisible()){
-				$menus []=& $elem;
-	    	}
-	    }
-		return $menus;
+		if (!is_array($this->itemsVisible)){
+		    $col =& $this->MenuItemsection->collection;
+		    $col->limit=0;
+		    $menus0 =& $col->objects();
+		    unset($col);
+		    $menus = array();
+		    $ks = array_keys($menus0);
+		    foreach($ks as $k){
+		    	$elem =& $menus0[$k];
+		    	if ($elem->isVisible()){
+					$menus[]=& $elem;
+		    	}
+		    }
+			$this->itemsVisible =& $menus;
+		}
+		return $this->itemsVisible;
 	}
 	function isVisible(){
 		return count($this->itemsVisible())>0;
 	}
 	function availableMenus(){
-		$col = new PersistentCollection('MenuSection');
+		$col =& new PersistentCollection('MenuSection');
 	    $col->limit=0;
 		$col2 =& $col->objects();
+		unset($col);
 		$menus = array();
 		for($i=0; $i<count($col2); $i++){
 			$elem =& $col2[$i];
@@ -42,7 +48,7 @@ class MenuSection extends PersistentObject {
 				$menus []=&$elem;
 			}
 		}
-		return $menus;  
+		return $menus;
 	}
 }
 ?>

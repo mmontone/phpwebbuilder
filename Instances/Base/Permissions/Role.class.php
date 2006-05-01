@@ -9,23 +9,24 @@ class Role extends PersistentObject {
     }
 
 	function userHasPermission($id, $permission){
-		if ($id == null) $id = -1;
-        $db = new MySQLdb;
+		if ($id == null) return false;
+        $db =& new MySQLdb;
 		if (is_array($permission)) {
-			$perm ="(";
+			$perm ='(';
 			foreach($permission as $p) {
-				$perm .= " p.permission='$p' OR ";
+				$perm .= ' p.permission=\''.$p.'\' OR ';
 			}
-			$perm .= " 1=0)";
-		} else $perm = " p.permission='$permission' ";
+			$perm .= ' 1=0)';
+		} else $perm = ' p.permission=\''.$permission.'\' ';
 		/*Necesito relacionar UserRole con RolePermission*/
-		$sql = "SELECT * FROM ".baseprefix."UserRole u, ".baseprefix."RolePermission p".
-				" WHERE user = $id".
-				" AND $perm".
-				" AND u.role=p.role";
-		$reg=$db->SQLExec($sql, FALSE, 0);
-		$can = ((mysql_num_rows ($reg) > 0));
-		if (!$can) trigger_error("User $id can't ".print_r($permission, TRUE));
+		$sql = implode(array('SELECT * FROM ',baseprefix,'UserRole u, ',baseprefix,'RolePermission p',
+				' WHERE user =', $id,
+				' AND ',$perm,
+				' AND u.role=p.role'));
+		$reg=& $db->SQLExec($sql, FALSE, 0);
+		unset($sql);
+		$can = mysql_num_rows ($reg) > 0;
+		unset($reg);
     	return $can;
 	}
 	function havePermission ($permission) {
@@ -43,11 +44,6 @@ class Role extends PersistentObject {
 					" AND ".$this->id->value."=p.role";
 			$reg=$db->SQLExec($sql, FALSE, 0);
 	    	return ((mysql_num_rows ($reg) > 0));
-	}
-	function canCheck () {
-		$tc = new TableCheckView;
-		$tc = $tc->viewFor($this);
-		return ($tc->show()=="");
 	}
 }
 ?>
