@@ -11,17 +11,14 @@ function getHTTPObject() {
     catch (e)
     { xmlhttp = false; }
     }
-    return xmlhttp; }
+    return xmlhttp;
+}
 
 var color;
 function loadingStart(){
    color = document.getElementsByTagName('body')[0].style.backgroundColor;
-//   document.getElementById('mainBody').style.background-color = 0xFFFFFF;
-//   document.getElementById('mainBody').style.visibility="hidden";
 }
 function loadingStop(){
-//   document.getElementById('mainBody').style.background-color = color;
-//   document.getElementById('mainBody').style.visibility="visible";
 }
 
 function goAjaxMethod(met, url, func, obj) {
@@ -59,10 +56,8 @@ function goAjax(url, func, obj) {
 }
 
 function ajaxError() {
-  // Nota: para que esta funcion no sea invocada, retornar true en la funcion handler.
-  // Para que deje de joder, documentar el siguiente alert
-  //alert("Hubo un error. Intente nuevamente");
 }
+
 
 function encodeForm(formName) {
   var form = document.getElementById(formName);
@@ -84,7 +79,7 @@ function postAjax(url, func, formName, obj) {
        /*-------------------------------------------------------------------------
        ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
 
-       prompt("url",url);prompt("paramans",params);
+       //prompt("url",url);prompt("paramans",params);
        try {
               http.open("POST", url, true);
           http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -105,50 +100,38 @@ function postAjax(url, func, formName, obj) {
        }
 }
 
-function callAction(action_id) {
-    url = "new_dispatch.php?"+action_id+"=execute";
-    formName = "app";
-    var form = document.getElementById(formName);
-    form.setAttribute('action', url);
-    form.submit();
-}
-
-function callActionAjax(action_id) {
-    url = "new_dispatch.php?"+action_id+"=execute";
-    formName = "app";
-    postAjax(url,updatePage,formName);
-}
 
 //------------------------------------
 
 function xml2html(xml){
     if (xml.nodeName=="#text") {
       return document.createTextNode(xml.nodeValue);
-    }else{
-    var html = document.createElement(xml.tagName);
-    var childs = xml.childNodes;
-    var i=0;
-    for (; i< childs.length; i++) {
-      var child = xml2html(childs[i]);
-      html.appendChild(child);
     }
-    var attrs = xml.attributes;
-    for (var i=0; i<  attrs.length; i++) {
-      html.setAttribute(attrs[i].nodeName, attrs[i].nodeValue);
-    }
-    return html;
+    else{
+        var html = document.createElement(xml.tagName);
+        var childs = xml.childNodes;
+        var i=0;
+        for (; i< childs.length; i++) {
+          var child = xml2html(childs[i]);
+          html.appendChild(child);
+        }
+        var attrs = xml.attributes;
+        for (var i=0; i<  attrs.length; i++) {
+            html.setAttribute(attrs[i].nodeName, attrs[i].nodeValue);
+        }
+        return html;
     }
 }
 
 function inIE() {
-	return navigator.appName == "Microsoft Internet Explorer"
+	return navigator.appName == "Microsoft Internet Explorer";
 }
 
 function callAjax(url) {
   if (inIE())
     goAjax(url, ie_updatePage);
   else
-       goAjax(url, updatePage);
+    goAjax(url, updatePage);
 }
 
 function submitAjax(form_id, url) {
@@ -167,41 +150,47 @@ function updatePage(text, xml) {
 function ie_updatePage(text, xml) {
   var actions = xml.firstChild.nextSibling.childNodes;
   var i=0;
-    for (; i< actions.length; i++) {
-      eval("ie_ajax_" + actions[i].nodeName + "(actions[i]);");
-    }
+  for (; i< actions.length; i++) {
+    eval("ie_ajax_" + actions[i].nodeName + "(actions[i]);");
+  }
   return true;
 }
 
-// Improve this function, the way to access xml nodes
+
 function getActionTarget(action) {
-  return document.getElementById(action.getAttribute("id"));
+  var ret = false;
+  if (action.getAttribute("id") != null)
+      ret = document.getElementById(action.getAttribute("id"));
+  if (action.getAttribute("path") != null)
+    ret = nodeAtPath(action.getAttribute("path"));
+
+  return ret;
+}
+
+function nodeAtPath(path_str) {
+    var path = split(path_str, "/");
+    var current_elem = document;
+    for (var i=0; i < path.length; i++)
+        current_elem = current_elem.childNodes[path[i]];
+    return current_elem;
+}
+
+function ajax_insert_html(action) {
+  var target = getActionTarget(action);
+  target.innerHTML = xml2str(action.firstChild);
 }
 
 function ajax_replace_node(action) {
   var target = getActionTarget(action);
   var html = xml2html(action.firstChild);
   target.replaceChild(html, target.firstChild);
-//	target.innerHTML = xml2str(action.firstChild);
 }
 
-/*
-function ie_ajax_replace_node(action) {
-  var target = getActionTarget(action);
-  var html = xml2html(action.firstChild);
-//  target.parentNode.replaceChild(html, target);
-	target.innerHTML = xml2str(action.firstChild);
-
-}
-*/
-
-/*
 function ajax_replace_child(action) {
   var target = getActionTarget(action);
   var child = getActionChild(action);
   var html = xml2html(action.firstChild);
   target.replaceChild(html, child);
-//	target.innerHTML = xml2str(action.firstChild);
 }
 
 function ie_ajax_replace_child(action) {
@@ -209,9 +198,8 @@ function ie_ajax_replace_child(action) {
   var child = getActionChild(action);
   var html = xml2html(action.firstChild);
   target.replaceChild(html, child);
-//	target.innerHTML = xml2str(action.firstChild);
 }
-*/
+
 
 function ajax_append_child(action) {
   var target = getActionTarget(action);
@@ -232,7 +220,7 @@ function ie_ajax_remove_node(action) {
     return ajax_remove_node(action);
 }
 
-/*
+
 function ajax_remove_child(action) {
   var target = getActionTarget(action);
   var child = getActionChild(action);
@@ -242,7 +230,7 @@ function ajax_remove_child(action) {
 function ie_ajax_remove_child(action) {
     return ajax_remove_child(action);
 }
-*/
+
 
 function xml2str (xml) {
 	if (xml.nodeName=="#text")
@@ -262,3 +250,18 @@ function xml2str (xml) {
 }
 
 
+/*--------------------------*/
+
+function callAction(action_id) {
+    url = "new_dispatch.php?"+action_id+"=execute";
+    formName = "app";
+    var form = document.getElementById(formName);
+    form.setAttribute('action', url);
+    form.submit();
+}
+
+function callActionAjax(action_id) {
+    url = "new_dispatch.php?"+action_id+"=execute";
+    formName = "app";
+    postAjax(url,updatePage,formName);
+}

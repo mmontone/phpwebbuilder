@@ -7,18 +7,20 @@ class DOMXMLNode //extends PWBObject
 	var $attributes = array ();
 	var $parentPosition = null;
 	var $nextNode = 0;
+	var $fullPath = null;
 
 	function DOMXMLNode($tag_name = "div", $attributes = array ()) {
 		$this->tagName = $tag_name;
 		$this->attributes = $attributes;
 		$this->nextNode = 0;
 	}
+
 	function & create_element($tag_name) {
 		$class_name = get_class($this);
-		$element = & new $class_name;
-		$element->tagName = $tag_name;
+		$element = & new $class_name($tag_name);
 		return $element;
 	}
+
 	function parentNode() {
 		if ($this->parentNode != null) {
 			return $this->parentNode;
@@ -27,9 +29,11 @@ class DOMXMLNode //extends PWBObject
 			print_backtrace("there is no parent");
 		}
 	}
+
 	function setTagName($tagName) {
 		$this->tagName = $tagName;
 	}
+
 	function & create_text_node($text, & $obj) {
 		return new XMLTextNode($text, & $obj);
 	}
@@ -46,7 +50,17 @@ class DOMXMLNode //extends PWBObject
 		$this->childNodes[$position] = & $xml;
 		$xml->parent = & $this;
 		$xml->parentPosition = $position;
+		$xml->updateFullPath();
 	}
+
+	function updateFullPath() {
+		$xml->fullPath = $this->fullPath . '/'. $this->parentPosition;
+
+		foreach (array_keys($this->childNodes) as $i) {
+			$this->childNodes[$i]->updateFullPath();
+		}
+	}
+
 	function replace_child(& $old, & $new) {
 		$this->insert_in($new, $old->parentPosition);
 		$n = null;

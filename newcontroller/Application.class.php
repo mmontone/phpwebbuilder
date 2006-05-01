@@ -37,7 +37,7 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             'page_renderer' => 'AjaxPageRenderer');
+		                             'page_renderer' => 'StandardPageRenderer');
     }
 
     function instantiate_configuration_objects(){

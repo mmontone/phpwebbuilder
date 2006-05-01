@@ -15,7 +15,7 @@ class StandardPageRenderer extends PageRenderer {
 	}
 
 	function renderPage() {
-		$this->tagName='form';
+		$this->page->tagName='form';
 		$this->page->setAttribute('action','new_dispatch.php');
 		$this->page->setAttribute('method','POST');
 		$this->page->setAttribute('enctype','multipart/form-data');
@@ -87,13 +87,13 @@ class AjaxPageRenderer extends PageRenderer {
 
 	function visitReplaceChildXMLNodeModification(& $mod, $params) {
 		$look_for_modifications = & $params['look_for_modifications'];
-		$this->deleteXMLNode($mod->child, $look_for_modifications);
+		$this->deleteXMLChildNode($mod->child, $look_for_modifications);
 		return $mod->renderAjaxResponseCommand($params['target']);
 	}
 
 	function visitAppendChildXMLNodeModification(& $mod, $params) {
 		$look_for_modifications = & $params['look_for_modifications'];
-		$this->deleteXMLNode($mod->child, $look_for_modifications);
+		$this->deleteXMLChildNode($mod->child, $look_for_modifications);
 		return $mod->renderAjaxResponseCommand($params['target']);
 	}
 
@@ -105,11 +105,12 @@ class AjaxPageRenderer extends PageRenderer {
 		return $mod->renderAjaxResponseCommand($params['target']);
 	}
 
-	function deleteXMLNode(&$node, &$array) {
+	function deleteXMLChildNode(&$node, &$array) {
 		$keys = array_keys($array);
 
 		foreach ($keys as $key) {
 			$array_elem =& $array[$key];
+			// Puedo comparar por parentPosition porque se que ambos son hijos del mismo padre
 			if ($elem->parentPosition == $array_elem->parentPosition) {
 				unset($array[$key]);
 				return true;

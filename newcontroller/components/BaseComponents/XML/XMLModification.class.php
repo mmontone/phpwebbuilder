@@ -19,8 +19,7 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->getAttribute('id'));
-		$xml = '<replace_node id="' . $target->getAttribute('id') . '">';
+		$xml = '<replace_node path="' . $target->fullPath . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</replace_node>';
 		return $xml;
@@ -37,8 +36,7 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		//assert($target->getAttribute('id'));
-		$xml = '<replace_node id="' . $this->child->getAttribute('id') . '">';
+		$xml = '<replace_node path="' . $this->child->fullPath . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</replace_node>';
 		return $xml;
@@ -53,8 +51,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		//assert($target->getAttribute('id'));
-		$xml = '<append_child id="' . $target->getAttribute('id') . '">';
+		$xml = '<append_child path="' . $target->fullPath . '">';
 		$xml .= $this->child->render();
 		$xml .= '</append_child>';
 		return $xml;
@@ -63,8 +60,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 
 class RemoveNodeXMLNodeModification extends XMLNodeModification {
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->getAttribute('id'));
-		$xml = '<remove_node id="' . $target->getAttribute('id') . '" />';
+		$xml = '<remove_node path="' . $target->fullPath . '" />';
 		return $xml;
 	}
 }
@@ -77,8 +73,7 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($child->getAttribute('id'));
-		$xml = '<remove_node id="' . $this->child->getAttribute('id') . '" />';
+		$xml = '<remove_node path="' . $this->child->fullPath . '" />';
 		return $xml;
 	}
 }
@@ -93,7 +88,6 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->getAttribute('id'));
 		$xml = '<set_attribute id="' . $target->getAttribute('id') . '">';
 		$xml .= '<attribute>' . $this->attribute . '</attribute>';
 		$xml .= '<value> ' . $this->value . '</value>';
