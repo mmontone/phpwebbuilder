@@ -223,7 +223,7 @@ function ie_ajax_replace_child(action) {
 function ajax_append_child(action) {
   var target = getActionTarget(action);
   var html = xml2html(action.firstChild);
-  target.parentNode.appendChild(html);
+  target.appendChild(html);
 }
 
 function ie_ajax_append_child(action) {
