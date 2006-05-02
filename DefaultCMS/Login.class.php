@@ -13,23 +13,17 @@ class Login extends Component {
 	}
 	function login_do(){
 		$success =& User::login($this->username->value, $this->password->value);
-		$status =& $this->getComponent('status');
 		if ($success){
 			$this->triggerEvent('menuChanged', $success);
-			//$status->setText('success');
-			//$this->state = 'success';
 			$this->setState('success');
 		} else {
-			//$status->setText('failed');
-			//$this->state = 'failed';
 			$this->setState('failed');
 		}
 	}
 
 	function setState($text) {
 		$this->state = $text;
-		$status =& $this->getComponent('status');
-		$status->changed();
+		$this->status->changed();
 	}
 }
 

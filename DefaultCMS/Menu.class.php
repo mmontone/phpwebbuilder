@@ -67,7 +67,7 @@ class Menu extends Component
 	}
 	function additem(&$comp, $text, &$sect){
 		$sect->add_component(new MenuItemComponent($this, $text, $comp));
-		echo "<br/>used memory for $text:" .memory_get_usage();
+		//echo "<br/>used memory for $text:" .memory_get_usage();
 	}
 	function menuclick(&$comp){
 		$c =& new $comp['Component']($comp);
