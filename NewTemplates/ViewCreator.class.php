@@ -40,6 +40,7 @@ class ViewCreator {
 	function setTemplates(&$templates){
 		$this->templates =& $templates;
 	}
+
 	function &createView(&$parentView, &$component){
 		$view =& $this->createElemView($parentView, $component);
 		$ks = array_keys($component->__children);
@@ -48,6 +49,7 @@ class ViewCreator {
 		}
 		return $view;
 	}
+
 	function &createElemView(&$pV, &$component){
 		/*
 		 * - If my view is in the parent, return it.

@@ -55,9 +55,9 @@ class DOMXMLNode //extends PWBObject
 	}
 
 	function updateFullPath() {
-		//$this->fullPath = $this->parentNode->fullPath . '/'. $this->parentPosition;
+		$this->fullPath = $this->parentNode->fullPath . '/'. $this->parentPosition;
 		/* Debugging */
-		$this->fullPath = $this->parentNode->fullPath . '/'. $this->tagName . '('.$this->getId() . ')' . ':' . $this->parentPosition ;
+		//$this->fullPath = $this->parentNode->fullPath . '/'. $this->tagName . '('.$this->getId() . ')' . ':' . $this->parentPosition ;
 		foreach (array_keys($this->childNodes) as $i) {
 			$this->childNodes[$i]->updateFullPath();
 		}
