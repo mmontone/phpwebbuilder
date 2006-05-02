@@ -9,8 +9,8 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 
 			foreach ($this->childNodes as $k => $h) {
 				$t = & $this->xml2template($h);
-				//$tv->append_child($t);
-				$tv->insert_in($t, count($tv->childNodes));
+				$tv->append_child($t);
+				//$tv->insert_in($t, count($tv->childNodes));
 			}
 		} else {
 			$tv = & $this->xml2template($this->first_child());
@@ -39,8 +39,8 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 					$temp = & new XMLNodeModificationsTracker;
 				}
 		foreach ($xml->childNodes as $c) {
-			//$temp->append_child($this->xml2template($c));
-			$temp->insert_in($this->xml2template($c), count($temp->childNodes));
+			$temp->append_child($this->xml2template($c));
+			//$temp->insert_in($this->xml2template($c), count($temp->childNodes));
 		}
 		$temp->id = $xml->id;
 		$temp->attributes = $xml->attributes;

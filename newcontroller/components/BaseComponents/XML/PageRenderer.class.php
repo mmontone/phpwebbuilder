@@ -17,11 +17,14 @@ class StandardPageRenderer extends PageRenderer {
 	function renderPage() {
 		$this->page->tagName='form';
 		$this->page->setAttribute('action','new_dispatch.php');
-		$this->page->setAttribute('method','POST');
+		$this->page->setAttribute('method','post');
 		$this->page->setAttribute('enctype','multipart/form-data');
 
-		$ret='<html>'.
-				'<head><script src="'.site_url.'admin/ajax/ajax.js"></script>';
+		$ret = '<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+		$ret.='<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">'.
+				'<head><title>PWB</title><script type="text/javascript" src="'.site_url.'admin/ajax/ajax.js"></script>';
 		foreach($this->csss as $c){
 			$ret.='<link rel="stylesheet" href="'.$c.'" />';
 		}
@@ -61,8 +64,7 @@ class AjaxPageRenderer extends PageRenderer {
 
 		$this->page->flushModifications();
 
-		echo $xml;
-		exit;
+		return $xml;
 	}
 
 	function renderAjaxResponseCommands(& $node) {

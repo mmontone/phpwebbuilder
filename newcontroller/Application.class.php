@@ -31,8 +31,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             //'page_renderer' => 'AjaxPageRenderer');
-		                             'page_renderer' => 'StandardPageRenderer');
+		                             'page_renderer' => 'AjaxPageRenderer');
+		                             //'page_renderer' => 'StandardPageRenderer');
     }
 
     function instantiate_configuration_objects(){
@@ -123,6 +123,7 @@ class Application extends ComponentHolder
    	function run() {
 	  $this->start();
 	  $this->createView();
+	  //$this->wholeView->checkTree();
 	  $this->initialRender();
 	}
 	function getId(){

@@ -57,7 +57,7 @@ class XMLNode extends DOMXMLNode
 			$attrs .= ' '.$name.'="'.$val.'"';
 		}
 		if (count($this->childNodes)==0){
-			return "<$this->tagName $attrs />";
+			return "<$this->tagName $attrs></$this->tagName>";
 		} else {
 			$childs = '';
 			$ks = array_keys($this->childNodes);
@@ -65,7 +65,7 @@ class XMLNode extends DOMXMLNode
 				$childs .= $this->childNodes[$k]->render();
 			}
 			//$childs = str_replace("\n", "\n   ", $childs);
-			$ret .="<$this->tagName $attrs>".$childs."</$this->tagName>";
+			$ret .="<$this->tagName $attrs>$childs</$this->tagName>";
 			return $ret;
 		}
 	}

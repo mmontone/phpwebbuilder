@@ -91,9 +91,9 @@ function postAjax(url, func, formName, obj) {
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
                            //if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
-                           t = document.createTextNode(http.responseText);
-                           form = document.getElementById(formName);
-                           form.appendChild(t);
+                           //t = document.createTextNode(http.responseText);
+                           //form = document.getElementById(formName);
+                           //form.appendChild(t);
                            func(http.responseText, http.responseXML, obj);
                        }
                };
@@ -147,7 +147,6 @@ function updatePage(text, xml) {
   var i=0;
   for (; i< actions.length; i++) {
     str = "ajax_" + actions[i].tagName + "(actions[i]);";
-    alert(str);
     eval(str);
   }
   return true;
@@ -175,12 +174,24 @@ function getActionTarget(action) {
 function nodeAtPath(path_str) {
     var path = path_str.split("/");
     var current_elem = document.getElementById("app");
+    //navigateInteractivelyFrom(current_elem);
     for (var i=1; i < path.length; i++) {
-        alert(path[i]);
+        //alert(path[i]);
         current_elem = current_elem.childNodes[path[i]];
-        alert(current_elem);
+        //alert(current_elem);
     }
     return current_elem;
+}
+
+function navigateInteractivelyFrom(aNode) {
+    var action = prompt('Action:','firstChild');
+    var result;
+
+    while (action) {
+        result = eval("aNode." + action + ";");
+        alert(result);
+        action = prompt('Action:','firstChild');
+    }
 }
 
 function ajax_insert_html(action) {
@@ -191,7 +202,7 @@ function ajax_insert_html(action) {
 function ajax_replace_node(action) {
   var target = getActionTarget(action);
   var html = xml2html(action.firstChild);
-  target.parentNode.replaceChild(html, target.firstChild);
+  target.parentNode.replaceChild(html, target);
 }
 
 function ajax_replace_child(action) {
