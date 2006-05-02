@@ -178,5 +178,12 @@ class XMLNode extends DOMXMLNode
 	function getId() {
 		return $this->getAttribute('id');
 	}
+
+	function checkTree() {
+		foreach(array_keys($this->childNodes) as $i) {
+			assert($this->childNodes[$i]->parentNode);
+			$this->childNodes[$i]->checkTree();
+		}
+	}
 }
 ?>

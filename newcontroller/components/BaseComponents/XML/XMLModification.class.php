@@ -53,7 +53,6 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	}
 
 	function renderAjaxResponseCommand(&$target) {
-		assert($target->fullPath!="");
 		$xml = '<append_child path="' . $target->fullPath . '">';
 		$xml .= $this->child->render();
 		$xml .= '</append_child>';

@@ -19,6 +19,7 @@ class StandardPageRenderer extends PageRenderer {
 		$this->page->setAttribute('action','new_dispatch.php');
 		$this->page->setAttribute('method','POST');
 		$this->page->setAttribute('enctype','multipart/form-data');
+
 		$ret='<html>'.
 				'<head><script src="'.site_url.'admin/ajax/ajax.js"></script>';
 		foreach($this->csss as $c){

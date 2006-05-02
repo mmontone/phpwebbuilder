@@ -23,9 +23,8 @@ class Text extends FormComponent{
 
 	function changed() {
 		$new_view =& new HTMLTextNode($this->value, $this);
-		// No se porque falla este assert
-		assert($this->view->parentNode);
 		$this->view->parentNode->replace_child($this->view, $new_view);
+		$this->view =& $new_view;
 	}
 }
 
