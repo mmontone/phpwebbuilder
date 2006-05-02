@@ -5,7 +5,7 @@ class PageRenderer // extends PWBObject
 	var $csss = array();
 
 	function PageRenderer(& $page) {
-		$this->page = $page;
+		$this->page =& $page;
 	}
 }
 

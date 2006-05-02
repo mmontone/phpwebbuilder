@@ -12,6 +12,7 @@ class Login extends Component {
 			$this->add_component(new Text($this->state), 'status');
 	}
 	function login_do(){
+		$this->view->checkTree();
 		$success =& User::login($this->username->value, $this->password->value);
 		if ($success){
 			$this->triggerEvent('menuChanged', $success);
