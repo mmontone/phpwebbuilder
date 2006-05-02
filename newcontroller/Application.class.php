@@ -10,10 +10,10 @@ class Application extends ComponentHolder
   var $page_renderer;
 
   function Application() {
-  	$n = null;
 	$_SESSION['app']['current_app'] =& $this;
   	$rc =& $this->set_root_component();
-    parent::ComponentHolder($rc, 0,$n);
+    parent::ComponentHolder($rc, 0,$n = null);
+    unset($rc);
     $this->set_default_configuration();
     $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
     $this->instantiate_configuration_objects();
@@ -104,7 +104,6 @@ class Application extends ComponentHolder
 		//$this->component->prepareToRender();
 		echo $this->page_renderer->renderPage();
 	}
-
 	function createView(){
 		if (!$this->viewCreator){
 			$this->viewCreator =& new ViewCreator($this);

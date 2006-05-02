@@ -96,10 +96,6 @@ class Component extends PWBObject
 		$component->setApp($this->app);
 		$this->nextChildrenPosition++;
 	}
-
-	function &getComponent($index) {
-		return $this->__children[$index]->component;
-	}
 	function delete_component_at($index){
 		$c =& $this->component_at($index);
 		$c->delete();
@@ -108,6 +104,8 @@ class Component extends PWBObject
 		$pv =& $this->parentView();
 		$v =& $this->view;
 		$pv->remove_child($v);
+		unset($pv);
+		unset($v);
 		$h =& $this->holder;
 		$p =& $h->parentNode;
 		$pos =&  $h->__owner_index;
@@ -203,7 +201,7 @@ class Component extends PWBObject
     function loadView($params) {
       $this->aboutToLoadView($params);
       assert($params['view']);
-      $this->view = new $params['view']($params);
+      $this->view =& new $params['view']($params);
       $this->view->controller =& $this;
     }
     function aboutToLoadView(&$params) {}
@@ -229,8 +227,6 @@ class Component extends PWBObject
 	}
 	function replaceView(&$other){
     	$other->setApp($this->app);
-    	$par =& $this->parentView();
-    	$pos = $this->view->parentPosition;
     	$this->createContainer();
 	}
 	function createContainer(){

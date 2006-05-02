@@ -1,26 +1,10 @@
 <?php
 
-class Test {
-	function Test(){
-		echo "creating me";
-	}
-	function lala (){
-		echo "lala";
-	}
-	function __get($prop, &$return){
-		$return = "called $prop";
-		return true;
-	}
-}
+ini_set('display_errors',true);
+error_reporting(E_ALL);
+echo memory_get_usage();
+ini_set('memory_limit', '32M');
+echo "<br/>".ini_get('memory_limit');
 
-class Test2 extends Test {
-	var $lala = "pirulo";
-
-}
-
-overload(Test2);
-$t =& new Test2;
-echo $t->lala;
-echo $t->lele;
 
 ?>

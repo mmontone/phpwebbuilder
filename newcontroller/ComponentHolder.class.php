@@ -22,7 +22,7 @@ class ComponentHolder
 	}
 
     function hold(&$component) {
-    	$i = $this->owner_index();
+    	$i =& $this->owner_index();
 	    $this->parent->$i=&$component;
 		$component->holder =& $this;
 		$this->component =& $component;
@@ -44,51 +44,4 @@ class ComponentHolder
     }
 
 }
-
-/* Component holder as a decorator */
-/*
-class ComponentReference extends Component
-{
-	var $component;
-	var $root_index;
-
-	function ComponentReference($component,$root_index) {
-		$this->component = $component;
-		$this->root_index = $root_index;
-	}
-
-	function become($component) {
-		$component->holder = $this;
-		$this->component = $component;
-	}
-
-	function app() {
-		$component = $this->component;
-		return $component->app();
-	}
-
-	function render_action($action) {
-		$component = $this->component;
-		return $component->render_action($action);
-	}
-
-	function notify($message, $callback_action) {
-		$component = $this->component;
-		return $component->notify($message,$callback_action);
-	}
-
-	function call($component) {
-		$component = $this->component;
-		return $component->call($component);
-
-	}
-
-	function callback($callback_key, $parameters=null) {
-		$component = $this->component;
-		return $component->callback($callback_key,$parameters);
-	}
-}
-
-*/
-
 ?>
