@@ -1,9 +1,9 @@
 function showMenu(elem){
-    var tab = elem.parentNode.nextSibling.nextSibling;
+    var tab = elem.parentNode.parentNode.nextSibling;
     tab.style.visibility='visible';
 }
 function hideMenu(elem){
-    var tab = elem.parentNode.nextSibling.nextSibling;
+    var tab = elem.parentNode.parentNode.nextSibling;
     f = function () {
         tab.style.visibility='hidden';
 	    clearTimeout(tab.timeoutMenu);

@@ -5,7 +5,7 @@
 <templates>
 	<template class="DefaultCMS">
 		<script type="text/javascript" language="JavaScript"
-			src="admin/DefaultCMS/Templates/BFSalud/menus.js">
+			src="$templatesdir/menus.js">
 			0;
 		</script>
 		<table bgcolor="#cae6bd" border="0" cellpadding="0"
@@ -27,7 +27,7 @@
 													<td align="center"
 														valign="top">
 														<img
-															src="admin/DefaultCMS/Templates/BFSalud/index_archivos/topbar.jpg"
+															src="$templatesdir/index_archivos/topbar.jpg"
 															height="125" width="650" />
 													</td>
 												</tr>
@@ -53,7 +53,7 @@
 								<tr>
 									<td>
 										<table align="center"
-											background="admin/DefaultCMS/Templates/BFSalud/index_archivos/topbar2bg.jpg"
+											background="$templatesdir/index_archivos/topbar2bg.jpg"
 											bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
 											height="25" width="654">
 											<tbody>
@@ -68,7 +68,7 @@
 																	<td
 																		class="txt1" align="center">
 																		<strong>
-																			&nbsp;�
+																			&nbsp;o
 																			<a onmouseover="showMenu(event.target)" onmouseout="hideMenu(event.target)">
 																				<container id="secName" />
 																			</a>
@@ -108,12 +108,12 @@
 							<tbody>
 								<tr>
 									<td
-										background="admin/DefaultCMS/Templates/BFSalud/index_archivos/topshadow.jpg">
+										background="$templatesdir/index_archivos/topshadow.jpg">
 										<img
-											src="admin/DefaultCMS/Templates/BFSalud/index_archivos/topshadow.jpg"
+											src="$templatesdir/index_archivos/topshadow.jpg"
 											height="11" width="1" />
 										<img
-											src="admin/DefaultCMS/Templates/BFSalud/index_archivos/sep1.gif"
+											src="$templatesdir/index_archivos/sep1.gif"
 											height="3" width="1" />
 									</td>
 								</tr>
@@ -124,7 +124,7 @@
 											<tbody>
 												<tr>
 													<td class="txt1"
-														background="admin/DefaultCMS/Templates/BFSalud/index_archivos/mainbgx.jpg"
+														background="$templatesdir/index_archivos/mainbgx.jpg"
 														valign="" width="346">
 														<br />
 														<br />
@@ -176,13 +176,13 @@
 								<tr>
 									<td>
 										<img
-											src="admin/DefaultCMS/Templates/BFSalud/index_archivos/bottomdec.gif"
+											src="$templatesdir/index_archivos/bottomdec.gif"
 											height="22" width="654" />
 									</td>
 								</tr>
 								<tr>
 									<td
-										background="admin/DefaultCMS/Templates/BFSalud/index_archivos/bottomdec2.gif"
+										background="$templatesdir/index_archivos/bottomdec2.gif"
 										height="89" valign="middle">
 										<table border="0"
 											cellpadding="0" cellspacing="0" width="654">
