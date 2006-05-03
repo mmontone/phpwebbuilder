@@ -6,12 +6,13 @@ class ViewCreator {
 	function ViewCreator(&$app){
 		$this->app =& $app;
 	}
-	function parseTemplates ($files){
+	function parseTemplates ($files, $templatesdir){
 		$p =& new XMLParser;
 		$xs = array();
 		foreach($files as $f){
 			$x = file_get_contents($f);
-			$xml =& $p->parse($x);
+			$x2 = str_replace('$templatesdir', $templatesdir, $x);
+			$xml =& $p->parse($x2);
 			$cm =& $xml->childNodes;
 			if (!$cm) echo $f;
 			$ks = array_keys($cm);
@@ -34,7 +35,13 @@ class ViewCreator {
 				$fs []= $templatesdir."/".$f;
 			}
 		}
- 		$this->parseTemplates($fs);
+		$size = strlen(pwbdir);
+		if (pwbdir == substr ($templatesdir, 0, $size)){
+			$temp_url = pwb_url. substr ($templatesdir, $size);
+		} else {
+			$temp_url = site_url . substr ($templatesdir, strlen(basedir));
+		}
+ 		$this->parseTemplates($fs, $temp_url);
  	}
 
 	function setTemplates(&$templates){
