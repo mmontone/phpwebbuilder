@@ -11,7 +11,11 @@ class HTMLTextNode extends XMLNodeModificationsTracker
 		$this->controller =&$obj;
 	}
 	function render (){
-		return '<span>' . $this->text . '</span>';
+		if ($this->controller == null){
+			return $this->text;
+		} else {
+			return '<span>' . $this->text . '</span>';
+		}
 	}
 
 	function setText($text) {
