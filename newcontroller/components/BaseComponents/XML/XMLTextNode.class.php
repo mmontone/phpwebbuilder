@@ -3,14 +3,14 @@ require_once dirname(__FILE__) . '/XMLNodeModificationsTracker.class.php';
 
 class XMLTextNode extends XMLNodeModificationsTracker
 {
-	var $data;
+	var $text;
 	function XMLTextNode($data, &$controller) {
 		parent::XMLNodeModificationsTracker();
-		$this->data = $data;
+		$this->text = $data;
 		$this->controller = & $controller;
 	}
 	function render() {
-		return '<span>' . $this->data  . '</span>';
+		return '<span>' . $this->text  . '</span>';
 	}
 }
 
