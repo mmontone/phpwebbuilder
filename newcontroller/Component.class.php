@@ -19,6 +19,7 @@ class Component extends PWBObject
 	var $__decorators;
 	var $nextChildrenPosition =0;
 	function Component($registered_callbacks=array()) {
+		$prevmem =memory_get_usage();
 		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->configuration=array('use_component_namemangling' => false,
@@ -30,6 +31,7 @@ class Component extends PWBObject
 		$this->__decorators = array();
 		$this->__actions = $this->declare_actions();
 		$this->initialize();
+		trigger_error("memory for creating the ".get_class($this)." component: " .(memory_get_usage()-$prevmem), E_USER_WARNING);
 	}
 	function initialize(){}
 	function start() {}

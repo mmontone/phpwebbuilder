@@ -7,10 +7,9 @@ class ApplicationLauncher
       trace("Creating the application ".$application_class);
       $_SESSION['app'] = array();
       $app =& new $application_class;
-    }
-    else
+    } else {
       $app =& $_SESSION['app']['current_app'];
-
+    }
     $app->run();
   }
 }

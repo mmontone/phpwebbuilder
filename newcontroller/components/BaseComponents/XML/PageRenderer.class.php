@@ -24,12 +24,13 @@ class StandardPageRenderer extends PageRenderer {
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		$ret.='<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">'.
-				'<head><title>PWB</title><script type="text/javascript" src="'.site_url.'admin/ajax/ajax.js"></script>';
+				'<head><title>PWB</title><script type="text/javascript" src="'.pwb_url .'/ajax/ajax.js"></script>';
 		foreach($this->csss as $c){
 			$ret.='<link rel="stylesheet" href="'.$c.'" />';
 		}
 		$ret.= '</head><body>';
-		$ret .= $this->page->render();
+		$page = $this->page->render();
+		$ret.= $page;
 		$this->page->flushModifications();
 		$ret .='</body></html>';
 		return $ret;
