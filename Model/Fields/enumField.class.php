@@ -1,6 +1,6 @@
 <?
 
-require_once dirname(__FILE__) . '/DataField.class.php';
+require_once dirname(__FILE__) . '/TextField.class.php';
 
 class enumField extends TextField {
       var $vals;
