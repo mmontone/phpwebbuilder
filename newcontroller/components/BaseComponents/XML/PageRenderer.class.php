@@ -25,7 +25,7 @@ class StandardPageRenderer extends PageRenderer {
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		$ret.='<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">'.
 				'<head><title>PWB</title><script type="text/javascript" src="'.pwb_url .'/ajax/ajax.js"></script>';
-		foreach($this->csss as $c){
+		foreach($this->page->csss as $c){
 			$ret.='<link rel="stylesheet" href="'.$c.'" />';
 		}
 		$ret.= '</head><body>';
