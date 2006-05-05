@@ -11,7 +11,7 @@ class DefaultCMS extends Component{
 	}
  	function declare_actions(){}
  	function changeBody(&$menu,&$comp){
- 		$this->body->stopAndCall($comp);
+		$this->add_component($comp, "body");
  		$this->body->addEventListener(array('on menuChanged'=>'updateMenu'),$this);
  	}
  	function updateMenu(){
