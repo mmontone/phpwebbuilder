@@ -95,7 +95,7 @@ class Application extends ComponentHolder
 
 	function initialRender() {
 		$this->viewCreator->createAllViews();
-		$this->component->prepareToRender();
+		//$this->component->prepareToRender();
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
 		echo $initial_page_renderer->renderPage();
 	}

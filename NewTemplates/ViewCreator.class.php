@@ -54,6 +54,10 @@ class ViewCreator {
 			$c =& $nv[$k];
 			$this->createElemView($c->parentView(), $c);
 		}
+		foreach($ks as $k){
+			$c =& $nv[$k];
+			$c->prepareToRender();
+		}
 		$this->app->needView = array();
 	}
 	function &createView(&$parentView, &$component){

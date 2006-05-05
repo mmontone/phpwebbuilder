@@ -91,14 +91,18 @@ class Component extends PWBObject
     }
 
 	function add_component(&$component, $ind=null) {
-		$keys = array();
-		$index =& $keys[$ind];
-		$index = $ind;
-		if ($index===null){$index = $this->nextChildrenPosition;}
-		if ($this->app!=null) $component->linkToApp($this->app);
-		if ($this->__children[$index]!=null)$this->__children[$index]->component->delete();
-		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
-		$this->nextChildrenPosition++;
+		if ($this->__children[$ind]!=null) {
+			$this->__children[$ind]->component->stopAndCall($component);
+		} else {
+			$keys = array();
+			$index =& $keys[$ind];
+			$index = $ind;
+			if ($index===null){$index = $this->nextChildrenPosition;}
+			if ($this->app!=null) $component->linkToApp($this->app);
+
+			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
+			$this->nextChildrenPosition++;
+		}
 	}
 	function delete_component_at($index){
 		$c =& $this->component_at($index);
