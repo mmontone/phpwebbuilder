@@ -95,6 +95,7 @@ class Component extends PWBObject
 		$index =& $keys[$ind];
 		$index = $ind;
 		if ($index===null){$index = $this->nextChildrenPosition;}
+		if ($this->app!=null) $component->linkToApp($this->app);
 		if ($this->__children[$index]!=null)$this->__children[$index]->component->delete();
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 		$this->nextChildrenPosition++;

@@ -37,6 +37,7 @@ class ShowCollectionComponent extends Component {
 		$this->call(new EditObjectComponent($obj));
 	}
 	function newObject(&$n) {
+		echo "creating a new object";
 		$obj = & new $this->classN;
 		$this->addLine($obj);
 		$this->editObject($obj);
