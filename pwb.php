@@ -3,7 +3,7 @@
  * Includes all files and makes initialization for the application.
  * Controller Version.
  * */
-ini_set('memory_limit', '5M');
+ini_set('memory_limit', '8M');
 ini_set('display_errors',true);
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 //error_reporting(E_ALL);
