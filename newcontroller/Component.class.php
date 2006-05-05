@@ -92,6 +92,7 @@ class Component extends PWBObject
 
 	function add_component(&$component, $index=null) {
 		if ($index===null){$index = $this->nextChildrenPosition;}
+		if ($this->__children[$index]!=null)$this->__children[$index]->component->delete();
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 		$this->nextChildrenPosition++;
 	}
