@@ -8,12 +8,12 @@ class Application extends ComponentHolder
   var $wholeView;
   var $viewCreator;
   var $page_renderer;
-
+  var $needView = array();
   function Application() {
 	$_SESSION['app']['current_app'] =& $this;
   	$rc =& $this->set_root_component();
     parent::ComponentHolder($rc, 0,$n = null);
-    unset($rc);
+    $rc->linkToApp($this);
     $this->set_default_configuration();
     $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
     $this->instantiate_configuration_objects();
@@ -53,7 +53,7 @@ class Application extends ComponentHolder
 
 	function start() {
 		$this->component->start();
-		$this->component->setApp($this);
+		$this->component->linkToApp($this);
 	}
 
     function &instance() {
@@ -94,6 +94,7 @@ class Application extends ComponentHolder
 	}
 
 	function initialRender() {
+		$this->viewCreator->createAllViews();
 		$this->component->prepareToRender();
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
 		echo $initial_page_renderer->renderPage();
@@ -102,6 +103,7 @@ class Application extends ComponentHolder
 	function render() {
 		//$this->wholeView->updateFullPath();
 		//$this->component->prepareToRender();
+		$this->viewCreator->createAllViews();
 		echo $this->page_renderer->renderPage();
 	}
 	function createView(){
@@ -123,7 +125,6 @@ class Application extends ComponentHolder
    	function run() {
 	  $this->start();
 	  $this->createView();
-	  //$this->wholeView->checkTree();
 	  $this->initialRender();
 	}
 	function getId(){
@@ -131,6 +132,9 @@ class Application extends ComponentHolder
 	}
 	function getRealId(){
 		return "app/main";
+	}
+	function needsView(&$comp){
+		$this->needView[]=&$comp;
 	}
 }
 

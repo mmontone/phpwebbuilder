@@ -19,8 +19,6 @@ class Component extends PWBObject
 	var $__decorators;
 	var $nextChildrenPosition =0;
 	function Component($registered_callbacks=array()) {
-		$prevmem =memory_get_usage();
-		$app =& $this->application();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->configuration=array('use_component_namemangling' => false,
 		                           'use_action_namemangling' => false,
@@ -31,15 +29,15 @@ class Component extends PWBObject
 		$this->__decorators = array();
 		$this->__actions = $this->declare_actions();
 		$this->initialize();
-		trigger_error("memory for creating the ".get_class($this)." component: " .(memory_get_usage()-$prevmem), E_USER_WARNING);
 	}
 	function initialize(){}
 	function start() {}
-	function setApp(&$app){
+	function linkToApp(&$app){
 		$this->app =& $app;
 		$ks = array_keys($this->__children);
+		$app->needsView($this);
 		foreach($ks as $k){
-			$this->__children[$k]->component->setApp($app);
+			$this->__children[$k]->component->linkToApp($app);
 		}
 	}
 
@@ -95,7 +93,6 @@ class Component extends PWBObject
 	function add_component(&$component, $index=null) {
 		if ($index===null){$index = $this->nextChildrenPosition;}
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);
-		$component->setApp($this->app);
 		$this->nextChildrenPosition++;
 	}
 	function delete_component_at($index){
@@ -228,7 +225,7 @@ class Component extends PWBObject
 		return $this->app->viewCreator->createView($parentView, $this);
 	}
 	function replaceView(&$other){
-    	$other->setApp($this->app);
+    	$other->linkToApp($this->app);
     	$this->createContainer();
 	}
 	function createContainer(){
@@ -238,7 +235,6 @@ class Component extends PWBObject
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;
-    	//$cont->setAttribute('id',$this->getSimpleID());
     	$cont->attributes['id'] = $this->getSimpleID();
     	return $cont;
 	}
@@ -252,7 +248,7 @@ class Component extends PWBObject
 		return $this->holder->getSimpleId();
 	}
 	function prepareToRender(){
-		$this->createView($this->parentView());
+		//$this->createView($this->parentView());
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->component_at($key);
