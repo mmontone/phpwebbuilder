@@ -47,7 +47,16 @@ class ViewCreator {
 	function setTemplates(&$templates){
 		$this->templates =& $templates;
 	}
-
+	function createAllViews(){
+		$nv =& $this->app->needView;
+		$ks = array_keys($nv);
+		foreach($ks as $k){
+			$c =& $nv[$k];
+			$this->createElemView($c->parentView(), $c);
+		}
+		$this->app->needView = array();
+		//$this->createView($this->app->wholeView,$this->app->component);
+	}
 	function &createView(&$parentView, &$component){
 		$view =& $this->createElemView($parentView, $component);
 		$ks = array_keys($component->__children);
