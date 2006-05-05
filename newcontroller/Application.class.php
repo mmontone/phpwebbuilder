@@ -12,7 +12,7 @@ class Application extends ComponentHolder
   function Application() {
 	$_SESSION['app']['current_app'] =& $this;
   	$rc =& $this->set_root_component();
-    parent::ComponentHolder($rc, 0,$n = null);
+    parent::ComponentHolder($rc, $index=0,$n = null);
     $rc->linkToApp($this);
     $this->set_default_configuration();
     $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());

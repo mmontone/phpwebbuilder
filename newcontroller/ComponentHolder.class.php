@@ -9,7 +9,7 @@ class ComponentHolder
 	var $__owner_index;
 	var $parent;
 	var $realId;
-	function ComponentHolder(&$component,$owner_index = null, &$parent) {
+	function ComponentHolder(&$component,&$owner_index, &$parent) {
 	   $this->__owner_index = $owner_index;
 	   $this->parent =& $parent;
 	   $this->hold($component);

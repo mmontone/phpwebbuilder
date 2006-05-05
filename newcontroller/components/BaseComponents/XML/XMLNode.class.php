@@ -57,15 +57,15 @@ class XMLNode extends DOMXMLNode
 			$attrs .= ' '.$name.'="'.$val.'"';
 		}
 		if (count($this->childNodes)==0){
-			return "<$this->tagName $attrs></$this->tagName>";
+			return "<$this->tagName $attrs/>";
 		} else {
 			$childs = '';
 			$ks = array_keys($this->childNodes);
 			foreach ($ks as $k) {
 				$childs .= $this->childNodes[$k]->render();
 			}
-			//$childs = str_replace("\n", "\n   ", $childs);
-			$ret .="<$this->tagName $attrs>$childs</$this->tagName>";
+			$childs = str_replace("\n", "\n   ", $childs);
+			$ret .="\n<$this->tagName $attrs>$childs\n</$this->tagName>";
 			return $ret;
 		}
 	}

@@ -42,7 +42,7 @@ class PWBObject
             if ($this->event_listeners[$event_selector] == null)
                 $this->event_listeners[$event_selector] = array();
             array_push($this->event_listeners[$event_selector], array('listener' => &$listener,
-                                                                      'callback' => $event_callback));
+                                                                     'callback' => $event_callback));
         }
     }
 

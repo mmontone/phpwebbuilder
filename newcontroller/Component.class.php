@@ -90,7 +90,10 @@ class Component extends PWBObject
     	$this->render_action_link($action);
     }
 
-	function add_component(&$component, $index=null) {
+	function add_component(&$component, $ind=null) {
+		$keys = array();
+		$index =& $keys[$ind];
+		$index = $ind;
 		if ($index===null){$index = $this->nextChildrenPosition;}
 		if ($this->__children[$index]!=null)$this->__children[$index]->component->delete();
 		$this->__children[$index] =& new ComponentHolder($component,$index, $this);

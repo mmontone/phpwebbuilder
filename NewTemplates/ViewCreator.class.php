@@ -55,13 +55,12 @@ class ViewCreator {
 			$this->createElemView($c->parentView(), $c);
 		}
 		$this->app->needView = array();
-		//$this->createView($this->app->wholeView,$this->app->component);
 	}
 	function &createView(&$parentView, &$component){
 		$view =& $this->createElemView($parentView, $component);
 		$ks = array_keys($component->__children);
 		foreach ($ks as $k){
-			$this->createView($view, $component->$k);
+			$this->createView($view, $component->component_at($k));
 		}
 		return $view;
 	}
