@@ -1,8 +1,8 @@
 <?php
 
 class DefaultCMSApplication extends Application{
-	var $templateName = 'BFSalud';
-	//var $templateName = 'Default';
+	//var $templateName = 'BFSalud';
+	var $templateName = 'Default';
  	function &set_root_component() {
  		$cms =& new DefaultCMS;
  		return $cms;
@@ -11,7 +11,7 @@ class DefaultCMSApplication extends Application{
  		$this->viewCreator->loadTemplatesDir(pwbdir . "/DefaultCMS/Templates/".$this->templateName);
  	}
  	function &setCss(){
- 		return array(site_url."/admin/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
+ 		return array(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
  	}
 }
 
