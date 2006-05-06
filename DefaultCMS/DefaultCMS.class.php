@@ -6,7 +6,7 @@ class DefaultCMS extends Component{
 	function initialize(){
 		$this->add_component(new Menu, "menu");
 		$this->menu->addEventListener(array('on menuClicked'=>'changeBody'),$this);
-		$this->changeNody($this->menu, new Login);
+		$this->changeBody($this->menu, new Login);
 	}
  	function declare_actions(){}
  	function changeBody(&$menu,&$comp){
