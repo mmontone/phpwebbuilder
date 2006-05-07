@@ -1,29 +1,22 @@
 <?php
+require_once dirname(__FILE__) . '/Input.class.php';
 
-require_once dirname(__FILE__) . '/FormComponent.class.php';
-
-class Password extends FormComponent{
-	function Password ($name){
-		parent::FormComponent();
-		$this->id = $name;
-		$this->value=''; 
+class Password extends Input {
+	function Password(&$value_model) {
+		parent :: Input($value_model);
 	}
-	function createNode(){
-		$in =& $this->view;
+
+	function createNode() {
+		$in = & $this->view;
 		$in->setTagName('input');
 		$in->setAttribute('type', 'password');
 	}
-	function setValue($val){
-		$this->value=$val;
-		$in =& $this->view;
-		$in->setAttribute('value', $val);
-	}
-	function prepareToRender(){
-		parent::prepareToRender();
-		$this->value="";
-		$in =& $this->view;
-		$in->setAttribute('value', "");
-	}
-}
 
+/*
+	function prepareToRender() {
+		parent :: prepareToRender();
+		echo "sdaf";
+		$this->value_model->setValue($s = '');
+	}*/
+}
 ?>

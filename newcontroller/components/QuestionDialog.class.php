@@ -7,7 +7,7 @@ class QuestionDialog extends Component
 	var $question;
 
 	function QuestionDialog($question, $callback_actions=array('on_yes'=>'question_accepted', 'on_no' => 'question_cancelled')) {
-		$this->question = $question;		
+		$this->question = $question;
 		parent::Component($callback_actions);
 	}
 
@@ -15,11 +15,11 @@ class QuestionDialog extends Component
 		return array('yes', 'no');
 	}
 	function initialize(){
-		$this->add_component(new Text("<h1>"));
+		/*$this->add_component(new Text("<h1>"));
 		$this->add_component(new Text($this->question), "question");
 		$this->add_component(new Text("</h1><br />"));
 		$this->add_component(new ActionLink($this, 'yes', 'Yes'),"yes");
-		$this->add_component(new Text("<br />"));
+		$this->add_component(new Text("<br />"));*/
 		$this->add_component(new ActionLink($this, 'no', 'No'), "no");
 	}
 

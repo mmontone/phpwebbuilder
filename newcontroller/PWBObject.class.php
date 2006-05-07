@@ -1,12 +1,50 @@
 <?php
 
+require_once dirname(__FILE__) . '/PWBInstanceIdAssigner.class.php';
+
 class PWBObject
 {
     var $service_request_handlers;
     var $event_listeners;
     var $service_request_listeners;
     var $config;
+    var $__instance_id;
 
+    function PWBObject() {
+		$id_assigner =& PWBInstanceIdAssigner::instance();
+		$id_assigner->assignIdTo($this);
+	}
+
+	function equalTo(&$other_pwb_object) {
+		return $this->__instance_id == $other_pwb_object->__instance_id;
+	}
+
+	function retractInterestIn($event_selector, &$listener) {
+    	$listeners =& $this->event_listeners[$event_selector];
+
+		reset($listeners);
+		$match = false;
+
+		while (!$match && (list($key, $array_obj) = each($listeners))) {
+		 	$match = $array_obj['listener']->equalTo($listener);
+		 	next($listeners);
+		}
+
+
+		if (!$match) {
+			print_backtrace('Fatal error removing listener');
+			print_r($listeners);
+			exit;
+		}
+
+		while (list($next_key, $array_obj) = each($listeners)) {
+			$listeners[$key] =& $listeners[$next_key];
+			$key = $next_key;
+			next($listeners);
+		}
+
+		unset($listeners[$key]);
+    }
 
     /* Useful methods */
 

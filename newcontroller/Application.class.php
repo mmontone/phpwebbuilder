@@ -33,6 +33,8 @@ class Application extends ComponentHolder
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
 		                             //'page_renderer' => 'AjaxPageRenderer');
 		                             'page_renderer' => 'StandardPageRenderer');
+		                             //'page_renderer' => 'DebugPageRenderer');
+		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }
 
     function instantiate_configuration_objects(){
@@ -43,7 +45,7 @@ class Application extends ComponentHolder
         // The following is not true, don't know why :):
         // Interesting case for PHP like references: they are alias, so we can initialize a reference beafore
         // the pointed object has any value. The refernce will be actualized automatically
-        $this->page_renderer =& new $this->configuration['page_renderer']($null);
+        $this->page_renderer =& new $this->configuration['page_renderer']($null=null);
         //$this->page_renderer =& new $this->configuration['page_renderer']($null);
     }
 

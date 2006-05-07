@@ -2,7 +2,7 @@
 
 class DefaultCMSApplication extends Application{
 	//var $templateName = 'BFSalud';
-	var $templateName = 'Default';
+	//var $templateName = 'Default';
  	function &set_root_component() {
  		$cms =& new DefaultCMS;
  		return $cms;

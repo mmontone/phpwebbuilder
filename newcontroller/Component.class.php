@@ -19,6 +19,7 @@ class Component extends PWBObject
 	var $__decorators;
 	var $nextChildrenPosition =0;
 	function Component($registered_callbacks=array()) {
+		parent::PWBObject();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->configuration=array('use_component_namemangling' => false,
 		                           'use_action_namemangling' => false,
@@ -240,7 +241,7 @@ class Component extends PWBObject
 	function createContainer(){
     	$cont=& $this->myContainer();
     	$pv =& $this->view->parentNode;
-    	$pv->replace_child($this->view, $cont);
+    	$pv->replace_child($cont, $this->view);
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;
@@ -265,7 +266,7 @@ class Component extends PWBObject
 		}
 	}
 	/* For debugging */
-/*	function printTree(){
+	function printTree(){
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->component_at($key);
@@ -273,7 +274,7 @@ class Component extends PWBObject
 		}
 		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);
 		return $ret;
-	}*/
+	}
 }
 
 

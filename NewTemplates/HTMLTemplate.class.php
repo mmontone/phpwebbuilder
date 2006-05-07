@@ -26,8 +26,8 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 
 	function & xml2template(& $xml) {
 		if (strcasecmp(get_class($xml), "XMLTextNode") == 0 || strcasecmp(get_class($xml), "HTMLTextNode") == 0) {
-			$n = null;
-			$tn = & new HTMLTextNode($xml->text, $n);
+			$tn = & new XMLTextNode($xml->data);
+			//$tn = & new XMLTextNode($xml->text);
 			return $tn;
 		} else
 			if (strcasecmp($xml->tagName, "template") == 0) {

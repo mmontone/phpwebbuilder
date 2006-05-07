@@ -12,6 +12,7 @@ function includefile(&$file) {
 			}
 	} else {
 		if (substr($file, -4)=='.php') {
+                  //echo "Including file: " . $file;
                   require_once($file);
 		}
 	}
@@ -98,5 +99,41 @@ function backtrace_string($error) {
         		//$ret .= print_r($trace['args'], TRUE);
     }
     return $ret;
+}
+
+/***************/
+/* Assertions  */
+/***************/
+
+// Active assert and make it quiet
+assert_options(ASSERT_ACTIVE, 1);
+assert_options(ASSERT_WARNING, 0);
+assert_options(ASSERT_QUIET_EVAL, 1);
+
+// Create a handler function
+function my_assert_handler($file, $line, $code)
+{
+   echo "<hr>Assertion Failed:
+       <b>File</b> '$file'<br />
+       <b>Line</b> '$line'<br />
+       <b>Code</b> '$code'<br />";
+   print_backtrace('');
+   echo  "</hr>";
+}
+
+// Set up the callback
+assert_options(ASSERT_CALLBACK, 'my_assert_handler');
+
+
+/* Useful functions */
+function &array_current(&$array) {
+	if (!current($array)) return null; // Out of limit
+	return $array[key($array)];
+}
+
+function &array_next(&$array) {
+	$current =& array_current($array);
+	next($array);
+	return $current;
 }
 ?>

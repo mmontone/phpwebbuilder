@@ -20,9 +20,9 @@ class NotificationDialog extends Component
 	}
 
 	function initialize() {
-		$this->add_component(new Text("<h1>"));
+	/*	$this->add_component(new Text("<h1>"));
 		$this->add_component(new Text($this->message));
-		$this->add_component(new Text("</h1></br>"));
+		$this->add_component(new Text("</h1></br>"));*/
 		$this->add_component(new ActionLink($this, 'accept', 'Accept'), "accept");
 	}
 

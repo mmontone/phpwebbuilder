@@ -19,13 +19,13 @@ class EditObjectComponent extends Component {
     }
     function initialize(){
     	$obj =& $this->obj;
-    	$this->add_component(new Text($this->classN), 'className');
-    	$this->add_component(new Text($obj->id->value), 'id');
+    	$this->add_component(new Text(new ValueHolder($this->classN), 'className'));
+    	$this->add_component(new Text(new ValueHolder($obj->id->value), 'id'));
     	$fs =& $obj->allFieldNames();
     	foreach($fs as $f){
     		$fc =& new Obj;
     		$this->add_component($fc);
-    		$fc->add_component(new Text($fs[$f]), 'name');
+    		$fc->add_component(new Text(new ValueHolder($fs[$f])), 'name');
     		$fc->add_component(new Input($obj->$f->value), 'value');
        	}
        	$this->add_component(new ActionLink($this, 'save', 'save', $n=null), 'save');

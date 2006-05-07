@@ -28,7 +28,7 @@ class Controller extends Component
 		}
 	}
 	function initialize(){
-    	$this->add_component(new Text($t=""), "bodyController");
+    	$this->add_component(new Text(new ValueHolder($t="")), "bodyController");
     }
 	function controller_action($form){}
 	function controller_display($form){}
@@ -36,6 +36,9 @@ class Controller extends Component
 		$this->controller_action($form);
 		return $this->controller_display($form);
 	}
+
+	// Deprecated
+	/*
 	function prepareToRender(){
 		$form = $this->getForm();
  		if (isset ($form["Controller"]) && (strcasecmp(get_class($this),$form["Controller"])!=0)){
@@ -49,6 +52,7 @@ class Controller extends Component
 		}
 		parent::prepareToRender();
 	}
+	*/
 	function execute ($action,$form) {
           if ($this->hasPermission($form))
             return $this->$action($form);

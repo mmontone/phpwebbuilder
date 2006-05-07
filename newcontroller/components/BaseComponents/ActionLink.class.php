@@ -1,21 +1,23 @@
 <?php
 
 require_once dirname(__FILE__) . '/FormComponent.class.php';
-require_once dirname(__FILE__) . '/FormComponent.class.php';
 
-class ActionLink extends FormComponent{
-	var $obj;
-	var $act;
-	var $link;
+class ActionLink extends FormComponent
+{
+	var $target;
+	var $action;
+	var $text;
 	var $params;
-	function ActionLink (&$obj,$act, $link, &$params){
-		parent::FormComponent();
-		$this->obj =& $obj;
-		$this->act=$act;
-		$this->link = $link;
+
+	function ActionLink (&$target, $action, $text, &$params) {
+		parent::FormComponent($vm = null);
+		$this->target =& $target;
+		$this->action = $action;
+		$this->text = $text;
 		$this->params = &$params;
-		$this->add_component(new Text($link), "linkName");
+		$this->add_component(new Text(new ValueHolder($this->text)), "linkName");
 	}
+
 	function createNode(){
 		$link =& $this->view;
 		$link->setTagName('a');
@@ -28,9 +30,13 @@ class ActionLink extends FormComponent{
 		$link->setAttribute('onclick', $action);
 	}
 
-	function viewUpdated($params){
-		$act = $this->act;
-		$this->obj->$act($this->params);
+	function updateView($params) {
+		//$this->params = $params;
+	}
+
+	function viewUpdated(){
+		$action = $this->action;
+		$this->target->$action($this->params);
 	}
 
 }

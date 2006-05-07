@@ -18,13 +18,13 @@ class ShowCollectionComponent extends Component {
 	}
 	function initialize() {
 		$class = & $this->classN;
-		$this->add_component(new Text($class), 'className');
+		$this->add_component(new Text(new ValueHolder($class)), 'className');
 		$this->add_component(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		$obj = & new $class;
 		$fs = & $obj->indexFields;
 		foreach ($fs as $f) {
 			$fc = & new Obj;
-			$fc->add_component(new Text($fs[$f]));
+			$fc->add_component(new Text(new ValueHolder($fs[$f])));
 			$this->add_component($fc);
 		}
 		$objects = & $this->col->objects();

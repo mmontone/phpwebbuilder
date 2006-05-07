@@ -4,23 +4,45 @@ require_once dirname(__FILE__) . '/../../Component.class.php';
 
 class FormComponent extends Component
 {
-	var $value;
-	function FormComponent($callback_actions=array('on_accept' => 'notification_accepted')) {
+	var $value_model;
+
+	function FormComponent(&$value_model, $callback_actions=array('on_accept' => 'notification_accepted')) {
 		parent::Component($callback_actions);
+		if (!$value_model)
+			$this->value_model =& new ValueHolder($null = null);
+		else
+			$this->value_model =& $value_model;
+		$this->value_model->onChangeSend('valueChanged', $this);
 	}
+
 	function declare_actions(){return array();}
-	function viewUpdated ($params){
-		if ($params!=$this->value){
-			$oldval =  $this->value;
+
+	function updateView($params) {
+		$value =& $this->value_model->getValue();
+
+		if ($params != $value){
+			//$oldval =  $value;
 			$this->setValue($params);
-			$this->triggerEvent('changed', $oldval);
+			//$this->value_model->setValue($params);
+			//$this->triggerEvent('changed', $oldval);
 		}
+
 	}
+
+	function viewUpdated (){
+		/* Do nothing by default */
+	}
+
+	function setValue(&$params) {
+		$this->value_model->setValue($params);
+	}
+
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
 		$this->createNode();
 		return $this->view;
 	}
+
 	function createNode(){}
 }
 

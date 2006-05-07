@@ -56,6 +56,7 @@ function goAjax(url, func, obj) {
 }
 
 function ajaxError() {
+    alert("Error");
 }
 
 
@@ -79,7 +80,8 @@ function postAjax(url, func, formName, obj) {
        /*-------------------------------------------------------------------------
        ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
 
-//       prompt("url",url);prompt("paramans",params);
+       //       prompt("url",url);prompt("paramans",params);
+       //prompt("url", url + params);
        try {
               http.open("POST", url, true);
           http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -90,10 +92,13 @@ function postAjax(url, func, formName, obj) {
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
-                           //if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
-                           //t = document.createTextNode(http.responseText);
-                           //form = document.getElementById(formName);
-                           //form.appendChild(t);
+                           /* DEBUG */
+                           /* if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
+                           t = document.createTextNode(http.responseText);
+                           form = document.getElementById(formName);
+                           form.appendChild(t);*/
+                           /* END DEBUG */
+
                            func(http.responseText, http.responseXML, obj);
                        }
                };
@@ -147,6 +152,7 @@ function updatePage(text, xml) {
   var i=0;
   for (; i< actions.length; i++) {
     str = "ajax_" + actions[i].tagName + "(actions[i]);";
+//    alert(str);
     eval(str);
   }
   return true;
@@ -175,7 +181,7 @@ function nodeAtPath(path_str) {
     var path = path_str.split("/");
     var current_elem = document.getElementById("app");
     //navigateInteractivelyFrom(current_elem);
-    for (var i=1; i < path.length; i++) {
+    for (var i=1; i < path.length - 1; i++) {
         //alert(path[i]);
         current_elem = current_elem.childNodes[path[i]];
         //alert(current_elem);
@@ -184,7 +190,7 @@ function nodeAtPath(path_str) {
 }
 
 function navigateInteractivelyFrom(aNode) {
-    var action = prompt('Action:','firstChild');
+    var action = prompt('Action:','childNodes[0]');
     var result;
 
     while (action) {
@@ -248,6 +254,13 @@ function ajax_remove_child(action) {
 
 function ie_ajax_remove_child(action) {
     return ajax_remove_child(action);
+}
+
+function ajax_set_attribute(action) {
+    var target = getActionTarget(action);
+    var attribute = action.childNodes[0].firstChild.data;
+    var value = action.childNodes[1].firstChild.data;
+    target.setAttribute(attribute, value);
 }
 
 

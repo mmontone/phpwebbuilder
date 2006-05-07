@@ -2,10 +2,10 @@
 class PageRenderer // extends PWBObject
 {
 	var $page;
-	var $csss = array();
+	var $csss = array ();
 
 	function PageRenderer(& $page) {
-		$this->page =& $page;
+		$this->page = & $page;
 	}
 }
 
@@ -15,27 +15,28 @@ class StandardPageRenderer extends PageRenderer {
 	}
 
 	function renderPage() {
-		$this->page->tagName='form';
-		$this->page->setAttribute('action','new_dispatch.php');
-		$this->page->setAttribute('method','post');
-		$this->page->setAttribute('enctype','multipart/form-data');
+		$this->page->tagName = 'form';
+		$this->page->setAttribute('action', 'new_dispatch.php');
+		$this->page->setAttribute('method', 'post');
+		$this->page->setAttribute('enctype', 'multipart/form-data');
 
 		$ret = '<!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-		$ret.='<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">'.
-				'<head><title>PWB</title><script type="text/javascript" src="'.pwb_url .'/ajax/ajax.js"></script>';
-		foreach($this->page->csss as $c){
-			$ret.='<link rel="stylesheet" href="'.$c.'" />';
+		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+		$ret .= '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">' .
+		'<head><title>PWB</title><script type="text/javascript" src="' . pwb_url . '/ajax/ajax.js"></script>';
+		foreach ($this->page->csss as $c) {
+			$ret .= '<link rel="stylesheet" href="' . $c . '" />';
 		}
-		$ret.= '</head><body>';
+		$ret .= '</head><body>';
 		$page = $this->page->render();
-		$ret.= $page;
+		$ret .= $page;
+		$ret .= '</body></html>';
+
 		$this->page->flushModifications();
-		$ret .='</body></html>';
+
 		return $ret;
 	}
-
 
 	function showXML() {
 		$ret = $this->renderPage();
@@ -46,8 +47,19 @@ class StandardPageRenderer extends PageRenderer {
 		return $ret;
 	}
 
-	function renderActionLinkAction(&$action_link) {
-		return 'callAction(&#34;'.$action_link->getId().'&#34;);';
+	function renderActionLinkAction(& $action_link) {
+		return 'callAction(&#34;' . $action_link->getId() . '&#34;);';
+	}
+}
+
+class DebugPageRenderer extends StandardPageRenderer{
+	function renderPage() {
+		$this->page->updateFullPath();
+		header("Content-type: text/xml");
+		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
+		echo $this->page->printString();
+		$this->page->flushModifications();
+		exit;
 	}
 }
 
@@ -60,6 +72,7 @@ class AjaxPageRenderer extends PageRenderer {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax_response>";
+		$this->page->updateFullPath();
 		$xml .= $this->renderAjaxResponseCommands($this->page);
 		$xml .= "</ajax_response>";
 
@@ -70,68 +83,42 @@ class AjaxPageRenderer extends PageRenderer {
 
 	function renderAjaxResponseCommands(& $node) {
 		$xml = '';
-		$look_for_modifications = $node->childNodes;
 
-		foreach ($node->modifications as $modification) {
-			$xml .= $this->renderModification($node, $modification, $look_for_modifications);
+		foreach (array_keys($node->modifications) as $i) {
+			$xml .= $this->renderModification($node->modifications[$i]);
 		}
 
-		foreach ($look_for_modifications as $child) {
-			$xml .= $this->renderAjaxResponseCommands($child);
+		foreach (array_keys($node->childNodes) as $i) {
+			$xml .= $this->renderAjaxResponseCommands($node->childNodes[$i]);
 		}
 
 		return $xml;
 	}
 
-	function renderModification(&$node, & $mod, & $look_for_modifications) {
-		return $mod->visit($this, array (
-			'target' => $node,
-			'look_for_modifications' => $look_for_modifications
-		));
-	}
-
-	function visitReplaceChildXMLNodeModification(& $mod, $params) {
-		$look_for_modifications = & $params['look_for_modifications'];
-		$this->deleteXMLChildNode($mod->child, $look_for_modifications);
-		return $mod->renderAjaxResponseCommand($params['target']);
-	}
-
-	function visitAppendChildXMLNodeModification(& $mod, $params) {
-		$look_for_modifications = & $params['look_for_modifications'];
-		$this->deleteXMLChildNode($mod->child, $look_for_modifications);
-		return $mod->renderAjaxResponseCommand($params['target']);
-	}
-
-	function visitRemoveChildXMLNodeModification(& $mod, $params) {
-		return $mod->renderAjaxResponseCommand($params['target']);
-	}
-
-	function visitSetAttributeXMLNodeModification(& $mod, $params) {
-		return $mod->renderAjaxResponseCommand($params['target']);
-	}
-
-	function deleteXMLChildNode(&$node, &$array) {
-		$keys = array_keys($array);
-
-		foreach ($keys as $key) {
-			$array_elem =& $array[$key];
-			// Puedo comparar por parentPosition porque se que ambos son hijos del mismo padre
-			if ($elem->parentPosition == $array_elem->parentPosition) {
-				unset($array[$key]);
-				return true;
-			}
+	function renderModification(& $mod) {
+		switch (get_class($mod)) {
+			case 'replacechildxmlnodemodification' :
+				$mod->replacement->flushModifications();
+				return $mod->renderAjaxResponseCommand();
+			case 'appendchildxmlnodemodification' :
+				$mod->child->flushModifications();
+				return $mod->renderAjaxResponseCommand();
+			case 'removechildxmlnodemodification' :
+				return $mod->renderAjaxResponseCommand();
+			case 'setattributexmlnodemodification' :
+				return $mod->renderAjaxResponseCommand();
 		}
-		return false;
 	}
 
-	function renderActionLinkAction(&$action_link) {
-		return 'callActionAjax(&#34;'.$action_link->getId().'&#34;);';
+	function renderActionLinkAction(& $action_link) {
+		return 'callActionAjax(&#34;' . $action_link->getId() . '&#34;);';
 	}
 }
 
-
-
-
-
-
+class DebugAjaxPageRenderer extends AjaxPageRenderer
+{
+	function renderActionLinkAction(& $action_link) {
+		return 'callAction(&#34;' . $action_link->getId() . '&#34;);';
+	}
+}
 ?>
