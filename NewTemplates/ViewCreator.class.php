@@ -14,7 +14,6 @@ class ViewCreator {
 			$x2 = str_replace('$templatesdir', $templatesdir, $x);
 			$xml =& $p->parse($x2);
 			$cm =& $xml->childNodes;
-			if (!$cm) echo $f;
 			$ks = array_keys($cm);
 			foreach($ks as $k){
 				$xs []=& $cm[$k];

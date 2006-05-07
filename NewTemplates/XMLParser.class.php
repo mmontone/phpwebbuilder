@@ -15,8 +15,15 @@ class XMLParser {
        xml_parser_set_option($this->parser,XML_OPTION_CASE_FOLDING,FALSE);
        $arr = array();
        $this->xmls=&$arr;
-       xml_parse($this->parser, $data);
+       $err = xml_parse($this->parser, $data);
        $x =& $this->xmls[0];
+ 	   if (!$x->childNodes) {
+          die(sprintf("XML error: %s at line %d, column %d",
+                   xml_error_string(xml_get_error_code($this->parser)),
+                   xml_get_current_line_number($this->parser),
+                   xml_get_current_column_number ($this->parser)+1));
+   	   }
+       xml_parser_free($this->parser);
        return $x;
    }
 
