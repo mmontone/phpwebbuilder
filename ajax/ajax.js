@@ -18,6 +18,7 @@ var color;
 function loadingStart(){
    color = document.getElementsByTagName('body')[0].style.backgroundColor;
 }
+
 function loadingStop(){
 }
 
