@@ -22,11 +22,12 @@ class EditObjectComponent extends Component {
     	$this->add_component(new Text(new ValueHolder($this->classN), 'className'));
     	$this->add_component(new Text(new ValueHolder($obj->id->value), 'id'));
     	$fs =& $obj->allFieldNames();
+    	$factory =& new EditComponentFactory;
     	foreach($fs as $f){
     		$fc =& new Obj;
     		$this->add_component($fc);
     		$fc->add_component(new Text(new ValueHolder($fs[$f])), 'name');
-    		$fc->add_component(new Input($obj->$f->value), 'value');
+    		$fc->add_component($factory->createFor($obj->$f), 'value');
        	}
        	$this->add_component(new ActionLink($this, 'save', 'save', $n=null), 'save');
        	$this->add_component(new ActionLink($this, 'callback', 'cancel', $n), 'cancel');

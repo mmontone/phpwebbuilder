@@ -68,7 +68,8 @@ class XMLNode extends DOMXMLNode {
 			foreach ($ks as $k) {
 				$childs .= $this->childNodes[$k]->render();
 			}
-			$ret .= "<$this->tagName $attrs>$childs</$this->tagName>";
+			$childs  = str_replace("\n", "\n   ", $childs);
+			$ret .= "\n<$this->tagName $attrs>$childs\n</$this->tagName>";
 			return $ret;
 		}
 	}

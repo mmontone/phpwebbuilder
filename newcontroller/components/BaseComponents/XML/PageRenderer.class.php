@@ -23,10 +23,10 @@ class StandardPageRenderer extends PageRenderer {
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-		$ret .= '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">' .
-		'<head><title>PWB</title><script type="text/javascript" src="' . pwb_url . '/ajax/ajax.js"></script>';
+		$ret .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" .
+		"\n<head><title>PWB</title>\n<script type=\"text/javascript\" src=\"" . pwb_url . "/ajax/ajax.js\"></script>";
 		foreach ($this->page->csss as $c) {
-			$ret .= '<link rel="stylesheet" href="' . $c . '" />';
+			$ret .= "\n<link rel=\"stylesheet\" href=\"" . $c . "\" />";
 		}
 		$ret .= '</head><body>';
 		$page = $this->page->render();

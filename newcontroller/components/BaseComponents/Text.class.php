@@ -6,8 +6,9 @@ class Text extends FormComponent {
 
 	function Text(& $string_holder) {
 		parent :: FormComponent($string_holder);
-		if (is_string($string_holder))
+		if (is_string($string_holder)) {
 			print_backtrace();
+		}
 		$this->text_node = null;
 	}
 
