@@ -21,8 +21,8 @@
 	<template class="Login">
  <table><tbody>
 		<tr><td colspan="2">Ingrese su nombre de usuario y contrasena:</td></tr>
-		<tr><td>Nombre de Usuario: </td><td> <input type="text" id="username" /></td></tr>
-		<tr><td>Contrasenia: </td><td> <input type="password" id="password" /></td></tr>
+		<tr><td>Nombre de Usuario: </td><td> <input type="text" id="comp_username" /></td></tr>
+		<tr><td>Contrasenia: </td><td> <input type="password" id="comp_password" /></td></tr>
 		<tr><td><container id="status"/></td></tr>
 		<tr><td></td><td><input type="button" id="login" value="Entrar"/></td></tr>
 	</tbody></table>

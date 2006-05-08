@@ -9,13 +9,13 @@ class Login extends Component
 	var $password;
 
 	function initialize(){
-			$this->username =& new ValueHolder($s1 = '');
-			$this->password =& new ValueHolder($s2 = '');
-			$this->add_component(new Input($this->username), 'comp_username');
-			$this->add_component(new Password($this->password), 'comp_password');
-			$this->add_component(new ActionLink($this, 'login_do', 'Login',$params=null), 'login');
-			$this->state =& new ValueHolder($s = '');
-			$this->add_component(new Text($this->state), 'status');
+		$this->username =& new ValueHolder($s1 = '');
+		$this->password =& new ValueHolder($s2 = '');
+		$this->add_component(new Input($this->username), 'comp_username');
+		$this->add_component(new Password($this->password), 'comp_password');
+		$this->add_component(new ActionLink($this, 'login_do', 'Login',$params=null), 'login');
+		$this->state =& new ValueHolder($s = '');
+		$this->add_component(new Text($this->state), 'status');
 	}
 
 	function login_do(){
