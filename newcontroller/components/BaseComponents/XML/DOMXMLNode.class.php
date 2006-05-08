@@ -7,7 +7,7 @@ class DOMXMLNode //extends PWBObject
 	var $attributes = array ();
 	var $parentPosition = null;
 	var $nextNode = 0;
-	var $fullPath = '';
+	//var $fullPath = '';
 
 	function DOMXMLNode($tag_name = "div", $attributes = array ()) {
 		$this->tagName = $tag_name;
@@ -50,35 +50,37 @@ class DOMXMLNode //extends PWBObject
 
 	function append_child(& $xml) {
 		$this->insert_in($xml,$this->nextNode++);
-		$this->updateChildrenFullPath();
+		//$this->updateChildrenFullPath();
 		/*$this->triggerEvent('childAppended', array (
 			'child' => $xml
 		));*/
 	}
 
+	/*
 	function updateChildrenFullPath() {
 		foreach (array_keys($this->childNodes) as $i) {
 			$this->childNodes[$i]->updateFullPath();
 		}
-	}
+	}*/
 
+	/*
 	function updateFullPath() {
 		if (!$this->parentNode)
 			$this->fullPath = '/';
 		else
 			$this->fullPath = $this->parentNode->fullPath . $this->parentPosition . '/';
 
-		/* Debugging */
 		//$this->fullPath = $this->parentNode->fullPath . '/'. $this->tagName . '('.$this->getId() . ')' . ':' . $this->parentPosition ;
 		$this->updateChildrenFullPath();
 	}
+	*/
 
 	function replace_child(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);
 		$n = null;
 		$old->parentNode = & $n;
 		$old->parentPosition = & $n;
-		$this->updateChildrenFullPath();
+		//$this->updateChildrenFullPath();
 		/*$this->triggerEvent('childReplaced', array (
 			'target' => $old,
 			'replacement' => $new
@@ -92,7 +94,7 @@ class DOMXMLNode //extends PWBObject
 			$this->insert_in($this->childNodes[$i], $i - 1);
 		}
 		unset ($this->childNodes[$last]);
-		$this->updateChildrenFullPath();
+		//$this->updateChildrenFullPath();
 		/*$this->triggerEvent('childRemoved', array (
 			'child' => $old
 		));*/
@@ -104,7 +106,7 @@ class DOMXMLNode //extends PWBObject
 			$this->insert_in($this->childNodes[$i -1], $i);
 		}
 		$this->insert_in($new, $pos);
-		$this->updateChildrenFullPath();
+		//$this->updateChildrenFullPath();
 	}
 
 	function setAttribute($name, $val) {

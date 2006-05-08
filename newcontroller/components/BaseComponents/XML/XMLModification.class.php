@@ -245,7 +245,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath!="");
-		$xml = '<set_attribute path="' . $this->target->getAttribute('id') . '">';
+		$xml = '<set_attribute id="' . $this->target->getAttribute('id') . '">';
 		$xml .= '<attribute>' . $this->attribute . '</attribute>';
 		$xml .= '<value> ' . $this->value . '</value>';
 		$xml .= '</set_attribute>';

@@ -54,7 +54,7 @@ class StandardPageRenderer extends PageRenderer {
 
 class DebugPageRenderer extends StandardPageRenderer{
 	function renderPage() {
-		$this->page->updateFullPath();
+		//$this->page->updateFullPath();
 		header("Content-type: text/xml");
 		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		echo $this->page->printString();
@@ -72,7 +72,7 @@ class AjaxPageRenderer extends PageRenderer {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax_response>";
-		$this->page->updateFullPath();
+		//$this->page->updateFullPath();
 		$xml .= $this->renderAjaxResponseCommands($this->page);
 		$xml .= "</ajax_response>";
 
