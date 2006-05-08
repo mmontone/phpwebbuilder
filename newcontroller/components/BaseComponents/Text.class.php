@@ -2,19 +2,23 @@
 require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class Text extends FormComponent {
-	var $text_node;
-
 	function Text(& $string_holder) {
 		parent :: FormComponent($string_holder);
 		if (is_string($string_holder)) {
 			print_backtrace();
 		}
-		$this->text_node = null;
 	}
 
 	function valueChanged(& $value_model, & $params) {
 		$text = & $this->value_model->getValue();
+		$new_view =& new XMLNodeModificationsTracker('span');
+		$new_view->controller =& $this;
+		if ($text != '')
+			$new_view->append_child(new XMLTextNode($text));
+		$this->view->parentNode->replace_child($new_view, $this->view);
+		$this->view =& $new_view;
 
+		/*
 		if ($text != '') {
 			$new_text_node =& new XMLTextNode($text);
 
@@ -30,6 +34,7 @@ class Text extends FormComponent {
 			if ($this->text_node != null)
 				$this->view->remove_child($this->text_node);
 		}
+		*/
 	}
 
 	function & createDefaultView() {
@@ -38,8 +43,7 @@ class Text extends FormComponent {
 		$text = $this->value_model->getValue();
 
 		if ($this->value_model->getValue() != '') {
-			$this->text_node = & new XMLTextNode($text);
-			$this->view->append_child($this->text_node);
+			$this->view->append_child(new XMLTextNode($text));
 		}
 
 		return $this->view;

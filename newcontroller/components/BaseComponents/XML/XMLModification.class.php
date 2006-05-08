@@ -21,6 +21,7 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		$this->replacement = & $replacement;
 	}
 
+	/*
 	function renderAjaxResponseCommand(&$target) {
 		//assert($this->target->fullPath!="");
 		$xml = '<replace_node path="' . $target->fullPath . '">';
@@ -28,8 +29,17 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		$xml .= '</replace_node>';
 		return $xml;
 	}
+	*/
 
-	// TODO: make $target instance variable
+	function renderAjaxResponseCommand(&$target) {
+		//assert($this->target->fullPath!="");
+		$xml = '<replace_node id="' . $target->getAttribute('id') . '">';
+		$xml .= $this->replacement->render();
+		$xml .= '</replace_node>';
+		return $xml;
+	}
+
+	/*
 	function printString() {
 		$ret = '<replace_node path="' . $this->target->fullPath . '">';
 		$ret .= "\n   ";
@@ -37,7 +47,16 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		$ret .= "\n";
 		$ret .= '</replace_node>';
 		return $ret;
+	}
+	*/
 
+	function printString() {
+		$ret = '<replace_node id="' . $this->target->getAttribute('id') . '">';
+		$ret .= "\n   ";
+		$ret .= $this->replacement->printString();
+		$ret .= "\n";
+		$ret .= '</replace_node>';
+		return $ret;
 	}
 }
 
@@ -51,6 +70,7 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 		$this->replacement = & $replacement;
 	}
 
+	/*
 	function renderAjaxResponseCommand() {
 		//assert($this->child->fullPath!="");
 		$xml = '<replace_node path="' . $this->child->fullPath . '">';
@@ -58,7 +78,17 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 		$xml .= '</replace_node>';
 		return $xml;
 	}
+	*/
 
+	function renderAjaxResponseCommand() {
+		//assert($this->child->fullPath!="");
+		$xml = '<replace_node id="' . $this->child->getAttribute('id') . '">';
+		$xml .= $this->replacement->render();
+		$xml .= '</replace_node>';
+		return $xml;
+	}
+
+	/*
 	function printString() {
 		$ret = '<replace_node path="' . $this->child->fullPath . '">';
 		$ret .= "\n   ";
@@ -67,7 +97,16 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 		$ret .= '</replace_node>';
 		return $ret;
 	}
+	*/
 
+	function printString() {
+		$ret = '<replace_node id="' . $this->child->getAttribute('id') . '">';
+		$ret .= "\n   ";
+		$ret .= $this->replacement->printString();
+		$ret .= "\n";
+		$ret .= '</replace_node>';
+		return $ret;
+	}
 }
 
 class AppendChildXMLNodeModification extends XMLNodeModification {
@@ -78,6 +117,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 		$this->child = & $child;
 	}
 
+	/*
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath);
 		$xml = '<append_child path="' . $this->target->fullPath . '">';
@@ -85,7 +125,17 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 		$xml .= '</append_child>';
 		return $xml;
 	}
+	*/
 
+	function renderAjaxResponseCommand() {
+		//assert($this->target->fullPath);
+		$xml = '<append_child id="' . $this->target->getAttribute('id') . '">';
+		$xml .= $this->child->render();
+		$xml .= '</append_child>';
+		return $xml;
+	}
+
+	/*
 	function printString() {
 		$ret = '<append_child path="' . $this->target->fullPath . '">';
 		$ret .= "\n   ";
@@ -93,9 +143,17 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 		$ret .= "\n";
 		$ret .= '</append_child>';
 		return $ret;
-
 	}
+	*/
 
+	function printString() {
+		$ret = '<append_child id="' . $this->target->getAttribute('id') . '">';
+		$ret .= "\n   ";
+		$ret .= $this->child->printString();
+		$ret .= "\n";
+		$ret .= '</append_child>';
+		return $ret;
+	}
 }
 
 class RemoveNodeXMLNodeModification extends XMLNodeModification {
@@ -103,17 +161,31 @@ class RemoveNodeXMLNodeModification extends XMLNodeModification {
 		parent::XMLNodeModification($target);
 	}
 
+	/*
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath!="");
 		$xml = '<remove_node path="' . $this->target->fullPath . '" />';
 		return $xml;
 	}
+	*/
 
+	function renderAjaxResponseCommand() {
+		//assert($this->target->fullPath!="");
+		$xml = '<remove_node id="' . $this->target->getAttribute('id') . '" />';
+		return $xml;
+	}
+
+	/*
 	function printString() {
 		$ret = '<remove_node path="' . $this->target->fullPath . '"/>';
 		return $ret;
 	}
+	*/
 
+	function printString() {
+		$ret = '<remove_node id="' . $this->target->getAttribute('id') . '"/>';
+		return $ret;
+	}
 }
 
 class RemoveChildXMLNodeModification extends XMLNodeModification {
@@ -124,17 +196,30 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 		$this->child = & $child;
 	}
 
+	/*
 	function renderAjaxResponseCommand(&$target) {
 		assert($this->child->fullPath!="");
 		$xml = '<remove_node path="' . $this->child->fullPath . '" />';
 		return $xml;
 	}
+	*/
 
+	function renderAjaxResponseCommand(&$target) {
+		$xml = '<remove_node id="' . $this->child->getAttribute('id') . '" />';
+		return $xml;
+	}
+
+	/*
 	function printString() {
 		$ret = '<remove_node path="' . $target->child->fullPath . '"/>';
 		return $ret;
 	}
+	*/
 
+	function printString() {
+		$ret = '<remove_node id="' . $target->child->getAttribute('id') . '"/>';
+		return $ret;
+	}
 }
 
 class SetAttributeXMLNodeModification extends XMLNodeModification {
@@ -147,6 +232,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 		$this->value = $value;
 	}
 
+	/*
 	function renderAjaxResponseCommand() {
 		assert($this->target->fullPath!="");
 		$xml = '<set_attribute path="' . $this->target->fullPath . '">';
@@ -155,9 +241,32 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 		$xml .= '</set_attribute>';
 		return $xml;
 	}
+	*/
 
+	function renderAjaxResponseCommand() {
+		//assert($this->target->fullPath!="");
+		$xml = '<set_attribute path="' . $this->target->getAttribute('id') . '">';
+		$xml .= '<attribute>' . $this->attribute . '</attribute>';
+		$xml .= '<value> ' . $this->value . '</value>';
+		$xml .= '</set_attribute>';
+		return $xml;
+	}
+
+	/*
 	function printString() {
 		$ret = '<set_attribute path="' . $this->target->fullPath . '">';
+		$ret .= "\n   ";
+		$ret .= '<attribute>' . $this->attribute . '</attribute>';
+		$ret .= "\n   ";
+		$ret.= '<value> ' . $this->value . '</value>';
+		$ret .= "\n";
+		$ret .= '</set_attribute>';
+		return $ret;
+	}
+	*/
+
+	function printString() {
+		$ret = '<set_attribute path="' . $this->target->getAttribute('id') . '">';
 		$ret .= "\n   ";
 		$ret .= '<attribute>' . $this->attribute . '</attribute>';
 		$ret .= "\n   ";

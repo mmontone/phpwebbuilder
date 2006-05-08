@@ -153,7 +153,6 @@ function updatePage(text, xml) {
   var i=0;
   for (; i< actions.length; i++) {
     str = "ajax_" + actions[i].tagName + "(actions[i]);";
-//    alert(str);
     eval(str);
   }
   return true;
@@ -209,6 +208,8 @@ function ajax_insert_html(action) {
 function ajax_replace_node(action) {
   var target = getActionTarget(action);
   var html = xml2html(action.firstChild);
+  alert(target);
+  navigateInteractivelyFrom(action);
   target.parentNode.replaceChild(html, target);
 }
 
