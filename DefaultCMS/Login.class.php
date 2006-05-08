@@ -9,8 +9,8 @@ class Login extends Component
 	var $password;
 
 	function initialize(){
-			$this->username =& new ValueHolder($s = '');
-			$this->password =& new ValueHolder($s = '');
+			$this->username =& new ValueHolder($s1 = '');
+			$this->password =& new ValueHolder($s2 = '');
 			$this->add_component(new Input($this->username), 'comp_username');
 			$this->add_component(new Password($this->password), 'comp_password');
 			$this->add_component(new ActionLink($this, 'login_do', 'Login',$params=null), 'login');
@@ -19,13 +19,15 @@ class Login extends Component
 	}
 
 	function login_do(){
-		$success =& User::login($this->username->getValue(), $this->password->getValue());
+		$u = $this->username->getValue();
+		$p = $this->password->getValue();
+		$success =& User::login($u, $p);
 		if ($success){
 			$this->triggerEvent('menuChanged', $success);
 			$this->state->setValue($v = 'success');
 		} else {
 			$this->state->setValue($v = 'failed');
-			$this->password->setValue($p = '');
+			$this->password->setValue($p2 = '');
 		}
 	}
 }
