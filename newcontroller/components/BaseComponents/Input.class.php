@@ -6,9 +6,11 @@ class Input extends FormComponent{
 	function createNode(){
 		$in =& $this->view;
 		$in->setTagName('input');
-		$in->setAttribute('value', $this->value_model->getValue());
 	}
 	function valueChanged(&$value_model, &$params) {
+		$this->view->setAttribute('value', $this->value_model->getValue());
+	}
+	function prepareToRender(){
 		$this->view->setAttribute('value', $this->value_model->getValue());
 	}
 }

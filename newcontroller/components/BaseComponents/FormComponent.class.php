@@ -7,16 +7,14 @@ class FormComponent extends Component
 	var $value_model;
 
 	function FormComponent(&$value_model, $callback_actions=array('on_accept' => 'notification_accepted')) {
-		parent::Component($callback_actions);
 		if ($value_model==null) {
 			$this->value_model =& new ValueHolder($null = null);
 		} else {
 			$this->value_model =& $value_model;
 		}
 		$this->value_model->onChangeSend('valueChanged', $this);
+		parent::Component($callback_actions);
 	}
-
-	function declare_actions(){return array();}
 
 	function viewUpdated($params) {
 		$value =& $this->value_model->getValue();
