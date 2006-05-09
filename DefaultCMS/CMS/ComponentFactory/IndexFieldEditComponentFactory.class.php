@@ -9,7 +9,7 @@ class IndexFieldEditComponentFactory extends EditComponentFactory {
 		$fc =& new FormComponent($n=null);
 		$this->fc =& $fc;
 		$this->field =& $field;
-		$fc->add_component(new Text(new ValueHolder($field->value)),'value');
+		$fc->add_component(new Text(new ValueHolder($field->getValue())),'value');
 		$fc->add_component(new ActionLink($this, 'newComponent', 'new', $n), 'new');
 		return $fc;
 	}

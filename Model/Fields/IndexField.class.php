@@ -20,6 +20,9 @@ class IndexField extends NumField {
         $obj =& $this->obj();
         return $obj->indexValues();
     }
+    function getValue(){
+    	return $this->value + 0;
+    }
 }
 
 class UserField extends IndexField {

@@ -37,7 +37,8 @@ class EditObjectComponent extends Component {
     	$obj =& $this->obj;
     	$fs =& $obj->allFieldNames();
     	foreach($fs as $f){
-    		$obj->$f->setValue($this->fields[$f]->getValue());
+    		$v = $this->fields[$f]->getValue();
+    		$obj->$f->setValue($v);
     	}
 		$this->obj->save();
 		$this->callback();
