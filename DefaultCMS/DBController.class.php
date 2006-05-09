@@ -3,55 +3,40 @@
  * This controller helps configuring and checking the database.
  */
 
+require_once pwbdir.'/OldViews/Structure/TableCheckView.class.php';
 
 class DBController extends Component {
+	var $sql;
+	var $sql_result;
+	function initialize(){
+		$this->sql =& new ValueHolder($n='');
+		$this->sql_result =& new ValueHolder($n2='');
+		$this->add_component(new Label('Execute SQL in Database:'));
+		$this->add_component(new TextAreaComponent($this->sql), 'sql_comp');
+		$this->add_component(new Text($this->sql_result), 'sql_res');
+		$this->add_component(new ActionLink($this, 'exec_sql', 'Execute the SQL', $n3=null), 'exec_sql');
+
+		$this->add_component(new Label('Check Table Structure'));
+		$this->add_component(new ActionLink($this, 'check_tables', 'Check Table Structure', $n=null), 'check_tables');
+	}
 	function permissionNeeded () {
 		return "DatabaseAdmin";
 	}
-	function begin ($form) {
-		$ret = $this->checkConfig();
-		$ret .= $this->executeSQL($form);
-		$ret .= $this->export();
-		if (!isset($form["nocheck"])) $ret .= $this->checkTables();
-		return $ret;
+	function exec_sql() {
+		$db = new MySQLDB;
+		$sqlstr = $this->sql->getValue();
+		$sqls = split(";",$sqlstr);
+		$ress = $db->batchExec($sqls);
+		$this->sql_result->setValue(print_r($ress, TRUE));
 	}
-	function checkConfig() {
-/*
- * Chequear si la DB est� bien configurada (se puede acceder),
- */
-		return "<h3>Check access to database:</h3> Feature not yet implemented</p>";
-	}
- /* Exportar e importar, tablas y datos.*/
-	function executeSQL($form) {
-		$ret ="";
-		if ($form["executeStage"]=="Execute"){
-			$db = new MySQLDB;
-			$sqlstr = stripslashes($form["execSQL"]);
-			//$sqlstr = ereg_replace("--.*\n","",$sqlstr);
-			$sqls = split(";",$sqlstr);
-			$ress = $db->batchExec($sqls);
-			$ret .= print_r($ress, TRUE);
-		}
-		$ret = "<h3>Execute SQL in Database:</h3> <p>" . $ret .
-				"<form action=\"Action.php?Controller=DBController";
-		$ret .= "\" method=\"POST\">" .
-				"<textarea rows=\"20\" cols=\"100\" name=\"execSQL\">$sqlstr</textarea>" .
-				"<input type=\"submit\" name=\"executeStage\" value=\"Execute\" />" .
-				"</form>";
-		return $ret;
-	}
-	function export() {
-		return "<h3>Export data:</h3> <p>Feature not yet implemented</p>";
-	}
-	function checkTables() {
-		$ret = "<h3>Check if existing tables are correct</h3>";
+	function check_tables() {
 		$mod = $this->modsNeeded();
 		if ($mod!="") {
-			$ret .= "Modifications Needed: <textarea rows=\"10\" cols=\"60\">$mod</textarea>";
+			$this->sql->setValue($mod);
+			$this->sql_result->setValue($n = "Modifications Needed");
 		} else {
-			$ret .= "No problems found!";
+			$this->sql_result->setValue($n = "No problems found!");
 		}
-		return $ret;
 	}
 	function modsNeeded(){
 		$arr = get_subclasses("PersistentObject");

@@ -11,7 +11,7 @@ class TextAreaComponent extends FormComponent{
 		$this->view->append_child(new XMLTextNode($this->value_model->getValue()));
 	}
 	function valueChanged(&$value_model, &$params) {
-		$this->view->replace_child($this->view->first_child(), $this->value_model->getValue());
+		$this->view->replace_child(new XMLTextNode($this->value_model->getValue()), $this->view->first_child());
 	}
 }
 
