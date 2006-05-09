@@ -18,22 +18,14 @@ class FormComponent extends Component
 
 	function declare_actions(){return array();}
 
-	function updateView($params) {
+	function viewUpdated($params) {
 		$value =& $this->value_model->getValue();
-
 		if ($params != $value){
-			//$oldval =  $value;
-			$this->setValue($params);
-			//$this->value_model->setValue($params);
-			//$this->triggerEvent('changed', $oldval);
+			$oldval =  $value;
+			$this->value_model->primitiveSetValue($params);
+			$this->triggerEvent('changed', $oldval);
 		}
-
 	}
-
-	function viewUpdated (){
-		/* Do nothing by default */
-	}
-
 	function setValue(&$params) {
 		$this->value_model->setValue($params);
 	}

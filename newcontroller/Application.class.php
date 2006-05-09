@@ -55,7 +55,6 @@ class Application extends ComponentHolder
 
 	function start() {
 		$this->component->start();
-		$this->component->linkToApp($this);
 	}
 
     function &instance() {
@@ -97,14 +96,11 @@ class Application extends ComponentHolder
 
 	function initialRender() {
 		$this->viewCreator->createAllViews();
-		//$this->component->prepareToRender();
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
 		echo $initial_page_renderer->renderPage();
 	}
 
 	function render() {
-		//$this->wholeView->updateFullPath();
-		//$this->component->prepareToRender();
 		$this->viewCreator->createAllViews();
 		echo $this->page_renderer->renderPage();
 	}

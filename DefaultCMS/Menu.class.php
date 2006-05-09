@@ -13,11 +13,12 @@ class Menu extends Component {
 		$this->menus();
 	}
 	function newmenu() {
+		$this->add_component(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
 		$ms = & $this->menus;
 		$cs = & $ms->__children;
 		$ks = array_keys($cs);
 		foreach ($ks as $k) {
-			$ms-> $k->delete();
+			$ms->$k->delete();
 		}
 		$this->menus();
 	}
@@ -34,7 +35,7 @@ class Menu extends Component {
 	}
 	function realMenuSection(& $menu) {
 		$sect = & new MenuSectionComponent();
-		$this->add_component($sect);
+		$this->menus->add_component($sect);
 		$sect->add_component(new Text(new ValueHolder($menu->name->value)), 'secName');
 		$col = & $menu->itemsVisible();
 		$ks2 = & array_keys($col);
@@ -48,7 +49,7 @@ class Menu extends Component {
 	function objMenus() {
 		$arr = get_subclasses("PersistentObject");
 		$sect = & new MenuSectionComponent();
-		$this->add_component($sect);
+		$this->menus->add_component($sect);
 		$sect->add_component(new Text(new ValueHolder($t = 'Objects')), 'secName');
 		foreach ($arr as $name) {
 			if (fHasPermission($_SESSION[sitename]["id"], array (

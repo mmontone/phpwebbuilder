@@ -29,14 +29,11 @@ class ActionLink extends FormComponent
 		$action = $app->page_renderer->renderActionLinkAction($this);
 		$link->setAttribute('onclick', $action);
 	}
-
-	function updateView($params) {
-		//$this->params = $params;
-	}
-
-	function viewUpdated(){
-		$action = $this->action;
-		$this->target->$action($this->params);
+	function viewUpdated($p){
+		if ($p=="execute"){
+			$action = $this->action;
+			$this->target->$action($this->params);
+		}
 	}
 
 }

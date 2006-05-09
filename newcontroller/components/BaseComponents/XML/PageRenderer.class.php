@@ -107,6 +107,9 @@ class AjaxPageRenderer extends PageRenderer {
 				return $mod->renderAjaxResponseCommand();
 			case 'setattributexmlnodemodification' :
 				return $mod->renderAjaxResponseCommand();
+			case 'insertbeforexmlnodemodification' :
+				$mod->new->flushModifications();
+				return $mod->renderAjaxResponseCommand();
 		}
 	}
 

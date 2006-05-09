@@ -82,7 +82,7 @@ function postAjax(url, func, formName, obj) {
        ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
 
        //       prompt("url",url);prompt("paramans",params);
-       //prompt("url", url + params);
+//       prompt("url", url + params);
        try {
               http.open("POST", url, true);
           http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -94,8 +94,8 @@ function postAjax(url, func, formName, obj) {
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
                            /* DEBUG */
-                           /* if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
-                           t = document.createTextNode(http.responseText);
+                           //if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
+                           /*t = document.createTextNode(http.responseText);
                            form = document.getElementById(formName);
                            form.appendChild(t);*/
                            /* END DEBUG */
@@ -208,21 +208,19 @@ function ajax_insert_html(action) {
 function ajax_replace_node(action) {
   var target = getActionTarget(action);
   var html = xml2html(action.firstChild);
-  alert(target);
-  navigateInteractivelyFrom(action);
   target.parentNode.replaceChild(html, target);
 }
 
 function ajax_replace_child(action) {
   var target = getActionTarget(action);
-  var child = getActionChild(action);
+  var child = action.firstChild;
   var html = xml2html(action.firstChild);
   target.replaceChild(html, child);
 }
 
 function ie_ajax_replace_child(action) {
   var target = getActionTarget(action);
-  var child = getActionChild(action);
+  var child = action.firstChild;
   var html = xml2html(action.firstChild);
   target.replaceChild(html, child);
 }
@@ -250,12 +248,22 @@ function ie_ajax_remove_node(action) {
 
 function ajax_remove_child(action) {
   var target = getActionTarget(action);
-  var child = getActionChild(action);
+  var child = action.firstChild;
   target.removeChild(child);
 }
 
 function ie_ajax_remove_child(action) {
     return ajax_remove_child(action);
+}
+
+function ajax_insert_before(action) {
+  var target = getActionTarget(action);
+  var child = xml2html(action.firstChild);
+  target.parentNode.insertBefore(child, target);
+}
+
+function ie_ajax_insert_before(action) {
+    return ajax_insert_before(action);
 }
 
 function ajax_set_attribute(action) {
@@ -295,7 +303,11 @@ function callAction(action_id) {
 }
 
 function callActionAjax(action_id) {
-    url = "new_dispatch.php?"+action_id+"=execute";
+    url = "new_dispatch.php?" +action_id+"=execute";
     formName = "app";
+    act = document.getElementById(action_id);
+    old = act.getAttribute('value');
+    act.setAttribute('value', 'execute');
     postAjax(url,updatePage,formName);
+    act.setAttribute('value', old);
 }

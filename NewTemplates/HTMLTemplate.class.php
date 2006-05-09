@@ -21,9 +21,21 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 
 
 	function render() {
-		return "";
+		$this->getRealId();
+		$fid = $this->getAttribute('fakeid');
+		return "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
 	}
-
+	function getRealId(){
+		$this->parentNode->getRealId();
+		$id = $this->parentNode->getAttribute('id');
+		$id.= '/'.$this->getAttribute('id');
+		$id.= '/'.$this->getAttribute('class');
+		$this->attributes['fakeid'] =$id;
+	}
+	function getId(){
+		$this->getRealId();
+		return $this->getAttribute('fakeid');
+	}
 	function & xml2template(& $xml) {
 		if (strcasecmp(get_class($xml), "XMLTextNode") == 0 || strcasecmp(get_class($xml), "HTMLTextNode") == 0) {
 			$tn = & new XMLTextNode($xml->data);

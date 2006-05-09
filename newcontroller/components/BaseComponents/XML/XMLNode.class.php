@@ -48,9 +48,15 @@ class XMLNode extends DOMXMLNode {
 			$this->attributes['id'] =  $id;
 			//$this->setAttribute('name', $id);
 			$this->attributes['name'] = $id;
+			return $id;
+		} else {
+			return $this->parentNode->getRealId();
 		}
 	}
-
+	function getId(){
+		$this->getRealId();
+		return $this->getAttribute('id');
+	}
 	// Si aca pones enters no anda el ajax
 	function render() {
 		$this->getRealId();
@@ -210,11 +216,6 @@ class XMLNode extends DOMXMLNode {
 		$b = ($this->attributes["id"] !== null && strcasecmp($this->attributes["id"], $id) == 0);
 		return $b;
 	}
-
-	function getId() {
-		return $this->getAttribute('id');
-	}
-
 	function checkTree() {
 		foreach (array_keys($this->childNodes) as $i) {
 			assert($this->childNodes[$i]->parentNode);

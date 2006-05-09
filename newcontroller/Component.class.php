@@ -92,7 +92,7 @@ class Component extends PWBObject
     }
 
 	function add_component(&$component, $ind=null) {
-		if ($this->__children[$ind]!=null) {
+		if ($ind !=null && $this->__children[$ind]!=null) {
 			$this->__children[$ind]->component->stopAndCall($component);
 		} else {
 			$keys = array();
@@ -257,14 +257,7 @@ class Component extends PWBObject
 	function getSimpleId(){
 		return $this->holder->getSimpleId();
 	}
-	function prepareToRender(){
-		//$this->createView($this->parentView());
-		$ks = array_keys($this->__children);
-		foreach ($ks as $key){
-			$comp =& $this->component_at($key);
-			$comp->prepareToRender();
-		}
-	}
+	function prepareToRender(){}
 	/* For debugging */
 	function printTree(){
 		$ks = array_keys($this->__children);

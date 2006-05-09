@@ -6,8 +6,20 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	function HTMLContainer() {
 		parent::XMLNodeModificationsTracker();
 	}
-	function render () {
-		return "";
+
+	function render() {
+		$fid = $this->getId();
+		return "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
+	}
+	function getRealId(){
+		$this->parentNode->getRealId();
+		$id = $this->parentNode->getAttribute('id');
+		$id.= '/'.$this->getAttribute('class');
+		$this->attributes['fakeid'] =$id;
+	}
+	function getId(){
+		$this->getRealId();
+		return $this->getAttribute('fakeid');
 	}
 	function isContainer(){
 		return true;

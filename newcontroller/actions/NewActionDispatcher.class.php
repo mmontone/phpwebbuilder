@@ -78,42 +78,30 @@ class NewActionDispatcher {
 		unset ($form["ControllerSubmit"]);
 		$delayed = array ();
 		$elems = array ();
+		$dd = 0;
+		$de = 0;
 		foreach ($form as $dir => $param) {
-			$temp = array ();
 			$c = & $this->getComponent($dir);
-			if ($c) {
+			if ($c!=null) {
+				if ($param == "execute") {
+					$temp =& $delayed[$dd++];
+				} else {
+					$temp =& $elems[$de++];
+				}
 				$temp[] = & $c;
 				$temp[] = $param;
 				$temp[] = $dir;
-				if ($param == "execute") {
-					$delayed[] = $temp;
-				}
-				else {
-					$elems[] = $temp;
-				}
 			}
 		}
-
 		$ks = array_keys($elems);
 		foreach ($ks as $k) {
-			$elems[$k][0]->updateView($elems[$k][1]);
+			$elems[$k][0]->viewUpdated($elems[$k][1]);
 		}
-
-		$app = & Application :: instance();
-		// Don't take into account the modifications made in updateView. If
-		// you want to make modifications to the view, make them in viewUpdated, called below
-		$app->wholeView->flushModifications();
-
-		foreach ($ks as $k) {
-			$elems[$k][0]->viewUpdated();
-		}
-
-		$ks = array_keys($delayed);
-		foreach ($ks as $k) {
-			$delayed[$k][0]->viewUpdated($delayed[$k][1]);
+		$ks2 = array_keys($delayed);
+		foreach ($ks2 as $k2) {
+			$delayed[$k2][0]->viewUpdated($delayed[$k2][1]);
 		}
 	}
-
 	function & getComponent($path) {
 		$app = & Application :: instance();
 		$comp = & $app->component;
