@@ -4,11 +4,11 @@
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <templates>
  	<template class="DBController">
-		Execute SQL in Database:
-		<textarea rows="20" cols="30" id="sql_comp">&nbsp;</textarea>
+		<h1>Execute SQL in Database:</h1>
+		<textarea rows="10" cols="50" id="sql_comp">&nbsp;</textarea>
+		<input type="button" value="Execute" id="exec_sql"/>
 		<container id="sql_res"/>
-		<container id="exec_sql"/>
-		Check Table Structure
-		<container id="check_tables"/>
+		<h1>Check Table Structure</h1>
+		<input type="button" value="Check" id="check_tables"/>
 	</template>
 </templates>

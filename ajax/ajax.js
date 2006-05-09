@@ -95,9 +95,20 @@ function postAjax(url, func, formName, obj) {
                        if (http.readyState==4) {
                            /* DEBUG */
                            //if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
-                           /*t = document.createTextNode(http.responseText);
-                           form = document.getElementById(formName);
-                           form.appendChild(t);*/
+	                           db = document.getElementById('debug');
+	                           if (!db) {
+	                           db = document.createElement('div');
+	                           db.setAttribute('id', 'debug');
+	                           form = document.getElementById(formName);
+	                           form.appendChild(db);
+	                           t = document.createTextNode(http.responseText);
+	                           db.appendChild(t);
+                           } else {
+	                           t = document.createTextNode(http.responseText);
+	                           db.replaceChild(t,db.firstChild);
+                           }
+
+
                            /* END DEBUG */
 
                            func(http.responseText, http.responseXML, obj);

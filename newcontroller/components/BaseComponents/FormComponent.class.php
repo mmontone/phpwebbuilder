@@ -27,7 +27,9 @@ class FormComponent extends Component
 	function setValue(&$params) {
 		$this->value_model->setValue($params);
 	}
-
+	function &getValue() {
+		$this->value_model->getValue();
+	}
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
 		$this->createNode();

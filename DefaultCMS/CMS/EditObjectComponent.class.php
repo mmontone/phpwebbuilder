@@ -25,15 +25,20 @@ class EditObjectComponent extends Component {
     	$factory =& new EditComponentFactory;
     	foreach($fs as $f){
     		$fc =& new Obj;
-    		$this->add_component($fc);
+    		$this->add_component($fc, $f);
     		$fc->add_component(new Text(new ValueHolder($fs[$f])), 'name');
-    		$fc->add_component($factory->createFor($obj->$f), 'value');
+    		$this->fields[$f]=&$factory->createFor($obj->$f);
+    		$fc->add_component($this->fields[$f], 'value');
        	}
        	$this->add_component(new ActionLink($this, 'save', 'save', $n=null), 'save');
        	$this->add_component(new ActionLink($this, 'callback', 'cancel', $n), 'cancel');
-       	$this->fields =& $fs;
     }
     function save(){
+    	$obj =& $this->obj;
+    	$fs =& $obj->allFieldNames();
+    	foreach($fs as $f){
+    		$obj->$f->setValue($this->fields[$f]->getValue());
+    	}
 		$this->obj->save();
 		$this->callback();
     }

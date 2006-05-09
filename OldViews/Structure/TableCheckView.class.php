@@ -26,7 +26,7 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 		$table = $this->obj->tablename();
 		$sql = "SHOW TABLES FROM " . basename . " LIKE '" . $table ."'";
 		$db = new MySQLDB;
-		$res = $db->SQLexec($sql, FALSE, $this->obj); 
+		$res = $db->SQLexec($sql, FALSE, $this->obj);
 		if (strcasecmp(get_class($this->obj),"ObjSQL")!=0) {
 			trace("Inspecting object ". get_class($this->obj));
 			if(mysql_num_rows($res)) {
@@ -34,7 +34,7 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 				$ret ="";
 				$sql = "SHOW COLUMNS FROM " . $table;
 				$db = new MySQLDB;
-				$res = $db->SQLexec($sql, FALSE, $this->obj); 
+				$res = $db->SQLexec($sql, FALSE, $this->obj);
 				$arr = $db->fetchArray($res);
 				foreach ($arr as $f) {
 					$arr2 [$f["Field"]]=$f;
@@ -44,13 +44,13 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 				foreach ($arr as $name=>$f) {
 					$temp .= $f;
 				}
-				trace("Fields:" . print_r($f, TRUE));				
+				trace("Fields:" . print_r($f, TRUE));
 				trace("Deleting Extra Fields");
 				foreach ($this->gotFields as $name=>$f) {
 					if (!isset($arr[$f["Field"]])) {
 						trace("Field not found:" . print_r($f, TRUE));
 						$temp .= "\n    DROP COLUMN $name, ";
-					} 
+					}
 				}
 				$actunique = array();
 				$res =& $db->SQLExec("SHOW INDEX FROM $table", FALSE,$this);
@@ -78,17 +78,21 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 					$ret .= $temp;
 					$ret = substr($ret,0, -2);
 					$ret .= ";";
-				} 
+				}
 		/*
-		Si est�, hay que verificar los atributos y el tipo. Si no, hay que crearla. 
-		*/	
+		Si est�, hay que verificar los atributos y el tipo. Si no, hay que crearla.
+		*/
 			} else {
 			//Si no est�, crearla:
 				//$ret = "\n-- Object: ".get_class($this->obj);
 				$ret .=	"\nCREATE TABLE IF NOT EXISTS $table (" ;
 				$ret .= $this->fieldsForm(new MixLinker, $this->obj->fieldNames, TRUE);
 				$ret .= "\n   PRIMARY KEY  (`id`)";
-				$ret .= "\n".$this->uniques();
+				$u = $this->uniques();
+				if ($u) {
+					$ret .= ", ".$u;
+				}
+				$ret .= "\n".
 				$ret .= "\n);";
 			/*faltan los campos!*/
 			}
@@ -108,10 +112,10 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 		}
 		$uni = substr($uni,0, -2);
 		if (trim($uni)!="") {
-			return  ", UNIQUE index$table(".$uni.")";
+			return  " UNIQUE index$table(".$uni.")";
 		} else{
 			return "";
-		} 
+		}
 	}
 	function showField(&$field){
 		return $field->creation($this);

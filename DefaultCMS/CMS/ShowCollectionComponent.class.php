@@ -43,7 +43,6 @@ class ShowCollectionComponent extends Component {
 		$this->call(new EditObjectComponent($obj));
 	}
 	function newObject(&$n) {
-		echo "creating a new object";
 		$obj = & new $this->classN;
 		$this->addLine($obj);
 		$this->editObject($obj);
@@ -58,6 +57,7 @@ class ShowCollectionComponent extends Component {
 		$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $obj), 'edit');
 		$fc->add_component(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
 	}
+	function getValue(){}
 }
 
 class Obj extends Component {
