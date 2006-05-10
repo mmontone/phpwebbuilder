@@ -41,7 +41,8 @@ class EditObjectComponent extends Component {
     		$obj->$f->setValue($v);
     	}
 		$this->obj->save();
-		$this->callback();
+		$this->callback('refresh');
     }
+
 }
 ?>

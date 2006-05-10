@@ -35,6 +35,7 @@ class DBController extends Component {
 			$this->sql->setValue($mod);
 			$this->sql_result->setValue($n = "Modifications Needed");
 		} else {
+			$this->sql->setValue($s="");
 			$this->sql_result->setValue($n = "No problems found!");
 		}
 	}

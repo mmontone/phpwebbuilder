@@ -15,7 +15,7 @@
  	<template class="ShowCollectionComponent">
  		<div>
 		<container id="className" /> class
-	 	<table><tbody>
+	 	<table id="objs"><tbody>
  			<tr>
 				<template class="Obj" >
 				<td>

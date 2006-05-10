@@ -85,7 +85,7 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 			} else {
 			//Si no est�, crearla:
 				//$ret = "\n-- Object: ".get_class($this->obj);
-				$ret .=	"\nCREATE TABLE IF NOT EXISTS $table (" ;
+				$ret =	"\nCREATE TABLE IF NOT EXISTS $table (" ;
 				$ret .= $this->fieldsForm(new MixLinker, $this->obj->fieldNames, TRUE);
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
@@ -94,7 +94,6 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 				}
 				$ret .= "\n".
 				$ret .= "\n);";
-			/*faltan los campos!*/
 			}
 		} else {
 			$ret="";

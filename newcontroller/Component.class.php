@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/actions/FlowAction.class.php';
 require_once dirname(__FILE__) . '/PWBObject.class.php';
 require_once dirname(__FILE__) . '/Application.class.php';
 require_once dirname(__FILE__) . '/ComponentHolder.class.php';
+require_once dirname(__FILE__) . '/Callback.class.php';
 
 class Component extends PWBObject
 {

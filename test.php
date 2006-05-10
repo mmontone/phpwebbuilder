@@ -1,10 +1,17 @@
 <?php
+class Test {
+var $y = "asdf";
+var $z;
+(string) function lala ($x){
+	echo $x;
+}
 
-ini_set('display_errors',true);
-error_reporting(E_ALL);
-echo memory_get_usage();
-ini_set('memory_limit', '32M');
-echo "<br/>".ini_get('memory_limit');
+}
+$t = new Test;
+echo "lala vale ".$t->lala('hola');
 
+echo "<br/>x es ".gettype($t->x)." y vale $t->x";
+echo "<br/>y es ".gettype($t->y)." y vale $t->y";
+echo "<br/>z es ".gettype($t->z)." y vale $t->z";
 
 ?>
