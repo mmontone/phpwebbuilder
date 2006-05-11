@@ -40,9 +40,12 @@ class PersistentCollection {
       function offset() {
         return " OFFSET ". $this->offset;
       }
+      function restrictions (){
+      	return $this->tableName() . $this->conditions();
+      }
       function elements () {
         $obj =& new $this->dataType;
-        $sql = "SELECT ".$obj->fieldNames("SELECT")." FROM ". $this->tableName() . $this->conditions(). $this->order . $this->limit() ;
+        $sql = "SELECT ".$obj->fieldNames("SELECT")." FROM ". $this->restrictions().$this->order . $this->limit() ;
         $db = new mysqldb;
         $reg = $db->SQLExec($sql, FALSE, $this);
         $col=array();
@@ -60,7 +63,7 @@ class PersistentCollection {
 
       function size() {
         $obj =& new $this->dataType;
-        $sql = "SELECT COUNT(id) as 'collection_size' FROM " . $this->tableName();
+        $sql = "SELECT COUNT(id) as 'collection_size' FROM " . $this->restrictions();
         $db =& new mysqldb;
         $reg = $db->SQLExec($sql, FALSE, $this);
         $data = $db->fetchrecord($reg);
