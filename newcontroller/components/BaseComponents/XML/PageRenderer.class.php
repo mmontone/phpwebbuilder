@@ -7,6 +7,9 @@ class PageRenderer // extends PWBObject
 	function PageRenderer(& $page) {
 		$this->page = & $page;
 	}
+	function setPage(&$view){
+		$this->page=&$view;
+	}
 }
 
 class StandardPageRenderer extends PageRenderer {
@@ -67,7 +70,10 @@ class AjaxPageRenderer extends PageRenderer {
 	function AjaxRenderer(& $page) {
 		parent :: PageRenderer($page);
 	}
-
+	function setPage(&$page){
+		parent::setPage($page);
+		$page->setAttribute('onsubmit','postInAjax();');
+	}
 	function renderPage() {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';

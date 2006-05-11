@@ -113,21 +113,24 @@ class Component extends PWBObject
 	function deleteChildren(){
 		$ks = array_keys($this->__children);
 		foreach($ks as $k){
-			$c =& $this->component_at($k);
-			$c->delete();
+			$this->delete_component_at($k);
 		}
 	}
 	function delete(){
 		$pv =& $this->parentView();
 		$v =& $this->view;
 		$pv->remove_child($v);
-		unset($pv);
-		unset($v);
+		$n = null;
+		$pv =& $n;
+		$v =& $n;
 		$h =& $this->holder;
 		$p =& $h->parentNode;
 		$pos =&  $h->__owner_index;
+		$p->__children[$pos] =& $n;
+		$p->$pos =& $n;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
+
 	}
 	function &component_at($index) {
 		$holder =& $this->__children[$index];

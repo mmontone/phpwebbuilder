@@ -40,7 +40,7 @@ class EditObjectComponent extends Component {
     		$v = $this->fields[$f]->getValue();
     		$obj->$f->setValue($v);
     	}
-		$this->obj->save();
+		$obj->save();
 		$this->callback('refresh');
     }
 

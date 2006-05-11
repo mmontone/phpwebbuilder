@@ -159,13 +159,19 @@ function submitAjax(form_id, url) {
 }
 
 function updatePage(text, xml) {
-  var actions = xml.firstChild.childNodes;
+var acts =xml.firstChild;
+if (acts){
+  var actions = acts.childNodes;
   var i=0;
   for (; i< actions.length; i++) {
-    str = "ajax_" + actions[i].tagName + "(actions[i]);";
-    eval(str);
+//    if (!actions[i].data){
+	    str = "ajax_" + actions[i].tagName + "(actions[i]);";
+	    eval(str);
+//    }
   }
+}
   return true;
+
 }
 
 function ie_updatePage(text, xml) {
@@ -183,9 +189,17 @@ function getActionTarget(action) {
     return document.getElementById(action.getAttribute("id"));
   if (action.getAttribute("path") != null)
     return nodeAtPath(action.getAttribute("path"));
-
   return false;
 }
+
+function getActionChild(action) {
+    e = action.firstChild;
+    while(e.data){
+        e = e.nextSibling;
+    }
+    return e;
+}
+
 
 function nodeAtPath(path_str) {
     var path = path_str.split("/");
@@ -212,33 +226,33 @@ function navigateInteractivelyFrom(aNode) {
 
 function ajax_insert_html(action) {
   var target = getActionTarget(action);
-  target.innerHTML = xml2str(action.firstChild);
+  target.innerHTML = xml2str(getActionChild(action));
 }
 
 function ajax_replace_node(action) {
   var target = getActionTarget(action);
-  var html = xml2html(action.firstChild);
+  var html = xml2html(getActionChild(action));
   target.parentNode.replaceChild(html, target);
 }
 
 function ajax_replace_child(action) {
   var target = getActionTarget(action);
-  var child = action.firstChild;
-  var html = xml2html(action.firstChild);
+  var child = getActionChild(action);
+  var html = xml2html(getActionChild(action));
   target.replaceChild(html, child);
 }
 
 function ie_ajax_replace_child(action) {
   var target = getActionTarget(action);
-  var child = action.firstChild;
-  var html = xml2html(action.firstChild);
+  var child = getActionChild(action);
+  var html = xml2html(getActionChild(action));
   target.replaceChild(html, child);
 }
 
 
 function ajax_append_child(action) {
   var target = getActionTarget(action);
-  var html = xml2html(action.firstChild);
+  var html = xml2html(getActionChild(action));
   target.appendChild(html);
 }
 
@@ -258,7 +272,7 @@ function ie_ajax_remove_node(action) {
 
 function ajax_remove_child(action) {
   var target = getActionTarget(action);
-  var child = action.firstChild;
+  var child = getActionChild(action);
   target.removeChild(child);
 }
 
@@ -268,7 +282,7 @@ function ie_ajax_remove_child(action) {
 
 function ajax_insert_before(action) {
   var target = getActionTarget(action);
-  var child = xml2html(action.firstChild);
+  var child = xml2html(getActionChild(action));
   target.parentNode.insertBefore(child, target);
 }
 
@@ -314,13 +328,21 @@ function callAction(action_id) {
 
 function callActionAjax(action_id) {
     url = "new_dispatch.php?" +action_id+"=execute";
-    formName = "app";
     act = document.getElementById(action_id);
     old = act.getAttribute('value');
     act.setAttribute('value', 'execute');
+    formName = "app";
     postAjax(url,updatePage,formName);
     act.setAttribute('value', old);
 }
+
+function postInAjax(){
+    url = "new_dispatch.php";
+    formName = "app";
+    postAjax(url,updatePage,formName);
+    return false;
+}
+
 
 function push(){
     callback= function (str,xml){

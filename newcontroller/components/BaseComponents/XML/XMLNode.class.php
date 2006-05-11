@@ -66,7 +66,8 @@ class XMLNode extends DOMXMLNode {
 		}
 		if (count($this->childNodes) == 0) {
 			// De la forma <tag/> no anda ajax
-			return "<$this->tagName $attrs></$this->tagName>";
+			//return "\n<$this->tagName $attrs></$this->tagName>";
+			return "\n<$this->tagName $attrs />";
 		}
 		else {
 			$childs = '';
@@ -75,9 +76,9 @@ class XMLNode extends DOMXMLNode {
 				$childs .= $this->childNodes[$k]->render();
 			}
 			// WARNING: si pones enters se va a seguir rompiendo el ajax aunque sea x id
-			//$childs  = str_replace("\n", "\n   ", $childs);
-			//$ret .= "\n<$this->tagName $attrs>$childs\n</$this->tagName>";
-			$ret .= "<$this->tagName $attrs>$childs</$this->tagName>";
+			$childs  = str_replace("\n", "\n   ", $childs);
+			$ret .= "\n<$this->tagName $attrs>$childs\n</$this->tagName>";
+			//$ret .= "<$this->tagName $attrs>$childs</$this->tagName>";
 			return $ret;
 		}
 	}

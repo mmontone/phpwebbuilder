@@ -30,14 +30,17 @@ class ShowCollectionComponent extends Component {
 		$this->add_component(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
 		$this->add_component(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
 		$this->add_component(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
+		$this->add_component(new ActionLink($this, 'refresh', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 0);
-		$this->add_component(new Input($this->firstElement), 'firstrElem');
+		$this->firstElement->onChangeSend('refresh', $this);
+		$this->add_component(new Input($this->firstElement), 'firstElem');
 		$this->add_component(new FormComponent($v=null), 'objs');
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->add_component(new Text($this->size), 'realSize');
-		$this->pageSize =& new ValueHolder($pz = 0);
+		$this->pageSize =& new ValueHolder($pz = 1);
 		$this->add_component(new Input($this->pageSize), 'pSize');
+		$this->pageSize->onChangeSend('refresh', $this);
 
 		$obj = & new $class;
 		$fs = & $obj->indexFields;
@@ -53,9 +56,9 @@ class ShowCollectionComponent extends Component {
 		$col->limit = $this->pageSize->getValue();
 		$col->offset = $this->firstElement->getValue();
 		$this->size->setValue($col->size());
+		$this->objs->deleteChildren();
 		$objects = & $col->objects();
 		$ks = array_keys($objects);
-		$this->objs->deleteChildren();
 		foreach ($ks as $k) {
 			$this->addLine($objects[$k]);
 		}
@@ -84,19 +87,15 @@ class ShowCollectionComponent extends Component {
 	/* Navigation */
 	function prevPage(){
 		$this->firstElement->setValue($r = $this->firstElement->getValue()-$this->pageSize->getValue());
-		$this->refresh();
 	}
 	function nextPage(){
 		$this->firstElement->setValue($r = $this->firstElement->getValue()+$this->pageSize->getValue());
-		$this->refresh();
 	}
 	function firstPage(){
 		$this->firstElement->setValue($r = 0);
-		$this->refresh();
 	}
 	function lastPage(){
 		$this->firstElement->setValue($r = $this->col->size()-$this->pageSize->getValue());
-		$this->refresh();
 	}
 }
 

@@ -112,7 +112,7 @@ class Application extends ComponentHolder
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
 			$this->wholeView->csss =& $this->setCss();
-			$this->page_renderer->page =& $this->wholeView;
+			$this->page_renderer->setPage($this->wholeView);
 		}
 	}
 	function setCss(){}

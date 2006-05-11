@@ -39,7 +39,8 @@ class DOMXMLNode //extends PWBObject
 		return new XMLTextNode($text, & $obj);
 	}
 	function & first_child() {
-		return $this->childNodes[0];
+		$ks = array_keys($this->childNodes);
+		return $this->childNodes[$ks[0]];
 	}
 
 	function insert_in(& $xml, $position) {
@@ -50,54 +51,22 @@ class DOMXMLNode //extends PWBObject
 
 	function append_child(& $xml) {
 		$this->insert_in($xml,$this->nextNode++);
-		//$this->updateChildrenFullPath();
-		/*$this->triggerEvent('childAppended', array (
-			'child' => $xml
-		));*/
 	}
-
-	/*
-	function updateChildrenFullPath() {
-		foreach (array_keys($this->childNodes) as $i) {
-			$this->childNodes[$i]->updateFullPath();
-		}
-	}*/
-
-	/*
-	function updateFullPath() {
-		if (!$this->parentNode)
-			$this->fullPath = '/';
-		else
-			$this->fullPath = $this->parentNode->fullPath . $this->parentPosition . '/';
-
-		//$this->fullPath = $this->parentNode->fullPath . '/'. $this->tagName . '('.$this->getId() . ')' . ':' . $this->parentPosition ;
-		$this->updateChildrenFullPath();
-	}
-	*/
-
 	function replace_child(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);
 		$n = null;
 		$old->parentNode = & $n;
 		$old->parentPosition = & $n;
-		//$this->updateChildrenFullPath();
-		/*$this->triggerEvent('childReplaced', array (
-			'target' => $old,
-			'replacement' => $new
-		));*/
 	}
 
 	function remove_child(& $old) {
-		$pos = $old->parentPosition;
-		$last = count($this->childNodes) - 1;
-		for ($i = $last; $i > $pos; $i--) {
-			$this->insert_in($this->childNodes[$i], $i - 1);
-		}
-		unset ($this->childNodes[$last]);
-		//$this->updateChildrenFullPath();
-		/*$this->triggerEvent('childRemoved', array (
-			'child' => $old
-		));*/
+		$last = $old->parentPosition;
+		$null = null;
+		$this->childNodes[$last] =& $null;
+		$old->parentNode = & $null;
+		$old->parentPosition = & $null;
+		unset($this->childNodes[$last]);
+
 	}
 	function remove_childs(){
 		$temp = array();
@@ -105,19 +74,21 @@ class DOMXMLNode //extends PWBObject
 	}
 	function insert_before(& $old, & $new) {
 		$pos = $old->parentPosition;
-		for ($i = count($this->childNodes); $i > $pos; $i--) {
-			$this->insert_in($this->childNodes[$i -1], $i);
+		$ks = array_keys($this->childNodes);
+		$c = count($ks);
+		$i=$c-1;
+		$lastElem =& $this->childNodes[$ks[$i]];
+		$nn = $this->nextNode++;
+		$this->childNodes[$nn]=&$lastElem;
+		$lastElem->parentPosition=$nn;
+		for (; $ks[$i] != $pos; $i--) {
+			$this->insert_in($this->childNodes[$ks[$i-1]], $ks[$i]);
 		}
 		$this->insert_in($new, $pos);
-		//$this->updateChildrenFullPath();
 	}
 
 	function setAttribute($name, $val) {
 		$this->attributes[$name] = $val;
-		/*$this->triggerEvent('attributeSet', array (
-			'attribute' => $name,
-			'value' => $val
-		));*/
 	}
 	function getAttribute($attribute) {
 		return $this->attributes[$attribute];
