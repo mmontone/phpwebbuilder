@@ -110,6 +110,13 @@ class Component extends PWBObject
 		$c =& $this->component_at($index);
 		$c->delete();
 	}
+	function deleteChildren(){
+		$ks = array_keys($this->__children);
+		foreach($ks as $k){
+			$c =& $this->component_at($k);
+			$c->delete();
+		}
+	}
 	function delete(){
 		$pv =& $this->parentView();
 		$v =& $this->view;

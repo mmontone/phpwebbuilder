@@ -11,10 +11,13 @@ class Text extends FormComponent {
 
 	function valueChanged(& $value_model, & $params) {
 		/*WARNING!!! If there's an error, look here first ;) */
-		$text = & $this->value_model->getValue();
-		$new_view = $this->view;
-		$this->view->replace_child(new XMLTextNode($text), $this->view->first_child());
-		$this->view->parentNode->replace_child($this->view, $new_view);
+		if ($this->view){
+			$text = & $this->value_model->getValue();
+			$new_view = $this->view;
+			$this->view->remove_childs();
+			$this->view->append_child(new XMLTextNode($text));
+			$this->view->parentNode->replace_child($this->view, $new_view);
+		}
 	}
 
 	function & createDefaultView() {
@@ -22,6 +25,7 @@ class Text extends FormComponent {
 	}
 	function prepareToRender(){
 		$text = $this->value_model->getValue();
+		$this->view->remove_childs();
 		$this->view->append_child(new XMLTextNode($text));
 	}
 	function printTree() {

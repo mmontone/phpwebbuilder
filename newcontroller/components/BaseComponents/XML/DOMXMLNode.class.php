@@ -99,7 +99,10 @@ class DOMXMLNode //extends PWBObject
 			'child' => $old
 		));*/
 	}
-
+	function remove_childs(){
+		$temp = array();
+		$this->childNodes =& $temp;
+	}
 	function insert_before(& $old, & $new) {
 		$pos = $old->parentPosition;
 		for ($i = count($this->childNodes); $i > $pos; $i--) {
