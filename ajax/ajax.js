@@ -321,3 +321,16 @@ function callActionAjax(action_id) {
     postAjax(url,updatePage,formName);
     act.setAttribute('value', old);
 }
+
+function push(){
+    callback= function (str,xml){
+        updatePage(str,xml);
+        push();
+    }
+    f = function (){
+       postAjax("new_dispatch.php",callback,"app");
+    }
+    setTimeout('f()',60000);
+}
+
+push();
