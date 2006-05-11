@@ -71,9 +71,10 @@ table.login{
 div#loader {
 visibility: hidden;
 position:absolute;
-left:49%;
-top:49%;
+right:0px;
+top:0px;
 background-color:red;
 padding:1px;
 color:white;
+font-size:0.8em;
 }
