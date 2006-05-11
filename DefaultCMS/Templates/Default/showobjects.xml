@@ -35,7 +35,16 @@
 				</tr>
 			</template>
 		</tbody></table>
-		<a href="#" id="new"><img class="operation" title="Cancel" src="$templatesdir/icons/stock_new.png"/></a>
+		<a href="#" id="new"><img class="operation" title="New" src="$templatesdir/icons/stock_new.png"/></a>
+
+		<a href="#" id="first"><img class="operation" title="First" src="$templatesdir/icons/stock_first.png"/></a>
+		<a href="#" id="prev"><img class="operation" title="Previous" src="$templatesdir/icons/stock_left.png"/></a>
+		<container id="firstElem"/>
+		<a href="#" id="next"><img class="operation" title="Next" src="$templatesdir/icons/stock_right.png"/></a>
+		<a href="#" id="last"><img class="operation" title="Last" src="$templatesdir/icons/stock_last.png"/></a>
+		Showing <input type="text" id="pSize" style="width:4em"/> of <container id="realSize"/> available.
+
+
 	 	</div>
 	</template>
 </templates>

@@ -67,3 +67,13 @@ table.login{
     border:thin outset #000000;
     margin: 10px;
 }
+
+div#loader {
+visibility: hidden;
+position:absolute;
+left:49%;
+top:49%;
+background-color:red;
+padding:1px;
+color:white;
+}

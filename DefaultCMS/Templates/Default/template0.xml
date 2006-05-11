@@ -1,5 +1,10 @@
 <templates>
+	<template class="DefaultCMS">
+ 		<script src="$templatesdir/loading.js" type="text/javascript">0;</script>
+ 		<container class="Component"/>
+	</template>
  	<template class="Menu">
+
  		<div class="Menu">
 		<container id="SiteName"/> CMS
 		<br/>

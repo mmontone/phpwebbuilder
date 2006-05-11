@@ -24,26 +24,43 @@ class ShowCollectionComponent extends Component {
 		$class = & $this->classN;
 		$this->add_component(new Text(new ValueHolder($class)), 'className');
 		$this->add_component(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
-		$this->col->order = $this->params["order"];
-		$this->col->conditions = $this->params["conditions"];
+
+		/* Navigation */
+		$this->add_component(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
+		$this->add_component(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
+		$this->add_component(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
+		$this->add_component(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
+		$this->firstElement =& new ValueHolder($fp = 0);
+		$this->add_component(new Input($this->firstElement), 'firstrElem');
+		$this->add_component(new FormComponent($v=null), 'objs');
+		/* Size */
+		$this->size =& new ValueHolder($s = 0);
+		$this->add_component(new Text($this->size), 'realSize');
+		$this->pageSize =& new ValueHolder($pz = 0);
+		$this->add_component(new Input($this->pageSize), 'pSize');
+
 		$obj = & new $class;
 		$fs = & $obj->indexFields;
 		foreach ($fs as $f) {
 			$fc = & new Obj;
-			$fc->add_component(new Text(new ValueHolder($fs[$f])));
+			$fc->add_component(new ActionLink($this, 'sort', $fs[$f], $fs[$f]));
 			$this->add_component($fc);
 		}
 		$this->refresh();
 	}
 	function refresh (){
-		$this->add_component(new FormComponent($v=null), 'objs');
 		$col =&$this->col;
+		$col->limit = $this->pageSize->getValue();
+		$col->offset = $this->firstElement->getValue();
+		$this->size->setValue($col->size());
 		$objects = & $col->objects();
 		$ks = array_keys($objects);
+		$this->objs->deleteChildren();
 		foreach ($ks as $k) {
 			$this->addLine($objects[$k]);
 		}
 	}
+	/* Editing */
 	function editObject(&$obj) {
 		$ec =& new EditObjectComponent($obj);
     	$ec->registerCallbacks(array('refresh'=>callback($this, 'refresh')));
@@ -64,6 +81,23 @@ class ShowCollectionComponent extends Component {
 		$fc->add_component(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
 	}
 	function getValue(){}
+	/* Navigation */
+	function prevPage(){
+		$this->firstElement->setValue($r = $this->firstElement->getValue()-$this->pageSize->getValue());
+		$this->refresh();
+	}
+	function nextPage(){
+		$this->firstElement->setValue($r = $this->firstElement->getValue()+$this->pageSize->getValue());
+		$this->refresh();
+	}
+	function firstPage(){
+		$this->firstElement->setValue($r = 0);
+		$this->refresh();
+	}
+	function lastPage(){
+		$this->firstElement->setValue($r = $this->col->size()-$this->pageSize->getValue());
+		$this->refresh();
+	}
 }
 
 class Obj extends Component {

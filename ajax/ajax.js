@@ -15,15 +15,11 @@ function getHTTPObject() {
 }
 
 var color;
-function loadingStart(){
-   color = document.getElementsByTagName('body')[0].style.backgroundColor;
-}
-
-function loadingStop(){
-}
+function loadingStart(){}
+function loadingStop(){}
 
 function goAjaxMethod(met, url, func, obj) {
-     loadingStart();
+      loadingStart();
       var http = getHTTPObject();
        http.abort();
        url = url;
@@ -48,7 +44,7 @@ function goAjaxMethod(met, url, func, obj) {
        try {
              http.send(null);
        } catch (e) {
-           alert("El sistema no est? funcionando, "+e);
+           ajaxError();
        }
 }
 
@@ -73,6 +69,7 @@ function encodeForm(formName) {
 }
 
 function postAjax(url, func, formName, obj) {
+      loadingStart();
       var http = getHTTPObject();
        http.abort();
        url = url;
@@ -112,12 +109,14 @@ function postAjax(url, func, formName, obj) {
                            /* END DEBUG */
 
                            func(http.responseText, http.responseXML, obj);
+                           loadingStop();
                        }
                };
        try {
              http.send(params);
        } catch (e) {
-           alert("El sistema no esta funcionando, "+e);
+           ajaxError();
+           loadingStop();
        }
 }
 
