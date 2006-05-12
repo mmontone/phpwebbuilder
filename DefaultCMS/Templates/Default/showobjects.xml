@@ -19,7 +19,7 @@
  			<tr>
 				<template class="Obj" >
 				<td>
-				<container class="Text" />
+				<container class="ActionLink" />
 				</td>
 				</template>
 				<td>Edit</td>

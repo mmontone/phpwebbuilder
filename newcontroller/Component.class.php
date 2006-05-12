@@ -117,14 +117,12 @@ class Component extends PWBObject
 		}
 	}
 	function delete(){
-		$pv =& $this->parentView();
 		$v =& $this->view;
+		$pv =& $v->parentNode;
 		$pv->remove_child($v);
 		$n = null;
-		$pv =& $n;
-		$v =& $n;
 		$h =& $this->holder;
-		$p =& $h->parentNode;
+		$p =& $h->parent;
 		$pos =&  $h->__owner_index;
 		$p->__children[$pos] =& $n;
 		$p->$pos =& $n;

@@ -38,7 +38,7 @@ class ShowCollectionComponent extends Component {
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->add_component(new Text($this->size), 'realSize');
-		$this->pageSize =& new ValueHolder($pz = 1);
+		$this->pageSize =& new ValueHolder($pz = 10);
 		$this->add_component(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
 
@@ -86,16 +86,26 @@ class ShowCollectionComponent extends Component {
 	function getValue(){}
 	/* Navigation */
 	function prevPage(){
-		$this->firstElement->setValue($r = $this->firstElement->getValue()-$this->pageSize->getValue());
+		$this->firstElement->setValue($r = max($this->firstElement->getValue()-$this->pageSize->getValue(), 0));
 	}
 	function nextPage(){
-		$this->firstElement->setValue($r = $this->firstElement->getValue()+$this->pageSize->getValue());
+		$this->firstElement->setValue($r = min($this->firstElement->getValue()+$this->pageSize->getValue(), $this->col->size()-$this->pageSize->getValue()));
 	}
 	function firstPage(){
 		$this->firstElement->setValue($r = 0);
 	}
 	function lastPage(){
 		$this->firstElement->setValue($r = $this->col->size()-$this->pageSize->getValue());
+	}
+	function sort($fname){
+		if ($this->colorder == $fname){
+			$this->col->order = " ORDER BY ".$fname . " DESC ";
+			$this->colorder = "";
+		} else {
+			$this->colorder = $fname;
+			$this->col->order = " ORDER BY ".$fname;
+		}
+		$this->refresh();
 	}
 }
 
