@@ -172,6 +172,7 @@ class Component extends PWBObject
 		$this->$index=&$this->__children[$index]->component;
 	}
     function stopAndCall(&$component) {
+    	$component->linkToApp($this->app);
     	$this->replaceView($component);
     	$this->holder->hold($component);
         $component->start();
@@ -244,13 +245,13 @@ class Component extends PWBObject
 		return $this->app->viewCreator->createView($parentView, $this);
 	}
 	function replaceView(&$other){
-    	$other->linkToApp($this->app);
     	$this->createContainer();
 	}
 	function createContainer(){
     	$cont=& $this->myContainer();
-    	$pv =& $this->view->parentNode;
-    	$pv->replace_child($cont, $this->view);
+    	$v =&$this->view;
+    	$pv =& $v->parentNode;
+    	$pv->replace_child($cont, $v);
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;
