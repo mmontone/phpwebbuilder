@@ -65,6 +65,20 @@ class PersistentObject extends Model
 			return $this->allFieldNamesThisLevel();
 		}
 	}
+	function allIndexFieldNames() {
+		if ($this->isNotTopClass(get_class($this))){
+			if ($this->parent==null) backtrace();
+			return array_merge(
+					$this->parent->allIndexFieldNames(),
+					$this->indexFields
+			);
+		} else {
+			return $this->indexFields;
+		}
+	}
+	function &allIndexFields() {
+    	return $this->fieldsWithNames($this->allIndexFieldNames());
+	}
 	function allFieldNamesThisLevel() {
 		return $this->fieldNames;
 	}

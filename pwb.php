@@ -5,7 +5,7 @@
  * Controller Version.
  * */
 
-//ini_set('memory_limit', '5M');
+ini_set('memory_limit', '32M');
 
 ini_set('display_errors', true);
 

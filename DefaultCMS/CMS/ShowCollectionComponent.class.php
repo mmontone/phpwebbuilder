@@ -30,8 +30,8 @@ class ShowCollectionComponent extends Component {
 		$this->add_component(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
 		$this->add_component(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
 		$this->add_component(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
-		$this->add_component(new ActionLink($this, 'refresh', 'refresh', $n = null), 'refresh');
-		$this->firstElement =& new ValueHolder($fp = 0);
+		$this->add_component(new ActionLink($this, 'getValue', 'refresh', $n = null), 'refresh');
+		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
 		$this->add_component(new Input($this->firstElement), 'firstElem');
 		$this->add_component(new FormComponent($v=null), 'objs');
@@ -41,12 +41,11 @@ class ShowCollectionComponent extends Component {
 		$this->pageSize =& new ValueHolder($pz = 10);
 		$this->add_component(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
-
 		$obj = & new $class;
-		$fs = & $obj->indexFields;
-		foreach ($fs as $f) {
+		$fs = & $obj->allIndexFieldNames();
+		foreach ($fs as $i=>$f) {
 			$fc = & new Obj;
-			$fc->add_component(new ActionLink($this, 'sort', $fs[$f], $fs[$f]));
+			$fc->add_component(new ActionLink($this, 'sort', $fs[$i], $fs[$i]));
 			$this->add_component($fc);
 		}
 		$this->refresh();
@@ -54,7 +53,7 @@ class ShowCollectionComponent extends Component {
 	function refresh (){
 		$col =&$this->col;
 		$col->limit = $this->pageSize->getValue();
-		$col->offset = $this->firstElement->getValue();
+		$col->offset = $this->firstElement->getValue()-1;
 		$this->size->setValue($col->size());
 		$this->objs->deleteChildren();
 		$objects = & $col->objects();
@@ -86,16 +85,16 @@ class ShowCollectionComponent extends Component {
 	function getValue(){}
 	/* Navigation */
 	function prevPage(){
-		$this->firstElement->setValue($r = max($this->firstElement->getValue()-$this->pageSize->getValue(), 0));
+		$this->firstElement->setValue($r = max($this->firstElement->getValue()-$this->pageSize->getValue(), 1));
 	}
 	function nextPage(){
-		$this->firstElement->setValue($r = min($this->firstElement->getValue()+$this->pageSize->getValue(), $this->col->size()-$this->pageSize->getValue()));
+		$this->firstElement->setValue($r = max(1,min($this->firstElement->getValue()+$this->pageSize->getValue(), $this->col->size()-$this->pageSize->getValue()+1)));
 	}
 	function firstPage(){
-		$this->firstElement->setValue($r = 0);
+		$this->firstElement->setValue($r = 1);
 	}
 	function lastPage(){
-		$this->firstElement->setValue($r = $this->col->size()-$this->pageSize->getValue());
+		$this->firstElement->setValue($r = $this->col->size()-$this->pageSize->getValue()+1);
 	}
 	function sort($fname){
 		if ($this->colorder == $fname){

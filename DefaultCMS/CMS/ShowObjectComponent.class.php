@@ -20,8 +20,8 @@ class ShowObjectComponent extends Component {
 		$obj =& $this->obj;
     	$this->add_component(new Text(new ValueHolder($this->class)), 'className');
     	$this->add_component(new Text(new ValueHolder($obj->id->value)), 'id');
-    	$fs =& $obj->indexFields;
-    	foreach($fs as $f){
+		$fs = & $obj->allIndexFieldNames();
+		foreach ($fs as $i=>$f) {
     		$fc =& new Obj;
     		$this->add_component($fc);
     		$fc->add_component(new Text(new ValueHolder($obj->$f->value)), 'value');

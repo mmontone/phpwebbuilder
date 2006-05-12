@@ -21,7 +21,7 @@ class FormComponent extends Component
 		if ($params != $value){
 			$oldval =  $value;
 			$this->value_model->primitiveSetValue($params);
-			$this->triggerEvent('changed', $oldval);
+			$this->value_model->triggerEvent('changed', $oldval);
 		}
 	}
 	function setValue(&$params) {

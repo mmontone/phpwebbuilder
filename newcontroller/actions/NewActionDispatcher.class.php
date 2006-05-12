@@ -74,8 +74,6 @@ class NewActionDispatcher {
 
 	function dispatch() {
 		$form = $_REQUEST;
-		unset ($form["PHPSESSID"]);
-		unset ($form["ControllerSubmit"]);
 		$delayed = array ();
 		$elems = array ();
 		$dd = 0;
