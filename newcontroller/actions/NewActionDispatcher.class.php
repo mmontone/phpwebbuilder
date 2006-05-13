@@ -72,14 +72,22 @@ class NewActionDispatcher {
 		return $app->backbutton_manager->resolve_application_from_request();
 	}
 
-	function dispatch() {
+	function &dispatch() {
 		$form = $_REQUEST;
 		$delayed = array ();
 		$elems = array ();
 		$dd = 0;
 		$de = 0;
 		foreach ($form as $dir => $param) {
-			$c = & $this->getComponent($dir);
+			$path = split("/", $dir);
+			if ($path[0] == "app") {
+				$appclass = $path[1];
+				break;
+			}
+		}
+		$app = & Application :: getInstanceOf($appclass);
+		foreach ($form as $dir => $param) {
+			$c = & $this->getComponent($dir, $app);
 			if ($c!=null) {
 				if ($param == "execute") {
 					$temp =& $delayed[$dd++];
@@ -99,12 +107,13 @@ class NewActionDispatcher {
 		foreach ($ks2 as $k2) {
 			$delayed[$k2][0]->viewUpdated($delayed[$k2][1]);
 		}
+		return $app;
 	}
-	function & getComponent($path) {
-		$app = & Application :: instance();
-		$comp = & $app->component;
+	function & getComponent($path, &$app) {
 		$path = split("/", $path);
 		if ($path[0] == "app") {
+			$comp = & $app->component;
+			array_shift($path);
 			array_shift($path);
 			array_shift($path);
 			foreach ($path as $p) {

@@ -15,7 +15,7 @@ class FormComponent extends Component
 		$this->value_model->onChangeSend('valueChanged', $this);
 		parent::Component($callback_actions);
 	}
-
+	function valueChanged(){}
 	function viewUpdated($params) {
 		$value =& $this->value_model->getValue();
 		if ($params != $value){

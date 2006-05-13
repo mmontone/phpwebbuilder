@@ -1,5 +1,5 @@
 <?php
-class DOMXMLNode //extends PWBObject
+class DOMXMLNode
 {
 	var $childNodes = array ();
 	var $parentNode = null;
@@ -7,7 +7,6 @@ class DOMXMLNode //extends PWBObject
 	var $attributes = array ();
 	var $parentPosition = null;
 	var $nextNode = 0;
-	//var $fullPath = '';
 
 	function DOMXMLNode($tag_name = "div", $attributes = array ()) {
 		$this->tagName = $tag_name;

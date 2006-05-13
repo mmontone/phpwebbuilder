@@ -118,7 +118,7 @@ class ViewCreator {
 			$view->getTemplatesAndContainers();
 		}
 		$parentView->replace_child($view,$pos);
-		$pV->addTemplatesAndContainersChild($view);
+		//$pV->addTemplatesAndContainersChild($view);
 		return $view;
 	}
 	function &createTemplate(&$component){

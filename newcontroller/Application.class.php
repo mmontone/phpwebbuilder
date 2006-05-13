@@ -10,7 +10,7 @@ class Application extends ComponentHolder
   var $page_renderer;
   var $needView = array();
   function Application() {
-	$_SESSION['app']['current_app'] =& $this;
+	$_SESSION[sitename][get_class($this)] =& $this;
   	$rc =& $this->set_root_component();
     parent::ComponentHolder($rc, $index=0,$n = null);
     $rc->linkToApp($this);
@@ -56,11 +56,6 @@ class Application extends ComponentHolder
 	function start() {
 		$this->component->start();
 	}
-
-    function &instance() {
-        return $_SESSION['app']['current_app'];
-	}
-
 	function &copy_for_backtracking() {
         /* PHP4 */
 		/*$app_copy = $this;
@@ -99,7 +94,9 @@ class Application extends ComponentHolder
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
 		echo $initial_page_renderer->renderPage();
 	}
-
+	function &getInstanceOf($class){
+		return $_SESSION[sitename][$class];
+	}
 	function render() {
 		$this->viewCreator->createAllViews();
 		echo $this->page_renderer->renderPage();
@@ -129,7 +126,7 @@ class Application extends ComponentHolder
 		return "app";
 	}
 	function getRealId(){
-		return "app/main";
+		return "app/".get_class($this)."/main";
 	}
 	function needsView(&$comp){
 		$this->needView[]=&$comp;

@@ -7,13 +7,13 @@ class EditObjectComponent extends Component {
     function EditObjectComponent(&$class, $id=0) {
     	if (is_array($class)){
     		$this->obj =& PersistentObject::getWithId($class['ObjType'], $class['ObjID']);
-    		$this->classN =& $class['ObjType'];
+    		$this->classN = $class['ObjType'];
     	} else if (is_object($class)){
     		$this->obj =& $class;
-    		$this->classN =& get_class($class);
+    		$this->classN = get_class($class);
     	} else {
     		$this->obj =& PersistentObject::getWithId($class, $id);
-    		$this->classN =& $class;
+    		$this->classN = $class;
     	}
     	parent::Component();
     }
@@ -31,6 +31,7 @@ class EditObjectComponent extends Component {
     		$fc->add_component($this->fields[$f], 'value');
        	}
        	$this->add_component(new ActionLink($this, 'save', 'save', $n=null), 'save');
+       	$this->add_component(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
        	$this->add_component(new ActionLink($this, 'callback', 'cancel', $n), 'cancel');
     }
     function save(){
@@ -43,6 +44,13 @@ class EditObjectComponent extends Component {
 		$obj->save();
 		$this->callback('refresh');
     }
+	function deleteObject(&$fc) {
+		$this->obj->delete();
+		$this->callback('refresh');
+	}
 
 }
+
+class Obj2 extends Component{}
+
 ?>

@@ -39,7 +39,6 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	function & xml2template(& $xml) {
 		if (strcasecmp(get_class($xml), "XMLTextNode") == 0 || strcasecmp(get_class($xml), "HTMLTextNode") == 0) {
 			$tn = & new XMLTextNode($xml->data);
-			//$tn = & new XMLTextNode($xml->text);
 			return $tn;
 		} else
 			if (strcasecmp($xml->tagName, "template") == 0) {
@@ -52,16 +51,14 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 				}
 		foreach ($xml->childNodes as $c) {
 			$temp->append_child($this->xml2template($c));
-			//$temp->insert_in($this->xml2template($c), count($temp->childNodes));
 		}
-		$temp->id = $xml->id;
 		$temp->attributes = $xml->attributes;
 		$temp->tagName = $xml->tagName;
+		$temp->getTemplatesAndContainers();
 		return $temp;
 	}
 	function isTemplateForClass(& $component) {
-		$b = is_a($component, $this->attributes["class"]);
-		return $b;
+		return is_a($component, $this->attributes["class"]);
 	}
 	function isContainerForClass(& $component) {
 		return is_a($component, $this->attributes["class"]);
@@ -70,7 +67,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		return new HTMLContainer;
 	}
 	function isTemplate() {
-		return false;
+		return true;
 	}
 }
 ?>

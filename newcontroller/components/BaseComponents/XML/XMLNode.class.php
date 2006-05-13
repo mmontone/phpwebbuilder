@@ -9,30 +9,15 @@ class XMLNode extends DOMXMLNode {
 	function XMLNode($tag_name = 'div', $attributes = array ()) {
 		return parent :: DOMXMLNode($tag_name, $attributes);
 	}
-
 	function & create_text_node($text) {
 		return new XMLTextNode($text);
 	}
-
 	function & create_element($tag_name, & $controller) {
 		$element = & parent :: create_element($tag_name);
 		$element->controller = & $controller;
 		return $element;
 	}
-
 	/* Always access attributes through getAttribute */
-	/*	function getAttribute($attr) {
-			$val = parent::getAttribute($attr);
-			if (!$val && ($attr == 'id' || $attr = 'name')) {
-				if ($this->controller != null) {
-					$id = $this->controller->getId();
-					$this->setAttribute('id', $id);
-					$this->setAttribute('name', $id);
-					return $id;
-				}
-			}
-			return $val;
-		}*/
 
 	function setAttribute($name, $val) {
 		$this->attributes[$name] = $val;
@@ -41,12 +26,9 @@ class XMLNode extends DOMXMLNode {
 		$this->setAttribute('id', $id);
 	}
 	function getRealId() {
-		if (($this->controller != null)) { //&& (!$this->getAttribute('id') || !$this->getAttribute('name'))) {
+		if (($this->controller != null)) {
 			$id = $this->controller->getId();
-			// Don't want to register modifications (Ajax)
-			//$this->setAttribute('id', $id);
 			$this->attributes['id'] =  $id;
-			//$this->setAttribute('name', $id);
 			$this->attributes['name'] = $id;
 			return $id;
 		} else {
@@ -57,7 +39,6 @@ class XMLNode extends DOMXMLNode {
 		$this->getRealId();
 		return $this->getAttribute('id');
 	}
-	// Si aca pones enters no anda el ajax
 	function render() {
 		$this->getRealId();
 		$attrs = "";
@@ -65,8 +46,6 @@ class XMLNode extends DOMXMLNode {
 			$attrs .= ' ' . $name . '="' . $val . '"';
 		}
 		if (count($this->childNodes) == 0) {
-			// De la forma <tag/> no anda ajax
-			//return "\n<$this->tagName $attrs></$this->tagName>";
 			return "\n<$this->tagName $attrs />";
 		}
 		else {
@@ -75,14 +54,11 @@ class XMLNode extends DOMXMLNode {
 			foreach ($ks as $k) {
 				$childs .= $this->childNodes[$k]->render();
 			}
-			// WARNING: si pones enters se va a seguir rompiendo el ajax aunque sea x id
 			$childs  = str_replace("\n", "\n   ", $childs);
 			$ret .= "\n<$this->tagName $attrs>$childs\n</$this->tagName>";
-			//$ret .= "<$this->tagName $attrs>$childs</$this->tagName>";
 			return $ret;
 		}
 	}
-
 	// For debugging
 	function printString() {
 		$this->getRealId();
@@ -103,7 +79,6 @@ class XMLNode extends DOMXMLNode {
 			return $ret;
 		}
 	}
-
 	function & childrenWithId($id) {
 		$res = array ();
 		$ks = array_keys($this->childNodes);
@@ -123,7 +98,6 @@ class XMLNode extends DOMXMLNode {
 		}
 		return $res;
 	}
-
 	function getTemplatesAndContainers() {
 		$temp = array ();
 		$cont = array ();
@@ -140,7 +114,6 @@ class XMLNode extends DOMXMLNode {
 					$cont[] = & $t;
 				}
 				else {
-					$t->getTemplatesAndContainers();
 					$this->addTemplatesAndContainersChild($t);
 				}
 		}
@@ -158,46 +131,28 @@ class XMLNode extends DOMXMLNode {
 			$c[] = & $cont[$k3];
 		}
 	}
-
 	function addTemplatesAndContainersChild(& $v) {
 		$this->addTemplatesAndContainers($v->templates, $v->containers);
 	}
-	function & templatesForClass(& $component) {
+	function &templatesForClass(& $component) {
 		$res = array ();
-		$ks = array_keys($this->childNodes);
+		$ks = array_keys($this->templates);
 		foreach ($ks as $k) {
-			$t = & $this->childNodes[$k];
+			$t = & $this->templates[$k];
 			if ($t->isTemplateForClass($component)) {
 				$res[] = & $t;
 			}
-			else
-				if (!$t->isTemplate()) {
-					$res2 = & $t->templatesForClass($component);
-					$ks2 = array_keys($res2);
-					foreach ($ks2 as $k2) {
-						$res[] = & $res2[$k2];
-					}
-				}
 		}
 		return $res;
 	}
-
 	function & containersForClass(& $component) {
 		$res = array ();
-		$ks = array_keys($this->childNodes);
+		$ks = array_keys($this->containers);
 		foreach ($ks as $k) {
-			$t = & $this->childNodes[$k];
+			$t = & $this->containers[$k];
 			if ($t->isContainerForClass($component)) {
 				$res[] = & $t;
 			}
-			else
-				if (!$t->isTemplate()) {
-					$res2 = & $t->containersForClass($component);
-					$ks2 = array_keys($res2);
-					foreach ($ks2 as $k2) {
-						$res[] = & $res2[$k2];
-					}
-				}
 		}
 		return $res;
 	}

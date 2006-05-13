@@ -355,4 +355,4 @@ function push(){
     setTimeout('f()',60000);
 }
 
-push();
+//push();

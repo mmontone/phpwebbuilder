@@ -47,7 +47,7 @@ class Component extends PWBObject
 		return array();
 	}
 	function &application() {
-		return Application::instance();
+		return $this->app;
 	}
 	function backtrackable_objects() {
 		return array();
@@ -187,6 +187,7 @@ class Component extends PWBObject
 	function callback($callback=null, $parameters=array()) {
 		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
 		$this->replaceView($this->listener);
+		$this->app->needsView($this->listener);
         if ($callback == null) {
 			$this->holder->hold($this->listener);
 		}

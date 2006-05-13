@@ -21,7 +21,11 @@ class IndexField extends NumField {
         return $obj->indexValues();
     }
     function getValue(){
-    	return $this->value + 0;
+    	if ($this->value==null) {
+    		return 0;
+    	} else {
+    		return $this->value;
+    	}
     }
 }
 
