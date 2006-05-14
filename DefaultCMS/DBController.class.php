@@ -40,16 +40,7 @@ class DBController extends Component {
 		}
 	}
 	function modsNeeded(){
-		$arr = get_subclasses("PersistentObject");
-		/*Comparing existing tables, existing objects, and added objects*/
-		/*If a table has not an object table, we have to delete it*/
-		foreach ($arr as $o) {
-			$obj = new $o;
-			$dbc = new PersistentObjectTableCheckView;
-			$dbc->obj=$obj;
-			$mod .= $dbc->show();
-		}
-		return $mod;
+		return AllTablesCheckView::checkTables();
 	}
 }
 ?>

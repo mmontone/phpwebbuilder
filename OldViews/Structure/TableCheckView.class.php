@@ -8,11 +8,6 @@ class TableCheckView extends HtmlFormEditView  {
 	function fieldShowObjectFactory () {
 		return new TableCheckAction;
 	}
-	function visitedPersistentCollection ($obj) {
-		$view = new PersistentCollectionTableCheckView;
-		$view->obj = $obj;
-		return $view;
-	}
 	function visitedPersistentObject ($obj) {
 		$view = new PersistentObjectTableCheckView;
 		$view->obj = $obj;
@@ -135,4 +130,36 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 		}
 	}
 }
+
+class AllTablesCheckView {
+	function checkTables(){
+		$arr = get_subclasses("PersistentObject");
+		/*Comparing existing tables, existing objects, and added objects*/
+		/*If a table has not an object table, we have to delete it*/
+		$sql = "SHOW TABLES FROM " . basename;
+		$db = new MySQLDB;
+		$res = $db->SQLexec($sql, FALSE, $this->obj);
+		$tbs = $db->fetchArray($res);
+		$tables= array();
+		foreach($tbs as $t){
+			$tname = $t["Tables_in_".basename];
+			$tables[$tname] = $tname;
+		}
+		foreach ($arr as $o) {
+			$obj = new $o;
+			$dbc = new PersistentObjectTableCheckView;
+			$dbc->obj=$obj;
+			$mod .= $dbc->show();
+			$table = $obj->tablename();
+			unset($tables[$table]);
+		}
+		$del ='';
+		foreach ($tables as $t2){
+			$del .= "\nDROP TABLE ".$t2.';';
+
+		}
+		return $mod.$del;
+	}
+}
+
 ?>
