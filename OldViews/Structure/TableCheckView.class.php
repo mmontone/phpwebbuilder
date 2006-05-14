@@ -136,14 +136,15 @@ class AllTablesCheckView {
 		$arr = get_subclasses("PersistentObject");
 		/*Comparing existing tables, existing objects, and added objects*/
 		/*If a table has not an object table, we have to delete it*/
-		$sql = "SHOW TABLES FROM " . basename;
+		$sql = "SHOW TABLES FROM " . basename. ' LIKE \''.baseprefix.'%\'';
 		$db = new MySQLDB;
 		$res = $db->SQLexec($sql, FALSE, $this->obj);
 		$tbs = $db->fetchArray($res);
 		$tables= array();
 		foreach($tbs as $t){
-			$tname = $t["Tables_in_".basename];
-			$tables[$tname] = $tname;
+			foreach($t as $tname){
+				$tables[$tname] = $tname;
+			}
 		}
 		foreach ($arr as $o) {
 			$obj = new $o;
