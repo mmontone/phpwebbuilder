@@ -102,6 +102,7 @@ class Component extends PWBObject
 			if ($index===null){$index = $this->nextChildrenPosition;}
 			if ($this->app!=null) $component->linkToApp($this->app);
 
+
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$this->nextChildrenPosition++;
 		}
@@ -110,26 +111,29 @@ class Component extends PWBObject
 		$c =& $this->component_at($index);
 		$c->delete();
 	}
+
 	function deleteChildren(){
 		$ks = array_keys($this->__children);
 		foreach($ks as $k){
 			$this->delete_component_at($k);
 		}
 	}
+
 	function delete(){
 		$v =& $this->view;
 		$pv =& $v->parentNode;
 		$pv->remove_child($v);
-		$n = null;
+		unset($pv);
+		unset($v);
 		$h =& $this->holder;
 		$p =& $h->parent;
 		$pos =&  $h->__owner_index;
-		$p->__children[$pos] =& $n;
-		$p->$pos =& $n;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
-
+		unset($p->__children[$pos]);
+		unset($p->$pos);
 	}
+
 	function &component_at($index) {
 		$holder =& $this->__children[$index];
 		return $holder->component;
@@ -167,23 +171,28 @@ class Component extends PWBObject
 		$component->listener =& $this;
         $this->stopAndCall($component);
 	}
+
 	function setChild($index, &$component){
 		$this->__children[$index]->hold($component);
 		$this->$index=&$this->__children[$index]->component;
 	}
+
     function stopAndCall(&$component) {
     	$component->linkToApp($this->app);
     	$this->replaceView($component);
     	$this->holder->hold($component);
         $component->start();
     }
+
 	function dettachView(){
 		$this->view->parentNode->remove_child($this->view);
 	}
+
 	function invalid_callback($callback) {
 		$app =& $this->application();
 		$app->invalid_callback($callback);
 	}
+
 	function callback($callback=null, $parameters=array()) {
 		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
 		$this->replaceView($this->listener);
@@ -201,6 +210,7 @@ class Component extends PWBObject
 			}
 		}
 	}
+
 	function hasPermission($form){
 		$id = $_SESSION[sitename]["id"];
         $permission = $this->permissionNeeded($form);
@@ -210,20 +220,25 @@ class Component extends PWBObject
 		} else
 			return true;
 	}
+
 	function permissionNeeded($form){
 		return "";
 	}
+
 	function noPermission ($form){ // The user has no permission
 		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
 		trace($err);
 	}
+
 	function setForm($form){}
+
     function loadView($params) {
       $this->aboutToLoadView($params);
       assert($params['view']);
       $this->view =& new $params['view']($params);
       $this->view->controller =& $this;
     }
+
     function aboutToLoadView(&$params) {}
 
     /**
@@ -233,7 +248,9 @@ class Component extends PWBObject
 		$this->view =& $view;
 		$this->view->controller =& $this;
     }
+
 	function viewUpdated ($params){}
+
 	function &createDefaultView(){
 		$v =& new XMLNodeModificationsTracker;
 		$ks = array_keys($this->__children);

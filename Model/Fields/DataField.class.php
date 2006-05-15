@@ -1,6 +1,8 @@
 <?
 
-class DataField {
+require_once dirname(__FILE__) . '/../../newcontroller/PWBObject.class.php';
+
+class DataField extends PWBObject {
 	var $colName; // el nombre del campo
 	var $value; // el valor almacenado en el campo
 	var $isIndex; // Si se utiliza para identificarlo (por el usuario)
@@ -81,6 +83,7 @@ class DataField {
     function viewValue() {return $this->value;}
     function setValue($data) {
         $this->value = $data;
+        $this->triggerEvent('changed', $no_params = null);
     }
     function getValue() {
         return $this->value;

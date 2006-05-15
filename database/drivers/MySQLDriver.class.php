@@ -32,6 +32,15 @@ class MySQLdb extends AbstractDB {
         $this->closeDatabase();
         return $reg;
     }
+
+    function query($sql) {
+        $this->openDatabase();
+        $reg = mysql_query ($sql) or
+        	die (print_backtrace(mysql_error() . ": $sql"));
+        $this->closeDatabase();
+        return $reg;
+    }
+
     function fetchrecord($res) {
     	return mysql_fetch_assoc($res);
     }

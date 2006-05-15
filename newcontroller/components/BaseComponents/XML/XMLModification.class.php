@@ -252,7 +252,7 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 	*/
 
 	function printString() {
-		$ret = '<remove_node id="' . $target->child->getId() . '"/>';
+		$ret = '<remove_node id="' . $this->child->getId() . '"/>';
 		return $ret;
 	}
 }

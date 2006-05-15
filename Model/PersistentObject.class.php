@@ -35,12 +35,9 @@ class PersistentObject extends Model
      * @var Array(String) The names of the index fields
      */
     var $indexFields = array();
-    /**
-     * @category Fields
-     */
-    /**
-     * @return Array(DataField)
-     */
+
+	var $dirty = true;
+
 	function &allFieldsThisLevel() {
     	return $this->fieldsWithNames($this->allFieldNamesThisLevel());
 	}
@@ -107,7 +104,13 @@ class PersistentObject extends Model
         	$this->indexFields[$name]=$name;
         }
         $field->owner =& $this;
+        $field->addEventListener($this, $a = array('on change' => 'fieldChanged'));
     }
+
+    function fieldChanged(&$field) {
+    	$this->triggerEvent('fieldChanged', $field);
+    }
+
     function &findIndexField () {
       return $this->fieldsWithNames($this->indexFields);
     }
