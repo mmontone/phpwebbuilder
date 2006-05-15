@@ -76,11 +76,11 @@ class ObjectQuery extends Query
 	}
 
 	function addFieldRestriction(&$field_restriction) {
-		$this->fields_restrictions[] = $field_restriction;
+		$this->fields_restrictions[] =& $field_restriction;
 	}
 
 	function setTarget($val = true) {
-		$this->is_target = $val;
+		$this->is_target =& $val;
 	}
 
 	function appendToSQL(&$sql) {

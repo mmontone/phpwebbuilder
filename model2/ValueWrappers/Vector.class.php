@@ -18,6 +18,14 @@ class Vector extends ValueWrapper
     	return $this->value[$index];
     }
 
+    function put($index, &$object) {
+    	$this->value[$index] =& $object;
+    }
+
+    function size() {
+    	return count($this->value);
+    }
+
     function set($index, &$object) {
     	$this->value[$index] =& $object;
     }
@@ -39,6 +47,15 @@ class Vector extends ValueWrapper
     	$vector->value =& array_slice($this->value, $from, $from + $to);
     	return $vector;
     }
+}
+
+class ValueVector extends Vector
+{
+	function addLast(&$object) {
+		$vector =& new ValueVector;
+		$vector->value = $this->value; // Mal, cambiar: no quiero que me copie los objetos aca
+		$vector->value[] =& $object;
+	}
 }
 
 class VectorIterator
