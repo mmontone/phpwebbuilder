@@ -36,11 +36,19 @@ class StandardPageRenderer extends PageRenderer {
 			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $c . "\" />";
 		}
 
+
+		/*
+		foreach ($this->page->scripts as $s) {
+			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
+		}*/
+
+
+		$ret .= '</head><body>';
+
 		foreach ($this->page->scripts as $s) {
 			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
 		}
 
-		$ret .= '</head><body>';
 		$page = $this->page->render();
 		$ret .= $page;
 		$ret .= '</body></html>';

@@ -31,8 +31,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             //'page_renderer' => 'AjaxPageRenderer');
-		                             'page_renderer' => 'StandardPageRenderer');
+		                             'page_renderer' => 'AjaxPageRenderer');
+		                             //'page_renderer' => 'StandardPageRenderer');
 		                             //'page_renderer' => 'DebugPageRenderer');
 		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }
@@ -109,22 +109,39 @@ class Application extends ComponentHolder
 			$this->wholeView =& new XMLNodeModificationsTracker;
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
-			$this->wholeView->style_sheets =& $this->pageStyleSheets();
-			$this->wholeView->scripts =& $this->pageScripts();
+			$this->initializeStyleSheets();
+			$this->initializeScripts();
 			$this->page_renderer->setPage($this->wholeView);
 		}
 	}
-	function &pageStyleSheets(){
-		return array();
+	function initializeStyleSheets() {
+		$this->wholeView->style_sheets = array();
+		$this->addStyleSheets();
 	}
-	function &pageScripts(){
-		return array();
+
+	function initializeScripts() {
+		$this->wholeView->scripts = array();
+		$this->addScript(site_url . '/admin/ajax/ajax.js');
+		$this->addScripts();
+	}
+
+	function addStyleSheets() {}
+
+	function addScripts(){}
+
+	function addScript($url) {
+		$this->wholeView->scripts[] =& $url;
+	}
+
+	function addStyleSheet($url) {
+		$this->wholeView->style_sheets[] =& $url;
 	}
 
 	function &view(){
 		return $this->wholeView;
 	}
 	function loadTemplates(){}
+
    	function run() {
 	  $this->start();
 	  $this->createView();
