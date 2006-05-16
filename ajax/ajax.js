@@ -30,7 +30,7 @@ function goAjaxMethod(met, url, func, obj) {
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
-                             loadingStop();
+                            loadingStop();
                        		if (inIE()) {
                        				if (http.responseXML.firstChild == null || !func(http.responseText, http.responseXML, obj))
 			                             ajaxError();
@@ -92,6 +92,8 @@ function postAjax(url, func, formName, obj) {
                        if (http.readyState==4) {
                            /* DEBUG */
                            //if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
+
+	                        /*
 	                           db = document.getElementById('debug');
 	                           if (!db) {
 	                           db = document.createElement('div');
@@ -103,8 +105,7 @@ function postAjax(url, func, formName, obj) {
                            } else {
 	                           t = document.createTextNode(http.responseText);
 	                           db.replaceChild(t,db.firstChild);
-                           }
-
+                           }*/
 
                            /* END DEBUG */
 
@@ -159,19 +160,27 @@ function submitAjax(form_id, url) {
 }
 
 function updatePage(text, xml) {
-var acts =xml.firstChild;
-if (acts){
-  var actions = acts.childNodes;
-  var i=0;
-  for (; i< actions.length; i++) {
-//    if (!actions[i].data){
-	    str = "ajax_" + actions[i].tagName + "(actions[i]);";
-	    eval(str);
-//    }
-  }
+    if (inIE()) {
+        return ie_updatePage(text,xml);
+    }
+    else {
+        return others_updatePage(text,xml);
+    }
 }
-  return true;
 
+function others_updatePage(text, xml) {
+    var acts = xml.firstChild;
+//    if (acts){
+    var actions = acts.childNodes;
+    var i=0;
+    for (; i< actions.length; i++) {
+        //    if (!actions[i].data){
+	  str = "ajax_" + actions[i].tagName + "(actions[i]);";
+	  eval(str);
+//    }
+    }
+//}
+  return true;
 }
 
 function ie_updatePage(text, xml) {
@@ -235,6 +244,13 @@ function ajax_replace_node(action) {
   target.parentNode.replaceChild(html, target);
 }
 
+function ie_ajax_replace_node(action) {
+    var target = getActionTarget(action);
+    var html = xml2str(getActionChild(action));
+    target.outerHTML = html;
+}
+
+/*
 function ajax_replace_child(action) {
   var target = getActionTarget(action);
   var child = getActionChild(action);
@@ -248,6 +264,7 @@ function ie_ajax_replace_child(action) {
   var html = xml2html(getActionChild(action));
   target.replaceChild(html, child);
 }
+*/
 
 
 function ajax_append_child(action) {
@@ -257,7 +274,11 @@ function ajax_append_child(action) {
 }
 
 function ie_ajax_append_child(action) {
-    return ajax_append_child(action);
+    var target = getActionTarget(action);
+    var child = document.createElement('');
+    target.appendChild(child);
+    child.outerHTML = xml2str(getActionChild(action));
+
 }
 
 function ajax_remove_node(action) {
@@ -268,7 +289,6 @@ function ajax_remove_node(action) {
 function ie_ajax_remove_node(action) {
     return ajax_remove_node(action);
 }
-
 
 function ajax_remove_child(action) {
   var target = getActionTarget(action);
@@ -287,7 +307,10 @@ function ajax_insert_before(action) {
 }
 
 function ie_ajax_insert_before(action) {
-    return ajax_insert_before(action);
+   var target = getActionTarget(action);
+   var child = document.createElement();
+   target.parentNode.insertBefore(child, target);
+   child.outerHTML = xml2str(getActionChild(action));
 }
 
 function ajax_set_attribute(action) {
@@ -297,6 +320,9 @@ function ajax_set_attribute(action) {
     target.setAttribute(attribute, value);
 }
 
+function ie_ajax_set_attribute(action) {
+    return ajax_set_attribute(action);
+}
 
 function xml2str (xml) {
 	if (xml.nodeName=="#text")
