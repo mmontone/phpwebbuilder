@@ -23,14 +23,23 @@ class StandardPageRenderer extends PageRenderer {
 		$this->page->setAttribute('method', 'post');
 		$this->page->setAttribute('enctype', 'multipart/form-data');
 
+		/*
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-		$ret .= "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">" .
-		"\n<head><title>PWB</title>\n<script type=\"text/javascript\" src=\"" . pwb_url . "/ajax/ajax.js\"></script>";
-		foreach ($this->page->csss as $c) {
-			$ret .= "\n<link rel=\"stylesheet\" href=\"" . $c . "\" />";
+		*/
+
+		$ret = '';
+		$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
+
+		foreach ($this->page->style_sheets as $c) {
+			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $c . "\" />";
 		}
+
+		foreach ($this->page->scripts as $s) {
+			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
+		}
+
 		$ret .= '</head><body>';
 		$page = $this->page->render();
 		$ret .= $page;
@@ -55,12 +64,22 @@ class StandardPageRenderer extends PageRenderer {
 	}
 }
 
-class DebugPageRenderer extends StandardPageRenderer{
+class DebugModificationsPageRenderer extends StandardPageRenderer {
 	function renderPage() {
 		//$this->page->updateFullPath();
 		header("Content-type: text/xml");
 		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		echo $this->page->printString();
+		$this->page->flushModifications();
+		exit;
+	}
+}
+
+class DebugPageRenderer extends StandardPageRenderer {
+	function renderPage() {
+		header("Content-type: text/xml");
+		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
+		echo $this->page->render();
 		$this->page->flushModifications();
 		exit;
 	}

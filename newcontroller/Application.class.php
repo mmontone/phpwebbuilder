@@ -92,6 +92,7 @@ class Application extends ComponentHolder
 	function initialRender() {
 		$this->viewCreator->createAllViews();
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
+		//$initial_page_renderer =& new DebugPageRenderer($this->wholeView);
 		echo $initial_page_renderer->renderPage();
 	}
 	function &getInstanceOf($class){
@@ -108,11 +109,18 @@ class Application extends ComponentHolder
 			$this->wholeView =& new XMLNodeModificationsTracker;
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
-			$this->wholeView->csss =& $this->setCss();
+			$this->wholeView->style_sheets =& $this->pageStyleSheets();
+			$this->wholeView->scripts =& $this->pageScripts();
 			$this->page_renderer->setPage($this->wholeView);
 		}
 	}
-	function setCss(){}
+	function &pageStyleSheets(){
+		return array();
+	}
+	function &pageScripts(){
+		return array();
+	}
+
 	function &view(){
 		return $this->wholeView;
 	}
