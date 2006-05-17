@@ -3,7 +3,7 @@
 $id_assigner_instance = null;
 
 class PWBInstanceIdAssigner {
-	var $__id = 1;
+	var $__instance_id = 1;
 
     function &instance() {
     	global $id_assigner_instance;

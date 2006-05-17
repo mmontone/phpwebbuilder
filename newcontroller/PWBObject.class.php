@@ -77,7 +77,7 @@ class PWBObject
     function addEventListener($event_specs, &$listener) {
         foreach ($event_specs as $on_event_selector => $event_callback) {
             $event_selector = ereg_replace('^on([[:space:]])*','',$on_event_selector);
-            if ($this->event_listeners[$event_selector] == null) {
+            if (!isset($this->event_listeners[$event_selector])) {
                 $this->event_listeners[$event_selector] = array();
             }
             $n = array('listener' => &$listener,

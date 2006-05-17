@@ -22,7 +22,7 @@ class ComponentHolder
 	}
 
     function hold(&$component) {
-    	$i =& $this->owner_index();
+    	$i = $this->owner_index();
 	    $this->parent->$i=&$component;
 		$component->holder =& $this;
 		$this->component =& $component;

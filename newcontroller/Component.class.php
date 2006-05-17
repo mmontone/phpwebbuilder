@@ -93,7 +93,7 @@ class Component extends PWBObject
     }
 
 	function add_component(&$component, $ind=null) {
-		if ($ind !=null && $this->__children[$ind]!=null) {
+		if ($ind !=null && isset($this->__children[$ind])) {
 			$this->__children[$ind]->component->stopAndCall($component);
 		} else {
 			$keys = array();
