@@ -10,14 +10,12 @@ class DefaultCMSApplication extends Application{
  	function loadTemplates (){
  		$this->viewCreator->loadTemplatesDir(pwbdir . "/DefaultCMS/Templates/".$this->templateName);
  	}
- 	function &pageStyleSheets(){
- 		return array(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
+ 	function addStyleSheets(){
+ 		$this->addStyleSheet(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
  	}
- 	function &pageScripts(){
- 		return array(
- 			pwb_url.'/DefaultCMS/Templates/loading.js',
- 			pwb_url.'/ajax/ajax.js'
- 		);
+ 	function &addScripts(){
+ 		$this->addScript(pwb_url.'/DefaultCMS/Templates/loading.js');
+ 		$this->addScript(pwb_url.'/ajax/ajax.js');
  	}
 
 }
