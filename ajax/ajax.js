@@ -91,10 +91,11 @@ function postAjax(url, func, formName, obj) {
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
                            /* DEBUG */
-                           //if (http.responseXML) alert("el XML es bien formado"); else alert("mal formado el XML");
-
-	                        /*
-	                           db = document.getElementById('debug');
+                           if (!http.responseXML) {
+                              ajaxError();
+                              loadingStop();
+                           }
+	                       /*    db = document.getElementById('debug');
 	                           if (!db) {
 	                           db = document.createElement('div');
 	                           db.setAttribute('id', 'debug');

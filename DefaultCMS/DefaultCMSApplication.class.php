@@ -14,8 +14,7 @@ class DefaultCMSApplication extends Application{
  		$this->addStyleSheet(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
  	}
  	function &addScripts(){
- 		$this->addScript(pwb_url.'/DefaultCMS/Templates/loading.js');
- 		$this->addScript(pwb_url.'/ajax/ajax.js');
+ 		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');
  	}
 
 }

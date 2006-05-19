@@ -127,7 +127,7 @@ class Application extends ComponentHolder
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array();
-		$this->addScript(site_url . '/admin/ajax/ajax.js');
+		$this->addScript(pwb_url . '/ajax/ajax.js');
 		$this->addScripts();
 	}
 

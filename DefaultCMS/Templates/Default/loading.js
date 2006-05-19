@@ -1,10 +1,15 @@
 var loading = 0;
 var loader = document.createElement("div");
+
+function initialize_loading(){
 t = document.createTextNode('');
 loader.setAttribute("id", "loader");
 loader.appendChild(t);
-app = document.getElementById('app');
-app.appendChild(loader);
+ap = document.getElementById('app');
+ap.appendChild(loader);
+}
+
+window.onload=initialize_loading;
 
 function loadingStart() {
         loading++;
@@ -15,8 +20,9 @@ function loadingStart() {
 function loadingStop() {
         loading--;
         loader.replaceChild(document.createTextNode(loading +" actions remaining..."),loader.firstChild);
-        if (loading == 0) {
+        if (loading <= 0) {
             loader.style.visibility="hidden";
+            loading=0;
         }
 }
 
