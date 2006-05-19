@@ -111,7 +111,7 @@ class NewActionDispatcher {
 	}
 	function & getComponent($path, &$app) {
 		$path = split("/", $path);
-		if ($path[0] == "app") {
+		if ($path[0] == "app") { // Maybe the parameter wasn't for us'
 			$comp = & $app->component;
 			array_shift($path);
 			array_shift($path);
@@ -119,6 +119,10 @@ class NewActionDispatcher {
 			foreach ($path as $p) {
 				$comp1 = & $comp->component_at($p);
 				$comp = & $comp1;
+				if ($comp==null) {
+					$app->redraw(); //We sent something to a thing that wasn't there. We showl render again everything to see what'ts there.
+					return null;
+				}
 			}
 			return $comp;
 		}

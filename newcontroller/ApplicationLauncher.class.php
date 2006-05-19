@@ -1,13 +1,10 @@
 <?php
 class ApplicationLauncher {
 	function launch($application_class) {
-		if ($_SESSION[sitename][$application_class] == null||$_REQUEST["reset"]=="yes") {
-			$app = & new $application_class;
-			$_SESSION[sitename][$application_class] = & $app;
+		if ($_REQUEST["reset"]=="yes") {
+			unset($_SESSION[sitename][$application_class]);
 		}
-		else {
-			$app = & $_SESSION[sitename][$application_class];
-		}
+		$app = & Application::getInstanceOf($application_class);
 		$app->run();
 	}
 }

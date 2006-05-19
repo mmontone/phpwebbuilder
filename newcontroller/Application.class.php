@@ -88,7 +88,10 @@ class Application extends ComponentHolder
 	function render_action_link(&$action) {
 		return $this->url_manager->render_action_link($action);
 	}
-
+	function redraw(){
+		$this->wholeView->flushModifications();
+		$this->wholeView->replace_child($this->wholeView->first_child(),$other = $this->wholeView->first_child());
+	}
 	function initialRender() {
 		$this->viewCreator->createAllViews();
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
@@ -96,6 +99,9 @@ class Application extends ComponentHolder
 		echo $initial_page_renderer->renderPage();
 	}
 	function &getInstanceOf($class){
+		if (!isset($_SESSION[sitename][$class])){
+			$_SESSION[sitename][$class] =& new $class;
+		}
 		return $_SESSION[sitename][$class];
 	}
 	function render() {
