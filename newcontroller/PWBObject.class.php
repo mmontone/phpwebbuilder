@@ -160,33 +160,4 @@ class PWBObject
 
 
 
-
- /*
-    function triggerServiceRequest(&$service_request, &$callback) {
-        reset($this->service_request_listeners);
-        $service_request_handled = false;
-        while($listener = next($this->service_request_listeners) && !$service_request_handled) {
-            $service_request_handled = $listener->handleServiceRequest($service_request, $callback);
-        }
-
-        if (!$service_request_handled) {
-            trigger_error('Error: ' . $service_request->id . ' couldn\'t be handled');
-        }
-        else {
-            return true;
-        }
-    }
-
-    function handleServiceRequest(&$service_request, &$callback) {
-        if (array_key_exists($service_request->id, array_keys($this->service_request_handlers))) {
-            $handler = $this->handled_services($service_request->id);
-            $result =& $this->$handler($service_request);
-            $callback->call(array($sevice_request->id . '_result' => $result));
-            return true;
-        }
-        else {
-            return $this->triggerServiceRequest($service_request, $callback);
-        }
-    }
-    */
 ?>
