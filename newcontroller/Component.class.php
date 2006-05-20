@@ -22,14 +22,14 @@ class Component extends PWBObject
 	function Component($registered_callbacks=array()) {
 		parent::PWBObject();
 		$this->registered_callbacks = $registered_callbacks;
-		$this->configuration=array('use_component_namemangling' => false,
+		/*$this->configuration=array('use_component_namemangling' => false,
 		                           'use_action_namemangling' => false,
 		                           'backtrackable_objects' => array());
-		$this->configuration = array_merge($this->configuration, $this->configure());
+		$this->configuration = array_merge($this->configuration, $this->configure());*/
 
 		$this->__children = array();
-		$this->__decorators = array();
-		$this->__actions = $this->declare_actions();
+		//$this->__decorators = array();
+		//$this->__actions = $this->declare_actions();
 		$this->initialize();
 	}
 	function initialize(){}
