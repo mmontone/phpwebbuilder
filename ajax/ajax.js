@@ -90,23 +90,23 @@ function postAjax(url, func, formName, obj) {
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
-                           /* DEBUG */
                            if (!http.responseXML) {
                               ajaxError();
                               loadingStop();
                            }
-	                       /*    db = document.getElementById('debug');
+                           /* DEBUG */
+	                           /*db = document.getElementById('debug');
 	                           if (!db) {
-	                           db = document.createElement('div');
-	                           db.setAttribute('id', 'debug');
-	                           form = document.getElementById(formName);
-	                           form.appendChild(db);
-	                           t = document.createTextNode(http.responseText);
-	                           db.appendChild(t);
-                           } else {
-	                           t = document.createTextNode(http.responseText);
-	                           db.replaceChild(t,db.firstChild);
-                           }*/
+		                           db = document.createElement('div');
+		                           db.setAttribute('id', 'debug');
+		                           form = document.getElementById(formName);
+		                           form.appendChild(db);
+		                           t = document.createTextNode(http.responseText);
+		                           db.appendChild(t);
+	                           } else {
+		                           t = document.createTextNode(http.responseText);
+		                           db.replaceChild(t,db.firstChild);
+	                           }*/
 
                            /* END DEBUG */
 
@@ -209,6 +209,7 @@ function getActionChild(action) {
     }
     return e;
 }
+
 
 function nodeAtPath(path_str) {
     var path = path_str.split("/");
