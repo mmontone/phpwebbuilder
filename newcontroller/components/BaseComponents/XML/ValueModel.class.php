@@ -17,7 +17,7 @@ class ValueModel extends PWBObject {
 
 	function onChangeSend($call_back_selector, & $listener) {
 		$this->addEventListener(array (
-			'on changed' => $call_back_selector
+			'changed' => $call_back_selector
 		), $listener);
 	}
 

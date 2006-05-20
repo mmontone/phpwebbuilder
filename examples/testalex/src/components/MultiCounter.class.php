@@ -11,7 +11,7 @@ class MultiCounter extends Component
 		$this->count = $count;
 		for ($i = 0; $i < $count; $i++) {
             $counter =& new Counter(0);
-            $counter->addEventListener(array('on model_changed'=>'updateCounters'), $this);
+            $counter->addEventListener(array('model_changed'=>'updateCounters'), $this);
 			$this->add_component($counter, $i);
 		}
 	}

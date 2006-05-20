@@ -7,9 +7,9 @@ class PermissionsChecker extends Component
     var $target;
 
     function PermissionsChecker(&$component) {
-        $component->addEventListener(array('on add_action' => 'checkPermission',
-                                           'on edit_action' => 'checkPermission',
-                                           'on delete_action' => 'checkPermission'));
+        $component->addEventListener(array('add_action' => 'checkPermission',
+                                           'edit_action' => 'checkPermission',
+                                           'delete_action' => 'checkPermission'));
 
     }
 

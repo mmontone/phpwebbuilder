@@ -104,7 +104,7 @@ class PersistentObject extends Model
         	$this->indexFields[$name]=$name;
         }
         $field->owner =& $this;
-        $field->addEventListener($this, $a = array('on change' => 'fieldChanged'));
+        $field->addEventListener($this, $a = array('change' => 'fieldChanged'));
     }
 
     function fieldChanged(&$field) {
