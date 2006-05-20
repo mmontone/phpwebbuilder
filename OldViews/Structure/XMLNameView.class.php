@@ -24,7 +24,7 @@ class XMLNameView extends HtmlFormEditView  {
 			/*header('Content-Type: application/xml');
 			return "<?xml version=\"1.0\"?>";*/
 		}
-	
+
 	}
 }
 
@@ -36,7 +36,7 @@ class PersistentObjectXMLNameView extends XMLNameView  {
 /*		$ret ="<?xml version=\"1.0\"?>"; */
 		$this->descentCount = $_REQUEST["ObjectCount"];
 		$ret = $this->showObject($linker, $fields);
-		return $ret; 
+		return $ret;
 	}
 	function showObject ($linker, $fields) {
 		if ($this->descentCount > 0) {
@@ -44,13 +44,13 @@ class PersistentObjectXMLNameView extends XMLNameView  {
 		        $ret0 = "<" .$this->formName()." id=\"". $this->obj->getId() ."\" >";
 				$ret = $this->fieldsForm($linker, $fields, TRUE);
 		        $ret = $ret0 . $ret ."\n</".$this->formName().">";}
-	         else {$ret="";} 
-		} else {$ret="";}        	
+	         else {$ret="";}
+		} else {$ret="";}
 		return $ret;
 	}
 	function formName() {
 		return $this->obj->tableName();
-	}	
+	}
 	function listHeader () {
 		return "";
 	}
@@ -108,40 +108,40 @@ class PersistentObjectXMLNameView extends XMLNameView  {
 	}
 	function dataType() {
 		return get_class($this->obj);
-	}	
+	}
 }
 
 class PersistentCollectionXMLNameView extends XMLNameView  {
-	function show($linker) {
-		$this->descentCount = $_REQUEST["ObjectCount"];		
-		$ret = $this->showColec($linker);
-		return $ret; 
+	function show($linker=null) {
+		$this->descentCount = $_REQUEST["ObjectCount"];
+		$ret = $this->showColec(&$linker);
+		return $ret;
 	}
-		function showColec ($linker) {
+		function showColec ($linker=null) {
 			$colec = $this->obj;
 			$ret = $this->showElements($linker);
 			return $ret;
 		}
-      function showElements($linker) {
-		if ($this->descentCount > 0) {        
+      function showElements($linker=ull) {
+		if ($this->descentCount > 0) {
          $colec = $this->obj;
          $obj = new $colec->dataType;
 	 	 $html = $this->viewFor($obj);
-		 $ret0 = "<collection> ";	 	 
+		 $ret0 = "<collection> ";
          $ret = $html->listHeader();
          $colec->limit=0;
          $objs = $colec->objects();
          if ($objs) {
          	foreach($objs as $index=>$object) {
 	 	 		$html = $this->viewFor($object);
-				$html->descentCount = ($this->descentCount);	 	 		
+				$html->descentCount = ($this->descentCount);
 		 		$ret .= $html->showObject($linker, $object->fieldNames);
          	}
          }
 		 /*$ret = str_replace("\n", "\n   ", $ret);         */
 		 $ret = $ret0 . $ret . "\n</collection>";
 	  } else {$ret="";}
-	  return $ret;	 
+	  return $ret;
       }
       function asSelect ($name, $default) {
         $ret = "\n                  <index table=\"$name\" id=$default />";

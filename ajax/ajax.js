@@ -210,7 +210,6 @@ function getActionChild(action) {
     return e;
 }
 
-
 function nodeAtPath(path_str) {
     var path = path_str.split("/");
     var current_elem = document.getElementById("app");
