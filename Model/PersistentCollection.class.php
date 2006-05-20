@@ -24,13 +24,13 @@ class PersistentCollection {
 		return $obj->tableName();
 	}
 	function conditions() {
-		$cond = "";
+		$cond = '';
 		if ($this->conditions == null)
-			return " WHERE 1=1 ";
+			return ' WHERE 1=1 ';
 		foreach ($this->conditions as $f => $c) {
-			$cond = $cond . $f . $c[0] . $c[1] . " AND ";
+			$cond = $cond . $f . $c[0] . $c[1] . ' AND ';
 		}
-		$cond = " WHERE " . $cond . " 1=1 ";
+		$cond = ' WHERE ' . $cond . ' 1=1 ';
 		return $cond;
 	}
 
