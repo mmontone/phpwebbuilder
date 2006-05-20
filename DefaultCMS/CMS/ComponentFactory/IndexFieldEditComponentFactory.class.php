@@ -12,7 +12,11 @@ class IndexFieldEditComponentFactory extends EditComponentFactory {
 		$this->fc =& $fc;
 		$this->vh =& $vh;
 		$this->field =& $field;
-		$this->setObj($arr = array('object'=>$field->obj()));
+		if ($field->getValue()!=0){
+			$this->setObj($arr = array('object'=>$field->obj()));
+		} else {
+			$this->setObj($arr = array());
+		}
 		return $fc;
 	}
 	function select(){
@@ -22,8 +26,12 @@ class IndexFieldEditComponentFactory extends EditComponentFactory {
 	}
 	function setObj(&$params){
 		$obj =& $params['object'];
-		$v = $obj->indexValues();
-		if ($v==""){
+		if ($obj!=null) {
+			$v = $obj->indexValues();
+			if ($v==""){
+				$v = 'choose';
+			}
+		} else {
 			$v = 'choose';
 		}
 		$this->fc->add_component(
