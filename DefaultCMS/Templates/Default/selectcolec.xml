@@ -16,7 +16,7 @@
 					<template class="Obj" >
 						<td><container id="value"/></td>
 					</template>
-					<td><a href="#" id="select">X</a></td>
+					<td><a href="#" id="select"><img class="operation" title="New" src="$templatesdir/icons/stock_ok.png"/></a></td>
 				</tr>
 			</template>
 		</tbody></table>

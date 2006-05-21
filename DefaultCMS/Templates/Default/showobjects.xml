@@ -1,8 +1,8 @@
 <templates>
  	<template class="EditObjectComponent">
-	 	Object of Class <container id="className"/> id: <container id="id"/>
+	 	Object of Class <container id="className"/> id: <container id="idN"/>
 	 	<table><tbody>
-			<template class="Obj" >
+			<template class="FormComponent" >
 	 			<tr>
 					<td><container id="name"/></td>
 					<td><container id="value"/></td>
@@ -43,7 +43,7 @@
 		<input type="text" id="firstElem" style="width:4em"/>
 		<a href="#" id="next"><img class="operation" title="Next" src="$templatesdir/icons/stock_right.png"/></a>
 		<a href="#" id="last"><img class="operation" title="Last" src="$templatesdir/icons/stock_last.png"/></a>
-		<a href="#" id="refresh">refresh</a>
+		<br/><a href="#" id="refresh">refresh</a>
 		Showing <input type="text" id="pSize" style="width:4em"/> per page. <container id="realSize"/> elements available.
 
 
