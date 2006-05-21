@@ -105,8 +105,6 @@ class Component extends PWBObject
 			$index = $ind;
 			if ($index===null){$index = $this->nextChildrenPosition;}
 			if ($this->app!=null) $component->linkToApp($this->app);
-
-
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$component->listener =& new ChildCallbackHandler();
 			$this->nextChildrenPosition++;
@@ -187,7 +185,7 @@ class Component extends PWBObject
 	}
 
     function stopAndCall(&$component) {
-    	$component->linkToApp($this->app);
+		if ($this->app!=null) $component->linkToApp($this->app);
     	$this->replaceView($component);
     	$this->holder->hold($component);
         $component->start();
@@ -278,10 +276,12 @@ class Component extends PWBObject
     	$this->createContainer();
 	}
 	function createContainer(){
-    	$cont=& $this->myContainer();
     	$v =&$this->view;
-    	$pv =& $v->parentNode;
-    	$pv->replace_child($cont, $v);
+    	if ($v!=null) {
+	    	$cont=& $this->myContainer();
+	    	$pv =& $v->parentNode;
+	    	$pv->replace_child($cont, $v);
+    	}
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;
