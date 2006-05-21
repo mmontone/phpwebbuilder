@@ -38,12 +38,6 @@ class PersistentObject extends Model {
 
 	var $dirty = true;
 
-	function displayString() {
-		if (!$this->displayString)
-			$this->displayString = get_class($this);
-		return $this->displayString;
-	}
-
 	function & allFieldsThisLevel() {
 		return $this->fieldsWithNames($this->allFieldNamesThisLevel());
 	}
@@ -397,6 +391,7 @@ class PersistentObject extends Model {
 		if ($this->isNotTopClass($this)) {
 			$this->addField(new superField("super", FALSE));
 		}
+		$this->displayString = ucfirst(get_class($this));
 		$this->initialize();
 	}
 	function initialize() {}

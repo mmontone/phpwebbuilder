@@ -5,6 +5,7 @@ require_once pwbdir.'/Model/PersistentObject.class.php';
 class MenuSection extends PersistentObject {
     function initialize () {
          $this->table = "MenuSection";
+         $this->displayString = 'Menu section';
          $this->addField(new textField("name", TRUE));
          $this->addField(new numField("menuorder", TRUE));
          $this->addField(new CollectionField("section", 'MenuItem'));

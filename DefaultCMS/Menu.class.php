@@ -51,12 +51,13 @@ class Menu extends Component {
 		$sect = & new MenuSectionComponent();
 		$this->menus->addComponent($sect);
 		$sect->addComponent(new Text(new ValueHolder($t = 'Objects')), 'secName');
-		foreach ($arr as $name) {
+		foreach ($arr as $class) {
 			if (fHasPermission($_SESSION[sitename]["id"], array (
 					"*",
 					"$name=>Menu"
 				))) {
-				$this->addelement($name, $name, $sect);
+				$obj =& new $class;
+				$this->addelement($class, $obj->displayString, $sect);
 			}
 		}
 		$log = array (
