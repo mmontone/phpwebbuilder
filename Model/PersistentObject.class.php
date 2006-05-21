@@ -142,6 +142,13 @@ class PersistentObject extends Model {
 		return $f->getValue();
 
 	}
+    function getIdOfClass($class){
+	    	if (strcasecmp(get_class($this), $class)==0) {
+	    		return $this->id->value;
+	    	} else {
+	    		return $this->parent->getIdOfClass($class);
+	    	}
+    }
 	/**
 	 * @category Database
 	 */
