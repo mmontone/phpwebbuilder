@@ -17,6 +17,10 @@ class ShowCollectionComponent extends NavigationComponent {
 	}
 	function newObject(&$n) {
 		$obj = & new $this->classN;
+		$c =& $this->col->conditions;
+		foreach($c as $f=>$cond){
+			$obj->$f->value = $cond[1];
+		}
 		$this->editObject($obj);
 	}
 	function deleteObject(&$fc) {

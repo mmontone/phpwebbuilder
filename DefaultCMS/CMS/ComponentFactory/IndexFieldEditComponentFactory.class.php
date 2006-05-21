@@ -31,7 +31,8 @@ class IndexFieldEditComponentFactory extends EditComponentFactory {
 			if ($v==""){
 				$v = 'choose';
 			}
-			$this->vh->setValue($obj->getIdOfClass($this->field->collection->dataType));
+			$id = $obj->getIdOfClass($this->field->collection->dataType);
+			$this->vh->setValue($id);
 		} else {
 			$v = 'choose';
 		}
