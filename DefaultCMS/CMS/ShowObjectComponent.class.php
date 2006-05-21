@@ -20,11 +20,12 @@ class ShowObjectComponent extends Component {
 		$obj =& $this->obj;
     	$this->addComponent(new Text(new ValueHolder($obj->displayString())), 'className');
     	$this->addComponent(new Text(new ValueHolder($obj->id->value)), 'id');
-		$fs = & $obj->allIndexFieldNames();
-		foreach ($fs as $i=>$f) {
+		$fs = & $obj->allIndexFields();
+    	$factory =& new ShowComponentFactory;
+		foreach ($fs as $f) {
     		$fc =& new Obj;
     		$this->addComponent($fc);
-    		$fc->addComponent(new Text(new ValueHolder($obj->$f->value)), 'value');
+    		$fc->addComponent($factory->createFor($f), 'value');
        	}
     }
 }
