@@ -18,7 +18,7 @@ class ShowObjectComponent extends Component {
     }
     function initialize(){
 		$obj =& $this->obj;
-    	$this->add_component(new Text(new ValueHolder($this->class)), 'className');
+    	$this->add_component(new Text(new ValueHolder($obj->displayString())), 'className');
     	$this->add_component(new Text(new ValueHolder($obj->id->value)), 'id');
 		$fs = & $obj->allIndexFieldNames();
 		foreach ($fs as $i=>$f) {

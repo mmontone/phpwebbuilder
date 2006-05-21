@@ -21,14 +21,14 @@ class EditObjectComponent extends Component {
     	$obj =& $this->obj;
     	$this->add_component(new Text(new ValueHolder($this->classN), 'className'));
     	$this->add_component(new Text(new ValueHolder($obj->id->value), 'id'));
-    	$fs =& $obj->allFieldNames();
+    	$fields =& $obj->allFields();
     	$factory =& new EditComponentFactory;
-    	foreach($fs as $f){
+    	foreach($fields as $field){
     		$fc =& new Obj;
-    		$this->add_component($fc, $f);
-    		$fc->add_component(new Text(new ValueHolder($fs[$f])), 'name');
-    		$this->fields[$f]=&$factory->createFor($obj->$f);
-    		$fc->add_component($this->fields[$f], 'value');
+    		$this->add_component($fc, $field->colName);
+    		$fc->add_component(new Text(new ValueHolder($field->displayString)), 'name');
+    		$this->fields[$field->colName] = &$factory->createFor($field);
+    		$fc->add_component($this->fields[$field->colName], 'value');
        	}
        	$this->add_component(new ActionLink($this, 'save', 'save', $n=null), 'save');
        	$this->add_component(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');

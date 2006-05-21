@@ -39,10 +39,10 @@ class NavigationComponent extends Component {
 		$this->pageSize->onChangeSend('refresh', $this);
 		$c = $this->classN;
 		$obj = & new $c;
-		$fs = & $obj->allIndexFieldNames();
-		foreach ($fs as $i=>$f) {
+		$fs = & $obj->allIndexFields();
+		foreach ($fs as $f) {
 			$fc = & new Obj;
-			$fc->add_component(new ActionLink($this, 'sort', $fs[$i], $fs[$i]));
+			$fc->add_component(new ActionLink($this, 'sort', $f->displayString, $f->displayString));
 			$this->add_component($fc);
 		}
 		$this->refresh();

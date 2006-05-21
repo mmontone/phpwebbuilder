@@ -6,7 +6,7 @@
  * */
 
 ini_set('memory_limit', '-1');
-
+set_time_limit(0);
 ini_set('display_errors', true);
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -14,7 +14,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 require_once dirname(__FILE__) . "/basiclib.php";
 
-set_time_limit(120);
+
 
 $config = array (
 	basedir . "/MyConfig"
