@@ -22,13 +22,9 @@ class User extends PersistentObject {
 	}else
   		return FALSE;
     }
-    function getUserId(){
-	    	if (strcasecmp(get_class($this), "User")==0) {
-	    		return $this->id->value;
-	    	} else {
-	    		return $this->parent->getUserId();
-	    	}
-    }
+	function getUserId(){
+		return $this->getIdOfClass("User");
+	}
     function hasRole($uid, $roleid){
     	$urc = new PersistentCollection(UserRole);
     	$urc->conditions["user"] = array("=", $uid);
@@ -44,6 +40,6 @@ class User extends PersistentObject {
   	  }
   	  return $usr;
 }
-    
+
 }
 ?>
