@@ -6,6 +6,7 @@ require_once 'Application.class.php';
 require_once 'ApplicationLauncher.class.php';
 require_once 'Component.class.php';
 require_once 'ComponentHolder.class.php';
+require_once 'ChildCallbackHandler.class.php';
 
 
 includefile($dir = pwbdir.'/newcontroller/components');

@@ -70,9 +70,9 @@ class Component extends PWBObject
 		return $string;
 	}
 
-        function registerCallbacks($callbacks) {
-          $this->registered_callbacks =& $callbacks;
-        }
+    function registerCallbacks($callbacks) {
+		$this->registered_callbacks =& $callbacks;
+    }
 
 	function call_action($action_selector, $params) {
 		if (!in_array($action_selector, $this->__actions))
@@ -108,6 +108,7 @@ class Component extends PWBObject
 
 
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
+			$component->listener =& new ChildCallbackHandler();
 			$this->nextChildrenPosition++;
 		}
 	}
@@ -175,8 +176,7 @@ class Component extends PWBObject
     }
 
     function call(&$component) {
-		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
-        // Give control to $component
+		// Give control to $component
 		$component->listener =& $this;
         $this->stopAndCall($component);
 	}
@@ -203,19 +203,22 @@ class Component extends PWBObject
 	}
 
 	function callback($callback=null, $parameters=array()) {
-		/* IMPORTANT TODO: Do a more general callback: don't callback to the listerner always */
-		$this->replaceView($this->listener);
-		$this->app->needsView($this->listener);
+		$this->listener->takeControlOf($this, $callback,$parameters);
+	}
+
+	function takeControlOf(&$callbackComponent, $callback=null, $parameters=array()) {
+		$callbackComponent->replaceView($this);
+		$callbackComponent->app->needsView($this);
         if ($callback == null) {
-			$this->holder->hold($this->listener);
+			$callbackComponent->holder->hold($this);
 		}
 		else {
-			if ($this->registered_callbacks[$callback] == null) {
+			if ($callbackComponent->registered_callbacks[$callback] == null) {
 				$this->invalid_callback($callback);
 			}
 			else {
-				$this->holder->hold($this->listener);
-				$this->registered_callbacks[$callback]->call($parameters);
+				$callbackComponent->holder->hold($this);
+				$callbackComponent->registered_callbacks[$callback]->call($parameters);
 			}
 		}
 	}
