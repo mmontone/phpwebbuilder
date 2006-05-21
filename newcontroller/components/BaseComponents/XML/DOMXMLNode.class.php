@@ -111,5 +111,9 @@ class DOMXMLNode
 	function getAttribute($attribute) {
 		return $this->attributes[$attribute];
 	}
+
+	function removeAttribute($attr) {
+		unset($this->attributes[$attr]);
+	}
 }
 ?>

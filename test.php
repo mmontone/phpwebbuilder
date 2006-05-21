@@ -1,17 +1,22 @@
 <?php
-class Test {
-var $y = "asdf";
-var $z;
-(string) function lala ($x){
-	echo $x;
-}
+class VH
+{
+	var $x;
 
 }
-$t = new Test;
-echo "lala vale ".$t->lala('hola');
 
-echo "<br/>x es ".gettype($t->x)." y vale $t->x";
-echo "<br/>y es ".gettype($t->y)." y vale $t->y";
-echo "<br/>z es ".gettype($t->z)." y vale $t->z";
+$e =& new E;
+$e->x = 2;
+//$a = array();
+//$a['e'] =& $e;
+//$b = $a;
+//$a = array('e'=>$e);
+$vh =& new E;
+$vh->x =& $e;
+$a = array('e'=>$vh);
+$e->x = 3;
+echo $e->x;
+echo $a['e']->x->x;
+
 
 ?>

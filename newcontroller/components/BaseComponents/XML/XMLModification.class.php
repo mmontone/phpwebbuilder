@@ -312,4 +312,55 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	}
 }
 
+class RemoveAttributeXMLNodeModification extends XMLNodeModification {
+	var $attribute;
+
+	function SetAttributeXMLNodeModification(&$target, $attribute) {
+		parent::XMLNodeModification(&$target);
+		$this->attribute = $attribute;
+	}
+
+	/*
+	function renderAjaxResponseCommand() {
+		assert($this->target->fullPath!="");
+		$xml = '<set_attribute path="' . $this->target->fullPath . '">';
+		$xml .= '<attribute>' . $this->attribute . '</attribute>';
+		$xml .= '<value> ' . $this->value . '</value>';
+		$xml .= '</set_attribute>';
+		return $xml;
+	}
+	*/
+
+	function renderAjaxResponseCommand() {
+		//assert($this->target->fullPath!="");
+		$xml = '<remove_attribute id="' . $this->target->getId() . '">';
+		$xml .= '<attribute>' . $this->attribute . '</attribute>';
+		$xml .= '</remove_attribute>';
+		return $xml;
+	}
+
+	/*
+	function printString() {
+		$ret = '<set_attribute path="' . $this->target->fullPath . '">';
+		$ret .= "\n   ";
+		$ret .= '<attribute>' . $this->attribute . '</attribute>';
+		$ret .= "\n   ";
+		$ret.= '<value> ' . $this->value . '</value>';
+		$ret .= "\n";
+		$ret .= '</set_attribute>';
+		return $ret;
+	}
+	*/
+
+	function printString() {
+		$ret = '<remove_attribute path="' . $this->target->getId() . '">';
+		$ret .= "\n   ";
+		$ret .= '<attribute>' . $this->attribute . '</attribute>';
+		$ret .= "\n   ";
+		$ret .= '</remove_attribute>';
+		return $ret;
+	}
+}
+
+
 ?>

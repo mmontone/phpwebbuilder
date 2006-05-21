@@ -325,6 +325,16 @@ function ie_ajax_set_attribute(action) {
     return ajax_set_attribute(action);
 }
 
+function ajax_remove_attribute(action) {
+    var target = getActionTarget(action);
+    var attribute = action.childNodes[0].firstChild.data;
+    target.removeAttribute(attribute);
+}
+
+function ie_ajax_remove_attribute(action) {
+    return ajax_remove_attribute(action);
+}
+
 function xml2str (xml) {
 	if (xml.nodeName=="#text")
       return xml.nodeValue;

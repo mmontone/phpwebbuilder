@@ -6,7 +6,7 @@ class FormComponent extends Component
 {
 	var $value_model;
 
-	function FormComponent(&$value_model, $callback_actions=array('on_accept' => 'notification_accepted')) {
+	function FormComponent(&$value_model, $callback_actions=array()) {
 		if ($value_model==null) {
 			$this->value_model =& new ValueHolder($null = null);
 		} else {
