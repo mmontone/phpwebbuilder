@@ -8,7 +8,7 @@ class User extends PersistentObject {
          $this->addField(new CollectionField("user", 'UserRole'));
     }
 	function validate(&$error_msgs) {
-	  	return $this->check_not_null(array("user"), &$error_msgs);
+	  	return $this->checkNotEmpty(array("user"), &$error_msgs);
 	  }
 	function &loadUser($user,$pass){
 	$db = new MySQLdb;

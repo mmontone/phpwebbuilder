@@ -16,7 +16,7 @@ class File extends PersistentObject {
        }
 
        function validate(&$error_msgs) {
-       	    return $this->check_not_null(array('label'), $error_msgs);
+       	    return $this->checkNotEmpty(array('label'), $error_msgs);
        }
 }
 

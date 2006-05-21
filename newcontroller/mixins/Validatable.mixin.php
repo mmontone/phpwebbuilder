@@ -51,7 +51,7 @@ class Validatable /* mixin */
             $ret |= $this->$field->value != "";
         }
         if (!$ret) {
-            $this->triggerEvent('check_one_of_error', array('first_field' => $first_field,
+            $this->triggerEvent('checkOneOf_error', array('first_field' => $first_field,
                                                             'error_message' => $error_msg));
         }
         return $ret;

@@ -224,7 +224,7 @@ class PersistentObject extends Model
 	/**
 	 * @category Validation
 	 */
-	function check_not_null($fields, &$error_msgs) {
+	function checkNotEmpty($fields, &$error_msgs) {
 		$ret = true;
 		$is_valid = false;
 		foreach ($fields as $field) {
@@ -236,7 +236,7 @@ class PersistentObject extends Model
 		}
 		return $ret;
 	}
-	function check_one_of($fields, $error_msg, &$error_msgs) {
+	function checkOneOf($fields, $error_msg, &$error_msgs) {
 		$ret=false;
 		foreach ($fields as $field) {
 			if (!isset($first_field)) $first_field = $field;
