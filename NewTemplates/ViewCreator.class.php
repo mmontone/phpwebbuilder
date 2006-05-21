@@ -63,7 +63,7 @@ class ViewCreator {
 		$view =& $this->createElemView($parentView, $component);
 		$ks = array_keys($component->__children);
 		foreach ($ks as $k){
-			$this->createView($view, $component->component_at($k));
+			$this->createView($view, $component->componentAt($k));
 		}
 		return $view;
 	}

@@ -74,11 +74,11 @@ class Component extends PWBObject
     	$this->render_action_link($action);
     }
 
-	function add_component(&$component, $index) {
+	function addComponent(&$component, $index) {
 		$this->__children[$index] =& new ComponentHolder($component,$index);
 	}
 
-	function &component_at($index) {
+	function &componentAt($index) {
 		$holder =& $this->__children[$index];
 		return $holder->component;
 	}

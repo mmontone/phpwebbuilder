@@ -11,13 +11,13 @@ class MultiCounter extends Component
 		$this->count = $count;
 		for ($i = 0; $i < $count; $i++) {
             $counter =& new Counter(0);
-            $this->add_component($counter, $i);
+            $this->addComponent($counter, $i);
 		}
 	}
 
 	function render_on(&$html) {
 		for ($i = 0; $i < $this->count; $i++) {
-			$counter =& $this->component_at($i);
+			$counter =& $this->componentAt($i);
 			$counter->renderContent($html);
 			$html->text("</br></br>");
 		}

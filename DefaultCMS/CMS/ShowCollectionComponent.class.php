@@ -5,8 +5,8 @@ require_once 'NavigationComponent.class.php';
 class ShowCollectionComponent extends NavigationComponent {
 	function initialize() {
 		$class = & $this->classN;
-		$this->add_component(new Text(new ValueHolder($class)), 'className');
-		$this->add_component(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
+		$this->addComponent(new Text(new ValueHolder($class)), 'className');
+		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		parent::initialize();
 	}
 	/* Editing */
@@ -25,9 +25,9 @@ class ShowCollectionComponent extends NavigationComponent {
 	}
 	function addLine(&$obj) {
 		$fc = & new ShowObjectComponent($obj);
-		$this->objs->add_component($fc);
-		$fc->add_component(new ActionLink($this, 'editObject', 'Edit', $obj), 'edit');
-		$fc->add_component(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
+		$this->objs->addComponent($fc);
+		$fc->addComponent(new ActionLink($this, 'editObject', 'Edit', $obj), 'edit');
+		$fc->addComponent(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
 	}
 }
 ?>

@@ -22,28 +22,28 @@ class NavigationComponent extends Component {
 	}
 	function initialize() {
 		/* Navigation */
-		$this->add_component(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
-		$this->add_component(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
-		$this->add_component(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
-		$this->add_component(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
-		$this->add_component(new ActionLink($this, 'getValue', 'refresh', $n = null), 'refresh');
+		$this->addComponent(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
+		$this->addComponent(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
+		$this->addComponent(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
+		$this->addComponent(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
+		$this->addComponent(new ActionLink($this, 'getValue', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
-		$this->add_component(new Input($this->firstElement), 'firstElem');
-		$this->add_component(new FormComponent($v=null), 'objs');
+		$this->addComponent(new Input($this->firstElement), 'firstElem');
+		$this->addComponent(new FormComponent($v=null), 'objs');
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
-		$this->add_component(new Text($this->size), 'realSize');
+		$this->addComponent(new Text($this->size), 'realSize');
 		$this->pageSize =& new ValueHolder($pz = 10);
-		$this->add_component(new Input($this->pageSize), 'pSize');
+		$this->addComponent(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
 		$c = $this->classN;
 		$obj = & new $c;
 		$fs = & $obj->allIndexFields();
 		foreach ($fs as $f) {
 			$fc = & new Obj;
-			$fc->add_component(new ActionLink($this, 'sort', $f->displayString, $f->displayString));
-			$this->add_component($fc);
+			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->displayString));
+			$this->addComponent($fc);
 		}
 		$this->refresh();
 	}

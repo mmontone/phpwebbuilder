@@ -18,7 +18,7 @@ class ObjectEditorView extends HTMLObjectView
     function renderIdField(&$field, &$html) {}
 
     function renderCollectionField(&$field, &$html) {
-        $collection_displayer =& $this->controller->component_at($field->name);
+        $collection_displayer =& $this->controller->componentAt($field->name);
         $collection_displayer->renderContent($html);
     }
 

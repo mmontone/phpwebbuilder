@@ -19,20 +19,20 @@ class EditObjectComponent extends Component {
     }
     function initialize(){
     	$obj =& $this->obj;
-    	$this->add_component(new Text(new ValueHolder($this->classN), 'className'));
-    	$this->add_component(new Text(new ValueHolder($obj->id->value), 'id'));
+    	$this->addComponent(new Text(new ValueHolder($this->classN), 'className'));
+    	$this->addComponent(new Text(new ValueHolder($obj->id->value), 'id'));
     	$fields =& $obj->allFields();
     	$factory =& new EditComponentFactory;
     	foreach($fields as $field){
     		$fc =& new Obj;
-    		$this->add_component($fc, $field->colName);
-    		$fc->add_component(new Text(new ValueHolder($field->displayString)), 'name');
+    		$this->addComponent($fc, $field->colName);
+    		$fc->addComponent(new Text(new ValueHolder($field->displayString)), 'name');
     		$this->fields[$field->colName] = &$factory->createFor($field);
-    		$fc->add_component($this->fields[$field->colName], 'value');
+    		$fc->addComponent($this->fields[$field->colName], 'value');
        	}
-       	$this->add_component(new ActionLink($this, 'save', 'save', $n=null), 'save');
-       	$this->add_component(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
-       	$this->add_component(new ActionLink($this, 'callback', 'cancel', $n), 'cancel');
+       	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
+       	$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
+       	$this->addComponent(new ActionLink($this, 'callback', 'cancel', $n), 'cancel');
     }
     function save(){
     	$obj =& $this->obj;

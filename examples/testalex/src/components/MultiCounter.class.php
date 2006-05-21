@@ -12,7 +12,7 @@ class MultiCounter extends Component
 		for ($i = 0; $i < $count; $i++) {
             $counter =& new Counter(0);
             $counter->addEventListener(array('model_changed'=>'updateCounters'), $this);
-			$this->add_component($counter, $i);
+			$this->addComponent($counter, $i);
 		}
 	}
 
@@ -23,7 +23,7 @@ class MultiCounter extends Component
 
         function render_on(&$html) {
 		for ($i = 0; $i < $this->count; $i++) {
-			$counter =& $this->component_at($i);
+			$counter =& $this->componentAt($i);
 			$counter->renderContent($html);
 			$html->text("</br></br>");
 		}
@@ -31,7 +31,7 @@ class MultiCounter extends Component
 
     function updateCounters(&$signaler) {
         for ($i = 0; $i < $this->count; $i++) {
-            $counter =& $this->component_at($i);
+            $counter =& $this->componentAt($i);
             $counter->counter = $signaler->counter;
         }
     }

@@ -34,7 +34,7 @@ class IndexFieldEditComponentFactory extends EditComponentFactory {
 		} else {
 			$v = 'choose';
 		}
-		$this->fc->add_component(
+		$this->fc->addComponent(
 			new ActionLink($this, 'select', $v, $n=null),'value'
 		);
 		$this->vh->setValue($obj->id->value);

@@ -31,7 +31,7 @@ class ObjectDisplayer extends FlowController
     function embedCollectionField(&$field) {
     	$collection_displayer =& $this->config->displayerFor($field->collection);
         var_dump($collection_displayer);
-        $this->add_component($collection_displayer);
+        $this->addComponent($collection_displayer);
     }
 
     function embedIdField(&$field) {}

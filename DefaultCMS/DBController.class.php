@@ -11,13 +11,13 @@ class DBController extends Component {
 	function initialize(){
 		$this->sql =& new ValueHolder($n='');
 		$this->sql_result =& new ValueHolder($n2='');
-		$this->add_component(new Label('Execute SQL in Database:'));
-		$this->add_component(new TextAreaComponent($this->sql), 'sql_comp');
-		$this->add_component(new Text($this->sql_result), 'sql_res');
-		$this->add_component(new ActionLink($this, 'exec_sql', 'Execute the SQL', $n3=null), 'exec_sql');
+		$this->addComponent(new Label('Execute SQL in Database:'));
+		$this->addComponent(new TextAreaComponent($this->sql), 'sql_comp');
+		$this->addComponent(new Text($this->sql_result), 'sql_res');
+		$this->addComponent(new ActionLink($this, 'exec_sql', 'Execute the SQL', $n3=null), 'exec_sql');
 
-		$this->add_component(new Label('Check Table Structure'));
-		$this->add_component(new ActionLink($this, 'check_tables', 'Check Table Structure', $n=null), 'check_tables');
+		$this->addComponent(new Label('Check Table Structure'));
+		$this->addComponent(new ActionLink($this, 'check_tables', 'Check Table Structure', $n=null), 'check_tables');
 	}
 	function permissionNeeded () {
 		return "DatabaseAdmin";

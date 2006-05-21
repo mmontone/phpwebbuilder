@@ -93,6 +93,10 @@ class Component extends PWBObject
     }
 
 	function add_component(&$component, $ind=null) {
+		return $this->addComponent($component, $ind=null);
+	}
+
+	function addComponent(&$component, $ind=null) {
 		if ($ind !=null && isset($this->__children[$ind])) {
 			$this->__children[$ind]->component->stopAndCall($component);
 		} else {
@@ -107,15 +111,15 @@ class Component extends PWBObject
 			$this->nextChildrenPosition++;
 		}
 	}
-	function delete_component_at($index){
-		$c =& $this->component_at($index);
+	function delete_componentAt($index){
+		$c =& $this->componentAt($index);
 		$c->delete();
 	}
 
 	function deleteChildren(){
 		$ks = array_keys($this->__children);
 		foreach($ks as $k){
-			$this->delete_component_at($k);
+			$this->delete_componentAt($k);
 		}
 	}
 
@@ -134,7 +138,12 @@ class Component extends PWBObject
 		unset($p->$pos);
 	}
 
+	/* Deprecated: use componentAt instead */
 	function &component_at($index) {
+		return $this->componentAt($index);
+	}
+
+	function &componentAt($index) {
 		$holder =& $this->__children[$index];
 		return $holder->component;
 	}
@@ -290,7 +299,7 @@ class Component extends PWBObject
 	function printTree(){
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
-			$comp =& $this->component_at($key);
+			$comp =& $this->componentAt($key);
 			$ret .=  $key ."=>". $comp->printTree()."\n<br/>";
 		}
 		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);

@@ -28,7 +28,7 @@ class Controller //extends Component
 		}
 	}
 	function initialize() {
-		//$this->add_component(new Text(new ValueHolder($t="")), "bodyController");
+		//$this->addComponent(new Text(new ValueHolder($t="")), "bodyController");
 	}
 	/*
 	function controller_action($form){}

@@ -26,7 +26,7 @@ class ObjectEditor extends FlowController
 
     function embedCollectionField(&$field) {
     	$collection_editor =& $this->config->editorFor($field->collection);
-        $this->add_component($collection_editor);
+        $this->addComponent($collection_editor);
     }
 
     function embedIdField(&$field) {}
@@ -34,7 +34,7 @@ class ObjectEditor extends FlowController
   
     function embedIndexField(&$field) {
     	$index_editor =& $this->config->editorFor($field->collection);
-        $this->add_component($index_editor);
+        $this->addComponent($index_editor);
     }
 
    function declare_actions() {

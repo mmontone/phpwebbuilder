@@ -15,7 +15,7 @@ class ActionLink extends FormComponent
 		$this->action = $action;
 		$this->text = $text;
 		$this->params = &$params;
-		$this->add_component(new Text(new ValueHolder($this->text)), "linkName");
+		$this->addComponent(new Text(new ValueHolder($this->text)), "linkName");
 	}
 
 	function createNode(){

@@ -15,12 +15,12 @@ class QuestionDialog extends Component
 		return array('yes', 'no');
 	}
 	function initialize(){
-		/*$this->add_component(new Text("<h1>"));
-		$this->add_component(new Text($this->question), "question");
-		$this->add_component(new Text("</h1><br />"));
-		$this->add_component(new ActionLink($this, 'yes', 'Yes'),"yes");
-		$this->add_component(new Text("<br />"));*/
-		$this->add_component(new ActionLink($this, 'no', 'No'), "no");
+		/*$this->addComponent(new Text("<h1>"));
+		$this->addComponent(new Text($this->question), "question");
+		$this->addComponent(new Text("</h1><br />"));
+		$this->addComponent(new ActionLink($this, 'yes', 'Yes'),"yes");
+		$this->addComponent(new Text("<br />"));*/
+		$this->addComponent(new ActionLink($this, 'no', 'No'), "no");
 	}
 
 	function yes() {

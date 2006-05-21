@@ -18,13 +18,13 @@ class ShowObjectComponent extends Component {
     }
     function initialize(){
 		$obj =& $this->obj;
-    	$this->add_component(new Text(new ValueHolder($obj->displayString())), 'className');
-    	$this->add_component(new Text(new ValueHolder($obj->id->value)), 'id');
+    	$this->addComponent(new Text(new ValueHolder($obj->displayString())), 'className');
+    	$this->addComponent(new Text(new ValueHolder($obj->id->value)), 'id');
 		$fs = & $obj->allIndexFieldNames();
 		foreach ($fs as $i=>$f) {
     		$fc =& new Obj;
-    		$this->add_component($fc);
-    		$fc->add_component(new Text(new ValueHolder($obj->$f->value)), 'value');
+    		$this->addComponent($fc);
+    		$fc->addComponent(new Text(new ValueHolder($obj->$f->value)), 'value');
        	}
     }
 }

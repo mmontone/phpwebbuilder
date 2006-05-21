@@ -7,13 +7,13 @@ class Menu extends Component {
 		);
 	}
 	function initialize() {
-		$this->add_component(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
-		$this->add_component(new Text(new ValueHolder($s = sitename)), "SiteName");
-		$this->add_component(new FormComponent($vm = null), 'menus');
+		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
+		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
+		$this->addComponent(new FormComponent($vm = null), 'menus');
 		$this->menus();
 	}
 	function newmenu() {
-		$this->add_component(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
+		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
 		$ms = & $this->menus;
 		$cs = & $ms->__children;
 		$ks = array_keys($cs);
@@ -35,8 +35,8 @@ class Menu extends Component {
 	}
 	function realMenuSection(& $menu) {
 		$sect = & new MenuSectionComponent();
-		$this->menus->add_component($sect);
-		$sect->add_component(new Text(new ValueHolder($menu->name->value)), 'secName');
+		$this->menus->addComponent($sect);
+		$sect->addComponent(new Text(new ValueHolder($menu->name->value)), 'secName');
 		$col = & $menu->itemsVisible();
 		$ks2 = & array_keys($col);
 		foreach ($ks2 as $k2) {
@@ -49,8 +49,8 @@ class Menu extends Component {
 	function objMenus() {
 		$arr = get_subclasses("PersistentObject");
 		$sect = & new MenuSectionComponent();
-		$this->menus->add_component($sect);
-		$sect->add_component(new Text(new ValueHolder($t = 'Objects')), 'secName');
+		$this->menus->addComponent($sect);
+		$sect->addComponent(new Text(new ValueHolder($t = 'Objects')), 'secName');
 		foreach ($arr as $name) {
 			if (fHasPermission($_SESSION[sitename]["id"], array (
 					"*",
@@ -72,7 +72,7 @@ class Menu extends Component {
 		return $this->additem($comp, $text, $sect);
 	}
 	function additem(& $comp, $text, & $sect) {
-		$sect->add_component(new MenuItemComponent($this, $text, $comp));
+		$sect->addComponent(new MenuItemComponent($this, $text, $comp));
 		//echo "<br/>used memory for $text:" .memory_get_usage();
 	}
 	function menuclick(& $comp) {
@@ -95,7 +95,7 @@ class MenuItemComponent extends Component {
 	function declare_actions() {}
 
 	function initialize() {
-		$this->add_component(new ActionLink($this->menu, 'menuclick', $this->text, $this->item), "link");
+		$this->addComponent(new ActionLink($this->menu, 'menuclick', $this->text, $this->item), "link");
 	}
 }
 ?>
