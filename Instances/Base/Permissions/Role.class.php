@@ -5,7 +5,7 @@ class Role extends PersistentObject {
          $this->table = "Role";
          $this->addField(new textField("name", TRUE));
          $this->addField(new textArea("description", FALSE));
-         $this->addField(new CollectionField("role", "RolePermission"));
+         $this->addField(new CollectionField('role',array('type'=>'RolePermission','display'=>'Permissions')));
     }
 
 	function userHasPermission($id, $permission){

@@ -7,8 +7,8 @@ class MenuSection extends PersistentObject {
          $this->table = "MenuSection";
          $this->displayString = 'Menu section';
          $this->addField(new textField("name", TRUE));
-         $this->addField(new numField("menuorder", TRUE));
-         $this->addField(new CollectionField("section", 'MenuItem'));
+         $this->addField(new numField("menuorder", array('is_index'=>true,'display'=>'Menu order')));
+         $this->addField(new CollectionField("section", array('type'=>'MenuItem','display'=>'Sections')));
     }
     function showMenu (){
 	    $col =& $this->itemsVisible();

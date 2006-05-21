@@ -5,7 +5,7 @@ class User extends PersistentObject {
          $this->table = "users";
          $this->addField(new textField("user", TRUE));
          $this->addField(new passwordField("pass", FALSE));
-         $this->addField(new CollectionField("user", 'UserRole'));
+         $this->addField(new CollectionField("user", array('type'=>'UserRole','display'=>'Roles')));
     }
 	function validate(&$error_msgs) {
 	  	return $this->checkNotEmpty(array("user"), &$error_msgs);
