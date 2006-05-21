@@ -15,20 +15,25 @@ class EditObjectComponent extends Component {
     		$this->obj =& PersistentObject::getWithId($class, $id);
     		$this->classN = $class;
     	}
+    	$this->fieldNames =& $this->obj->allFieldNames();
     	parent::Component();
     }
     function initialize(){
     	$obj =& $this->obj;
-    	$this->addComponent(new Text(new ValueHolder($this->classN), 'className'));
-    	$this->addComponent(new Text(new ValueHolder($obj->id->value), 'id'));
-    	$fields =& $obj->allFields();
+    	$this->addComponent(new Label($this->classN), 'className');
+    	$this->addComponent(new Label($obj->id->value), 'idN');
+    	$fields =& $obj->fieldsWithNames($this->fieldNames);
     	$factory =& new EditComponentFactory;
-    	foreach($fields as $field){
-    		$fc =& new Obj;
-    		$this->addComponent($fc, $field->colName);
+    	$temp = array();
+    	foreach($this->fieldNames as $f2){
+    		$f =& $temp[$f2];
+    		$f = $f2;
+    		$field =& $fields[$f];
+    		$fc =& new FormComponent($n=null);
+    		$this->addComponent($fc, $f);
     		$fc->addComponent(new Text(new ValueHolder($field->displayString)), 'name');
-    		$this->fields[$field->colName] = &$factory->createFor($field);
-    		$fc->addComponent($this->fields[$field->colName], 'value');
+    		$this->fields[$f] = &$factory->createFor($field);
+    		$fc->addComponent($this->fields[$f], 'value');
        	}
        	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
        	$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
@@ -36,7 +41,7 @@ class EditObjectComponent extends Component {
     }
     function save(){
     	$obj =& $this->obj;
-    	$fs =& $obj->allFieldNames();
+    	$fs =& $this->fieldNames;
     	foreach($fs as $f){
     		$v = $this->fields[$f]->getValue();
     		$obj->$f->setValue($v);
@@ -48,9 +53,6 @@ class EditObjectComponent extends Component {
 		$this->obj->delete();
 		$this->callback('refresh');
 	}
-
 }
-
-class Obj2 extends Component{}
 
 ?>

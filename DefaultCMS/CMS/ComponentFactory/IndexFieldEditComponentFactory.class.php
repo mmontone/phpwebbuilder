@@ -31,13 +31,13 @@ class IndexFieldEditComponentFactory extends EditComponentFactory {
 			if ($v==""){
 				$v = 'choose';
 			}
+			$this->vh->setValue($obj->getIdOfClass($this->field->collection->dataType));
 		} else {
 			$v = 'choose';
 		}
 		$this->fc->addComponent(
 			new ActionLink($this, 'select', $v, $n=null),'value'
 		);
-		$this->vh->setValue($obj->id->value);
 	}
 }
 
