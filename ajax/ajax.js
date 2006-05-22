@@ -385,3 +385,14 @@ function push(){
 }
 
 //push();
+
+
+
+function sendUpdate(update) {
+    var url = "new_dispatch.php?"+ update.target + "=" + update.value;
+    postAjax(url,updatePage,"app");
+}
+
+function enqueueUpdate(update) {
+    sendUpdate(update);
+}

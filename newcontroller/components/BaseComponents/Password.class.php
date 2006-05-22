@@ -7,6 +7,7 @@ class Password extends Input {
 	}
 
 	function createNode() {
+		parent::createNode();
 		$in = & $this->view;
 		$in->setTagName('input');
 		$in->setAttribute('type', 'password');

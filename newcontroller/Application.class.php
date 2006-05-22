@@ -127,13 +127,13 @@ class Application extends ComponentHolder
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array();
+		$this->addScript(pwb_url . '/common.js');
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}
 
-	function addStyleSheets() {}
-
 	function addScripts(){}
+	function addStyleSheets(){}
 
 	function addScript($url) {
 		$this->wholeView->scripts[] =& $url;

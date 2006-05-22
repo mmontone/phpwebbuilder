@@ -2,10 +2,11 @@
 
 class CheckBox extends FormComponent {
     function createNode(){
+		parent::createNode();
 		$in =& $this->view;
 		$in->setTagName('input');
 		$in->setAttribute('type','checkbox');
-		$in->setAttribute('onChange','javascript:checkBoxChanged(this,enqueueUpdate)');
+		$in->setAttribute('onchange','javascript:checkBoxChanged(this,enqueueUpdate)');
 	}
 
 	function valueChanged(&$value_model, &$params) {
@@ -22,7 +23,7 @@ class CheckBox extends FormComponent {
 
 	function onChangeSend($selector, &$target) {
 		$this->addEventListener(array('changed'=>$selector), $target);
-		$this->view->setAttribute('onChange','javascript:checkBoxChanged(this,sendUpdate)');
+		$this->view->setAttribute('onchange','javascript:checkBoxChanged(this,sendUpdate)');
 	}
 }
 ?>

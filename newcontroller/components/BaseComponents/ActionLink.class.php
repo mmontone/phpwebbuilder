@@ -19,8 +19,8 @@ class ActionLink extends FormComponent
 	}
 
 	function createNode(){
-		$link =& $this->view;
-		$link->setTagName('a');
+		parent::createNode();
+		$this->view->setTagName('a');
 	}
 	function prepareToRender(){
 		parent::prepareToRender();

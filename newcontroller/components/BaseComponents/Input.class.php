@@ -4,8 +4,8 @@ require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class Input extends FormComponent{
 	function createNode(){
-		$in =& $this->view;
-		$in->setTagName('input');
+		parent::createNode();
+		$this->view->setTagName('input');
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){

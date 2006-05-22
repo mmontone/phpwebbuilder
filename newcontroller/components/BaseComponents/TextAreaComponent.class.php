@@ -4,9 +4,10 @@ require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class TextAreaComponent extends FormComponent{
 	function createNode(){
-		$in =& $this->view;
-		$in->setTagName('textarea');
+		parent::createNode();
+		$this->view->setTagName('textarea');
 	}
+
 	function prepareToRender(){
 		$this->view->append_child(new XMLTextNode($this->value_model->getValue()));
 	}

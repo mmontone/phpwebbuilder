@@ -15,6 +15,11 @@ class FormComponent extends Component
 		$this->value_model->onChangeSend('valueChanged', $this);
 		parent::Component($callback_actions);
 	}
+
+	function createNode() {
+		$this->view->setAttribute('onchange','javascript:checkBoxChanged(this,enqueueUpdate)');
+	}
+
 	function valueChanged(){}
 	function viewUpdated($params) {
 		$value =& $this->value_model->getValue();
@@ -36,7 +41,10 @@ class FormComponent extends Component
 		return $this->view;
 	}
 
-	function createNode(){}
+	function onChangeSend($selector, &$target) {
+		$this->addEventListener(array('changed'=>$selector), $target);
+		$this->view->setAttribute('onchange','javascript:componentChanged(this,sendUpdate)');
+	}
 }
 
 ?>
