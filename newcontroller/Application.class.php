@@ -31,8 +31,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             'page_renderer' => 'AjaxPageRenderer');
-		                             //'page_renderer' => 'StandardPageRenderer');
+		                             //'page_renderer' => 'AjaxPageRenderer');
+		                             'page_renderer' => 'StandardPageRenderer');
 		                             //'page_renderer' => 'DebugPageRenderer');
 		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }
@@ -127,7 +127,7 @@ class Application extends ComponentHolder
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array();
-		$this->addScript(pwb_url . '/ajax/ajax.js');
+		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}
 

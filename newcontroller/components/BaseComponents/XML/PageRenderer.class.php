@@ -17,6 +17,10 @@ class StandardPageRenderer extends PageRenderer {
 		parent :: PageRenderer($page);
 	}
 
+	function initializeScripts(&$app) {
+		$app->addScript(pwb_url . '/std.js');
+	}
+
 	function renderPage() {
 		$this->page->tagName = 'form';
 		$this->page->setAttribute('action', 'new_dispatch.php');
@@ -101,6 +105,11 @@ class AjaxPageRenderer extends PageRenderer {
 		parent::setPage($page);
 		$page->setAttribute('onsubmit','postInAjax();');
 	}
+
+	function initializeScripts(&$app) {
+		$app->addScript(pwb_url . '/ajax/ajax.js');
+	}
+
 	function renderPage() {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';

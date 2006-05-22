@@ -7,7 +7,11 @@ class BoolField extends DataField {
           parent::Datafield($name, $isIndex);
       }
       function SQLvalue() {
-         return $this->getValue(). ", " ;
+         if ($this->getValue())
+         	$sql_value='1';
+         else
+         	$sql_value='0';
+         return $sql_value . ", " ;
       }
     function loadFrom($form) {
       $val = $form[$this->colName];
