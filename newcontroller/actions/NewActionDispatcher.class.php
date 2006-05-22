@@ -74,7 +74,6 @@ class NewActionDispatcher {
 
 	function &dispatch() {
 		$form = $_REQUEST;
-		print_r($form);
 		$delayed = array ();
 		$elems = array ();
 		$dd = 0;
