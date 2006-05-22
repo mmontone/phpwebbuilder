@@ -70,10 +70,6 @@ class StandardPageRenderer extends PageRenderer {
 		$ret = str_replace("   ", "&nbsp;&nbsp;&nbsp;", $ret);
 		return $ret;
 	}
-
-	function renderActionLinkAction(& $action_link) {
-		return 'callAction(&#34;' . $action_link->getId() . '&#34;);';
-	}
 }
 
 class DebugModificationsPageRenderer extends StandardPageRenderer {
@@ -153,10 +149,6 @@ class AjaxPageRenderer extends PageRenderer {
 				$mod->new->flushModifications();
 				return $mod->renderAjaxResponseCommand();
 		}
-	}
-
-	function renderActionLinkAction(& $action_link) {
-		return 'callActionAjax(&#34;' . $action_link->getId() . '&#34;);';
 	}
 }
 

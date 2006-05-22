@@ -356,14 +356,6 @@ function xml2str (xml) {
 /*--------------------------*/
 
 function callAction(action_id) {
-    url = "new_dispatch.php?"+action_id+"=execute";
-    formName = "app";
-    var form = document.getElementById(formName);
-    form.setAttribute('action', url);
-    form.submit();
-}
-
-function callActionAjax(action_id) {
     url = "new_dispatch.php?" +action_id+"=execute";
     act = document.getElementById(action_id);
     old = act.getAttribute('value');

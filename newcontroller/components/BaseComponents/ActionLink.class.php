@@ -26,7 +26,8 @@ class ActionLink extends FormComponent
 		parent::prepareToRender();
 		$link =& $this->view;
 		$app =& $this->application();
-		$action = $app->page_renderer->renderActionLinkAction($this);
+		//$action = $app->page_renderer->renderActionLinkAction($this);
+		$action = 'callAction(&#34;' . $this->getId() . '&#34;);';
 		$link->setAttribute('onclick', $action);
 	}
 	function execute(){
