@@ -75,3 +75,8 @@ padding:1px;
 color:white;
 font-size:0.8em;
 }
+
+textarea {
+width:30em;
+height:15em;
+}
