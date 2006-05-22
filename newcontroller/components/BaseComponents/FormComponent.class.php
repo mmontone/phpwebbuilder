@@ -24,7 +24,7 @@ class FormComponent extends Component
 			$this->value_model->triggerEvent('changed', $oldval);
 		}
 	}
-	function setValue(&$params) {
+	function setValue($params) {
 		$this->value_model->setValue($params);
 	}
 	function getValue() {

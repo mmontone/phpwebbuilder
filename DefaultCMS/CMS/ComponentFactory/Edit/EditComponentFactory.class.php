@@ -1,6 +1,6 @@
 <?php
 
-require_once 'FieldComponentFactory.class.php';
+require_once dirname(__FILE__).'/../FieldComponentFactory.class.php';
 
 class EditComponentFactory extends FieldComponentFactory {}
 
