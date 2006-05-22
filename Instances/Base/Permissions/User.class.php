@@ -32,14 +32,14 @@ class User extends PersistentObject {
     	return count($urc->objects())>0;
     }
 	function &login ($user, $pass) {
-	$usr =& User::loadUser($user, $pass);
-	  if ($usr) {
-	    $_SESSION[sitename]["id"] = $usr->getUserId();
-    	$_SESSION[sitename]["Username"] = $usr->user->value;
-		$_SESSION[sitename]["User"] =& $usr;
-  	  }
-  	  return $usr;
-}
+		$usr =& User::loadUser($user, $pass);
+		if ($usr) {
+		    $_SESSION[sitename]["id"] = $usr->getUserId();
+	    	$_SESSION[sitename]["Username"] = $usr->user->value;
+			$_SESSION[sitename]["User"] =& $usr;
+  	  	}
+  		return $usr;
+	}
 
 }
 ?>

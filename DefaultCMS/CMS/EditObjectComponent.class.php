@@ -20,7 +20,7 @@ class EditObjectComponent extends ObjectComponent {
     	$obj =& $this->obj;
     	$fs =& $this->fieldNames;
     	foreach($fs as $f){
-    		$v = $this->fields[$f]->getValue();
+    		$v = $this->fieldComponents[$f]->getValue();
     		$obj->$f->setValue($v);
     	}
 		$obj->save();

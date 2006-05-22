@@ -201,7 +201,9 @@ class Component extends PWBObject
 	}
 
 	function callback($callback=null, $parameters=array()) {
-		$this->listener->takeControlOf($this, $callback,$parameters);
+		if ($this->listener){
+			$this->listener->takeControlOf($this, $callback,$parameters);
+		}
 	}
 
 	function takeControlOf(&$callbackComponent, $callback=null, $parameters=array()) {
@@ -277,9 +279,9 @@ class Component extends PWBObject
 	}
 	function createContainer(){
     	$v =&$this->view;
-    	if ($v!=null) {
+	    $pv =& $v->parentNode;
+    	if ($v!=null && $pv!=null) {
 	    	$cont=& $this->myContainer();
-	    	$pv =& $v->parentNode;
 	    	$pv->replace_child($cont, $v);
     	}
 	}

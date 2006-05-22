@@ -13,7 +13,7 @@
 			</tr>
 			<template class="ShowObjectComponent">
 	 			<tr>
-					<template class="Obj" >
+					<template class="FormComponent" >
 						<td><container id="value"/></td>
 					</template>
 					<td><a href="#" id="select"><img class="operation" title="New" src="$templatesdir/icons/stock_ok.png"/></a></td>

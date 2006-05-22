@@ -26,7 +26,7 @@ class FilterCollectionComponent extends ObjectComponent {
 		$cs =& $this->col;
 		$ks = array_keys($fs);
 		foreach($ks as $k){
-			$sc =& $this->fields[$k];
+			$sc =& $this->fieldComponents[$k];
 			$sc->getSearchValue($cs, $k);
 		}
 		$this->callback('done');

@@ -4,7 +4,7 @@
 	 	<table><tbody>
 			<template class="FormComponent" >
 	 			<tr>
-					<td><container id="name"/></td>
+					<td><container id="fieldName"/></td>
 					<td><container id="value"/></td>
 				</tr>
 			</template>
@@ -19,9 +19,9 @@
 	 	<table id="objs"><tbody>
  			<tr>
 				<template class="FormComponent" >
-				<td>
-				<container class="ActionLink" />
-				</td>
+					<td>
+						<container class="ActionLink" />
+					</td>
 				</template>
 				<td>Edit</td>
 				<td>Delete</td>

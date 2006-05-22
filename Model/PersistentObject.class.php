@@ -204,8 +204,9 @@ class PersistentObject extends Model {
 	function basicUpdate() {
 		$sql = $this->updateString();
 		$db = new mysqldb;
-		$db->SQLExec($sql, FALSE, $this);
+		$db->SQLExec($sql, FALSE, $this, &$rows);
 		$this->existsObject = TRUE;
+		return $rows > 0;
 	}
 	function basicDelete() {
 		$this->load();
@@ -220,6 +221,7 @@ class PersistentObject extends Model {
 		else {
 			trace("The object is not erasable<BR>\n");
 		}
+		return $can;
 	}
 	function & visit(& $obj) {
 		return $obj->visitedPersistentObject($this);
@@ -426,34 +428,47 @@ class PersistentObject extends Model {
 	}
 	function save() {
 		if ($this->existsObject) {
-			$this->update();
+			return $this->update();
 		}
 		else {
-			$this->insert();
+			return $this->insert();
 		}
 	}
 	function update() {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$p->id->value = $this->super->value;
-			$p->update();
+			$ok = $p->update();
+		} else $ok=true;
+		if ($ok){
+			$ok = $this->basicUpdate();
+		} else {
+			return false;
 		}
-		$this->basicUpdate(); /*The one from before */
+		return $ok;
 	}
 	function insert() {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
-			$p->insert();
+			$ok = $p->insert();
 			$this->super->value = $p->id->value;
+		} else $ok=true;
+		if ($ok){
+			$ok = $this->basicInsert();
+		} else {
+			return false;
 		}
-		$this->basicInsert(); /*The one from before */
+		if (!$ok && $this->isNotTopClass($this)){
+			$p->delete();
+		}
+		return $ok;
 	}
 	function delete() {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$p->delete();
 		}
-		$this->basicDelete(); /*The one from before */
+		return $this->basicDelete(); /*The one from before */
 	}
 
 	/* Helper methods for fields addition */
