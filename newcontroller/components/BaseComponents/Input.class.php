@@ -8,7 +8,9 @@ class Input extends FormComponent{
 		$in->setTagName('input');
 	}
 	function valueChanged(&$value_model, &$params) {
-		$this->view->setAttribute('value', $this->value_model->getValue());
+		if ($this->view){
+			$this->view->setAttribute('value', $this->value_model->getValue());
+		}
 	}
 	function prepareToRender(){
 		$this->view->setAttribute('value', $this->value_model->getValue());

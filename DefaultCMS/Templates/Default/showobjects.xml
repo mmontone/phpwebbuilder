@@ -18,7 +18,7 @@
 		<container id="className" /> class
 	 	<table id="objs"><tbody>
  			<tr>
-				<template class="Obj" >
+				<template class="FormComponent" >
 				<td>
 				<container class="ActionLink" />
 				</td>
@@ -28,7 +28,7 @@
 			</tr>
 			<template class="ShowObjectComponent">
 	 			<tr>
-					<template class="Obj" >
+					<template class="FormComponent" >
 						<td><container id="value"/></td>
 					</template>
 					<td><a href="#" id="edit"><img class="operation" title="Edit" src="$templatesdir/icons/stock_edit.png"/></a></td>
@@ -44,6 +44,7 @@
 		<a href="#" id="next"><img class="operation" title="Next" src="$templatesdir/icons/stock_right.png"/></a>
 		<a href="#" id="last"><img class="operation" title="Last" src="$templatesdir/icons/stock_last.png"/></a>
 		<br/><a href="#" id="refresh">refresh</a>
+		<a href="#" id="filter"><img class="operation" title="Search" src="$templatesdir/icons/stock_search.png"/></a>
 		Showing <input type="text" id="pSize" style="width:4em"/> per page. <container id="realSize"/> elements available.
 
 

@@ -28,7 +28,7 @@ class ShowCollectionComponent extends NavigationComponent {
 		$this->refresh();
 	}
 	function addLine(&$obj) {
-		$fc = & new ShowObjectComponent($obj);
+		$fc = & new ShowObjectComponent($obj, $this->fields);
 		$this->objs->addComponent($fc);
 		$fc->addComponent(new ActionLink($this, 'editObject', 'Edit', $obj), 'edit');
 		$fc->addComponent(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');

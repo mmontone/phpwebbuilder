@@ -2,30 +2,25 @@
 class NavigationComponent extends Component {
 	var $col;
 	var $classN;
-	var $params;
-	function NavigationComponent(&$colclass) {
-		if (is_object($colclass)) {
-			$this->col = & $colclass;
-			$this->classN = $colclass->dataType;
-			$this->params = array();
-		} else
-			if (is_array($colclass)) {
-				$this->col = & new PersistentCollection($colclass["ObjType"]);
-				$this->classN = $colclass["ObjType"];
-				$this->params =& $colclass;
-			} else {
-				$this->col = & new PersistentCollection($colclass);
-				$this->classM = $colclass;
-				$this->params = array();
-			}
+	var $fields;
+	function NavigationComponent(&$col, $fields=null) {
+		$this->col = & $col;
+		$this->classN = $col->dataType;
+		if ($fields==null){
+			$c = $this->classN;
+			$obj = & new $c;
+			$this->fields = & $obj->allIndexFieldNames();
+		} else {
+			$this->fields = $fields;
+		}
 		parent :: Component();
 	}
 	function initialize() {
-		/* Navigation */
 		$this->addComponent(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
 		$this->addComponent(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
 		$this->addComponent(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
 		$this->addComponent(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
+		$this->addComponent(new ActionLink($this, 'filter', 'filter', $n = null), 'filter');
 		$this->addComponent(new ActionLink($this, 'getValue', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
@@ -38,12 +33,10 @@ class NavigationComponent extends Component {
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
 		$c = $this->classN;
-		$obj = & new $c;
-		$fs = & $obj->allIndexFields();
-		foreach ($fs as $f) {
-			$fc = & new Obj;
-			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->displayString));
-			$this->addComponent($fc);
+		foreach ($this->fields as $f) {
+			$fc = & new FormComponent($null=null);
+			$fc->addComponent(new ActionLink($this, 'sort', $f, $f));
+			$this->addComponent($fc, $f);
 		}
 		$this->refresh();
 	}
@@ -61,6 +54,11 @@ class NavigationComponent extends Component {
 	}
 	function getValue(){}
 	/* Navigation */
+	function filter(){
+		$fc =& new FilterCollectionComponent($this->col);
+		$fc->registerCallbacks(array('done'=>callback($this, 'refresh')));
+		$this->call($fc);
+	}
 	function prevPage(){
 		$this->firstElement->setValue($r = max($this->firstElement->getValue()-$this->pageSize->getValue(), 1));
 	}
@@ -83,8 +81,5 @@ class NavigationComponent extends Component {
 		}
 		$this->refresh();
 	}
-}
-
-class Obj extends Component {
 }
 ?>

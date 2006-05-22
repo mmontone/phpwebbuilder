@@ -65,19 +65,18 @@ class Menu extends Component {
 		);
 		$this->additem($log, 'Logout', $sect);
 	}
-	function addelement($obj, $text, & $sect) {
+	function addelement($class, $text, & $sect) {
 		$comp = array (
 			'Component' => 'ShowCollectionComponent',
-			'ObjType' => $obj
+			'params' => new PersistentCollection($class)
 		);
 		return $this->additem($comp, $text, $sect);
 	}
 	function additem(& $comp, $text, & $sect) {
 		$sect->addComponent(new MenuItemComponent($this, $text, $comp));
-		//echo "<br/>used memory for $text:" .memory_get_usage();
 	}
 	function menuclick(& $comp) {
-		$c = & new $comp['Component'] ($comp);
+		$c = & new $comp['Component'] ($comp['params']);
 		$this->triggerEvent('menuClicked', $c);
 	}
 
