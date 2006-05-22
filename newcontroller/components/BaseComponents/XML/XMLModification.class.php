@@ -315,7 +315,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 class RemoveAttributeXMLNodeModification extends XMLNodeModification {
 	var $attribute;
 
-	function SetAttributeXMLNodeModification(&$target, $attribute) {
+	function RemoveAttributeXMLNodeModification(&$target, $attribute) {
 		parent::XMLNodeModification(&$target);
 		$this->attribute = $attribute;
 	}
