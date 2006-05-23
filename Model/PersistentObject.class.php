@@ -114,9 +114,9 @@ class PersistentObject extends Model {
 			$this->indexFields[$name] = $name;
 		}
 		$field->owner = & $this;
-		$field->addEventListener($this, $a = array (
+		/*$field->addEventListener($this, $a = array (
 			'change' => 'fieldChanged'
-		));
+		));*/
 	}
 
 	function fieldChanged(& $field) {
@@ -240,7 +240,7 @@ class PersistentObject extends Model {
 	}
 	function &basicLoad() {
 		$sql = $this->loadSQL();
-		$db = new mysqldb;
+		$db =& DB::Instance();
 		$record = $db->fetchRecord($db->SQLExec($sql, FALSE, $this));
 		return $record;
 	}
@@ -254,7 +254,7 @@ class PersistentObject extends Model {
 		}
 		$values = substr($values, 0, -2);
 		$sql = 'INSERT IGNORE INTO ' . $this->tableName() . '(' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
-		$db = new mysqldb;
+		$db =& DB::Instance();
 		$db->SQLExec($sql, TRUE, & $this, & $rows);
 		$this->existsObject = TRUE;
 		return $rows > 0;
@@ -269,7 +269,7 @@ class PersistentObject extends Model {
 	}
 	function basicUpdate() {
 		$sql = $this->updateString();
-		$db = new mysqldb;
+		$db =& DB::Instance();
 		$db->SQLExec($sql, FALSE, $this, &$rows);
 		$this->existsObject = TRUE;
 		return $rows > 0;
@@ -277,7 +277,7 @@ class PersistentObject extends Model {
 	function basicDelete() {
 		$this->load();
 		$sql = "DELETE FROM " . $this->tableName() . " WHERE id=" . $this->getId();
-		$db = new mysqldb;
+		$db =& DB::Instance();
 		$can = TRUE;
 		foreach ($this->allFieldsThisLevel() as $f) {
 			$can = $can & $f->canDelete();

@@ -2,9 +2,5 @@ Optimizations:
 
 
 *htmltemplate->xml2template
-*persistentcollection->elements
-*mysqldb->opendatabase
 *xmlnodemodificationstracker->flushmodifications
-*persistentobject::getwithid
 *xmlnodemodificationstracker->childrenwithid
-*menusection->persistentobject

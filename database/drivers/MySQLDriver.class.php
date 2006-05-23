@@ -1,6 +1,6 @@
 <?
 
-class AbstractDB {
+class DB {
 	function fetchArray($res) {
 		$arr = array();
 		while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
@@ -19,25 +19,30 @@ class AbstractDB {
 		$res = $this->batchExec(array($query));
 		return $res[0];
 	}
+	function &Instance(){
+		if ($_SESSION[sitename]['DB']==null){
+			$c = constant('DBObject');
+			$_SESSION[sitename]['DB'] =& new $c;
+		}
+		return $_SESSION[sitename]['DB'];
+	}
 }
 
-class MySQLdb extends AbstractDB {
+class MySQLdb extends DB {
+	var $conn;
     function SQLExec ($sql, $getID, $obj, $rows=0) {
     	trace($sql. "<BR>");
-        $this->openDatabase();
+		$this->openDatabase();
         $reg = mysql_query ($sql) or
         	die (print_backtrace(mysql_error() . ": $sql"));
         if ($getID) { $obj->setID(mysql_insert_id());};
         $rows = mysql_affected_rows();
-        $this->closeDatabase();
         return $reg;
     }
 
     function query($sql) {
-        $this->openDatabase();
         $reg = mysql_query ($sql) or
         	die (print_backtrace(mysql_error() . ": $sql"));
-        $this->closeDatabase();
         return $reg;
     }
 
@@ -45,18 +50,18 @@ class MySQLdb extends AbstractDB {
     	return mysql_fetch_assoc($res);
     }
     function openDatabase() {
-      mysql_connect(serverhost, baseuser, basepass) or
-          die (print_backtrace(mysql_error()));
-      mysql_select_db(basename) or
-          die (print_backtrace(mysql_error()));
+    	if (!$this->conn){
+	      $this->conn =& mysql_connect(serverhost, baseuser, basepass) or
+	          die (print_backtrace(mysql_error()));
+	      mysql_select_db(basename) or
+	          die (print_backtrace(mysql_error()));
+    	}
     }
     function closeDatabase() {
-      mysql_close();
+      mysql_close($this->conn);
     }
     function escape($str) {
-    	$this->openDatabase();
     	$ret = mysql_real_escape_string($str);
-    	$this->closeDatabase();
     	return $ret;
     }
     function unescape($str) {
@@ -65,7 +70,7 @@ class MySQLdb extends AbstractDB {
     }
 }
 
-class PgSQLdb extends AbstractDB {
+class PgSQLdb extends DB {
     var $conn;
     function SQLExec ($sql, $getID, $obj) {
         if ($getID) {

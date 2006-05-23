@@ -49,7 +49,6 @@ class DOMXMLNode
 
 	function append_child(& $xml) {
 		$this->insert_in($xml,$this->nextNode++);
-		$this->checkConsistency();
 	}
 	function replace_child(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);

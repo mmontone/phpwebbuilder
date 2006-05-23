@@ -95,7 +95,7 @@ function postAjax(url, func, formName, obj) {
                               loadingStop();
                            }
                            /* DEBUG */
-	                           db = document.getElementById('debug');
+	                           /* db = document.getElementById('debug');
 	                           if (!db) {
 		                           db = document.createElement('div');
 		                           db.setAttribute('id', 'debug');
@@ -106,7 +106,7 @@ function postAjax(url, func, formName, obj) {
 	                           } else {
 		                           t = document.createTextNode(http.responseText);
 		                           db.replaceChild(t,db.firstChild);
-	                           }
+	                           }*/
 
                            /* END DEBUG */
 

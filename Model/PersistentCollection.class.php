@@ -57,7 +57,7 @@ class PersistentCollection {
 	function elements() {
 		$obj = & new $this->dataType;
 		$sql = $this->selectsql();
-		$db = new mysqldb;
+		$db =& DB::Instance();
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$col = array ();
 		while ($data = $db->fetchrecord($reg)) {
@@ -75,7 +75,7 @@ class PersistentCollection {
 	function size() {
 		$obj = & new $this->dataType;
 		$sql = 'SELECT COUNT('.$this->tableName().'.id) as \'collection_size\' FROM ' . $this->restrictions();
-		$db = & new mysqldb;
+		$db = & DB::Instance();
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$data = $db->fetchrecord($reg);
 		return $data['collection_size'];
@@ -120,7 +120,7 @@ class PersistentCollection {
 		$obj = & new $this->dataType;
 		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE ' . $conditions .
 				$order . ' LIMIT ' . $limit . $offset;
-		$db = new mysqldb;
+		$db =& DB::Instance();
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$col = array ();
 		while ($data = $db->fetchrecord($reg)) {
@@ -133,7 +133,7 @@ class PersistentCollection {
 	function getSize($conditions='1=1') {
 		$obj = & new $this->dataType;
 		$sql = 'SELECT COUNT(id) as \'collection_size\' FROM ' . $this->tableName() . ' WHERE ' . $conditions;
-		$db = & new mysqldb;
+		$db = & DB::Instance();
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$data = $db->fetchrecord($reg);
 		return $data['collection_size'];

@@ -1,16 +1,12 @@
 <?php
 class HTMLTemplate extends XMLNodeModificationsTracker {
-	function HTMLTemplate() {
-		parent::XMLNodeModificationsTracker();
-	}
 	function & instantiateFor(& $component) {
 		if (count($this->childNodes) != 1) {
 			$tv = & new XMLNodeModificationsTracker;
-
-			foreach ($this->childNodes as $k => $h) {
+			foreach ($this->childNodes as $h) {
 				$t = & $this->xml2template($h);
-				$tv->append_child($t);
-				//$tv->insert_in($t, count($tv->childNodes));
+				$tv->insert_in($t,$tv->nextNode++);
+				$tv->childNodes[]=$t;
 			}
 		} else {
 			$tv = & $this->xml2template($this->first_child());
@@ -51,8 +47,9 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 					$temp = & new XMLNodeModificationsTracker;
 				}
 		foreach ($xml->childNodes as $c) {
-			$temp->append_child($this->xml2template($c));
+			$temp->insert_in($this->xml2template($c),$temp->nextNode++);
 		}
+		$temp->nextNode = count($xml->childNodes);
 		$temp->attributes = $xml->attributes;
 		$temp->tagName = $xml->tagName;
 		$temp->getTemplatesAndContainers();
