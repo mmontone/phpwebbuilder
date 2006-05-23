@@ -31,9 +31,13 @@ function componentChanged(comp,updateFunction) {
 
 function checkBoxChanged(checkbox,updateFunction) {
     var id = checkbox.getAttribute('id');
-    var value = checkbox.getAttribute('checked') != 'checked';
+    var value = checkbox.getAttribute('checked');
     if (!value)
-        updateFunction(new Update(id,"0"));
-    else
         updateFunction(new Update(id,"1"));
+    else
+        updateFunction(new Update(id,"0"));
+}
+
+function radioButtonChanged(radioButton,updateFunction) {
+    return checkBoxChanged(radioButton,updateFunction);
 }
