@@ -26,7 +26,7 @@ class ObjectComponent extends Component {
     function addField($name, &$field){
 		$fc =& new FormComponent($n=null);
 		$this->addComponent($fc, $name);
-		$fc->addComponent(new Label($name), 'fieldName');
+		$fc->addComponent(new Label($field->displayString), 'fieldName');
 		$this->fieldComponents[$name] = &$this->factory->createFor($field);
 		$fc->addComponent($this->fieldComponents[$name], 'value');
     }

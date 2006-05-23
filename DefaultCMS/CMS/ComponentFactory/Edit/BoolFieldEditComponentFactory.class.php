@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/Edit/EditComponentFactory.class.php';
+require_once 'EditComponentFactory.class.php';
 
 class BoolFieldEditComponentFactory extends EditComponentFactory {
 	function &componentForField(&$field){

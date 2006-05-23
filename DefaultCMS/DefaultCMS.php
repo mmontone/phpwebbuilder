@@ -14,6 +14,7 @@ require_once 'CMS/ComponentFactory/Edit/EditComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Edit/IdFieldEditComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Edit/IndexFieldEditComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Edit/TextAreaEditComponentFactory.class.php';
+require_once 'CMS/ComponentFactory/Edit/BoolFieldEditComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Search/SearchComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Search/TextFieldSearchComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Show/IndexFieldShowComponentFactory.class.php';
