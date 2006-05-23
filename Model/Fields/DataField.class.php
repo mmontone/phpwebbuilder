@@ -77,9 +77,12 @@ class DataField extends PWBObject {
 	}
 	function setID($id) {}
 	function fieldName($operation) {
-		return $this->owner->tableName().'.'.$this->colName . ', ';
+		return $this->owner->tableName().'.'.$this->colName
+			   .' as '.$this->sqlName().	', ';
 	}
-
+	function sqlName(){
+		return $this->owner->tableName().'_'.$this->colName;
+	}
 	function SQLvalue() {}
 	function insertValue() {
 		return $this->SQLvalue();
@@ -98,7 +101,7 @@ class DataField extends PWBObject {
 		return $this->value;
 	}
 	function loadFrom($reg) {
-		$val = $reg[$this->colName];
+		$val = $reg[$this->sqlName()];
 		$this->setValue($val);
 		return $this->check($val);
 	}

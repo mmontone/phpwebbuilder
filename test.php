@@ -1,22 +1,19 @@
 <?php
-class VH
-{
-	var $x;
+require_once '/var/www/cefi/Configuration/pwbapp.php';
 
-}
+print_r(get_subclasses('User'));
+echo "<br/>";
+print_r(get_superclasses('User'));
+echo "<br/>";
+print_r(get_related_classes('User'));
+echo "<br/>";
+print_r(get_subclasses('Usuario'));
+echo "<br/>";
+print_r(get_superclasses('Usuario'));
+echo "<br/>";
+print_r(get_related_classes('Usuario'));
 
-$e =& new E;
-$e->x = 2;
-//$a = array();
-//$a['e'] =& $e;
-//$b = $a;
-//$a = array('e'=>$e);
-$vh =& new E;
-$vh->x =& $e;
-$a = array('e'=>$vh);
-$e->x = 3;
-echo $e->x;
-echo $a['e']->x->x;
+
 
 
 ?>

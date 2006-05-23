@@ -29,7 +29,7 @@ class PersistentCollection {
 		return $obj->idRestrictions();
 	}
 	function conditions() {
-		$cond = $this->idRestrictions();
+		$cond = '1=1';//$this->idRestrictions();
 		foreach ($this->conditions as $f => $c) {
 			$cond .= ' AND '. $f .' '. $c[0] .' '. $c[1];
 		}
@@ -50,15 +50,19 @@ class PersistentCollection {
 	function restrictions() {
 		return $this->tableNames() . $this->conditions();
 	}
+	function selectsql(){
+		$obj = & new $this->dataType;
+		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
+	}
 	function elements() {
 		$obj = & new $this->dataType;
-		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
+		$sql = $this->selectsql();
 		$db = new mysqldb;
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$col = array ();
 		while ($data = $db->fetchrecord($reg)) {
-			$obj = & PersistentObject :: getWithId($this->dataType, $data["id"]);
-			$col[] = & $obj;
+			$o =& $obj->loadFromRec($data);
+			$col[] = & $o;
 		}
 		return $col;
 	}

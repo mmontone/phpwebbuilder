@@ -47,7 +47,19 @@ class PersistentObject extends Model {
 	function & fieldsWithNames($names) {
 		$arr = array ();
 		foreach ($names as $name) {
-			$arr[$name] = & $this->fieldNamed($name);
+			$f =& $this->fieldNamed($name);
+			$arr[$name] = & $f;
+		}
+		return $arr;
+	}
+	function & allSQLFields() {
+		return $this->fieldsWithSQLNames($this->allFieldNames());
+	}
+	function & fieldsWithSQLNames($names) {
+		$arr = array ();
+		foreach ($names as $name) {
+			$f =& $this->fieldNamed($name);
+			$arr[$f->sqlName()] = & $f;
 		}
 		return $arr;
 	}
@@ -127,8 +139,8 @@ class PersistentObject extends Model {
 	 * @category ID
 	 */
 	function setID($id) {
-		foreach ($this->allFieldsThisLevel() as $index => $field) {
-			$this-> $index->setID($id);
+		foreach ($this->allFieldNamesThisLevel() as $field) {
+			$this-> $field->setID($id);
 		}
 	}
 	function getID() {
@@ -160,48 +172,59 @@ class PersistentObject extends Model {
 		foreach($rcs as $rc){
 			if ($rc != 'persistentobject' && $rc != 'model' && $rc != 'pwbobject'){
 				$o = new $rc;
-				$fs = array_merge($fs, $o->allFields());
+				$fs = array_merge($fs, $o->allSQLFields());
 			}
 		}
-		$fs = array_merge($fs, $this->allFields());
+		$fs = array_merge($fs, $this->allSQLFields());
 		return $fs;
 	}
-	function loadFrom($reg) {
+	function loadFrom(&$reg) {
+		if ($this->isNotTopClass($this)){
+			$this->parent->loadFrom($reg);
+		}
 		foreach ($this->allFieldNamesThisLevel() as $index) {
 			$field = & $this-> $index;
 			$field->loadFrom($reg);
 		}
-		$this->setID($reg["id"]);
+		$this->setID($this->id->value);
 		$this->existsObject = TRUE;
 	}
 	function voidOption() {
 		return $this->voidOption;
 	}
 	function tableName() {
-		if ($this->table != "") {
-			return baseprefix . $this->table;
-		}
-		else {
-			return baseprefix . get_class($this);
-		}
+		return baseprefix . $this->table;
 	}
 	function tableNames(){
 		$tns[] = $this->tableName();
-		$rcs = get_related_classes(get_class($this));
-		foreach($rcs as $rc){
-			if ($rc != 'persistentobject' && $rc != 'model' && $rc != 'pwbobject'){
-				$o = new $rc;
-				$tns[] = $o->tableName();
+		$p0 = get_class($this);
+		$pcs = get_superclasses($p0);
+		$o0 =& $this;
+		foreach($pcs as $pc){
+			$o1 =& new $pc;
+			if ($pc != 'persistentobject' && $pc != 'model' && $pc != 'pwbobject' && $pc != ''){
+				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o1->tableName().'.id = '.$o0->tableName().'.super';
+			}
+			$o0 =& $o1;
+			$p0 = $pc;
+		}
+		$scs = get_subclasses(get_class($this));
+		foreach($scs as $sc){
+			$o1 =& new $sc;
+			$pc = get_parent_class($sc);
+			$o2 =& new $pc;
+			if ($pc != 'persistentobject' && $pc != 'model' && $pc != 'pwbobject' && $pc != ''){
+				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
 			}
 		}
-		$tn = implode(', ',$tns);
+		$tn = implode(' ',$tns);
 		return $tn;
 	}
 	function idRelations(){
-		return $this->tableName().'.id=' . $this->getID() . ' AND '.$this->idRestrictions();
+		return $this->tableName().'.id=' . $this->getID();
 	}
 	function idRestrictions(){
-		$rcs = get_related_classes($this);
+		$rcs = get_related_classes(get_class($this));
 		$rcs [] = get_class($this);
 		$rss []='1=1';
 		foreach($rcs as $rc){
@@ -209,17 +232,20 @@ class PersistentObject extends Model {
 			if ($sup != 'persistentobject' && $sup != 'model' && $sup != 'pwbobject' && $sup != ''){
 				$o1 = new $rc;
 				$o2 = new $sup;
-				$rss[] = $o2->tableName().'.id = '.$o1->tableName().'.super';
+				$rss[] = '('.$o2->tableName().'.id = '.$o1->tableName().'.super'.
+					' or '. $o1->tableName().'.super IS NULL)';
 			}
 		}
 		return implode(' AND ', $rss);
 	}
-	function basicLoad() {
-		$sql = 'SELECT ' . $this->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE '.$this->idRelations(). ';';
+	function &basicLoad() {
+		$sql = $this->loadSQL();
 		$db = new mysqldb;
 		$record = $db->fetchRecord($db->SQLExec($sql, FALSE, $this));
-		$this->loadFrom($record);
-		$this->existsObject = TRUE;
+		return $record;
+	}
+	function loadSQL(){
+		return 'SELECT ' . $this->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE '.$this->idRelations(). ';';
 	}
 	function basicInsert() {
 		$values = '';
@@ -240,7 +266,6 @@ class PersistentObject extends Model {
 		}
 		$values = substr($values, 0, -2);
 		return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID();
-
 	}
 	function basicUpdate() {
 		$sql = $this->updateString();
@@ -291,12 +316,10 @@ class PersistentObject extends Model {
 		}
 		return $ret;
 	}
-
 	/*@deprecated*/
 	function check_not_null($fields, & $error_msgs) {
 		return $this->checkNotEmpty($fields, $error_msgs);
 	}
-
 	function checkOneOf($fields, $error_msg, & $error_msgs) {
 		$ret = false;
 		foreach ($fields as $field) {
@@ -312,7 +335,6 @@ class PersistentObject extends Model {
 	function validate(& $error_msgs) {
 		return true;
 	}
-
 	/* Population */
 	function populate($form, & $error_msgs) {
 		$success = true;
@@ -326,7 +348,6 @@ class PersistentObject extends Model {
 		//if (!$success) trace(print_r($error_msgs, TRUE));
 		return $success;
 	}
-
 	function populateField(& $field, & $form, & $error_msgs) {
 		// Checks the field data
 		if (!$field->populate($form)) {
@@ -335,7 +356,6 @@ class PersistentObject extends Model {
 		}
 		return true;
 	}
-
 	function toArray() {
 		$arr = array ();
 		foreach ($this->allFields() as $index => $field) {
@@ -408,8 +428,7 @@ class PersistentObject extends Model {
 			$p = & $par->getWithIdParent();
 			$this->setParent($p);
 			return $this;
-		}
-		else {
+		} else {
 			return $this;
 		}
 	}
@@ -435,6 +454,9 @@ class PersistentObject extends Model {
 			$this->addField(new superField("super", FALSE));
 		}
 		$this->displayString = ucfirst(get_class($this));
+		if($this->table==''){
+			$this->table = get_class($this);
+		}
 		$this->initialize();
 	}
 	function initialize() {}
@@ -447,25 +469,34 @@ class PersistentObject extends Model {
 	function & getWithId($class, $id) {
 		$obj = & new $class;
 		$obj = & $obj->loadFromId($id);
-		$par = & $obj->getWithIdParent($id);
-		$sub = & $obj->getWithIdChildren($id);
-		return $sub;
+		return $obj;
 	}
 	/**
 	 * Loads an object from an id, not worrying about inheritance (class)
 	 */
 	function & loadFromId($id) {
 		$this->setID($id);
-		$this->basicLoad();
-		$this->getWithIdParent($this->id->value);
-		return $this;
+		$rec =& $this->basicLoad();
+		return $this->loadFromRec(&$rec);
 	}
-	/**
-	 * Loads an object from an id, all the way up
-	 */
-	function & load() {
-		$this->loadFromId($this->id->value);
-		return $this;
+	function &loadFromRec(&$rec){
+		$obj =& $this->chooseSubclass($rec);
+		$obj->loadFrom($rec);
+		return $obj;
+	}
+	function &chooseSubclass(&$rec){
+		$c = get_class($this);
+		$rcs = get_subclasses($c);
+		foreach($rcs as $rc){
+			$o =& new $rc;
+			if ($o->canBeLoaded($rec)){
+				return $o;
+			}
+		}
+		return new $c;
+	}
+	function canBeLoaded(&$rec){
+		return isset($rec[$this->id->sqlName()]);
 	}
 	function save() {
 		if ($this->existsObject) {
