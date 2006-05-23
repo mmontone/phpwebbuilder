@@ -224,17 +224,15 @@ class Component extends PWBObject
 	}
 
 	function hasPermission($form){
-		$id = $_SESSION[sitename]["id"];
         $permission = $this->permissionNeeded($form);
-		if ($permission!=""){
-			$role = new Role;
-			return $role->userHasPermission($id, $permission);
+		if ($permission!=''){
+			return fHasPermission($id, $permission);
 		} else
 			return true;
 	}
 
 	function permissionNeeded($form){
-		return "";
+		return '';
 	}
 
 	function noPermission ($form){ // The user has no permission

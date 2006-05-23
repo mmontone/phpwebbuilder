@@ -29,6 +29,27 @@ class Role extends PersistentObject {
 		unset($reg);
     	return $can;
 	}
+	/*function userHasPermission($id, $permission){
+		if ($id == null) return false;
+        $db =& new MySQLdb;
+		if (is_array($permission)) {
+			$perm ='(';
+			foreach($permission as $p) {
+				$perm .= ' p.permission=\''.$p.'\' OR ';
+			}
+			$perm .= ' 1=0)';
+		} else $perm = ' p.permission=\''.$permission.'\' ';
+		$sql = implode(array('SELECT * FROM ',baseprefix,'UserRole u, ',baseprefix,'RolePermission p',
+				' WHERE user =', $id,
+				' AND ',$perm,
+				' AND u.role=p.role'));
+		$reg=& $db->SQLExec($sql, FALSE, 0);
+		unset($sql);
+		$can = mysql_num_rows ($reg) > 0;
+		unset($reg);
+    	return $can;
+	}*/
+
 	function havePermission ($permission) {
 			$db = new MySQLdb;
 			if (is_array($permission)) {

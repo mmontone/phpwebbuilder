@@ -1,6 +1,7 @@
 <?
 
 class User extends PersistentObject {
+	var $permissions = array();
     function initialize () {
          $this->table = "users";
          $this->addField(new textField("user", TRUE));
@@ -17,13 +18,13 @@ class User extends PersistentObject {
 	$col->conditions["pass"] = array("=", "'".$pass."'");
 	$objs = $col->objects();
 	if (count($objs)>0) {
-		$newusr =& User::getWithId('User', $objs[0]->id->value);
-  		return $newusr;
+		$objs[0]->getPermissions();
+  		return $objs[0];
 	}else
   		return FALSE;
     }
 	function getUserId(){
-		return $this->getIdOfClass("User");
+		return $this->getIdOfClass('User');
 	}
     function hasRole($uid, $roleid){
     	$urc = new PersistentCollection(UserRole);
@@ -40,6 +41,18 @@ class User extends PersistentObject {
   	  	}
   		return $usr;
 	}
-
+	function getPermissions(){
+        $db =& new MySQLdb;
+		$sql = implode(array('SELECT permission FROM ',baseprefix,'UserRole u, ',baseprefix,'RolePermission p',
+				' WHERE user =', $this->getUserId(),
+				' AND u.role=p.role'));
+		 $ps = $db->queryDB($sql);
+		 foreach($ps as $p){
+		 	$this->permissions[]=$p['permission'];
+		 }
+	}
+	function hasPermission($permission){
+		return in_array($permission, $this->permissions);
+	}
 }
 ?>

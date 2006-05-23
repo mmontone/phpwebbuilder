@@ -47,15 +47,14 @@ class Menu extends Component {
 		}
 	}
 	function objMenus() {
-		$arr = get_subclasses("PersistentObject");
+		$arr = get_subclasses('PersistentObject');
 		$sect = & new MenuSectionComponent();
 		$this->menus->addComponent($sect);
 		$sect->addComponent(new Text(new ValueHolder($t = 'Objects')), 'secName');
+		$all = fHasPermission(0, '*');
 		foreach ($arr as $class) {
-			if (fHasPermission($_SESSION[sitename]["id"], array (
-					"*",
-					"$name=>Menu"
-				))) {
+			if ($all ||
+				fHasPermission(0, $class.'=>Menu')) {
 				$obj =& new $class;
 				$this->addelement($class, $obj->displayString, $sect);
 			}

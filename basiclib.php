@@ -64,9 +64,7 @@ function get_subclasses($str){
  * This function checks if the user with $id id, has the permission $permission
  */
 function fHasPermission($id, $permission){
-	trace("Permission Needed is: ".$permission);
-	$role = new Role;
-	return $role->userHasPermission($id, $permission);
+	return $_SESSION[sitename]['User']->hasPermission($permission);
 }
 
 /**
@@ -74,10 +72,10 @@ function fHasPermission($id, $permission){
  * for the action $act on the object $obj.
  */
 function fHasAnyPermission($id, $obj, $act){
-	return fHasPermission($id, array("*",
-				"*=>".$act,
-				$obj."=>*",
-				$obj."=>".$act));
+	return fHasPermission($id, '*') ||
+			fHasPermission($id, 	'*=>'.$act) ||
+			fHasPermission($id, $obj.'=>*') ||
+			fHasPermission($id, $obj.'=>'.$act);
 }
 
 /**
