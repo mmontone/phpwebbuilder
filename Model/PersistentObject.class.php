@@ -148,11 +148,23 @@ class PersistentObject extends Model {
 	 */
 	function fieldNames($operation) {
 		$fieldnames = "";
-		foreach ($this->allFieldsThisLevel() as $name => $field) {
+		foreach ($this->allFieldsAllLevels() as $name => $field) {
 			$fieldnames .= $field->fieldName($operation);
 		}
 		$fieldnames = substr($fieldnames, 0, -2);
 		return $fieldnames;
+	}
+	function allFieldsAllLevels(){
+		$rcs = get_related_classes(get_class($this));
+		$fs = array();
+		foreach($rcs as $rc){
+			if ($rc != 'persistentobject' && $rc != 'model' && $rc != 'pwbobject'){
+				$o = new $rc;
+				$fs = array_merge($fs, $o->allFields());
+			}
+		}
+		$fs = array_merge($fs, $this->allFields());
+		return $fs;
 	}
 	function loadFrom($reg) {
 		foreach ($this->allFieldNamesThisLevel() as $index) {
@@ -173,27 +185,56 @@ class PersistentObject extends Model {
 			return baseprefix . get_class($this);
 		}
 	}
+	function tableNames(){
+		$tns[] = $this->tableName();
+		$rcs = get_related_classes(get_class($this));
+		foreach($rcs as $rc){
+			if ($rc != 'persistentobject' && $rc != 'model' && $rc != 'pwbobject'){
+				$o = new $rc;
+				$tns[] = $o->tableName();
+			}
+		}
+		$tn = implode(', ',$tns);
+		return $tn;
+	}
+	function idRelations(){
+		return $this->tableName().'.id=' . $this->getID() . ' AND '.$this->idRestrictions();
+	}
+	function idRestrictions(){
+		$rcs = get_related_classes($this);
+		$rcs [] = get_class($this);
+		$rss []='1=1';
+		foreach($rcs as $rc){
+			$sup = get_parent_class($rc);
+			if ($sup != 'persistentobject' && $sup != 'model' && $sup != 'pwbobject' && $sup != ''){
+				$o1 = new $rc;
+				$o2 = new $sup;
+				$rss[] = $o2->tableName().'.id = '.$o1->tableName().'.super';
+			}
+		}
+		return implode(' AND ', $rss);
+	}
 	function basicLoad() {
-		$sql = "SELECT " . $this->fieldNames("SELECT") . " FROM " . $this->tableName() . " WHERE id=" . $this->getID() . ";";
+		$sql = 'SELECT ' . $this->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE '.$this->idRelations(). ';';
 		$db = new mysqldb;
 		$record = $db->fetchRecord($db->SQLExec($sql, FALSE, $this));
 		$this->loadFrom($record);
 		$this->existsObject = TRUE;
 	}
 	function basicInsert() {
-		$values = "";
+		$values = '';
 		foreach ($this->allFieldsThisLevel() as $index => $field) {
 			$values .= $field->insertValue();
 		}
 		$values = substr($values, 0, -2);
-		$sql = "INSERT IGNORE INTO " . $this->tableName() . "(" . $this->fieldNames("INSERT") . ") VALUES ($values)";
+		$sql = 'INSERT IGNORE INTO ' . $this->tableName() . '(' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db = new mysqldb;
 		$db->SQLExec($sql, TRUE, & $this, & $rows);
 		$this->existsObject = TRUE;
 		return $rows > 0;
 	}
 	function updateString() {
-		$values = "";
+		$values = '';
 		foreach ($this->allFieldsThisLevel() as $index => $field) {
 			$values .= $field->updateString();
 		}

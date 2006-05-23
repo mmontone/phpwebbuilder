@@ -37,14 +37,15 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		return $this->getAttribute('fakeid');
 	}
 	function & xml2template(& $xml) {
-		if (strcasecmp(get_class($xml), "XMLTextNode") == 0 || strcasecmp(get_class($xml), "HTMLTextNode") == 0) {
+		if (strcasecmp(get_class($xml), 'XMLTextNode') == 0 ||
+			strcasecmp(get_class($xml), 'HTMLTextNode') == 0) {
 			$tn = & new XMLTextNode($xml->data);
 			return $tn;
 		} else
-			if (strcasecmp($xml->tagName, "template") == 0) {
+			if (strcasecmp($xml->tagName, 'template') == 0) {
 				$temp = & new HTMLTemplate;
 			} else
-				if (strcasecmp($xml->tagName, "container") == 0) {
+				if (strcasecmp($xml->tagName, 'container') == 0) {
 					$temp = & new HTMLContainer;
 				} else {
 					$temp = & new XMLNodeModificationsTracker;

@@ -44,21 +44,46 @@ function trace_params(){
 /**
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
-function get_subclasses($str){
+
+$PWBclasses = array();
+
+function find_subclasses(){
+	global $PWBclasses;
 	$arr = get_declared_classes();
 	$ret = array();
 	foreach ($arr as $o) {
 		$vars = get_class_vars($o);
 		if (isset($vars["isClassOfPWB"]) &&
 			$vars["isClassOfPWB"]){
- 			$obj = new $o;
-			if (is_subclass_of($obj, $str))
-				$ret[]=$o;
+			$PWBclasses[strtolower($o)] = array();
+			$pcs = get_superclasses($o);
+			foreach($pcs as $pc){
+				$PWBclasses[$pc][]=$o;
+			}
 		}
+	}
+}
+
+function get_subclasses($str){
+	global $PWBclasses;
+	if (count($PWBclasses)==0) find_subclasses();
+	return $PWBclasses[strtolower($str)];
+}
+
+function get_superclasses($str){
+	global $PWBclasses;
+	$ret = array();
+	$pc = get_parent_class($str);
+	while($pc != ''){
+		$ret[]=strtolower($pc);
+		$pc = get_parent_class($pc);
 	}
 	return $ret;
 }
 
+function get_related_classes($str){
+	return array_merge(get_superclasses($str), get_subclasses($str));
+}
 /**
  * This function checks if the user with $id id, has the permission $permission
  */

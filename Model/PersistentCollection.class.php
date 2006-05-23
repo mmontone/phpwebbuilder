@@ -7,7 +7,6 @@ class PersistentCollection {
 	var $dataType;
 	var $limit = 10;
 	var $offset = 0;
-	var $formphp = "Action.php";
 	var $size;
 
 	function PersistentCollection($dataType = "") {
@@ -15,22 +14,26 @@ class PersistentCollection {
 		$this->conditions = array ();
 	}
 	function findById($id) {
+		return PersistentObject::getWithId($this->dataType, $id);
+	}
+	function tableNames() {
 		$obj = new $this->dataType;
-		$obj->setID($id);
-		return $obj;
+		return $obj->tableNames();
 	}
 	function tableName() {
 		$obj = new $this->dataType;
 		return $obj->tableName();
 	}
+	function idRestrictions(){
+		$obj = new $this->dataType;
+		return $obj->idRestrictions();
+	}
 	function conditions() {
-		$cond = '';
-		if ($this->conditions == null)
-			return ' WHERE 1=1 ';
+		$cond = $this->idRestrictions();
 		foreach ($this->conditions as $f => $c) {
-			$cond = $cond .' '. $f .' '. $c[0] .' '. $c[1] . ' AND ';
+			$cond .= ' AND '. $f .' '. $c[0] .' '. $c[1];
 		}
-		$cond = ' WHERE ' . $cond . ' 1=1 ';
+		$cond = ' WHERE ' . $cond;
 		return $cond;
 	}
 
@@ -39,17 +42,17 @@ class PersistentCollection {
 	}
 	function limit() {
 		if ($this->limit != 0)
-			return " LIMIT " . $this->limit . $this->offset();
+			return ' LIMIT ' . $this->limit . $this->offset();
 	}
 	function offset() {
-		return " OFFSET " . $this->offset;
+		return ' OFFSET ' . $this->offset;
 	}
 	function restrictions() {
-		return $this->tableName() . $this->conditions();
+		return $this->tableNames() . $this->conditions();
 	}
 	function elements() {
 		$obj = & new $this->dataType;
-		$sql = "SELECT " . $obj->fieldNames("SELECT") . " FROM " . $this->restrictions() . $this->order . $this->limit();
+		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
 		$db = new mysqldb;
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$col = array ();
@@ -67,7 +70,7 @@ class PersistentCollection {
 
 	function size() {
 		$obj = & new $this->dataType;
-		$sql = "SELECT COUNT(id) as 'collection_size' FROM " . $this->restrictions();
+		$sql = 'SELECT COUNT('.$this->tableName().'.id) as \'collection_size\' FROM ' . $this->restrictions();
 		$db = & new mysqldb;
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$data = $db->fetchrecord($reg);
@@ -111,7 +114,7 @@ class PersistentCollection {
 
 	function fetchElements($offset, $limit, $order, $conditions='1=1') {
 		$obj = & new $this->dataType;
-		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->tableName() . ' WHERE ' . $conditions .
+		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE ' . $conditions .
 				$order . ' LIMIT ' . $limit . $offset;
 		$db = new mysqldb;
 		$reg = $db->SQLExec($sql, FALSE, $this);
@@ -125,7 +128,7 @@ class PersistentCollection {
 
 	function getSize($conditions='1=1') {
 		$obj = & new $this->dataType;
-		$sql = "SELECT COUNT(id) as 'collection_size' FROM " . $this->tableName() . ' WHERE ' . $conditions;
+		$sql = 'SELECT COUNT(id) as \'collection_size\' FROM ' . $this->tableName() . ' WHERE ' . $conditions;
 		$db = & new mysqldb;
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$data = $db->fetchrecord($reg);

@@ -10,8 +10,8 @@ class IdField extends NumField {
         parent::DataField($name, $isIndex);
     }
     function fieldName ($operation) {
-        if ($operation == "SELECT") {
-            return $this->colName . ", ";
+        if ($operation == 'SELECT') {
+            return parent::fieldName ($operation);
         }
     }
     function insertValue() {
