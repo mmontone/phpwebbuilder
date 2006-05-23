@@ -16,15 +16,6 @@ require_once dirname(__FILE__) . "/basiclib.php";
 
 
 
-$config = array (
-	basedir . "/MyConfig"
-);
-$app = array (
-	basedir . "/MyInstances"
-		//,basedir."/MyControllers"
-
-);
-
 if (!defined('modules')) {
 	define('modules', "Model,Instances,newcontroller,database,NewTemplates,DefaultCMS");
 	define('app_class', "DefaultCMSApplication");
@@ -32,15 +23,25 @@ if (!defined('modules')) {
 
 $modules = split(",", modules);
 
+/*$config = array (
+	basedir . "/MyConfig"
+);
+
 foreach ($config as $dir) {
-	includefile($dir);
-}
+	includemodule($dir);
+}*/
 
 foreach ($modules as $dir) {
-	includemodule(trim($dir));
+	includemodule(pwbdir.'/'.trim($dir));
 }
+
+$app = array (
+	basedir . "/MyInstances"
+		//,basedir."/MyControllers"
+
+);
 foreach ($app as $dir) {
-	includefile($dir);
+	includemodule($dir);
 }
 require_once "session.php";
 ?>

@@ -17,13 +17,12 @@ function includefile(&$file) {
 		}
 	}
 }
-function includemodule (&$module){
-	$moddir = implode(array(pwbdir,'/',$module));
-	$modf = implode(array($moddir,'/',$module,'.php'));
+function includemodule ($module){
+	$modf = implode(array($module,'/',basename($module),'.php'));
 	if (file_exists($modf)){
 		require_once($modf);
 	} else{
-		includefile($moddir);
+		includefile($module);
 	}
 }
 
