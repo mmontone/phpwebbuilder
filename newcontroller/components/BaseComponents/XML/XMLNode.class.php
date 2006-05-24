@@ -5,7 +5,7 @@ class XMLNode extends DOMXMLNode {
 	var $controller;
 	var $templates = array ();
 	var $containers = array ();
-
+	var $childById = array ();
 	function XMLNode($tag_name = 'div', $attributes = array ()) {
 		return parent :: DOMXMLNode($tag_name, $attributes);
 	}
@@ -80,27 +80,31 @@ class XMLNode extends DOMXMLNode {
 		}
 	}
 	function & childrenWithId($id) {
+		$new =& $this->childById[strtolower($id)];
+		return $new;
+	}
+    function & oldChildrenWithId($id) {
 		$res = array ();
 		$ks = array_keys($this->childNodes);
 		foreach ($ks as $k) {
 			$t = & $this->childNodes[$k];
 			if ($t->hasId($id)) {
-				$res[] = & $t;
+				return $t;
 			}
 			else
 				if (!isset ($t->attributes["id"]) && strcasecmp(get_class($t), "HTMLTemplate") != 0) {
 					$res2 = & $t->childrenWithId($id);
-					$ks2 = array_keys($res2);
-					foreach ($ks2 as $k2) {
-						$res[] = & $res2[$k2];
+					if ($res2!=null){
+						return $res2;
 					}
 				}
 		}
-		return $res;
+		return null;
 	}
 	function getTemplatesAndContainers() {
 		$temp = array ();
 		$cont = array ();
+		$childId = array ();
 		$cn = & $this->childNodes;
 		$ks = array_keys($cn);
 		foreach ($ks as $k) {
@@ -108,20 +112,24 @@ class XMLNode extends DOMXMLNode {
 			if ($t->isTemplate()) {
 				$temp[] = & $t;
 				$cont[] = & $t;
+			} else if (isset($t->attributes["id"])) {
+				$childId[strtolower($t->attributes["id"])]=&$t;
+			} else if ($t->isContainer()) {
+				$cont[] = & $t;
+			} else {
+				$this->addTemplatesAndContainersChild($t);
 			}
-			else
-				if ($t->isContainer()) {
-					$cont[] = & $t;
-				}
-				else {
-					$this->addTemplatesAndContainersChild($t);
-				}
 		}
-		$this->addTemplatesAndContainers($temp, $cont);
+		$this->addTemplatesAndContainers($temp, $cont, $childId);
 	}
-	function addTemplatesAndContainers(& $temp, & $cont) {
+	function addTemplatesAndContainers(& $temp, & $cont, & $childId) {
 		$t = & $this->templates;
 		$c = & $this->containers;
+		$i = & $this->childById;
+		$ks1 = array_keys($childId);
+		foreach ($ks1 as $k1) {
+			$i[$k1] = & $childId[$k1];
+		}
 		$ks2 = array_keys($temp);
 		foreach ($ks2 as $k2) {
 			$t[] = & $temp[$k2];
@@ -132,7 +140,7 @@ class XMLNode extends DOMXMLNode {
 		}
 	}
 	function addTemplatesAndContainersChild(& $v) {
-		$this->addTemplatesAndContainers($v->templates, $v->containers);
+		$this->addTemplatesAndContainers($v->templates, $v->containers, $v->childById);
 	}
 	function &templatesForClass(& $component) {
 		$res = array ();

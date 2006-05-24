@@ -81,11 +81,8 @@ class ViewCreator {
 			if ($view->parentNode != null && $view->parentNode->getRealId() == $parentView->getRealId()) return $view;
 		}
 		$id = $component->getSimpleId();
-		$vids = $parentView->childrenWithId(
-				$id
-			);
-		if (count($vids)>0){
-			$vid =& $vids[0];
+		$vid =& $parentView->childrenWithId($id);
+		if ($vid!=null){
 			if (!$vid->isContainer()){
 				$component->setView($vid);
 				return $vid;
@@ -118,7 +115,6 @@ class ViewCreator {
 			$view->getTemplatesAndContainers();
 		}
 		$parentView->replace_child($view,$pos);
-		//$pV->addTemplatesAndContainersChild($view);
 		return $view;
 	}
 	function &createTemplate(&$component){
@@ -139,7 +135,8 @@ class ViewCreator {
 		return $res;
 	}
 	function &defaultTemplate(&$component){
-		return $component->createDefaultView();
+		$dfv =& $component->createDefaultView();
+		return $dfv;
 	}
 }
 ?>

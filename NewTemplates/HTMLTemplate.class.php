@@ -8,6 +8,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 				$tv->insert_in($t,$tv->nextNode++);
 				$tv->childNodes[]=$t;
 			}
+			$tv->getTemplatesAndContainers();
 		} else {
 			$tv = & $this->xml2template($this->first_child());
 		}

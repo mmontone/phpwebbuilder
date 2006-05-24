@@ -115,6 +115,7 @@ class Application extends ComponentHolder
 			$this->wholeView =& new XMLNodeModificationsTracker;
 			$this->wholeView->controller =& $this;
 			$this->wholeView->append_child($this->component->myContainer());
+			$this->wholeView->getTemplatesAndContainers();
 			$this->initializeStyleSheets();
 			$this->initializeScripts();
 			$this->page_renderer->setPage($this->wholeView);
