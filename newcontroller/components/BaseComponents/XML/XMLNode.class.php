@@ -80,26 +80,22 @@ class XMLNode extends DOMXMLNode {
 		}
 	}
 	function & childrenWithId($id) {
-		$new =& $this->childById[strtolower($id)];
-		return $new;
-	}
-    function & oldChildrenWithId($id) {
-		$res = array ();
-		$ks = array_keys($this->childNodes);
-		foreach ($ks as $k) {
-			$t = & $this->childNodes[$k];
-			if ($t->hasId($id)) {
-				return $t;
-			}
-			else
-				if (!isset ($t->attributes["id"]) && strcasecmp(get_class($t), "HTMLTemplate") != 0) {
-					$res2 = & $t->childrenWithId($id);
-					if ($res2!=null){
-						return $res2;
-					}
-				}
+		$i = strtolower($id);
+		if (isset($this->childById[$i])){
+			$new =& $this->childById[$i];
+			$this->unsetChildWithId($i);
+			return $new;
+		} else {
+			return null;
 		}
-		return null;
+	}
+	function unsetChildWithId($id){
+		if (isset($this->childById[$id])){
+			unset($this->childById[$id]);
+			if ($this->parentView){
+				$this->parentView->unsetChildWithId($id);
+			}
+		}
 	}
 	function getTemplatesAndContainers() {
 		$temp = array ();
@@ -109,6 +105,7 @@ class XMLNode extends DOMXMLNode {
 		$ks = array_keys($cn);
 		foreach ($ks as $k) {
 			$t = & $cn[$k];
+			$t->getTemplatesAndContainers();
 			if ($t->isTemplate()) {
 				$temp[] = & $t;
 				$cont[] = & $t;
@@ -181,6 +178,7 @@ class XMLNode extends DOMXMLNode {
 		return $b;
 	}
 	function checkTree() {
+		assert($this->parentNode);
 		foreach (array_keys($this->childNodes) as $i) {
 			assert($this->childNodes[$i]->parentNode);
 			$this->childNodes[$i]->checkTree();

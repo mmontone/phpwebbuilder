@@ -150,8 +150,12 @@ class AjaxPageRenderer extends PageRenderer {
 			case 'insertbeforexmlnodemodification' :
 				$mod->new->flushModifications();
 				return $mod->renderAjaxResponseCommand();
+			case '' :
+				trace('null object in modifications');
+				return '';
 			default :
-				echo "Not match in AjaxPageRenderer>>renderModification";
+				echo "Not match in AjaxPageRenderer>>renderModification" .
+						" for ".get_class($mod);
 				exit;
 		}
 	}

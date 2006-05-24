@@ -48,6 +48,7 @@ class ViewCreator {
 	}
 	function createAllViews(){
 		$nv =& $this->app->needView;
+		$this->app->wholeView->getTemplatesAndContainers();
 		$ks = array_keys($nv);
 		foreach($ks as $k){
 			$c =& $nv[$k];
@@ -59,14 +60,14 @@ class ViewCreator {
 		}
 		$this->app->needView = array();
 	}
-	function &createView(&$parentView, &$component){
+/*	function &createView(&$parentView, &$component){
 		$view =& $this->createElemView($parentView, $component);
 		$ks = array_keys($component->__children);
 		foreach ($ks as $k){
 			$this->createView($view, $component->componentAt($k));
 		}
 		return $view;
-	}
+	}*/
 
 	function &createElemView(&$pV, &$component){
 		/*

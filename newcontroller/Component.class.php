@@ -282,7 +282,7 @@ class Component extends PWBObject
 	    	$cont=& $this->myContainer();
 	    	$pv->replace_child($cont, $v);
 	    	$pv->getTemplatesAndContainers();
-    	}
+	    }
 	}
 	function &myContainer(){
 		$cont =& new HTMLContainer;

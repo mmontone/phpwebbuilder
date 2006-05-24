@@ -53,7 +53,6 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		$temp->nextNode = count($xml->childNodes);
 		$temp->attributes = $xml->attributes;
 		$temp->tagName = $xml->tagName;
-		$temp->getTemplatesAndContainers();
 		return $temp;
 	}
 	function isTemplateForClass(& $component) {
