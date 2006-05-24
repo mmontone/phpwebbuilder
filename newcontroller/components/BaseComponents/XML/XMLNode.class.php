@@ -41,22 +41,22 @@ class XMLNode extends DOMXMLNode {
 	}
 	function render() {
 		$this->getRealId();
-		$attrs = "";
+		$attrss = array();
 		foreach ($this->attributes as $name => $val) {
-			$attrs .= ' ' . $name . '="' . $val . '"';
+			$attrss []= implode('' , array($name , '="' , $val, '"'));
 		}
+		$attrs = implode(' ',$attrss);
 		if (count($this->childNodes) == 0) {
-			return "\n<$this->tagName $attrs />";
+			return implode('',array("\n<",$this->tagName,' ',$attrs ,'/>'));
 		}
 		else {
-			$childs = '';
+			$childs = array();
 			$ks = array_keys($this->childNodes);
 			foreach ($ks as $k) {
-				$childs .= $this->childNodes[$k]->render();
+				$childss []= $this->childNodes[$k]->render();
 			}
-			//$childs  = str_replace("\n", "\n   ", $childs);
-			$ret .= "\n<$this->tagName $attrs>$childs\n</$this->tagName>";
-			return $ret;
+			$childs = implode(' ',$childss);
+			return implode('',array("\n<",$this->tagName,' ',$attrs,'>',$childs,"\n</",$this->tagName,'>'));
 		}
 	}
 	// For debugging
