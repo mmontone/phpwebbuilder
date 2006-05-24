@@ -395,5 +395,5 @@ function sendUpdate(update) {
 }
 
 function enqueueUpdate(update) {
-    sendUpdate(update);
+//    sendUpdate(update);
 }

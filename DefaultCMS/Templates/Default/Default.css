@@ -80,6 +80,6 @@ textarea {
 width:30em;
 height:15em;
 }
-input {
+input[type="text"],input[type="password"] {
 width:30em;
 }
