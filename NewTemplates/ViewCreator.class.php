@@ -136,8 +136,7 @@ class ViewCreator {
 		return $res;
 	}
 	function &defaultTemplate(&$component){
-		$dfv =& $component->createDefaultView();
-		return $dfv;
+		return $component->createDefaultView();
 	}
 }
 ?>

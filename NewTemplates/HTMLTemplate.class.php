@@ -6,9 +6,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 			foreach ($this->childNodes as $h) {
 				$t = & $this->xml2template($h);
 				$tv->insert_in($t,$tv->nextNode++);
-				$tv->childNodes[]=$t;
 			}
-			$tv->getTemplatesAndContainers();
 		} else {
 			$tv = & $this->xml2template($this->first_child());
 		}
@@ -50,7 +48,6 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		foreach ($xml->childNodes as $c) {
 			$temp->insert_in($this->xml2template($c),$temp->nextNode++);
 		}
-		$temp->nextNode = count($xml->childNodes);
 		$temp->attributes = $xml->attributes;
 		$temp->tagName = $xml->tagName;
 		return $temp;
