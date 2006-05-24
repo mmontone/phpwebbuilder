@@ -48,7 +48,6 @@ class ViewCreator {
 	}
 	function createAllViews(){
 		$nv =& $this->app->needView;
-		$this->app->wholeView->getTemplatesAndContainers();
 		$ks = array_keys($nv);
 		foreach($ks as $k){
 			$c =& $nv[$k];
