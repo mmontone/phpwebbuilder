@@ -77,8 +77,12 @@ class DataField extends PWBObject {
 	}
 	function setID($id) {}
 	function fieldName($operation) {
-		return $this->owner->tableName().'.'.$this->colName
-			   .' as '.$this->sqlName().	', ';
+		if ($operation=='SELECT'){
+			return $this->owner->tableName().'.'.$this->colName
+				   .' as '.$this->sqlName().	', ';
+		} else {
+			return $this->colName .	', ';
+		}
 	}
 	function sqlName(){
 		return $this->owner->tableName().'_'.$this->colName;

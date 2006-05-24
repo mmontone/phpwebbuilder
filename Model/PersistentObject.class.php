@@ -159,8 +159,13 @@ class PersistentObject extends Model {
 	 * @category Database
 	 */
 	function fieldNames($operation) {
-		$fieldnames = "";
-		foreach ($this->allFieldsAllLevels() as $name => $field) {
+		$fieldnames = '';
+		if ($operation=='SELECT'){
+			$fs =& $this->allFieldsAllLevels();
+		} else {
+			$fs =& $this->allFieldsThisLevel();
+		}
+		foreach ($fs as $name => $field) {
 			$fieldnames .= $field->fieldName($operation);
 		}
 		$fieldnames = substr($fieldnames, 0, -2);
@@ -275,8 +280,7 @@ class PersistentObject extends Model {
 		return $rows > 0;
 	}
 	function basicDelete() {
-		$this->load();
-		$sql = "DELETE FROM " . $this->tableName() . " WHERE id=" . $this->getId();
+		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DB::Instance();
 		$can = TRUE;
 		foreach ($this->allFieldsThisLevel() as $f) {
@@ -285,7 +289,7 @@ class PersistentObject extends Model {
 		if ($can)
 			$db->SQLExec($sql, FALSE, $this);
 		else {
-			trace("The object is not erasable<BR>\n");
+			trace('The object is not erasable<BR>\n');
 		}
 		return $can;
 	}
