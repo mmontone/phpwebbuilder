@@ -99,9 +99,7 @@ class XMLNameIndexFieldView extends XMLNameFieldView {
 		return $html->asSelect($this->frmName($object), $this->field->getValue());
 	}
 	function show ($object, $linker, $objFields) {
-		$obj = new $this->field->collection->dataType;
-		$obj->setId($this->field->value);
-		$obj->load();
+		$obj = $this->field->obj();
 		$html = new XMLNameView;
 		$html = $html->viewFor($obj);
 		$html->descentCount = $object->descentCount-1;

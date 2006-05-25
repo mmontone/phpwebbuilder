@@ -68,6 +68,21 @@ function encodeForm(formName) {
   return ret;
 }
 
+function appendDebug(str){
+   db = document.getElementById('debug');
+   if (!db) {
+       db = document.createElement('div');
+       db.setAttribute('id', 'debug');
+       form = document.getElementById(formName);
+       form.appendChild(db);
+       t = document.createTextNode(str);
+       db.appendChild(t);
+   } else {
+       t = document.createTextNode(str);
+       db.replaceChild(t,db.firstChild);
+   }
+}
+
 function postAjax(url, func, formName, obj) {
       loadingStart();
       var http = getHTTPObject();
@@ -92,26 +107,13 @@ function postAjax(url, func, formName, obj) {
                        if (http.readyState==4) {
                            if (!http.responseXML) {
                               ajaxError();
+                              appendDebug(http.responseText);
                               loadingStop();
+                           } else {
+                               appendDebug('');
+	                           func(http.responseText, http.responseXML, obj);
+	                           loadingStop();
                            }
-                           /* DEBUG */
-	                           /* db = document.getElementById('debug');
-	                           if (!db) {
-		                           db = document.createElement('div');
-		                           db.setAttribute('id', 'debug');
-		                           form = document.getElementById(formName);
-		                           form.appendChild(db);
-		                           t = document.createTextNode(http.responseText);
-		                           db.appendChild(t);
-	                           } else {
-		                           t = document.createTextNode(http.responseText);
-		                           db.replaceChild(t,db.firstChild);
-	                           }*/
-
-                           /* END DEBUG */
-
-                           func(http.responseText, http.responseXML, obj);
-                           loadingStop();
                        }
                };
        try {

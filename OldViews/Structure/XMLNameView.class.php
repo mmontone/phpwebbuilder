@@ -114,6 +114,7 @@ class PersistentObjectXMLNameView extends XMLNameView  {
 
 class PersistentCollectionXMLNameView extends XMLNameView  {
 	function show($linker=null) {
+		header("Content-type: text/xml");
 		$this->descentCount = $_REQUEST["ObjectCount"];
 		$ret = $this->showColec(&$linker);
 		return $ret;
