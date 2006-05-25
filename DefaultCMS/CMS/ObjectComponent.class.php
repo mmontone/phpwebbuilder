@@ -11,20 +11,21 @@ class ObjectComponent extends Component {
 		if ($fields==null){
     		$this->fieldNames =& $this->obj->allFieldNames();
 		} else {
-			$this->fieldNames = $fields;
+			$this->fieldNames = array_map(create_function('$field','return $field->colName;'),$fields);
+			var_dump($this->fieldNames);
 		}
     	parent::Component();
     }
     function initialize(){
     	$obj =& $this->obj;
     	$fields =& $obj->fieldsWithNames($this->fieldNames);
-    	$fs =& new FormComponent($n=null);
+    	$fs =& new CompositeFormComponent;
     	foreach($this->fieldNames as $f2){
     		$this->addField($f2, $fields[$f2]);
        	}
     }
     function addField($name, &$field){
-		$fc =& new FormComponent($n=null);
+		$fc =& new CompositeFormComponent;
 		$this->addComponent($fc, $name);
 		$fc->addComponent(new Label($field->displayString), 'fieldName');
 		$this->fieldComponents[$name] = &$this->factory->createFor($field);

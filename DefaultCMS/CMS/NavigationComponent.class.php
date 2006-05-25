@@ -1,20 +1,23 @@
 <?php
 class NavigationComponent extends Component {
 	var $col;
-	var $classN;
 	var $fields;
-	function NavigationComponent(&$col, $fields=null) {
+	var $classN;
+
+	function NavigationComponent(&$col, $fields=null, $callbacks=array()) {
 		$this->col = & $col;
 		$this->classN = $col->dataType;
+
 		if ($fields==null){
-			$c = $this->classN;
-			$obj = & new $c;
-			$this->fields = & $obj->allIndexFieldNames();
+			$obj = & new $col->dataType;
+			$this->fields = & $obj->allIndexFields();
 		} else {
 			$this->fields = $fields;
 		}
-		parent :: Component();
+
+		parent :: Component($callbacks);
 	}
+
 	function initialize() {
 		$this->addComponent(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
 		$this->addComponent(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
@@ -25,20 +28,17 @@ class NavigationComponent extends Component {
 		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
 		$this->addComponent(new Input($this->firstElement), 'firstElem');
-		$this->addComponent(new FormComponent($v=null), 'objs');
+		$this->addComponent(new CompositeFormComponent, 'objs');
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->addComponent(new Text($this->size), 'realSize');
 		$this->pageSize =& new ValueHolder($pz = 10);
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
-		$c = $this->classN;
-		$obj = & new $this->classN;
-		$sort =& new FunctionObject($this, 'sort');
 		foreach ($this->fields as $f) {
-			$fc = & new FormComponent($null=null);
-			$fc->addComponent(new ActionLink2(array('action'=>&$sort,'text'=> $obj->$f->displayString)), $f);
-			$this->addComponent($fc, $f);
+			$fc = & new CompositeFormComponent;
+			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
+			$this->addComponent($fc, $f->colName);
 		}
 		$this->refresh();
 	}
@@ -58,7 +58,7 @@ class NavigationComponent extends Component {
 	/* Navigation */
 	function filter(){
 		$fc =& new FilterCollectionComponent($this->col);
-		$fc->registerCallbacks(array('done'=>new FunctionObject($this, 'refresh')));
+		$fc->registerCallbacks(array('done'=>callback($this, 'refresh')));
 		$this->call($fc);
 	}
 	function prevPage(){

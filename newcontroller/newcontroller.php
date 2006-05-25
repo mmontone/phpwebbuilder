@@ -25,6 +25,7 @@ require_once 'components/BaseComponents/XML/ValueHolder.class.php';
 require_once 'components/BaseComponents/XML/ValueModel.class.php';
 require_once 'components/BaseComponents/Text.class.php';
 require_once 'components/BaseComponents/FormComponent.class.php';
+require_once 'components/BaseComponents/CompositeFormComponent.class.php';
 require_once 'components/BaseComponents/Input.class.php';
 require_once 'components/BaseComponents/ActionLink.class.php';
 require_once 'components/BaseComponents/Password.class.php';
