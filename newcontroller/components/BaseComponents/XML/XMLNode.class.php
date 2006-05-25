@@ -39,24 +39,34 @@ class XMLNode extends DOMXMLNode {
 		$this->getRealId();
 		return $this->getAttribute('id');
 	}
-	function render() {
+	function render(){
+		ob_start();
+		$this->renderEcho();
+		$s = ob_get_contents();
+		ob_end_clean();
+		return $s;
+	}
+	function renderEcho() {
 		$this->getRealId();
-		$attrss = array();
-		foreach ($this->attributes as $name => $val) {
-			$attrss []= implode('' , array($name , '="' , $val, '"'));
-		}
-		$attrs = implode(' ',$attrss);
 		if (count($this->childNodes) == 0) {
-			return implode('',array("\n<",$this->tagName,' ',$attrs ,'/>'));
+			echo implode('',array("\n<",$this->tagName));
+			foreach ($this->attributes as $name => $val) {
+				echo implode('' , array(' ', $name , '="' , $val, '"'));
+			}
+			echo '/>';
 		}
 		else {
 			$childs = array();
+			echo implode('',array("\n<",$this->tagName));
+			foreach ($this->attributes as $name => $val) {
+				echo implode('' , array(' ',$name , '="' , $val, '"'));
+			}
+			echo '>';
 			$ks = array_keys($this->childNodes);
 			foreach ($ks as $k) {
-				$childss []= $this->childNodes[$k]->render();
+				$this->childNodes[$k]->renderEcho();
 			}
-			$childs = implode(' ',$childss);
-			return implode('',array("\n<",$this->tagName,' ',$attrs,'>',$childs,"\n</",$this->tagName,'>'));
+			echo "\n</".$this->tagName.'>';
 		}
 	}
 	// For debugging

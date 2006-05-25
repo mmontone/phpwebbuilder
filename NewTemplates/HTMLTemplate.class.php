@@ -15,10 +15,10 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	}
 
 
-	function render() {
+	function renderEcho() {
 		$this->getRealId();
 		$fid = $this->getAttribute('fakeid');
-		return "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
+		echo "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
 	}
 	function getRealId(){
 		$this->parentNode->getRealId();

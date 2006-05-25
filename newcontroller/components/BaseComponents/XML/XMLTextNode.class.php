@@ -9,8 +9,8 @@ class XMLTextNode extends XMLNodeModificationsTracker
 		$this->data = $data;
 	}
 
-	function render() {
-		return $this->data;
+	function renderEcho() {
+		echo $this->data;
 	}
 
 	function printString() {

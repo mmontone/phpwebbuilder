@@ -6,10 +6,9 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	function HTMLContainer() {
 		parent::XMLNodeModificationsTracker();
 	}
-
-	function render() {
+	function renderEcho() {
 		$fid = $this->getId();
-		return "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
+		echo "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
 	}
 	function getRealId(){
 		$this->parentNode->getRealId();
