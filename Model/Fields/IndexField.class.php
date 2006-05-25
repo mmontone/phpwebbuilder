@@ -6,14 +6,14 @@ class IndexField extends NumField {
 	var $collection;
 	var $nullValue;
 
-	function IndexField($name, $isIndex, $dataType='NoType', $nullValue='') {
+	function IndexField($name, $isIndex=true, $dataType='__NoType', $nullValue='') {
 		if (is_array($isIndex)) {
-			parent :: Numfield($name, $isIndex['isIndex']);
+			parent :: NumField($name, $isIndex);
 			$this->collection = & new PersistentCollection($isIndex['type']);
 			$this->nullValue = & $isIndex['null_value'];
 		}
 		else {
-			parent :: Numfield($name, $isIndex);
+			parent :: NumField($name, $isIndex);
 			$this->collection = & new PersistentCollection($dataType);
 			$this->nullValue = & $nullValue;
 		}
