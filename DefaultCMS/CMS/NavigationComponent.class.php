@@ -34,9 +34,10 @@ class NavigationComponent extends Component {
 		$this->pageSize->onChangeSend('refresh', $this);
 		$c = $this->classN;
 		$obj = & new $this->classN;
+		$sort =& new FunctionObject($this, 'sort');
 		foreach ($this->fields as $f) {
 			$fc = & new FormComponent($null=null);
-			$fc->addComponent(new ActionLink($this, 'sort', $obj->$f->displayString, $f));
+			$fc->addComponent(new ActionLink2(array('action'=>&$sort,'text'=> $obj->$f->displayString)), $f);
 			$this->addComponent($fc, $f);
 		}
 		$this->refresh();

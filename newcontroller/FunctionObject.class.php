@@ -28,6 +28,20 @@ class FunctionObject
         	return $this->target->$method_name($params, $this->params);
 
     }
+
+    /* We may want to use function objects as ValueHolders. Similar to Aspect adaptors */
+
+    function &getValue() {
+    	return $this->call();
+    }
+
+    function setValue(&$value) {
+    	return $this->callWith($value);
+    }
+}
+
+function &callback(&$target, $selector) {
+	return new FunctionObject($target, $selector);
 }
 
 ?>

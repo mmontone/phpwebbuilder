@@ -17,7 +17,7 @@ class FormComponent extends Component
 	}
 
 	function createNode() {
-		$this->view->setAttribute('onchange','javascript:checkBoxChanged(this,enqueueUpdate)');
+		//$this->view->setAttribute('onchange','javascript:checkBoxChanged(this,enqueueUpdate)');
 	}
 
 	function valueChanged(){}

@@ -46,7 +46,11 @@ class ActionLink2 extends FormComponent
 		parent::FormComponent($vm = null);
 
 		$this->action =& $spec['action'];
-		$this->text =& $spec['text'];
+		if (is_string($spec['text']))
+			$this->text =& new ValueHolder($spec['text']);
+		else
+			$this->text =& $spec['text'];
+
 		$this->addComponent(new Text($this->text), "linkName");
 	}
 
