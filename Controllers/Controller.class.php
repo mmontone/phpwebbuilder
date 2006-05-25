@@ -3,7 +3,6 @@
 
 class Controller //extends Component
 {
-	var $form;
 	/**
 	 * Special var, for get_subclass
 	 */
@@ -14,48 +13,7 @@ class Controller //extends Component
 		$ret .= "<input name=\"exec$name\" type=\"submit\" /></form>";
 		return $ret;
 	}
-	function setForm($form) {
-		$this->form = $form;
-	}
-	function getForm() {
-		if ($this->form == NULL) {
-			return $_REQUEST;
-		}
-		else {
-			$temp = $this->form;
-			$this->form = NULL;
-			return $temp;
-		}
-	}
-	function initialize() {
-		//$this->addComponent(new Text(new ValueHolder($t="")), "bodyController");
-	}
-	/*
-	function controller_action($form){}
-	function controller_display($form){}
-	function begin($form){
-		$this->controller_action($form);
-		return $this->controller_display($form);
-	}
-	*/
-
-	// Deprecated
-	/*
-	function prepareToRender(){
-		$form = $this->getForm();
-			if (isset ($form["Controller"]) && (strcasecmp(get_class($this),$form["Controller"])!=0)){
-				$newcon =& new $form["Controller"];
-				$newcon->setForm($form);
-				$this->stopAndCall($newcon);
-				$newcon->prepareToRender();
-			} else {
-				$res = $this->begin($form);
-			$this->bodyController->setText($res);
-		}
-		parent::prepareToRender();
-	}
-	*/
-
+	function initialize() {	}
 	function execute($action, $form) {
 		if ($this->hasPermission($form))
 			return $this-> $action ($form);
@@ -81,13 +39,6 @@ class Controller //extends Component
 		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
 		trace($err);
 	}
-
-	/*
-	function declare_actions(){
-		return array();
-	}
-	*/
-
 	function callAction(& $action) {
 		$controller = & new $action->controller;
 		$action_selector = & $action->action_selector;

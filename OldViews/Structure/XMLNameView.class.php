@@ -30,6 +30,7 @@ class XMLNameView extends HtmlFormEditView  {
 
 class PersistentObjectXMLNameView extends XMLNameView  {
 		function show(&$linker){
+		header("Content-type: text/xml");
 		return $this->showFields($linker, $this->obj->allFieldNames());
 	}
 	function showFields($linker, $fields) {
@@ -49,7 +50,7 @@ class PersistentObjectXMLNameView extends XMLNameView  {
 		return $ret;
 	}
 	function formName() {
-		return $this->obj->tableName();
+		return $this->obj->table;
 	}
 	function listHeader () {
 		return "";

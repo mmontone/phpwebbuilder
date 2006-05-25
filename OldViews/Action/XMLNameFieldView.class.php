@@ -102,7 +102,7 @@ class XMLNameIndexFieldView extends XMLNameFieldView {
 		$obj = new $this->field->collection->dataType;
 		$obj->setId($this->field->value);
 		$obj->load();
-		$html = new XMLNameView;	
+		$html = new XMLNameView;
 		$html = $html->viewFor($obj);
 		$html->descentCount = $object->descentCount-1;
 		$ret .= $html->showObject($linker, $obj->fieldNames);
@@ -117,10 +117,10 @@ class XMLNameSuperFieldView extends XMLNameFieldView {
 	}
 	function show ($object, $linker, $objFields) {
 		$parclass = get_parent_class($object->obj);
-		$obj = new $parclass; 
+		$obj = new $parclass;
 		$obj->id->value=$this->field->value;
 		$obj->load();
-		$html = new XMLNameView;	
+		$html = new XMLNameView;
 		$html = $html->viewFor($obj);
 		$html->descentCount = $object->descentCount-1;
 		$ret .= $html->showObject($linker, $obj->fieldNames);
@@ -185,7 +185,7 @@ class XMLNameTextAreaView extends XMLNameFieldView {
 	}
 }
 
-class XMLNameBoolFieldView extends XMLNameFieldView {      
+class XMLNameBoolFieldView extends XMLNameFieldView {
 	function listObject () {
 		return "\n". $this->field->value;
 	}
@@ -195,40 +195,30 @@ class XMLNameBoolFieldView extends XMLNameFieldView {
 	}
 }
 
-class XMLNameDateFieldView			extends XMLNameDateTimeFieldView {
-	function formObject($object){
-		return "\n<". $this->frmName($object) ." type=\"date\">".$this->dateFormObject($object) ."\n                     </".$this->frmName($object).">";
-	}
-}
-class XMLNameTimeFieldView			extends XMLNameDateTimeFieldView {
-	function formObject($object){
-		return "\n<". $this->frmName($object) ." type=\"time\">" . $this->timeFormObject($object)."\n                    </".$this->frmName($object).">";
-	}
-}
 class XMLNameDateTimeFieldView	extends XMLNameFieldView {
 	function dateFormObject($object){
 		$field = $this->field;
 		$date = $field->dateArray();
 		$ret = "";
-		
+
 		$ret .= "\n   <mday name=\"";
 		$ret .= $this->frmName($object) . "mday";
 		$ret .= "\" value=\"";
 		$ret .= $date["mday"];
 		$ret .= "\" />";
-		
+
 		$ret .= "\n   <mon name=\"";
 		$ret .= $this->frmName($object) . "mon";
 		$ret .= "\" value=\"";
 		$ret .= $date["mon"];
 		$ret .= "\" />";
-		
+
 		$ret .= "\n   <year name=\"";
 		$ret .= $this->frmName($object) . "year";
 		$ret .= "\" value=\"";
 		$ret .= $date["year"];
 		$ret .= "\" />";
-		
+
 		return $ret;
 	}
 	function formObject($object){
@@ -242,13 +232,13 @@ class XMLNameDateTimeFieldView	extends XMLNameFieldView {
 		$ret .= "\" value=\"";
 		$ret .= $date["hours"];
 		$ret .= "\" />";
-		
+
 		$ret .= "\n   <min name=\"";
 		$ret .= $this->frmName($object) . "minutes";
 		$ret .= "\" value=\"";
 		$ret .= $date["minutes"];
 		$ret .= "\" />";
-		
+
 		$ret .= "\n   <sec name=\"";
 		$ret .= $this->frmName($object) . "seconds";
 		$ret .= "\" value=\"";
@@ -259,5 +249,15 @@ class XMLNameDateTimeFieldView	extends XMLNameFieldView {
 	}
 }
 
+class XMLNameDateFieldView			extends XMLNameDateTimeFieldView {
+	function formObject($object){
+		return "\n<". $this->frmName($object) ." type=\"date\">".$this->dateFormObject($object) ."\n                     </".$this->frmName($object).">";
+	}
+}
+class XMLNameTimeFieldView			extends XMLNameDateTimeFieldView {
+	function formObject($object){
+		return "\n<". $this->frmName($object) ." type=\"time\">" . $this->timeFormObject($object)."\n                    </".$this->frmName($object).">";
+	}
+}
 
 ?>

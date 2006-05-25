@@ -3,10 +3,10 @@
 class HtmlTableSearchFieldView extends AbstractFieldView {
 
 	function show ($obj, $ShowObjFields, $field_name) {
-	
+
 		$ret = $this->tdinit();
 		$ret .= "Filter by: <input type=\"checkbox\" value=\"yes\" name=\"filter". $field_name ."\"";
-		if (isset($obj->conds[$this->frmName($obj)])) $ret .= "checked"; 				
+		if (isset($obj->conds[$this->frmName($obj)])) $ret .= "checked";
 		$ret .=	" />";
 		$ret .= $this->formObject($obj);
 		$ret .= $this->tdend();
@@ -72,7 +72,7 @@ class HtmlTableSearchFieldView extends AbstractFieldView {
 		$view = new HtmlTableSearchEmailFieldView;
 		$view->field = $field;
 		return $view;
-	}	
+	}
 	function visitedIdField($field) {
 		$view = new HtmlTableSearchIdFieldView;
 		$view->field = $field;
@@ -101,7 +101,7 @@ class HtmlTableSearchFieldView extends AbstractFieldView {
                                "<b>".$this->field->colName."</b>" .
                                "</a></td>";
                return $ret;
-	}	
+	}
 	function listObject ($object) {
 		$html = new HtmlTableSearchView;
 		$html = $html->viewFor($object);
@@ -118,7 +118,7 @@ class HtmlTableSearchCollectionFieldView extends HtmlTableSearchFieldView {
 		$colec = $this->field->collection;
 		$html = $html->viewFor($colec);
 		$ret = $html->showElements();
-		$ret .= "\n<a href=\"$colec->formphp?Action=Add&". $colec->dataType .$this->field->fieldname ."=". $this->field->value ."&ObjType=$colec->dataType\">";	 
+		$ret .= "\n<a href=\"$colec->formphp?Action=Add&". $colec->dataType .$this->field->fieldname ."=". $this->field->value ."&ObjType=$colec->dataType\">";
 
 		$ret .= "\n<img title=\"New\" src=\"". icons_url . "stock_new-16.png\"/></A>";
 
@@ -158,17 +158,6 @@ class HtmlTableSearchUserFieldView extends HtmlTableSearchIndexFieldView {
 		return $ret.$html->userSelect("val".$this->frmName($object), $object->conds[$this->frmName($object)][1], $this->field->nullValue);
 	}
 
-}
-
-class HtmlTableSearchDateFieldView extends HtmlTableSearchDateTimeFieldView {
-	function formObject($object){
-		return $this->dateFormObject($object);
-	}
-}
-class HtmlTableSearchTimeFieldView extends HtmlTableSearchDateTimeFieldView {
-	function formObject($object){
-		return $this->timeFormObject($object);
-	}
 }
 class HtmlTableSearchDateTimeFieldView extends HtmlTableSearchFieldView {
 	function dateFormObject($object){
@@ -231,6 +220,19 @@ class HtmlTableSearchNumFieldView extends HtmlTableSearchFieldView {
 	}
 }
 
+
+class HtmlTableSearchDateFieldView extends HtmlTableSearchDateTimeFieldView {
+	function formObject($object){
+		return $this->dateFormObject($object);
+	}
+}
+class HtmlTableSearchTimeFieldView extends HtmlTableSearchDateTimeFieldView {
+	function formObject($object){
+		return $this->timeFormObject($object);
+	}
+}
+
+
 class HtmlTableSearchTextFieldView extends HtmlTableSearchFieldView {
 	function formObject($object) {
 		$ret = "\n<input type=\"hidden\" name=\"cond";
@@ -246,7 +248,7 @@ class HtmlTableSearchTextFieldView extends HtmlTableSearchFieldView {
 	function searchQuery($form, $view) {
 		return array($form["cond".$this->frmName($view)], "'%".$form["val".$this->frmName($view)]."%'");
 	}
-	
+
 }
 
 class HtmlTableSearchPasswordFieldView extends HtmlTableSearchTextFieldView {
@@ -296,7 +298,7 @@ class HtmlTableSearchTextAreaView extends HtmlTableSearchFieldView {
 	}
 }
 
-class HtmlTableSearchBoolFieldView extends HtmlTableSearchFieldView {      
+class HtmlTableSearchBoolFieldView extends HtmlTableSearchFieldView {
 	function listObject () {
 		return "\n<td>". $this->field->value."</td>";
 	}
