@@ -12,7 +12,6 @@ class ObjectComponent extends Component {
     		$this->fieldNames =& $this->obj->allFieldNames();
 		} else {
 			$this->fieldNames = array_map(create_function('$field','return $field->colName;'),$fields);
-			var_dump($this->fieldNames);
 		}
     	parent::Component();
     }

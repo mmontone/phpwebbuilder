@@ -3,4 +3,8 @@ Optimizations:
 
 *htmltemplate->xml2template
 *xmlnodemodificationstracker->flushmodifications
-*xmlnodemodificationstracker->childrenwithid
+
+
+ToDo:
+- Reinsert permissions into DefaultCMS
+- XML With ID but without controller shoudn't display itself.

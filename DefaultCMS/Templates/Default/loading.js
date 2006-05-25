@@ -4,6 +4,7 @@ var loader = document.createElement("div");
 function initialize_loading(){
 t = document.createTextNode('');
 loader.setAttribute("id", "loader");
+loader.onclick = cancel_ajax;
 loader.appendChild(t);
 ap = document.getElementById('app');
 ap.appendChild(loader);

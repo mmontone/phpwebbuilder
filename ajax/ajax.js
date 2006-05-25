@@ -82,10 +82,15 @@ function appendDebug(str){
        db.replaceChild(t,db.firstChild);
    }
 }
-
+ajax_queue = new Array;
+function cancel_ajax(){
+	var http = ajax_queue.shift();
+	http.abort();
+}
 function postAjax(url, func, formName, obj) {
       loadingStart();
       var http = getHTTPObject();
+       ajax_queue.push(http);
        http.abort();
        url = url;
        var params = encodeForm(formName);
@@ -105,6 +110,7 @@ function postAjax(url, func, formName, obj) {
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
+                           ajax_queue.remove(http);
                            if (!http.responseXML) {
                               ajaxError();
                               appendDebug(http.responseText);
