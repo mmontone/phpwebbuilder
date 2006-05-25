@@ -1,6 +1,6 @@
 <?php
 
-require_once("Controller.class.php");
+//require_once("Controller.class.php");
 
 /**
  * Controller for editing the data for the user that's logged in
@@ -18,7 +18,7 @@ class MyUserController extends Controller {
 		return $ret;
 	}
 	function saveValues($form) {
-		
+
 	}
 	function showOptions($form) {
 		$u = new User;

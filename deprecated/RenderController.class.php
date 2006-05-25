@@ -1,6 +1,6 @@
 <?
 
-require_once dirname(__FILE__) . '/Controller.class.php';
+//require_once dirname(__FILE__) . '/Controller.class.php';
 
 /**
  * Shows the specified View, for the specified object.
@@ -15,9 +15,9 @@ class RenderController extends Controller {
 		};
 		$obj = $form["ObjType"];
 		if ($act == "Edit"||$act == "Show"||$act == "List"||$act == "Add")
-			return array("*", 
-					"*=>".$act, 
-					$obj."=>*", 
+			return array("*",
+					"*=>".$act,
+					$obj."=>*",
 					$obj."=>".$act);
 		else return array("No_Can_Do");
 	}
@@ -38,13 +38,13 @@ class RenderController extends Controller {
 		} else {
 			$form["ViewType"] = "HtmlTable";
 			$view = new HtmlTable;
-		} 
-		if (!isset($_REQUEST["showHTML"])) {$showHTML=TRUE;} else $showHTML=$_REQUEST["showHTML"]=="TRUE";  
+		}
+		if (!isset($_REQUEST["showHTML"])) {$showHTML=TRUE;} else $showHTML=$_REQUEST["showHTML"]=="TRUE";
 		if (!isset($_REQUEST["Linker"])) {$_REQUEST["Linker"]="MixLinker";}
 			// Create an empty object of the type specified in the form
 			$obj = new $form["ObjType"];
 			/*TODO
-			 * Find a way to Read an object from a Form, without using the 
+			 * Find a way to Read an object from a Form, without using the
 			 * ReadView.
 			 */
 			$load = new Loader;
@@ -54,14 +54,14 @@ class RenderController extends Controller {
 			$html = $view->viewFor($obj);
 
 			$linker = new $_REQUEST["Linker"]();
-			if ($showHTML) {$text .= $html->headers($form);}			
+			if ($showHTML) {$text .= $html->headers($form);}
 			if ($form["showXMLHeader"]=="TRUE") {
 				header('Content-Type: application/xml');
 				$text .=  "<?xml version=\"1.0\"?>";
 			}
 			$text .= $html->show($linker);
 			if ($form["showXMLHeader"]=="TRUE") {
-				$text = ereg_replace("&","&#39;",$text);		
+				$text = ereg_replace("&","&#39;",$text);
 			}
 			if ($showHTML)$text .=  $html->footers();
 			return $text;
@@ -73,13 +73,13 @@ class RenderController extends Controller {
 			$form["ViewType"] = "HtmlTable";
 			$view = new HtmlTable;
 
-		} 
-		if (!isset($_REQUEST["showHTML"])) {$showHTML=TRUE;} else $showHTML=$_REQUEST["showHTML"]=="TRUE";  
+		}
+		if (!isset($_REQUEST["showHTML"])) {$showHTML=TRUE;} else $showHTML=$_REQUEST["showHTML"]=="TRUE";
 		if (!isset($_REQUEST["Linker"])) {$_REQUEST["Linker"]=MixLinker;}
 			// Create an empty object of the type specified in the form
 			$obj = new PersistentCollection($form["ObjType"]);
 			/*TODO
-			 * Find a way to Read an object from a Form, without using the 
+			 * Find a way to Read an object from a Form, without using the
 			 * ReadView.
 			 */
 			$load = new Loader;
@@ -98,7 +98,7 @@ class RenderController extends Controller {
 			}
 			$text .=  $html->show($linker);
 			if ($form["showXMLHeader"]=="TRUE") {
-				$text = ereg_replace("&","&#39;",$text);		
+				$text = ereg_replace("&","&#39;",$text);
 			}
 			if ($showHTML) $text .= $html->footers();
 			return $text;

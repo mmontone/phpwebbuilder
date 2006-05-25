@@ -1,6 +1,6 @@
 <?
 
-require_once("Controller.class.php");
+//require_once("Controller.class.php");
 
 /**
  * Controller for showing the result of a search on an object
@@ -15,7 +15,7 @@ class SearchController extends Controller {
 			//echo "campo: ".$i."<BR>";
 			if ($form[filter."$i"]=="yes") {
 			//	echo "se filtra por $i";
-				$vf = $view->fieldShowObject($f); 
+				$vf = $view->fieldShowObject($f);
 				$col->conditions[$i]=$vf->searchQuery($form, $view);
 			}
 		}
@@ -24,11 +24,11 @@ class SearchController extends Controller {
 		$dir = $view->makeLinkAddress("Show",array());
 		/*foreach($_REQUEST as $name=>$value) {
   			echo $name ."=". $value."<br>";
-		} 
+		}
 		echo "dir=".$dir."<BR>";
 		print_r($col);*/
 		header("location:".$dir );
-	} 
+	}
 }
 
 ?>
