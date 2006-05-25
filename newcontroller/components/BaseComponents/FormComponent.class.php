@@ -16,17 +16,38 @@ class FormComponent extends Component
 		parent::Component($callback_actions);
 	}
 
-	function createNode() {
-		//$this->view->setAttribute('onchange','javascript:checkBoxChanged(this,enqueueUpdate)');
+	function setEvents(&$view) {
+		$this->setOnChangeEvent($view, 'enqueueUpdates');
+		$this->setOnBlurEvent($view, 'enqueueUpdates');
+		$this->setOnFocusEvent($view, 'enqueueUpdates');
 	}
+
+	function setOnChangeEvent(&$view, $updateStrategy) {
+		$view->setAttribute('onchange',"javascript:componentChanged(this,$updateStrategy)");
+	}
+
+	function setOnBlurEvent(&$view, $updateStrategy) {
+		$view->setAttribute('onblur',"javascript:componentBlur(this,$updateStrategy)");
+	}
+
+	function setOnFocusEvent(&$view, $updateStrategy) {
+		$view->setAttribute('onfocus',"javascript:componentFocus(this,$updateStrategy)");
+	}
+
 
 	function valueChanged(){}
 	function viewUpdated($params) {
-		$value =& $this->value_model->getValue();
-		if ($params != $value){
-			$oldval =  $value;
-			$this->value_model->primitiveSetValue($params);
-			$this->value_model->triggerEvent('changed', $oldval);
+		if (preg_match('/_ui_event_((?:.)*)/',$params, $event)) {
+			$event = $event[1];
+			$this->triggerEvent($event);
+		}
+		else {
+			$value =& $this->value_model->getValue();
+			if ($params != $value){
+				$oldval =  $value;
+				$this->value_model->primitiveSetValue($params);
+				$this->value_model->triggerEvent('changed', $oldval);
+			}
 		}
 	}
 	function setValue($params) {
@@ -37,13 +58,25 @@ class FormComponent extends Component
 	}
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
-		$this->createNode();
+		$this->initializeView($this->view);
+		$this->setEvents($this->view);
+
 		return $this->view;
 	}
 
 	function onChangeSend($selector, &$target) {
 		$this->addEventListener(array('changed'=>$selector), $target);
-		$this->view->setAttribute('onchange','javascript:componentChanged(this,sendUpdate)');
+		$this->setOnChangeEvent($this->view, 'sendUpdate');
+	}
+
+	function onFocusSend($selector, &$target) {
+		$this->addEventListener(array('focus'=>$selector), $target);
+		$this->setOnFocusEvent($this->view, 'sendUpdate');
+	}
+
+	function onBlurSend($selector, &$target) {
+		$this->addEventListener(array('blur'=>$selector), $target);
+		$this->setOnBlurEvent($this->view, 'sendUpdate');
 	}
 }
 

@@ -1,10 +1,9 @@
 <?php
 
 class RadioButton extends FormComponent {
-    function createNode(){
-		$in =& $this->view;
-		$in->setTagName('input');
-		$in->setAttribute('type','radio');
+    function initializeView(&$view){
+		$view->setTagName('input');
+		$view->setAttribute('type','radio');
 	}
 
 	function valueChanged(&$value_model, &$params) {

@@ -6,18 +6,9 @@ class Password extends Input {
 		parent :: Input($value_model);
 	}
 
-	function createNode() {
-		parent::createNode();
-		$in = & $this->view;
-		$in->setTagName('input');
-		$in->setAttribute('type', 'password');
+	function initializeView(&$view) {
+		$view->setTagName('input');
+		$view->setAttribute('type', 'password');
 	}
-
-/*
-	function prepareToRender() {
-		parent :: prepareToRender();
-		echo "sdaf";
-		$this->value_model->setValue($s = '');
-	}*/
 }
 ?>

@@ -6,12 +6,13 @@ class CheckBox extends FormComponent {
 		parent :: FormComponent($boolHolder);
 	}
 
-	function createNode() {
-		parent :: createNode();
-		$in = & $this->view;
-		$in->setTagName('input');
-		$in->setAttribute('type', 'checkbox');
-		$in->setAttribute('onchange', 'javascript:checkBoxChanged(this,enqueueUpdate)');
+	function initializeView(&$view) {
+		$view->setTagName('input');
+		$view->setAttribute('type', 'checkbox');
+	}
+
+	function setOnChangeEvent(&$view, $updateStrategy) {
+		$view->setAttribute('onchange', "javascript:checkBoxChanged(this,$updateStrategy)");
 	}
 
 	function disable() {

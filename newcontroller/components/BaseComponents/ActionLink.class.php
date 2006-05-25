@@ -17,9 +17,8 @@ class ActionLink extends FormComponent
 		$this->addComponent(new Label($text), "linkName");
 	}
 
-	function createNode(){
-		parent::createNode();
-		$this->view->setTagName('a');
+	function initializeView(&$view){
+		$view->setTagName('a');
 	}
 	function prepareToRender(){
 		parent::prepareToRender();
@@ -43,9 +42,10 @@ class ActionLink2 extends FormComponent
 	var $action;
 	var $text;
 	function ActionLink2 ($spec) {
-		parent::FormComponent($vm = null);
-
 		$this->action =& $spec['action'];
+
+		parent::FormComponent(new ValueHolder($this->action));
+
 		if (is_string($spec['text']))
 			$this->text =& new ValueHolder($spec['text']);
 		else
@@ -54,9 +54,8 @@ class ActionLink2 extends FormComponent
 		$this->addComponent(new Text($this->text), "linkName");
 	}
 
-	function createNode(){
-		parent::createNode();
-		$this->view->setTagName('a');
+	function initializeView(&$view){
+		$view->setTagName('a');
 	}
 
 	function prepareToRender(){
