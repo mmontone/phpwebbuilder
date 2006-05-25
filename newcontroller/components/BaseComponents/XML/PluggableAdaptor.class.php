@@ -7,7 +7,7 @@ class PluggableAdaptor extends ValueModel
 	var $get_function;
 	var $set_function;
 
-    function AspectAdaptor(&$get_function, &$set_function) {
+    function PluggableAdaptor(&$get_function, &$set_function) {
     	parent::ValueModel();
 
     	$this->get_function =& $get_function;
