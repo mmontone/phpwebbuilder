@@ -18,6 +18,7 @@ require_once 'CMS/ComponentFactory/Edit/BoolFieldEditComponentFactory.class.php'
 require_once 'CMS/ComponentFactory/Search/SearchComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Search/TextFieldSearchComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Show/IndexFieldShowComponentFactory.class.php';
+require_once 'CMS/ComponentFactory/Show/BoolFieldShowComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Show/ShowComponentFactory.class.php';
 require_once 'CMS/NavigationComponent.class.php';
 require_once 'CMS/IndexFieldChooser.class.php';
