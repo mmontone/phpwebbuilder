@@ -12,7 +12,7 @@ class SelectCollectionComponent extends NavigationComponent {
 	function newObject(&$n) {
 		$obj = & new $this->classN;
 		$ec =& new EditObjectComponent($obj);
-    	$ec->registerCallbacks(array('refresh'=>callback($this, 'refresh')));
+    	$ec->registerCallbacks(array('refresh'=>new FunctionObject($this, 'refresh')));
 		$this->call($ec);
 	}
 	function addLine(&$obj) {
@@ -21,7 +21,7 @@ class SelectCollectionComponent extends NavigationComponent {
 		$fc->addComponent(new ActionLink($this, 'selectObject', 'Select', $obj), 'select');
 	}
 	function selectObject(&$obj){
-		$this->callback('selected', array('object'=>&$obj));
+		$this->callbackWith('selected', $obj);
 	}
 }
 ?>

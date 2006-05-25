@@ -7,6 +7,7 @@ require_once 'ApplicationLauncher.class.php';
 require_once 'Component.class.php';
 require_once 'ComponentHolder.class.php';
 require_once 'ChildCallbackHandler.class.php';
+require_once 'FunctionObject.class.php';
 require_once 'components/meta/FieldsEmbeddingVisitor.class.php';
 require_once 'components/meta/CollectionDisplayer.class.php';
 require_once 'components/meta/ObjectEditor.class.php';

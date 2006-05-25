@@ -57,7 +57,7 @@ class NavigationComponent extends Component {
 	/* Navigation */
 	function filter(){
 		$fc =& new FilterCollectionComponent($this->col);
-		$fc->registerCallbacks(array('done'=>callback($this, 'refresh')));
+		$fc->registerCallbacks(array('done'=>new FunctionObject($this, 'refresh')));
 		$this->call($fc);
 	}
 	function prevPage(){

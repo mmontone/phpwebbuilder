@@ -59,14 +59,6 @@ class ViewCreator {
 		}
 		$this->app->needView = array();
 	}
-/*	function &createView(&$parentView, &$component){
-		$view =& $this->createElemView($parentView, $component);
-		$ks = array_keys($component->__children);
-		foreach ($ks as $k){
-			$this->createView($view, $component->componentAt($k));
-		}
-		return $view;
-	}*/
 
 	function &createElemView(&$pV, &$component){
 		/*
@@ -75,6 +67,7 @@ class ViewCreator {
 		 * - Else create the view and position it.
 		 * */
 		$parentView =& $pV;
+		if (!$parentView) print_backtrace();
 		$view  =& $component->view;
 		$hasView = $view!=null && strcasecmp(get_class($view),'NullView')!=0;
 		if ($hasView){

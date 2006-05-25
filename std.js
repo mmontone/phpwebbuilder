@@ -15,7 +15,7 @@ function submitFormToUrl(url) {
 }
 
 function sendUpdate(update) {
-    var url = "new_dispatch.php?"+ update.printString();
+    var url = "new_dispatch.php?"+ update.target + "=" + update.value;
     submitFormToUrl(url);
 }
 
@@ -25,8 +25,6 @@ function enqueueUpdate(update) {
 
 function appendQueuedUpdates(url) {
     var s = updates.map(function(update){return update.target + "=" + update.value}).join("&");
-    if (s != "")
-        url = url + "&";
-    return url + s;
+    return url + "&" + s;
 }
 

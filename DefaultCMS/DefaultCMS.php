@@ -20,6 +20,7 @@ require_once 'CMS/ComponentFactory/Search/TextFieldSearchComponentFactory.class.
 require_once 'CMS/ComponentFactory/Show/IndexFieldShowComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Show/ShowComponentFactory.class.php';
 require_once 'CMS/NavigationComponent.class.php';
+require_once 'CMS/IndexFieldChooser.class.php';
 require_once 'CMS/SelectCollectionComponent.class.php';
 require_once 'CMS/FilterCollectionComponent.class.php';
 require_once 'CMS/ObjectComponent.class.php';

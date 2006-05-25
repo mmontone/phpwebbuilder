@@ -22,6 +22,8 @@ class StandardPageRenderer extends PageRenderer {
 	}
 
 	function renderPage() {
+		echo "print in StandardPageRenderer:\n";
+		print_r($_REQUEST);
 		$this->page->tagName = 'form';
 		$this->page->setAttribute('action', 'new_dispatch.php');
 		$this->page->setAttribute('method', 'post');
