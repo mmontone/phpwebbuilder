@@ -21,4 +21,10 @@ require_once 'Fields/enumField.class.php';
 require_once 'Fields/IndexField.class.php';
 require_once 'Fields/embedField.class.php';
 require_once 'Fields/BlobField.class.php';
+
+require_once 'ValueModels/ValueModel.class.php';
+require_once 'ValueModels/ValueHolder.class.php';
+require_once 'ValueModels/AspectAdaptor.class.php';
+require_once 'ValueModels/PluggableAdaptor.class.php';
+
 ?>
