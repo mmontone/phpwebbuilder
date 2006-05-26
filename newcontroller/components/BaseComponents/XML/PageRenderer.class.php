@@ -18,7 +18,7 @@ class StandardPageRenderer extends PageRenderer {
 	}
 
 	function initializeScripts(&$app) {
-		$app->addScript(pwb_url . '/std.js');
+		$app->addStdRenderingSpecificScripts();
 	}
 
 	function renderPage() {
@@ -105,7 +105,7 @@ class AjaxPageRenderer extends PageRenderer {
 	}
 
 	function initializeScripts(&$app) {
-		$app->addScript(pwb_url . '/ajax/ajax.js');
+		$app->addAjaxRenderingSpecificScripts();
 	}
 
 	function renderPage() {

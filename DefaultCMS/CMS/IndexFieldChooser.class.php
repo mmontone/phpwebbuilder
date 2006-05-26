@@ -1,15 +1,24 @@
 <?php
 
-class IndexFieldChooser extends FormComponent {
+class IndexFieldChooser extends Component {
 	var $display;
 	var $field;
+	var $value;
 
 	function IndexFieldChooser(& $field) {
-		parent::FormComponent(new ValueHolder($field->getValue()));
 		$this->field = $field;
+		$this->value =& new ValueHolder($this->field->getValue());
 		$this->display =& new ValueHolder($v = 'choose');
 		$this->updateDisplay();
 		$this->addComponent(new ActionLink2(array('action'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->display), 'value'));
+	}
+
+	function &getValue() {
+		return $this->value->getValue();
+	}
+
+	function setValue(&$value) {
+		$this->value->setValue($value);
 	}
 
 	function updateDisplay() {

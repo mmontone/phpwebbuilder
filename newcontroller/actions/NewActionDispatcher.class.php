@@ -86,7 +86,9 @@ class NewActionDispatcher {
 			}
 		}
 		$app = & Application :: getInstanceOf($appclass);
+
 		foreach ($form as $dir => $param) {
+
 			$c = & $this->getComponent($dir, $app);
 			if ($c!=null) {
 				if ($param == "execute") {
@@ -109,6 +111,7 @@ class NewActionDispatcher {
 		}
 		return $app;
 	}
+
 	function & getComponent($path, &$app) {
 		$path = split("/", $path);
 		if ($path[0] == "app") { // Maybe the parameter wasn't for us'

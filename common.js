@@ -23,21 +23,36 @@ function Update(t, v) {
     }
 }
 
-function componentChanged(comp,updateFunction) {
+function componentChanged(comp,getValue,updateStrategy) {
     var id = checkbox.getAttribute('id');
-    var value = checkbox.getAttribute('value');
-    updateFunction(new Update(id,value));
+    var value = getValue(comp);
+    updateStrategy(new Update(id,value));
 }
 
-function checkBoxChanged(checkbox,updateFunction) {
-    var id = checkbox.getAttribute('id');
+function componentFocus(comp, getValue, updateStrategy) {
+    updateStrategy(new Update(comp.getAttribute('id'),"_ui_event_focus"));
+}
+
+function componentBlur(comp, getValue, updateStrategy) {
+    updateStrategy(new Update(comp.getAttribute('id'),"_ui_event_blur"));
+}
+
+function checkboxGetValue(checkbox) {
     var value = checkbox.getAttribute('checked');
     if (!value)
-        updateFunction(new Update(id,"1"));
+        return "1";
     else
-        updateFunction(new Update(id,"0"));
+        return "0";
 }
 
-function radioButtonChanged(radioButton,updateFunction) {
-    return checkBoxChanged(radioButton,updateFunction);
+function inputGetValue(input) {
+    return input.getAttribute('value');
+}
+
+function actionlinkGetValue(actionlink) {
+    return actionlink.getAttribute('value');
+}
+
+function actionlink2GetValue(actionlink) {
+    return actionlinkGetValue(actionlink);
 }

@@ -135,6 +135,12 @@ class Application extends ComponentHolder
 
 	function addScripts(){}
 	function addStyleSheets(){}
+	function addAjaxRenderingSpecificScripts() {
+		$this->addScript(pwb_url . '/ajax/ajax.js');
+	}
+	function addStdRenderingSpecificScripts() {
+		$this->addScript(pwb_url . '/std.js');
+	}
 
 	function addScript($url) {
 		$this->wholeView->scripts[] =& $url;
