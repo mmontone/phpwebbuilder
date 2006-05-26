@@ -6,13 +6,15 @@ class CheckBox extends FormComponent {
 		parent :: FormComponent($boolHolder);
 	}
 
+	function focusTest(&$triggerer) {
+		echo "Testing focus event";
+		assert(false);
+	}
+
 	function initializeView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'checkbox');
-	}
-
-	function setOnChangeEvent(&$view, $updateStrategy) {
-		$view->setAttribute('onchange', "javascript:checkBoxChanged(this,$updateStrategy)");
+		$this->onFocusSend('focusTest', $this);
 	}
 
 	function disable() {

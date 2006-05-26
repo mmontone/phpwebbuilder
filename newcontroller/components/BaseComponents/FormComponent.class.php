@@ -16,24 +16,24 @@ class FormComponent extends Component
 		parent::Component($callback_actions);
 	}
 
-	function setEvents(&$view) {
-		$this->setOnChangeEvent($view, 'enqueueUpdates');
-		$this->setOnBlurEvent($view, 'enqueueUpdates');
-		$this->setOnFocusEvent($view, 'enqueueUpdates');
+	function setEvents(&$view, $class, $strategy) {
+		/* Default events, override in subclasses */
+		$this->setOnChangeEvent($view, $class, $strategy);
+		$this->setOnBlurEvent($view, $class, $strategy);
+		$this->setOnFocusEvent($view, $class, $strategy);
 	}
 
-	function setOnChangeEvent(&$view, $updateStrategy) {
-		$view->setAttribute('onchange',"javascript:componentChanged(this,$updateStrategy)");
+	function setOnChangeEvent(&$view, $class, $updateStrategy) {
+		$view->setAttribute('onchange',"javascript:componentChanged(this,{$class}GetValue,$updateStrategy)");
 	}
 
-	function setOnBlurEvent(&$view, $updateStrategy) {
-		$view->setAttribute('onblur',"javascript:componentBlur(this,$updateStrategy)");
+	function setOnBlurEvent(&$view, $class, $updateStrategy) {
+		$view->setAttribute('onblur',"javascript:componentBlur(this,{$class}GetValue,$updateStrategy)");
 	}
 
-	function setOnFocusEvent(&$view, $updateStrategy) {
-		$view->setAttribute('onfocus',"javascript:componentFocus(this,$updateStrategy)");
+	function setOnFocusEvent(&$view, $class, $updateStrategy) {
+		$view->setAttribute('onfocus',"javascript:componentFocus(this,{$class}GetValue,$updateStrategy)");
 	}
-
 
 	function valueChanged(){}
 	function viewUpdated($params) {
@@ -59,24 +59,24 @@ class FormComponent extends Component
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
 		$this->initializeView($this->view);
-		$this->setEvents($this->view);
+		$this->setEvents($this->view, get_class($this), 'enqueueUpdates');
 
 		return $this->view;
 	}
 
 	function onChangeSend($selector, &$target) {
 		$this->addEventListener(array('changed'=>$selector), $target);
-		$this->setOnChangeEvent($this->view, 'sendUpdate');
+		$this->setOnChangeEvent($this->view, get_class($this), 'sendUpdate');
 	}
 
 	function onFocusSend($selector, &$target) {
 		$this->addEventListener(array('focus'=>$selector), $target);
-		$this->setOnFocusEvent($this->view, 'sendUpdate');
+		$this->setOnFocusEvent($this->view, get_class($this), 'sendUpdate');
 	}
 
 	function onBlurSend($selector, &$target) {
 		$this->addEventListener(array('blur'=>$selector), $target);
-		$this->setOnBlurEvent($this->view, 'sendUpdate');
+		$this->setOnBlurEvent($this->view, get_class($this), 'sendUpdate');
 	}
 }
 
