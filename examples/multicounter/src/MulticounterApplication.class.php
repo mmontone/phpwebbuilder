@@ -2,7 +2,7 @@
 
 class MulticounterApplication extends Application
 {
- 	function &set_root_component() {
+ 	function &setRootComponent() {
  		return new MultiCounter;
  	}
 }

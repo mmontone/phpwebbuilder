@@ -67,7 +67,6 @@ class ViewCreator {
 		 * - Else create the view and position it.
 		 * */
 		$parentView =& $pV;
-		if (!$parentView) print_backtrace();
 		$view  =& $component->view;
 		$hasView = $view!=null && strcasecmp(get_class($view),'NullView')!=0;
 		if ($hasView){
@@ -91,7 +90,9 @@ class ViewCreator {
 				$pos =& $ct->createCopy();
 				$parentView->insert_before($ct, $pos);
 			} else {
-				$v =& new NullView;
+				/*$v =& new NullView;*/
+				echo get_class($component);
+				$v =& $component->createDefaultView();
 				$component->setView($v);
 				return $v;
 			}

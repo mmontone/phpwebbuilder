@@ -10,7 +10,7 @@ require_once dirname(__FILE__) . '/components/Counter.class.php';
 
  class NobackbuttonApplication extends Application 
  {
- 	function &set_root_component() {
+ 	function &setRootComponent() {
  		return new Counter;
  	}
  	

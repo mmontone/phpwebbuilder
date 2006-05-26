@@ -50,7 +50,7 @@ class Component extends PWBObject
     	$this->render_action_link($action);
     }
 
-	function addComponent(&$component, $ind=null) {
+	function &addComponent(&$component, $ind=null) {
 		if ($ind !=null && isset($this->__children[$ind])) {
 			$this->__children[$ind]->component->stopAndCall($component);
 		} else {
@@ -63,6 +63,7 @@ class Component extends PWBObject
 			$component->listener =& new ChildCallbackHandler();
 			$this->nextChildrenPosition++;
 		}
+		return $component;
 	}
 
 	function deleteComponentAt($index){

@@ -23,7 +23,7 @@ class PromptTest extends Component
   
 class PromptApplication extends Application 
  {
- 	function &set_root_component() {
+ 	function &setRootComponent() {
  		return new PromptTest;
  	}
  }

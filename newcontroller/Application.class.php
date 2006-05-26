@@ -11,7 +11,7 @@ class Application extends ComponentHolder
   var $needView = array();
   function Application() {
 	$_SESSION[sitename][get_class($this)] =& $this;
-  	$rc =& $this->set_root_component();
+  	$rc =& $this->setRootComponent();
     parent::ComponentHolder($rc, $index=0,$n = null);
     $rc->linkToApp($this);
     $this->set_default_configuration();
@@ -32,8 +32,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             'page_renderer' => 'AjaxPageRenderer');
-		                             //'page_renderer' => 'StandardPageRenderer');
+		                             //'page_renderer' => 'AjaxPageRenderer');
+		                             'page_renderer' => 'StandardPageRenderer');
 		                             //'page_renderer' => 'DebugPageRenderer');
 		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }

@@ -3,7 +3,7 @@
 class DefaultCMSApplication extends Application{
 	//var $templateName = 'BFSalud';
 	var $templateName = 'Default';
- 	function &set_root_component() {
+ 	function &setRootComponent() {
  		$cms =& new DefaultCMS;
  		return $cms;
  	}
@@ -17,7 +17,6 @@ class DefaultCMSApplication extends Application{
  		parent::addAjaxRenderingSpecificScripts();
  		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');
  	}
-
 }
 
 ?>

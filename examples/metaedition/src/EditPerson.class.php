@@ -2,7 +2,7 @@
 
 class EditPerson extends Application
 {
-    function &set_root_component() {
+    function &setRootComponent() {
         $person =& new Person();
         $person->setID(1);
         $person->load();

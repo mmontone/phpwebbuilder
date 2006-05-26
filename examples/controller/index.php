@@ -17,7 +17,7 @@ class ControllerTest extends Component
   
 class ControllerApplication extends Application 
  {
- 	function &set_root_component() {
+ 	function &setRootComponent() {
  		return new ControllerTest;
  	}
  }

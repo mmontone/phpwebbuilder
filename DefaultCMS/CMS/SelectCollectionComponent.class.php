@@ -12,6 +12,7 @@ class SelectCollectionComponent extends NavigationComponent {
 		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		parent::initialize();
 	}
+
 	function newObject(&$n) {
 		$obj = & new $this->classN;
 		$ec =& new EditObjectComponent($obj);

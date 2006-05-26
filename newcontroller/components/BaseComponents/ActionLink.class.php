@@ -37,14 +37,12 @@ class ActionLink extends FormComponent
 
 }
 
-class ActionLink2 extends FormComponent
+class ActionLink2 extends ActionLink
 {
 	var $action;
 	var $text;
 	function ActionLink2 ($spec) {
 		$this->action =& $spec['action'];
-
-		parent::FormComponent(new ValueHolder($this->action));
 
 		if (is_string($spec['text']))
 			$this->text =& new ValueHolder($spec['text']);

@@ -56,7 +56,7 @@ class Phone
 
 class LegacyApplication extends Application 
 {
-	function &set_root_component() {
+	function &setRootComponent() {
 		$person =& $this->initialize_person();
 		$component =& new MetaViewerComponent($person);
 		$component->configure($this->configure_ui()); 
