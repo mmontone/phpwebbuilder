@@ -90,9 +90,8 @@ class ViewCreator {
 				$pos =& $ct->createCopy();
 				$parentView->insert_before($ct, $pos);
 			} else {
-				/*$v =& new NullView;*/
-				echo get_class($component);
-				$v =& $component->createDefaultView();
+				$v =& new NullView;
+				/*$v =& $component->createDefaultView();*/
 				$component->setView($v);
 				return $v;
 			}
