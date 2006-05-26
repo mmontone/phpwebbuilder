@@ -1,4 +1,3 @@
-var loading = 0;
 var loader = document.createElement("div");
 
 function initialize_loading(){
@@ -13,17 +12,14 @@ ap.appendChild(loader);
 window.onload=initialize_loading;
 
 function loadingStart() {
-        loading++;
         loader.style.visibility="visible";
-        loader.replaceChild(document.createTextNode(loading +" actions remaining..."),loader.firstChild);
+        loader.replaceChild(document.createTextNode(ajax_queue.length +" actions remaining..."),loader.firstChild);
 }
 
 function loadingStop() {
-        loading--;
-        loader.replaceChild(document.createTextNode(loading +" actions remaining..."),loader.firstChild);
-        if (loading <= 0) {
+        loader.replaceChild(document.createTextNode(ajax_queue.length +" actions remaining..."),loader.firstChild);
+        if (ajax_queue.length == 0) {
             loader.style.visibility="hidden";
-            loading=0;
         }
 }
 
