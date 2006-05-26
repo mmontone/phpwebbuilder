@@ -17,6 +17,7 @@ class Application extends ComponentHolder
     $this->set_default_configuration();
     $this->configuration = array_merge((array)$this->configuration, (array)$this->configure());
     $this->instantiate_configuration_objects();
+	$this->createView();
   }
 
     function set_default_configuration() {
@@ -31,8 +32,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             //'page_renderer' => 'AjaxPageRenderer');
-		                             'page_renderer' => 'StandardPageRenderer');
+		                             'page_renderer' => 'AjaxPageRenderer');
+		                             //'page_renderer' => 'StandardPageRenderer');
 		                             //'page_renderer' => 'DebugPageRenderer');
 		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }
@@ -157,7 +158,6 @@ class Application extends ComponentHolder
 
    	function run() {
 	  $this->start();
-	  $this->createView();
 	  $this->initialRender();
 	}
 	function getId(){

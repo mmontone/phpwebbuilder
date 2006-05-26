@@ -83,14 +83,27 @@ function appendDebug(str){
    }
 }
 ajax_queue = new Array;
+function enqueue(elem){
+    elem.index_ajax=ajax_queue.length;
+    ajax_queue.push(elem);
+}
+function dequeue(elem){
+    ajax_queue.splice(elem.index_ajax,1);
+    var i = elem.index_ajax;
+    for(var j =i; j<ajax_queue.length; j++){
+       ajax_queue[j].index_ajax--;
+    }
+}
 function cancel_ajax(){
-	var http = ajax_queue.shift();
+	var http = ajax_queue.pop();
 	http.abort();
 }
+
+
 function postAjax(url, func, formName, obj) {
       loadingStart();
       var http = getHTTPObject();
-       ajax_queue.push(http);
+       enqueue(http);
        http.abort();
        url = url;
        var params = encodeForm(formName);
@@ -110,7 +123,7 @@ function postAjax(url, func, formName, obj) {
        }
        http.onreadystatechange = function () {
                        if (http.readyState==4) {
-                           ajax_queue.remove(http);
+                           dequeue(http);
                            if (!http.responseXML) {
                               ajaxError();
                               appendDebug(http.responseText);
