@@ -1,5 +1,3 @@
-var updates = new Array();
-
 function callAction(action_id) {
     var url = "new_dispatch.php?"+action_id+"=execute";
     submitFormToUrl(url);
@@ -19,12 +17,5 @@ function sendUpdate(update) {
     submitFormToUrl(url);
 }
 
-function enqueueUpdate(update) {
-    updates.push(update);
-}
 
-function appendQueuedUpdates(url) {
-    var s = updates.map(function(update){return update.target + "=" + update.value}).join("&");
-    return url + "&" + s;
-}
 

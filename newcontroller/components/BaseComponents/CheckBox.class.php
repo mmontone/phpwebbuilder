@@ -6,15 +6,9 @@ class CheckBox extends FormComponent {
 		parent :: FormComponent($boolHolder);
 	}
 
-	function focusTest(&$triggerer) {
-		echo "Testing focus event";
-		assert(false);
-	}
-
 	function initializeView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'checkbox');
-		$this->onFocusSend('focusTest', $this);
 	}
 
 	function disable() {
@@ -47,19 +41,11 @@ class CheckBox extends FormComponent {
 		$this->view->setAttribute('onchange', 'javascript:checkBoxChanged(this,sendUpdate)');
 	}
 
-	function viewUpdated($params) {
-		$value = & $this->getValue();
-
+	function &valueFromForm(&$params) {
 		if ($params == 'on')
-			$params = 1;
+			return 1;
 		else
-			$params = 0;
-
-		if ($params != $value) {
-			$oldval = & $value;
-			$this->value_model->primitiveSetValue($params);
-			$this->value_model->triggerEvent('changed', $oldval);
-		}
+			return 0;
 	}
 }
-?>
+ ?>

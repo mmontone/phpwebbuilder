@@ -16,67 +16,75 @@ class FormComponent extends Component
 		parent::Component($callback_actions);
 	}
 
-	function setEvents(&$view, $class, $strategy) {
+	function setEvents(&$view) {
 		/* Default events, override in subclasses */
-		$this->setOnChangeEvent($view, $class, $strategy);
-		$this->setOnBlurEvent($view, $class, $strategy);
-		$this->setOnFocusEvent($view, $class, $strategy);
+		$class = get_class($this);
+		$view->setAttribute('onchange',"javascript:enqueueChange(this,{$class}GetValue)");
 	}
 
-	function setOnChangeEvent(&$view, $class, $updateStrategy) {
-		$view->setAttribute('onchange',"javascript:componentChanged(this,{$class}GetValue,$updateStrategy)");
+	function setOnChangeEvent(&$view) {
+		$class = get_class($this);
+		$view->setAttribute('onchange',"javascript:componentChange(this,{$class}GetValue)");
 	}
 
-	function setOnBlurEvent(&$view, $class, $updateStrategy) {
-		$view->setAttribute('onblur',"javascript:componentBlur(this,{$class}GetValue,$updateStrategy)");
+	function setOnBlurEvent(&$view) {
+		$view->setAttribute('onblur',"javascript:componentBlur(this)");
 	}
 
-	function setOnFocusEvent(&$view, $class, $updateStrategy) {
-		$view->setAttribute('onfocus',"javascript:componentFocus(this,{$class}GetValue,$updateStrategy)");
+	function setOnFocusEvent(&$view) {
+		$view->setAttribute('onfocus',"javascript:componentFocus(this)");
 	}
 
 	function valueChanged(){}
 	function viewUpdated($params) {
 		if (preg_match('/_ui_event_((?:.)*)/',$params, $event)) {
 			$event = $event[1];
-			$this->triggerEvent($event);
+			$this->triggerEvent($event, $this);
 		}
-		else {
-			$value =& $this->value_model->getValue();
-			if ($params != $value){
-				$oldval =  $value;
-				$this->value_model->primitiveSetValue($params);
-				$this->value_model->triggerEvent('changed', $oldval);
-			}
-		}
+		else
+			$this->updateValue($params);
 	}
-	function setValue($params) {
-		$this->value_model->setValue($params);
+
+	function updateValue(&$params) {
+		$new_value =& $this->valueFromForm($params);
+		$value =& $this->getValue();
+
+		if ($new_value != $value)
+			$this->setValue($new_value);
 	}
+
+	function valueFromForm(&$params) {
+		return $params;
+	}
+
+	function setValue(&$value) {
+		$this->value_model->setValue($value);
+	}
+
 	function getValue() {
 		return $this->value_model->getValue();
 	}
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
 		$this->initializeView($this->view);
-		$this->setEvents($this->view, get_class($this), 'enqueueUpdates');
+		$this->setEvents($this->view);
 
 		return $this->view;
 	}
 
 	function onChangeSend($selector, &$target) {
 		$this->addEventListener(array('changed'=>$selector), $target);
-		$this->setOnChangeEvent($this->view, get_class($this), 'sendUpdate');
+		$this->setOnChangeEvent($this->view);
 	}
 
 	function onFocusSend($selector, &$target) {
 		$this->addEventListener(array('focus'=>$selector), $target);
-		$this->setOnFocusEvent($this->view, get_class($this), 'sendUpdate');
+		$this->setOnFocusEvent($this->view);
 	}
 
 	function onBlurSend($selector, &$target) {
 		$this->addEventListener(array('blur'=>$selector), $target);
-		$this->setOnBlurEvent($this->view, get_class($this), 'sendUpdate');
+		$this->setOnBlurEvent($this->view);
 	}
 }
 

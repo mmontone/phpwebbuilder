@@ -1,3 +1,5 @@
+var updates = new Object();
+
 function Update(t, v) {
     this.target = t;
     this.value = v;
@@ -23,18 +25,37 @@ function Update(t, v) {
     }
 }
 
-function componentChanged(comp,getValue,updateStrategy) {
-    var id = checkbox.getAttribute('id');
+function enqueueUpdate(update) {
+    //eval("updates." + update.target + "=update.value");
+    updates[update.target] = update.value;
+}
+
+function enqueueChange(comp,getValue) {
+    var target = comp.getAttribute('id');
     var value = getValue(comp);
-    updateStrategy(new Update(id,value));
+    enqueueUpdate(new Update(target,value));
 }
 
-function componentFocus(comp, getValue, updateStrategy) {
-    updateStrategy(new Update(comp.getAttribute('id'),"_ui_event_focus"));
+function appendQueuedUpdates(url) {
+    var s = "";
+    for (var target in updates) {
+        s += "&" + target + "=" + updates[target];
+    }
+    return url + s;
 }
 
-function componentBlur(comp, getValue, updateStrategy) {
-    updateStrategy(new Update(comp.getAttribute('id'),"_ui_event_blur"));
+function componentChange(comp,getValue) {
+    var target = comp.getAttribute('id');
+    var value = getValue(comp);
+    sendUpdate(new Update(target,value));
+}
+
+function componentFocus(comp) {
+    sendUpdate(new Update(comp.getAttribute('id'),"_ui_event_focus"));
+}
+
+function componentBlur(comp) {
+    sendUpdate(new Update(comp.getAttribute('id'),"_ui_event_blur"));
 }
 
 function checkboxGetValue(checkbox) {
@@ -55,4 +76,8 @@ function actionlinkGetValue(actionlink) {
 
 function actionlink2GetValue(actionlink) {
     return actionlinkGetValue(actionlink);
+}
+
+function textareacomponentGetValue(textarea) {
+    return textarea.getAttribute('value');
 }
