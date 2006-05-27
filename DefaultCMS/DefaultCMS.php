@@ -5,6 +5,7 @@ require_once 'Administrator/RolesController.class.php';
 require_once 'Administrator/DBController.class.php';
 require_once 'Menu.class.php';
 require_once 'DefaultCMSApplication.class.php';
+require_once 'Files/FileLoader.class.php';
 require_once 'CMS/ShowCollectionComponent.class.php';
 require_once 'CMS/ShowObjectComponent.class.php';
 require_once 'CMS/EditObjectComponent.class.php';

@@ -26,6 +26,7 @@ require_once 'components/BaseComponents/CompositeFormComponent.class.php';
 require_once 'components/BaseComponents/Input.class.php';
 require_once 'components/BaseComponents/ActionLink.class.php';
 require_once 'components/BaseComponents/Password.class.php';
+require_once 'components/BaseComponents/Filename.class.php';
 require_once 'components/BaseComponents/Label.class.php';
 require_once 'components/BaseComponents/TextAreaComponent.class.php';
 require_once 'components/BaseComponents/RadioButton.class.php';

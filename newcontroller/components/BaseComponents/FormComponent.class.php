@@ -57,7 +57,7 @@ class FormComponent extends Component
 		return $params;
 	}
 
-	function setValue(&$value) {
+	function setValue($value) {
 		$this->value_model->setValue($value);
 	}
 
