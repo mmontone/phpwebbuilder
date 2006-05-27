@@ -183,4 +183,8 @@ function toXML($s) {
     return $s;
 }
 
+function toAjax($s){
+	return	toXML(toHTML($s));
+}
+
 ?>

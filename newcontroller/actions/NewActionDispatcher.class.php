@@ -121,11 +121,11 @@ class NewActionDispatcher {
 			array_shift($path);
 			foreach ($path as $p) {
 				$comp1 = & $comp->componentAt($p);
-				$comp = & $comp1;
-				if ($comp==null) {
-					$app->redraw(); //We sent something to a thing that wasn't there. We showl render again everything to see what'ts there.
+				if ($comp1==null) {
+					$comp->redraw(); //We sent something to a thing that wasn't there. We render the parent to see what'ts there.
 					return null;
 				}
+				$comp = & $comp1;
 			}
 			return $comp;
 		}

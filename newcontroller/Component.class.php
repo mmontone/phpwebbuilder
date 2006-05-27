@@ -81,7 +81,9 @@ class Component extends PWBObject
 	function delete(){
 		$v =& $this->view;
 		$pv =& $v->parentNode;
-		$pv->remove_child($v);
+		if ($v!=null && $pv!=null){
+			$pv->remove_child($v);
+		}
 		unset($pv);
 		unset($v);
 		$h =& $this->holder;
@@ -92,7 +94,9 @@ class Component extends PWBObject
 		unset($p->__children[$pos]);
 		unset($p->$pos);
 	}
-
+	function redraw(){
+		$this->view->redraw();
+	}
 	function &componentAt($index) {
 		$holder =& $this->__children[$index];
 		return $holder->component;

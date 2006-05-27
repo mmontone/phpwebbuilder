@@ -15,10 +15,9 @@ class Text extends FormComponent {
 		/*WARNING!!! If there's an error, look here first ;) */
 		if ($this->view){
 			$text = & $this->value_model->getValue();
-			$new_view = $this->view;
 			$this->view->remove_childs();
 			$this->view->append_child(new XMLTextNode($text));
-			$this->view->parentNode->replace_child($this->view, $new_view);
+			$this->view->redraw();
 		}
 	}
 

@@ -8,12 +8,16 @@ class Input extends FormComponent{
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
-			$this->view->setAttribute('value', $this->value_model->getValue());
+			$this->view->setAttribute('value', $this->printValue());
 		}
 	}
 	function prepareToRender(){
-		$this->view->setAttribute('value', $this->value_model->getValue());
+		$this->view->setAttribute('value', $this->printValue());
 	}
+	function printValue(){
+		return toAjax($this->value_model->getValue());
+	}
+
 }
 
 ?>

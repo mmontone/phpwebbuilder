@@ -10,7 +10,7 @@ class XMLTextNode extends XMLNodeModificationsTracker
 	}
 
 	function renderEcho() {
-		echo $this->data;
+		echo toAjax($this->data);
 	}
 
 	function printString() {

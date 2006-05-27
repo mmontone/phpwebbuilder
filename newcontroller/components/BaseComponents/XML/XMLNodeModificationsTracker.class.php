@@ -68,7 +68,9 @@ class XMLNodeModificationsTracker extends XMLNode {
 		}
 		return parent :: remove_child($child);
 	}
-
+	function redraw(){
+		$this->parentNode->replace_child($this, $new_xml = $this);
+	}
 	function setAttribute($attribute, $value) {
 		$this->modifications[] = & new SetAttributeXMLNodeModification($this, $attribute, $value);
 		return parent :: setAttribute($attribute, $value);
