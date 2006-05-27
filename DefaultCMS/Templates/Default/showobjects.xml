@@ -16,9 +16,9 @@
  	<template class="ShowCollectionComponent">
  		<div>
 		<container id="className" /> class
-	 	<table id="objs"><tbody>
+	 	<table><thead>
  			<tr>
-				<template class="SortByFieldComponent" >
+				<template class="CompositeFormComponent" >
 					<td>
 						<container class="ActionLink" />
 					</td>
@@ -26,6 +26,8 @@
 				<td>Edit</td>
 				<td>Delete</td>
 			</tr>
+			</thead>
+			<tbody id="objs">
 			<template class="ShowObjectComponent">
 	 			<tr>
 					<template class="FieldValueComponent" >

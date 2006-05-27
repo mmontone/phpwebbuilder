@@ -36,7 +36,7 @@ class NavigationComponent extends Component {
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
 		foreach ($this->fields as $f) {
-			$fc = & new SortByFieldComponent;
+			$fc = & new CompositeFormComponent;
 			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
 			$this->addComponent($fc, $f->colName);
 		}
@@ -86,6 +86,4 @@ class NavigationComponent extends Component {
 		$this->refresh();
 	}
 }
-
-class SortByFieldComponent extends Component{}
 ?>

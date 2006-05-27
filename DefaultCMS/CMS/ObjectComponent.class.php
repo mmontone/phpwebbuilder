@@ -9,7 +9,7 @@ class ObjectComponent extends Component {
 		$this->obj =& $object;
 		$this->classN = get_class($object);
 		if ($fields==null){
-    		$this->fieldNames =& $this->obj->allIndexFieldNames();
+    		$this->fieldNames =& $this->obj->allFieldNames();
 		} else {
 			$this->fieldNames = array_map(create_function('$field','return $field->colName;'),$fields);
 		}
