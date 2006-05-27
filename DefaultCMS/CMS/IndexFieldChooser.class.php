@@ -7,7 +7,8 @@ class IndexFieldChooser extends Component {
 
 	function IndexFieldChooser(& $field) {
 		$this->field = $field;
-		$this->value =& new ValueHolder($var = $this->field->getValue());
+		$var = $this->field->getValue();
+		$this->value =& new ValueHolder($var);
 		$this->display =& new ValueHolder($v = 'choose');
 		$this->updateDisplay();
 		$this->addComponent(new ActionLink2(array('action'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->display), 'value'));
