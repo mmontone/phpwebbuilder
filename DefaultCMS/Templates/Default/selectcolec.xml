@@ -4,7 +4,7 @@
 		<container id="className" /> class
 	 	<table id="objs"><tbody>
  			<tr>
-				<template class="Obj" >
+				<template class="SortByFieldComponent" >
 				<td>
 				<container class="ActionLink" />
 				</td>
@@ -13,10 +13,10 @@
 			</tr>
 			<template class="ShowObjectComponent">
 	 			<tr>
-					<template class="FormComponent" >
+					<template class="FieldValueComponent" >
 						<td><container id="value"/></td>
 					</template>
-					<td><a href="#" id="select"><img class="operation" title="New" src="$templatesdir/icons/stock_ok.png"/></a></td>
+					<td><a href="#" id="select"><img class="operation" title="Select" src="$templatesdir/icons/stock_ok.png"/></a></td>
 				</tr>
 			</template>
 		</tbody></table>

@@ -101,11 +101,10 @@ function cancel_ajax(){
 
 
 function postAjax(url, func, formName, obj) {
-      loadingStart();
       var http = getHTTPObject();
        enqueue(http);
+       loadingStart();
        http.abort();
-       url = url;
        var params = encodeForm(formName);
 
        /*-------------------------------------------------------------------------
