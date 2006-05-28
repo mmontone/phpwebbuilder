@@ -411,3 +411,16 @@ function sendUpdate(update) {
     alert(url);
     postAjax(url,updatePage,"app");
 }
+
+function uploadFile(fileelement){
+    var body = document.getElementsByTagName('body')[0];
+    window.onload=function (){alert("loaded");}
+    var ifr = document.createElement('iframe');
+    var div = document.createElement('div');
+    ifr.src='admin/ajax/uploadFile.php?filenamefield='+fileelement+
+    '&basedir='+document.getElementById("basedir").getAttribute('value');
+    div.style.visibility="hidden";
+    body.appendChild(div);
+    div.appendChild(ifr);
+
+}

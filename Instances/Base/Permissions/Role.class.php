@@ -10,7 +10,7 @@ class Role extends PersistentObject {
 
 	function userHasPermission($id, $permission){
 		if ($id == null) return false;
-        $db =& new MySQLdb;
+        $db =& DB::Instance();
 		if (is_array($permission)) {
 			$perm ='(';
 			foreach($permission as $p) {
@@ -51,7 +51,7 @@ class Role extends PersistentObject {
 	}*/
 
 	function havePermission ($permission) {
-			$db = new MySQLdb;
+			$db = DB::Instance();
 			if (is_array($permission)) {
 				$perm ="(";
 				foreach($permission as $p) {

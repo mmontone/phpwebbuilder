@@ -12,7 +12,7 @@ class User extends PersistentObject {
 	  	return $this->checkNotEmpty(array("user"), &$error_msgs);
 	  }
 	function &loadUser($user,$pass){
-	$db = new MySQLdb;
+	$db = DB::Instance();
 	$col = new PersistentCollection(User);
 	$col->conditions["user"] = array("=", "'".$user."'");
 	$col->conditions["pass"] = array("=", "'".$pass."'");
@@ -42,7 +42,7 @@ class User extends PersistentObject {
   		return $usr;
 	}
 	function getPermissions(){
-        $db =& new MySQLdb;
+        $db =& DB::Instance();
 		$sql = implode(array('SELECT permission FROM ',baseprefix,'UserRole u, ',baseprefix,'RolePermission p',
 				' WHERE user =', $this->getUserId(),
 				' AND u.role=p.role'));

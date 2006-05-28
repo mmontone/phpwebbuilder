@@ -5,6 +5,7 @@ require_once dirname(__FILE__) . '/FormComponent.class.php';
 class Input extends FormComponent{
 	function initializeView(&$view){
 		$view->setTagName('input');
+		$view->setAttribute('type', 'text');
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){

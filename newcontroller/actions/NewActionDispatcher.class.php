@@ -73,7 +73,7 @@ class NewActionDispatcher {
 	}
 
 	function &dispatch() {
-		$form = $_REQUEST;
+		$form = array_merge($_REQUEST, $_FILES);
 		$delayed = array ();
 		$elems = array ();
 		$dd = 0;

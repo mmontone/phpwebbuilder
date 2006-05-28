@@ -17,5 +17,5 @@ function sendUpdate(update) {
     submitFormToUrl(url);
 }
 
-
+function uploadFile() {}
 

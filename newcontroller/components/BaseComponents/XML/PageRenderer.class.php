@@ -48,6 +48,7 @@ class StandardPageRenderer extends PageRenderer {
 
 
 		$ret .= '</head><body>';
+		$ret .= '<input type="hidden" name="basedir" id="basedir" value="'.basedir.'"/>';
 
 		foreach ($this->page->scripts as $s) {
 			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
