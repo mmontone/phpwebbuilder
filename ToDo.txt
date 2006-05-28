@@ -12,3 +12,5 @@ ToDo:
 - Collection
 - PersistentColleciton extends Collection (cache of objects).
 - Select (uses Collection). Object to string Method and var to String Function
+- ajax.js has "admin" as pwb_url. Think a way to work it around.
+- Templates: Buttons shouldd stay tight below table. tfooter?

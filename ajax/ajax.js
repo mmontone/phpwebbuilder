@@ -417,8 +417,9 @@ function uploadFile(fileelement){
     window.onload=function (){alert("loaded");}
     var ifr = document.createElement('iframe');
     var div = document.createElement('div');
+    var based = document.getElementById("basedir").getAttribute('value');
     ifr.src='admin/ajax/uploadFile.php?filenamefield='+fileelement+
-    '&basedir='+document.getElementById("basedir").getAttribute('value');
+    '&basedir='+based;
     div.style.visibility="hidden";
     body.appendChild(div);
     div.appendChild(ifr);
