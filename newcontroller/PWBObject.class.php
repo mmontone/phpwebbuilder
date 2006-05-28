@@ -18,7 +18,14 @@ class PWBObject
 	function equalTo(&$other_pwb_object) {
 		return $this->__instance_id == $other_pwb_object->__instance_id;
 	}
-
+	function is(&$other_pwb_object){
+		$ok = $this->equalTo($other_pwb_object);
+		$realid = $this->__instance_id;
+		$this->__instance_id = 0;
+		$ok2 = $this->equalTo($other_pwb_object);
+		$this->__instance_id = $realid;
+		return $ok && $ok2;
+	}
 	function retractInterestIn($event_selector, &$listener) {
     	$listeners =& $this->event_listeners[$event_selector];
 
