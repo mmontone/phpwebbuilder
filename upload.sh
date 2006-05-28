@@ -9,5 +9,5 @@ mv $F ..
 cd ..
 rm -rf tempdir
 gftp anonymous:upload.sourceforge.net /incoming
-#firefox http://sourceforge.net/project/admin/editpackages.php?group_id=153123
+firefox http://sourceforge.net/project/admin/editpackages.php?group_id=153123
 rm $F
