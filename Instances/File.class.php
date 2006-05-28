@@ -18,6 +18,9 @@ class File extends PersistentObject {
        function validate(&$error_msgs) {
        	    return $this->checkNotEmpty(array('label'), $error_msgs);
        }
+       function downloadLink(){
+       		return "Action.php?Controller=ReadImage&id=".$this->id->value;
+	   }
 }
 
 ?>
