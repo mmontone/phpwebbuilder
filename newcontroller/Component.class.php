@@ -95,7 +95,9 @@ class Component extends PWBObject
 		unset($p->$pos);
 	}
 	function redraw(){
-		$this->view->redraw();
+		if ($this->view){
+			$this->view->redraw();
+		}
 	}
 	function &componentAt($index) {
 		$holder =& $this->__children[$index];
@@ -179,7 +181,9 @@ class Component extends PWBObject
 		$v =& new XMLNodeModificationsTracker;
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
-			$v->append_child($this->$key->myContainer());
+			$v->append_child(
+				$this->$key->myContainer()
+			);
 		}
 		return $v;
 	}

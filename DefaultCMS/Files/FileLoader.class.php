@@ -1,7 +1,9 @@
 <?php
 
 class FileLoader extends Component{
-
+	function permissionNeeded () {
+		return "DatabaseAdmin";
+	}
     function initialize() {
 		$this->addComponent(new Input(new ValueHolder($lab='')),'label');
 		$this->addComponent(new Filename(new ValueHolder($f='')),'filename');

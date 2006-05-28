@@ -163,6 +163,10 @@ function toHTML($s) {
    return mb_convert_encoding($s,"HTML-ENTITIES","auto");
 }
 function toXML($s) {
+    //$s = str_replace('&', '&amp;', $s);
+    $s = str_replace('>', '&gt;', $s);
+    $s = str_replace('<', '&lt;', $s);
+    $s = str_replace('"', '&#34;', $s);
     $s = str_replace('&aacute;', '&#225;', $s);
     $s = str_replace('&eacute;', '&#233;', $s);
     $s = str_replace('&iacute;', '&#237;', $s);

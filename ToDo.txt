@@ -8,9 +8,11 @@ Optimizations:
 ToDo:
 - Reinsert permissions into DefaultCMS
 - XML With ID but without controller shoudn't display itself.
-
 - Collection
 - PersistentColleciton extends Collection (cache of objects).
 - Select (uses Collection). Object to string Method and var to String Function
 - ajax.js has "admin" as pwb_url. Think a way to work it around.
 - Templates: Buttons shouldd stay tight below table. tfooter?
+- Texts with "<" or ">" are not ajax-displayed correctly.
+- Strings printed break ajax code when contain an &,
+		but adding an &->&amp; breaks other string conversion.
