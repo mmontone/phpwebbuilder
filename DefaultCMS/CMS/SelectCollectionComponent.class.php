@@ -21,7 +21,7 @@ class SelectCollectionComponent extends NavigationComponent {
 	}
 
 	function addLine(&$obj) {
-		$fc = & new ShowObjectComponent($obj);
+		$fc = & new ShowObjectComponent($obj, $this->fields);
 		$this->objs->addComponent($fc);
 		$fc->addComponent(new ActionLink($this, 'selectObject', 'Select', $obj), 'select');
 	}
