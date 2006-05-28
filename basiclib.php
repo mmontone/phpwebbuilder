@@ -184,6 +184,8 @@ function toXML($s) {
     $s = str_replace('&Ntilde;', '&#209;', $s);
 
     $s = str_replace('&quote;', '&#34;', $s);
+    $s = str_replace('&nbsp;','&#160;', $s);
+
     return $s;
 }
 

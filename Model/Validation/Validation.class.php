@@ -11,6 +11,10 @@ class Validation {
 
     }
 
+    function &validated() {
+    	return $this->value_model;
+    }
+
     function &getValue() {
     	return $this->value_model->getValue();
     }
