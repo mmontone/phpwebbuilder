@@ -440,6 +440,7 @@ class PersistentObject extends Model {
 	 * @category Creation
 	 */
 	function PersistentObject() {
+		parent::Model();
 		$this->createInstance();
 	}
 	function & createInstance() {

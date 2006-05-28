@@ -1,17 +1,12 @@
-<html>
-<head>
-<script>
-function print_s(s){
-	document.getElementsByTagName("body")[0].appendChild(document.createTextNode(s));
-}
-f = function (){
-print_s(window.frames.length);
-}
-window.onload=f;
-</script>
-</head>
-<frameset cols="100%,0%">
-<frame name="main" />
-<frame name="hidden" />
-<frameset>
-</html>
+<?
+require_once "/var/www/cefi/Configuration/pwbapp.php";
+
+
+$o1 =& new PersistentObject;
+$o2 =& $o1;
+$o3 = $o1;
+var_dump($o1->__instance_id);
+var_dump($o1->is($o2));
+var_dump($o1->is($o3));
+
+?>
