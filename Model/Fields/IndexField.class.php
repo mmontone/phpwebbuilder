@@ -28,7 +28,7 @@ class IndexField extends NumField {
 	}
 
 	function setTarget(& $target) {
-		$this->setValue($target->getID());
+		$this->setValue($target->getIdOfClass($this->collection->dataType));
 	}
 
 	function & getTarget() {

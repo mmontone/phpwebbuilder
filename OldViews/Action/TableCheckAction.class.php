@@ -173,11 +173,6 @@ class SuperFieldTableCheckAction extends NumFieldTableCheckAction {
 
 }
 
-class FilenameFieldTableCheckAction extends TableCheckAction {
-	function type (){
-		return "TEXT";
-	}
-}
 class BlobFieldTableCheckAction extends TableCheckAction {
 	function type (){
 		return "LONGBLOB";

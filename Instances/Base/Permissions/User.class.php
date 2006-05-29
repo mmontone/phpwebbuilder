@@ -41,6 +41,9 @@ class User extends PersistentObject {
   	  	}
   		return $usr;
 	}
+	function &logged(){
+		return $_SESSION[sitename]["User"];
+	}
 	function getPermissions(){
         $db =& DB::Instance();
 		$sql = implode(array('SELECT permission FROM ',baseprefix,'UserRole u, ',baseprefix,'RolePermission p',

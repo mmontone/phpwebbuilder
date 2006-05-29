@@ -3,9 +3,10 @@ require_once dirname(__FILE__) . '/../Controller.class.php';
 
 class ReadFile extends Controller
 {
-  function start ($form) {
+  function begin ($form) {
     $obj =& File::getWithId('File', $form["id"]);
-    header('Content-Type: '.$load->obj->filetype->value);
+    header('Content-Type: '.$obj->filetype->value);
+    header('Content-Disposition: attachment; filename='.$obj->filename->value);
     print $obj->bin_data->value;
   }
 }

@@ -4,7 +4,7 @@ class File extends PersistentObject {
       function initialize () {
                $this->table = "files";
                $this->addField(new TextField('label', true));
-               $this->addField(new FilenameField("filename", false));
+               $this->addField(new FilenameField("filename", true));
                $this->addField(new NumField("filesize", false));
                $this->addField(new textField("filetype", true));
                $this->addField(new BlobField("bin_data", FALSE));
@@ -19,7 +19,7 @@ class File extends PersistentObject {
        	    return $this->checkNotEmpty(array('label'), $error_msgs);
        }
        function downloadLink(){
-       		return "Action.php?Controller=ReadImage&id=".$this->id->value;
+       		return pwb_url."/Action.php?Controller=ReadFile&id=".$this->id->value;
 	   }
 }
 

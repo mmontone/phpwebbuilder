@@ -16,3 +16,5 @@ ToDo:
 - Texts with "<" or ">" are not ajax-displayed correctly.
 - Strings printed break ajax code when contain an &,
 		but adding an &->&amp; breaks other string conversion.
+- Checkboxes, and edit or delete many elements at the same time (ShowCollectionComponent).
+- Action Validation on delete

@@ -5,7 +5,6 @@ function callAction(action_id) {
 
 function submitFormToUrl(url) {
     url = appendQueuedUpdates(url);
-    alert(url);
     var formName = "app";
     var form = document.getElementById(formName);
     form.setAttribute('action', url);
