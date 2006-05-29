@@ -9,9 +9,7 @@ class XMLNode extends DOMXMLNode {
 	function XMLNode($tag_name = 'div', $attributes = array ()) {
 		return parent :: DOMXMLNode($tag_name, $attributes);
 	}
-	function & create_text_node($text) {
-		return new XMLTextNode($text);
-	}
+
 	function & createElement($tag_name, & $controller) {
 		$element = & parent :: createElement($tag_name);
 		$element->controller = & $controller;

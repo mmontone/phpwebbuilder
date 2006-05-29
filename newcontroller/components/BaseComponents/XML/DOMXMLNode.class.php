@@ -33,9 +33,6 @@ class DOMXMLNode
 		$this->tagName = $tagName;
 	}
 
-	function & create_text_node($text, & $obj) {
-		return new XMLTextNode($text, & $obj);
-	}
 	function & first_child() {
 		$ks = array_keys($this->childNodes);
 		return $this->childNodes[$ks[0]];
