@@ -18,15 +18,10 @@ if (isset($_REQUEST["filenamefield"])){
 remf = document.getElementById("fileelem");
 document.getElementById("nodeid").setAttribute('value','<?=$_REQUEST["filenamefield"]?>');
 doc = window.frameElement.ownerDocument;
+parwin = doc.window;
 movf = doc.getElementById('<?=$_REQUEST["filenamefield"]?>');
 document.getElementById("basedir").setAttribute('value', doc.getElementById("basedir").getAttribute('value'));
-newf = document.createElement('span');
-for(var i in movf.attributes){
-	att = movf.attributes[i].nodeName;
-	newf.setAttribute(att, movf.getAttribute(att));
-}
-newf.appendChild(document.createTextNode("uploading "+movf.value+"..."));
-movf.parentNode.replaceChild(newf, movf);
+parwin.start_uploading('<?=$_REQUEST["filenamefield"]?>');
 remf.parentNode.replaceChild(movf, remf);
 movf.setAttribute('id', 'fileelem');
 movf.setAttribute('name', 'fileelem');
@@ -42,8 +37,8 @@ window.onload=function (){document.getElementById('fm').submit();}
 <script>
 ifr = window.frameElement;
 doc = ifr.ownerDocument;
-text = doc.getElementById('<?=$_REQUEST["nodeid"]?>');
-text.replaceChild(document.createTextNode("uploaded <?=$_FILES["fileelem"]["name"]?>"), text.firstChild);
+parwin = doc.window;
+parwin.end_uploading('<?=$_REQUEST["nodeid"]?>', '<?=$_FILES["fileelem"]["name"]?>');
 ifr.parentNode.removeChild(ifr);
 </script>
 <?}?>

@@ -425,3 +425,17 @@ function uploadFile(fileelement){
     div.appendChild(ifr);
 
 }
+function start_uploading(fieldname){
+	movf = document.getElementById(fieldname);
+	newf = document.createElement('span');
+	newf.appendChild(document.createTextNode("uploading "+movf.value+"..."));
+	for(var i in movf.attributes){
+		att = movf.attributes[i].nodeName;
+		newf.setAttribute(att, movf.getAttribute(att));
+	}
+	movf.parentNode.replaceChild(newf, movf);
+}
+function end_uploading(fieldname, filename){
+	text = document.getElementById(fieldname);
+	text.replaceChild(document.createTextNode("uploaded "+filename), text.firstChild);
+}
