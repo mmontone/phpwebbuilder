@@ -17,7 +17,13 @@ class SelectCollectionComponent extends NavigationComponent {
 		$obj = & new $this->classN;
 		$ec =& new EditObjectComponent($obj);
     	$ec->registerCallback('refresh', callback($this, 'refresh'));
+    	$ec->registerCallback('object_edited', new FunctionObject($this,'objectEdited'));
 		$this->call($ec);
+	}
+
+	function objectEdited(&$object) {
+		$object->save();
+		$this->refresh();
 	}
 
 	function addLine(&$obj) {

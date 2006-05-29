@@ -12,9 +12,21 @@ class ShowCollectionComponent extends NavigationComponent {
 	/* Editing */
 	function editObject(&$obj) {
 		$ec =& new EditObjectComponent($obj);
+    	$ec->registerCallback('cancel', new FunctionObject($this, 'cancel'));
+    	$ec->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
     	$ec->registerCallback('refresh', new FunctionObject($this, 'refresh'));
-		$this->call($ec);
+    	$this->call($ec);
 	}
+
+	function objectEdited(&$object) {
+		$object->save();
+		$this->refresh();
+	}
+
+	function cancel() {
+		$this->refresh();
+	}
+
 	function newObject(&$n) {
 		$obj = & new $this->classN;
 		$c =& $this->col->conditions;

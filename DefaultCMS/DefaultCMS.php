@@ -9,6 +9,7 @@ require_once 'Files/FileLoader.class.php';
 require_once 'CMS/ShowCollectionComponent.class.php';
 require_once 'CMS/ShowObjectComponent.class.php';
 require_once 'CMS/EditObjectComponent.class.php';
+require_once 'CMS/ValidationErrorsDisplayer.class.php';
 require_once 'CMS/ComponentFactory/FieldComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Edit/CollectionFieldEditComponentFactory.class.php';
 require_once 'CMS/ComponentFactory/Edit/EditComponentFactory.class.php';

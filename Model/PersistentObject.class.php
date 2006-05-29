@@ -318,7 +318,7 @@ class PersistentObject extends Model {
 		foreach ($fields as $field) {
 			$is_valid = $this-> $field->value != "";
 			if (!$is_valid) {
-				$error_msgs[$field] = "Fill in the " . $field . ", please";
+				$error_msgs[$field] = "Fill in the " . $this->$field->displayString . ", please";
 			}
 			$ret &= $is_valid;
 		}
