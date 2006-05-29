@@ -1,6 +1,7 @@
 <?php
 require_once 'Model.class.php';
 require_once 'PersistentObject.class.php';
+require_once 'Collection.class.php';
 require_once 'PersistentCollection.class.php';
 
 require_once 'Fields/DataField.class.php';

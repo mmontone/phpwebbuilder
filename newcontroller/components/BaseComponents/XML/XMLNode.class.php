@@ -46,6 +46,9 @@ class XMLNode extends DOMXMLNode {
 	}
 	function renderEcho() {
 		$this->getRealId();
+		if ($this->getAttribute('id')!='' && !$this->controller) {
+			return;
+		}
 		if (count($this->childNodes) == 0) {
 			echo implode('',array("\n<",$this->tagName));
 			foreach ($this->attributes as $name => $val) {

@@ -15,7 +15,7 @@
 		</tbody></table>
 		<a href="#" id="save"><img class="operation" title="Save changes" src="$templatesdir/icons/stock_save.png"/></a>
 		<a href="#" id="cancel"><img class="operation" title="Cancel" src="$templatesdir/icons/stock_cancel.png"/></a>
-		<!-- <a href="#" id="delete"><img class="operation" title="Delete" src="$templatesdir/icons/stock_delete.png"/></a> -->
+		<a href="#" id="delete"><img class="operation" title="Delete" src="$templatesdir/icons/stock_delete.png"/></a>
 	</template>
  	<template class="ShowCollectionComponent">
  		<div>

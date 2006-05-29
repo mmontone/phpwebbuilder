@@ -1,17 +1,18 @@
 <?
 $DBObject = DBObject;
 
-class PersistentCollection {
+class PersistentCollection extends Collection{
 	var $order;
 	var $conditions;
 	var $dataType;
 	var $limit = 10;
 	var $offset = 0;
 	var $size;
-
+	var $elements=null;
 	function PersistentCollection($dataType = "") {
 		$this->dataType = $dataType;
 		$this->conditions = array ();
+		parent::Collection();
 	}
 	function findById($id) {
 		return PersistentObject::getWithId($this->dataType, $id);
@@ -27,6 +28,10 @@ class PersistentCollection {
 	function idRestrictions(){
 		$obj = new $this->dataType;
 		return $obj->idRestrictions();
+	}
+	function setCondition($field, $comparator, $value){
+		$this->conditions[$field]=array($comparator,$value);
+		$this->elements=null;
 	}
 	function conditions() {
 		$cond = '1=1';//$this->idRestrictions();
@@ -55,16 +60,19 @@ class PersistentCollection {
 		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
 	}
 	function elements() {
-		$obj = & new $this->dataType;
-		$sql = $this->selectsql();
-		$db =& DB::Instance();
-		$reg = $db->SQLExec($sql, FALSE, $this);
-		$col = array ();
-		while ($data = $db->fetchrecord($reg)) {
-			$o =& $obj->loadFromRec($data);
-			$col[] = & $o;
+		if (!$this->elements){
+			$obj = & new $this->dataType;
+			$sql = $this->selectsql();
+			$db =& DB::Instance();
+			$reg = $db->SQLExec($sql, FALSE, $this);
+			$col = array ();
+			while ($data = $db->fetchrecord($reg)) {
+				$o =& $obj->loadFromRec($data);
+				$col[] = & $o;
+			}
+			$this->elements =& $col;
 		}
-		return $col;
+		return $this->elements;
 	}
 
 	/* Deprecated */
@@ -115,7 +123,7 @@ class PersistentCollection {
 
 	/*------------- new ----------------*/
 
-
+/*
 	function fetchElements($offset, $limit, $order, $conditions='1=1') {
 		$obj = & new $this->dataType;
 		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE ' . $conditions .
@@ -128,7 +136,7 @@ class PersistentCollection {
 			$col[] = & $obj;
 		}
 		return $col;
-	}
+	}*/
 
 	function getSize($conditions='1=1') {
 		$obj = & new $this->dataType;

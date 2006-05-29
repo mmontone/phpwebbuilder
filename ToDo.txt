@@ -7,7 +7,6 @@ Optimizations:
 
 ToDo:
 - Reinsert permissions into DefaultCMS
-- XML With ID but without controller shoudn't display itself.
 - Collection
 - PersistentColleciton extends Collection (cache of objects).
 - Select (uses Collection). Object to string Method and var to String Function
