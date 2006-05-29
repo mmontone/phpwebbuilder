@@ -35,13 +35,11 @@ foreach ($modules as $dir) {
 	includemodule(pwbdir.'/'.trim($dir));
 }
 
-$app = array (
-	basedir . "/MyInstances"
-		//,basedir."/MyControllers"
+define('app', "MyInstances,MyComponents" );
+$app = split(",", app);
 
-);
 foreach ($app as $dir) {
-	includemodule($dir);
+	includemodule(basedir."/".$dir);
 }
 require_once "session.php";
 ?>

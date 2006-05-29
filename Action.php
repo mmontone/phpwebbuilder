@@ -1,7 +1,10 @@
 <?
 define('modules',
 	"Model,Instances,database,Controllers,OldViews");
+define('app',"MyInstances,MyControllers");
+
 require_once dirname(dirname($_SERVER["DOCUMENT_ROOT"].$_SERVER["PHP_SELF"]))."/Configuration/pwbapp.php";
+
 includefile($f = basedir.'/MyControllers');
 
 trace_params();
