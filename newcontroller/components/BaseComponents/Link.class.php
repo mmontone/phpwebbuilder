@@ -17,7 +17,7 @@ class Link extends FormComponent
 	}
 	function prepareToRender(){
 		parent::prepareToRender();
-		$this->view->setAttribute('href', $this->target);
+		$this->view->setAttribute('href', toAjax($this->target));
 	}
 }
 ?>

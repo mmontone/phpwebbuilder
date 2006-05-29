@@ -57,7 +57,7 @@ class XMLNode extends DOMXMLNode {
 			$childs = array();
 			echo implode('',array("\n<",$this->tagName));
 			foreach ($this->attributes as $name => $val) {
-				echo implode('' , array(' ',$name , '="' , $val, '"'));
+				echo implode('' , array("\n   ",$name , '="' , $val, '"'));
 			}
 			echo '>';
 			$ks = array_keys($this->childNodes);

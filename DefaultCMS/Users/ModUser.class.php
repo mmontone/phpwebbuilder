@@ -6,7 +6,7 @@ class ModUser extends EditObjectComponent{
 	}
 	function ModUser(){
 		$u =& $_SESSION[sitename]['User'];
-		$fs = $u->allFieldNames();
+		$fs =& $u->allFields();
 		unset($fs['UserRoleuser']);
 		unset($fs['super']);
 		unset($fs['id']);

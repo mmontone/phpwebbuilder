@@ -160,11 +160,26 @@ function &array_next(&$array) {
 }
 
 function toHTML($s) {
-   return mb_convert_encoding($s,"HTML-ENTITIES","auto");
+    $s = str_replace('ñ', '&ntilde;', $s);
+    $s = str_replace('Ñ', '&Ntilde;', $s);
+    $s = str_replace('á', '&aacute;',  $s);
+    $s = str_replace('é', '&eacute;', $s);
+    $s = str_replace('í', '&iacute;', $s);
+    $s = str_replace('ó', '&oacute;', $s);
+    $s = str_replace('ú', '&uacute;', $s);
+    $s = str_replace('Á', '&Aacute;',$s);
+    $s = str_replace('É', '&Eacute;', $s);
+    $s = str_replace('Í', '&Iacute;', $s);
+    $s = str_replace('Ó', '&Ooacute;',$s);
+    $s = str_replace('Ú', '&Uacute;', $s);
+
+	$s = htmlentities($s);
+    return $s;
+   //return mb_convert_encoding($s,"HTML-ENTITIES","auto");
 }
 function toXML($s) {
     $s = str_replace('&', '&amp;', $s);
-    $s = ereg_replace('&amp;&.*;', '&\\1;', $s);
+    $s = ereg_replace('&(amp;)+(.*;)', '&\\2', $s);
     $s = str_replace('>', '&gt;', $s);
     $s = str_replace('<', '&lt;', $s);
     $s = str_replace('"', '&#34;', $s);
@@ -175,11 +190,10 @@ function toXML($s) {
     $s = str_replace('&uacute;', '&#250;', $s);
     $s = str_replace('&uuml;', '&#252;', $s);
     $s = str_replace('&ntilde;', '&#241;', $s);
-
     $s = str_replace('&Aacute;', '&#193;', $s);
     $s = str_replace('&Eacute;', '&#201;', $s);
     $s = str_replace('&Iacute;', '&#205;', $s);
-    $s = str_replace('&Ooacute;', '&#211;', $s);
+    $s = str_replace('&Oacute;', '&#211;', $s);
     $s = str_replace('&Uacute;', '&#218;', $s);
     $s = str_replace('&Uuml;', '&#220;', $s);
     $s = str_replace('&Ntilde;', '&#209;', $s);

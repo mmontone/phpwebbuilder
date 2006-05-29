@@ -76,6 +76,7 @@ class ViewCreator {
 		$vid =& $parentView->childrenWithId($id);
 		if ($vid!=null){
 			if (!$vid->isContainer()){
+				$vid->getTemplatesAndContainers();
 				$component->setView($vid);
 				return $vid;
 			} else {

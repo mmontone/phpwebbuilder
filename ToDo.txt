@@ -1,7 +1,7 @@
 Optimizations:
 
 
-*htmltemplate->xml2template
+*htmltemplate->xml2template: 0.0034915619
 *xmlnodemodificationstracker->flushmodifications
 
 
@@ -13,8 +13,6 @@ ToDo:
 - Select (uses Collection). Object to string Method and var to String Function
 - ajax.js has "admin" as pwb_url. Think a way to work it around.
 - Templates: Buttons shouldd stay tight below table. tfooter?
-- Texts with "<" or ">" are not ajax-displayed correctly.
-- Strings printed break ajax code when contain an &,
-		but adding an &->&amp; breaks other string conversion.
 - Checkboxes, and edit or delete many elements at the same time (ShowCollectionComponent).
 - Action Validation on delete
+- uploadFile.php should call to functions on the parent document (start_uploading, end_uploading, upload_error).

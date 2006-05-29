@@ -9,7 +9,7 @@ class Filename extends Input {
 	}
 	function setEvents(&$view){
 		parent::setEvents(&$view);
-		$view->setAttribute('onchange', 'uploadFile(&#39;'.$this->getId().'&#39;)');
+		$view->setAttribute('onchange', 'uploadFile(&#34;'.$this->getId().'&#34;)');
 	}
 	function loadFile($file_data){
 		$file =& new File;

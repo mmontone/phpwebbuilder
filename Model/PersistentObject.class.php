@@ -48,6 +48,10 @@ class PersistentObject extends Model {
 		$arr = array ();
 		foreach ($names as $name) {
 			$f =& $this->fieldNamed($name);
+			if ($f==null){
+				print_backtrace('Object '.get_class($this).' doesn\'t have field '.
+					$name.' in '.print_r($names, TRUE));
+			}
 			$arr[$name] = & $f;
 		}
 		return $arr;
