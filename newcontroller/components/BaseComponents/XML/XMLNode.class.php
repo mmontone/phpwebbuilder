@@ -147,27 +147,27 @@ class XMLNode extends DOMXMLNode {
 	function addTemplatesAndContainersChild(& $v) {
 		$this->addTemplatesAndContainers($v->templates, $v->containers, $v->childById);
 	}
-	function &templatesForClass(& $component) {
+	function &templateForClass(& $component) {
 		$res = array ();
 		$ks = array_keys($this->templates);
 		foreach ($ks as $k) {
 			$t = & $this->templates[$k];
 			if ($t->isTemplateForClass($component)) {
-				$res[] = & $t;
+				return $t;
 			}
 		}
-		return $res;
+		return null;
 	}
-	function & containersForClass(& $component) {
+	function & containerForClass(& $component) {
 		$res = array ();
 		$ks = array_keys($this->containers);
 		foreach ($ks as $k) {
 			$t = & $this->containers[$k];
 			if ($t->isContainerForClass($component)) {
-				$res[] = & $t;
+				return $t;
 			}
 		}
-		return $res;
+		return null;
 	}
 	function isTemplateForClass(& $component) {
 		return false;

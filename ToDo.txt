@@ -12,8 +12,7 @@ ToDo:
 - PersistentColleciton extends Collection (cache of objects).
 - Select (uses Collection). Object to string Method and var to String Function
 - ajax.js has "admin" as pwb_url. Think a way to work it around.
-- Templates: Buttons shouldd stay tight below table. tfooter?
+- Templates: Buttons should stay right below table. tfooter?
 - Checkboxes, and edit or delete many elements at the same time (ShowCollectionComponent).
 - (ShowCollectionComponent): Elements should be added by the id on the class (so consecutive actions, like deletions, can be carried out).
 - Action Validation on delete
-- uploadFile.php should call to functions on the parent document (start_uploading, end_uploading, upload_error).

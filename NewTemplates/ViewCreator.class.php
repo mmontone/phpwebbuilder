@@ -84,23 +84,20 @@ class ViewCreator {
 				$parentView =& $vid->parentNode;
 			}
 		} else {
-			$cts =& $parentView->containersForClass($component);
-			if (count($cts)>0){
-				$ct =& $cts[0];
+			$ct =& $parentView->containerForClass($component);
+			if ($ct!=null){
 				$parentView =& $ct->parentNode;
 				$pos =& $ct->createCopy();
 				$parentView->insertBefore($ct, $pos);
 			} else {
 				$v =& new NullView;
-				/*$v =& $component->createDefaultView();*/
 				$component->setView($v);
 				return $v;
 			}
 		}
 		if (!$hasView) {
-			$tps =& $parentView->templatesForClass($component);
-			if (count($tps)>0){
-				$tp0 =& $tps[0];
+			$tp0 =& $parentView->templateForClass($component);
+			if ($tp0!=null){
 				$tp =& $tp0->instantiateFor($component);
 			} else {
 				$tp =& $this->createTemplate($component);
@@ -112,21 +109,18 @@ class ViewCreator {
 		return $view;
 	}
 	function &createTemplate(&$component){
-		$tps =& $this->templatesForClass($component);
-		$tp =& $tps[0];
+		$tp =& $this->templateForClass($component);
 		return $tp->instantiateFor($component);
 	}
-	function &templatesForClass(&$component){
-		$res = array();
+	function &templateForClass(&$component){
 		$ks = array_keys ($this->templates);
 		foreach ($ks as $k){
 			$t =& $this->templates[$k];
 			if ($t->isTemplateForClass($component)){
-				$res[]=&$t;
+				return $t;
 			}
 		}
-		$res[]=& $this->defaultTemplate($component);
-		return $res;
+		return $this->defaultTemplate($component);
 	}
 	function &defaultTemplate(&$component){
 		return $component->createDefaultView();

@@ -3,12 +3,12 @@ class DOMXMLNode
 {
 	var $childNodes = array ();
 	var $parentNode = null;
-	var $tagName = "div";
+	var $tagName = 'div';
 	var $attributes = array ();
 	var $parentPosition = null;
 	var $nextNode = 0;
 
-	function DOMXMLNode($tag_name = "div", $attributes = array ()) {
+	function DOMXMLNode($tag_name = 'div', $attributes = array ()) {
 		$this->tagName = $tag_name;
 		$this->attributes = $attributes;
 		$this->nextNode = 0;

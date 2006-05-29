@@ -32,10 +32,10 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		return $this->getAttribute('fakeid');
 	}
 	function & xml2template(& $xml) {
-		$class = get_class($xml);
 		$tag =& $xml->tagName;
-		if (strcasecmp($class, 'XMLTextNode') == 0 ||
-			strcasecmp($class, 'HTMLTextNode') == 0) {
+		if ($tag == ''
+		//||	strcasecmp($class, 'HTMLTextNode') == 0
+			){
 			$tn = & new XMLTextNode($xml->data);
 			return $tn;
 		} else

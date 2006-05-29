@@ -5,7 +5,7 @@ class XMLTextNode extends XMLNodeModificationsTracker
 {
 	var $data;
 	function XMLTextNode($data) {
-		parent::XMLNodeModificationsTracker();
+		parent::XMLNodeModificationsTracker('');
 		$this->data = $data;
 	}
 
