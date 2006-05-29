@@ -1,3 +1,4 @@
+document.window=window;
 var updates = new Object();
 
 function Update(t, v) {
