@@ -88,7 +88,7 @@ class ViewCreator {
 				$ct =& $cts[0];
 				$parentView =& $ct->parentNode;
 				$pos =& $ct->createCopy();
-				$parentView->insert_before($ct, $pos);
+				$parentView->insertBefore($ct, $pos);
 			} else {
 				$v =& new NullView;
 				/*$v =& $component->createDefaultView();*/
@@ -107,7 +107,7 @@ class ViewCreator {
 			$view =& $tp;
 			$view->getTemplatesAndContainers();
 		}
-		$parentView->replace_child($view,$pos);
+		$parentView->replaceChild($view,$pos);
 		return $view;
 	}
 	function &createTemplate(&$component){

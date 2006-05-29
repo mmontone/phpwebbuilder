@@ -12,8 +12,8 @@ class XMLNode extends DOMXMLNode {
 	function & create_text_node($text) {
 		return new XMLTextNode($text);
 	}
-	function & create_element($tag_name, & $controller) {
-		$element = & parent :: create_element($tag_name);
+	function & createElement($tag_name, & $controller) {
+		$element = & parent :: createElement($tag_name);
 		$element->controller = & $controller;
 		return $element;
 	}

@@ -24,9 +24,9 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 	/*
 	function renderAjaxResponseCommand(&$target) {
 		//assert($this->target->fullPath!="");
-		$xml = '<replace_node path="' . $target->fullPath . '">';
+		$xml = '<replaceNode path="' . $target->fullPath . '">';
 		$xml .= $this->replacement->render();
-		$xml .= '</replace_node>';
+		$xml .= '</replaceNode>';
 		return $xml;
 	}
 	*/
@@ -41,11 +41,11 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 
 	/*
 	function printString() {
-		$ret = '<replace_node path="' . $this->target->fullPath . '">';
+		$ret = '<replaceNode path="' . $this->target->fullPath . '">';
 		$ret .= "\n   ";
 		$ret .= $this->replacement->printString();
 		$ret .= "\n";
-		$ret .= '</replace_node>';
+		$ret .= '</replaceNode>';
 		return $ret;
 	}
 	*/
@@ -74,9 +74,9 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	/*
 	function renderAjaxResponseCommand() {
 		//assert($this->child->fullPath!="");
-		$xml = '<replace_node path="' . $this->child->fullPath . '">';
+		$xml = '<replaceNode path="' . $this->child->fullPath . '">';
 		$xml .= $this->replacement->render();
-		$xml .= '</replace_node>';
+		$xml .= '</replaceNode>';
 		return $xml;
 	}
 	*/
@@ -93,11 +93,11 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	}
 	/*
 	function printString() {
-		$ret = '<replace_node path="' . $this->child->fullPath . '">';
+		$ret = '<replaceNode path="' . $this->child->fullPath . '">';
 		$ret .= "\n   ";
 		$ret .= $this->replacement->printString();
 		$ret .= "\n";
-		$ret .= '</replace_node>';
+		$ret .= '</replaceNode>';
 		return $ret;
 	}
 	*/
@@ -153,9 +153,9 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	/*
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath);
-		$xml = '<append_child path="' . $this->target->fullPath . '">';
+		$xml = '<appendChild path="' . $this->target->fullPath . '">';
 		$xml .= $this->child->render();
-		$xml .= '</append_child>';
+		$xml .= '</appendChild>';
 		return $xml;
 	}
 	*/
@@ -172,11 +172,11 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	}
 	/*
 	function printString() {
-		$ret = '<append_child path="' . $this->target->fullPath . '">';
+		$ret = '<appendChild path="' . $this->target->fullPath . '">';
 		$ret .= "\n   ";
 		$ret .= $this->child->printString();
 		$ret .= "\n";
-		$ret .= '</append_child>';
+		$ret .= '</appendChild>';
 		return $ret;
 	}
 	*/

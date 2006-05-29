@@ -8,12 +8,12 @@ class TextAreaComponent extends FormComponent{
 	}
 
 	function prepareToRender(){
-		$this->view->append_child(new XMLTextNode($this->printValue()));
+		$this->view->appendChild(new XMLTextNode($this->printValue()));
 	}
 	function valueChanged(&$value_model, &$params) {
 		/*WARNING!!! If there's an error, look here first ;) */
 		$text = & $this->printValue();
-		$this->view->replace_child(new XMLTextNode($text), $this->view->first_child());
+		$this->view->replaceChild(new XMLTextNode($text), $this->view->first_child());
 		$this->view->redraw();
 	}
 	function printValue(){

@@ -14,7 +14,7 @@ class DOMXMLNode
 		$this->nextNode = 0;
 	}
 
-	function & create_element($tag_name) {
+	function & createElement($tag_name) {
 		$class_name = get_class($this);
 		$element = & new $class_name($tag_name);
 		return $element;
@@ -47,10 +47,10 @@ class DOMXMLNode
 		$xml->parentPosition = $position;
 	}
 
-	function append_child(& $xml) {
+	function appendChild(& $xml) {
 		$this->insert_in($xml,$this->nextNode++);
 	}
-	function replace_child(& $new, & $old) {
+	function replaceChild(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);
 		//$this->checkConsistency();
 		$n = null;
@@ -58,7 +58,7 @@ class DOMXMLNode
 		$old->parentPosition = & $n;
 	}
 
-	function remove_child(& $old) {
+	function removeChild(& $old) {
 		$pos = $old->parentPosition;
 		/*$null = null;
 		$this->childNodes[$pos] =& $null;
@@ -74,12 +74,12 @@ class DOMXMLNode
 		$this->checkConsistency();
 	}
 
-	function remove_childs(){
+	function removeChilds(){
 		$temp = array();
 		$this->childNodes =& $temp;
 	}
 
-	function insert_before(& $old, & $new) {
+	function insertBefore(& $old, & $new) {
 		$pos = $old->parentPosition;
 		$ks = array_keys($this->childNodes);
 		$c = count($ks);

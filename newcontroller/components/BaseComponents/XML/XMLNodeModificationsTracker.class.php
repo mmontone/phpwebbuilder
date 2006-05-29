@@ -23,22 +23,22 @@ class XMLNodeModificationsTracker extends XMLNode {
 		}
 	}
 
-	function create_element($tag_name, & $controller) {
+	function createElement($tag_name, & $controller) {
 		$element = & new XMLNodeModificationsTracker($tag_name);
 		$element->controller = & $controller;
 		return $element;
 	}
 
-	function append_child(& $child) {
+	function appendChild(& $child) {
 		// I don't want modifications on the $child to be taken into account by the page renderer
 		$child->flushModifications();
 		$child->toFlush =& new AppendChildXMLNodeModification($this, $child);
 		// Tag the child as an appended  node. See what happens when a "append" modification is found in AjaxPageRenderer
 		$child->modifications[] =& $child->toFlush;
-		return parent :: append_child($child);
+		return parent :: appendChild($child);
 	}
 
-	function replace_child(& $new_child, & $old_child) {
+	function replaceChild(& $new_child, & $old_child) {
 		// I don't want modifications on the $new_child to be taken into account by the page renderer
 		$new_child->flushModifications();
 		if ($old_child->toFlush) {
@@ -52,10 +52,10 @@ class XMLNodeModificationsTracker extends XMLNode {
 			$new_child->toFlush = & new ReplaceChildXMLNodeModification($new_child, $old_child, $this);
 			$new_child->modifications[] =& $new_child->toFlush;
 		}
-		return parent :: replace_child($new_child, $old_child);
+		return parent :: replaceChild($new_child, $old_child);
 	}
 
-	function remove_child(& $child) {
+	function removeChild(& $child) {
 		if ($child->toFlush) {
 			if (get_class($child->toFlush) == "replacechildxmlnodemodification"){
 				$old =& $child->toFlush->child;
@@ -66,10 +66,10 @@ class XMLNodeModificationsTracker extends XMLNode {
 			$child->toFlush = & new RemoveChildXMLNodeModification($this, $child);
 			$this->modifications[] = & $child->toFlush;
 		}
-		return parent :: remove_child($child);
+		return parent :: removeChild($child);
 	}
 	function redraw(){
-		$this->parentNode->replace_child($this, $new_xml = $this);
+		$this->parentNode->replaceChild($this, $new_xml = $this);
 	}
 	function setAttribute($attribute, $value) {
 		$this->modifications[] = & new SetAttributeXMLNodeModification($this, $attribute, $value);
@@ -81,10 +81,10 @@ class XMLNodeModificationsTracker extends XMLNode {
 		return parent::removeAttribute($attribute);
 	}
 
-	function insert_before(&$old, &$new){
+	function insertBefore(&$old, &$new){
 		$new->toFlush = & new InsertBeforeXMLNodeModification($this, $old, $new);
 		$this->modifications[] = & $new->toFlush;
-		return parent :: insert_before($old, $new);
+		return parent :: insertBefore($old, $new);
 	}
 	function printString() {
 		$this->getRealId();

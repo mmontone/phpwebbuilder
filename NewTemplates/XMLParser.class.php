@@ -42,7 +42,7 @@ class XMLParser {
    	   if (trim($cdata)!=""){
    	   		$cant = count($this->xmls);
 	   		$n = null;
-       		$this->xmls[$cant-1]->append_child(new XMLTextNode($cdata, $n));
+       		$this->xmls[$cant-1]->appendChild(new XMLTextNode($cdata, $n));
    	   }
    }
    function tag_close($parser, $tag)
@@ -51,7 +51,7 @@ class XMLParser {
        	if ($cant>=2){
 	   		$xchild =& $this->xmls[$cant-1];
 	       	array_pop($this->xmls);
-	   		$this->xmls[$cant-2]->append_child($xchild);
+	   		$this->xmls[$cant-2]->appendChild($xchild);
        	}
    }
 }

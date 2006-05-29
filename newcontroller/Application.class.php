@@ -32,8 +32,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             'page_renderer' => 'AjaxPageRenderer');
-		                             //'page_renderer' => 'StandardPageRenderer');
+		                             //'page_renderer' => 'AjaxPageRenderer');
+		                             'page_renderer' => 'StandardPageRenderer');
 		                             //'page_renderer' => 'DebugPageRenderer');
 		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }
@@ -91,7 +91,7 @@ class Application extends ComponentHolder
 	}
 	function redraw(){
 		$this->wholeView->flushModifications();
-		$this->wholeView->replace_child($this->wholeView->first_child(),$other = $this->wholeView->first_child());
+		$this->wholeView->replaceChild($this->wholeView->first_child(),$other = $this->wholeView->first_child());
 	}
 	function initialRender() {
 		$this->viewCreator->createAllViews();
@@ -115,7 +115,7 @@ class Application extends ComponentHolder
 			$this->loadTemplates();
 			$this->wholeView =& new XMLNodeModificationsTracker;
 			$this->wholeView->controller =& $this;
-			$this->wholeView->append_child($this->component->myContainer());
+			$this->wholeView->appendChild($this->component->myContainer());
 			$this->wholeView->getTemplatesAndContainers();
 			$this->initializeStyleSheets();
 			$this->initializeScripts();

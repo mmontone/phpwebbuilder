@@ -82,7 +82,7 @@ class Component extends PWBObject
 		$v =& $this->view;
 		$pv =& $v->parentNode;
 		if ($v!=null && $pv!=null){
-			$pv->remove_child($v);
+			$pv->removeChild($v);
 		}
 		unset($pv);
 		unset($v);
@@ -123,7 +123,7 @@ class Component extends PWBObject
     }
 
 	function dettachView(){
-		$this->view->parentNode->remove_child($this->view);
+		$this->view->parentNode->removeChild($this->view);
 	}
 
 	function callback($callback=null) {
@@ -181,7 +181,7 @@ class Component extends PWBObject
 		$v =& new XMLNodeModificationsTracker;
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
-			$v->append_child(
+			$v->appendChild(
 				$this->$key->myContainer()
 			);
 		}
@@ -198,7 +198,7 @@ class Component extends PWBObject
 	    $pv =& $v->parentNode;
     	if ($v!=null && $pv!=null) {
 	    	$cont=& $this->myContainer();
-	    	$pv->replace_child($cont, $v);
+	    	$pv->replaceChild($cont, $v);
 	    	$this->holder->parent->view->getTemplatesAndContainers();
 	    }
 	}

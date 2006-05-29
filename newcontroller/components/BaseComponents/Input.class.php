@@ -3,6 +3,10 @@
 require_once dirname(__FILE__) . '/FormComponent.class.php';
 
 class Input extends FormComponent{
+	function Input(&$value_model) {
+		parent::FormComponent($value_model);
+	}
+
 	function initializeView(&$view){
 		$view->setTagName('input');
 		$view->setAttribute('type', 'text');

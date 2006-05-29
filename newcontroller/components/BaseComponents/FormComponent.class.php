@@ -57,11 +57,11 @@ class FormComponent extends Component
 		return $params;
 	}
 
-	function setValue($value) {
+	function setValue(&$value) {
 		$this->value_model->setValue($value);
 	}
 
-	function getValue() {
+	function &getValue() {
 		return $this->value_model->getValue();
 	}
 	function &createDefaultView(){
@@ -85,6 +85,10 @@ class FormComponent extends Component
 	function onBlurSend($selector, &$target) {
 		$this->addEventListener(array('blur'=>$selector), $target);
 		$this->setOnBlurEvent($this->view);
+	}
+
+	function &printValue() {
+		return $this->getValue();
 	}
 }
 
