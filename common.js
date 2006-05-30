@@ -60,19 +60,18 @@ function componentBlur(comp) {
 }
 
 function checkboxGetValue(checkbox) {
-    var value = checkbox.getAttribute('checked');
-    if (!value)
+    if (!checkbox.checked)
         return "1";
     else
         return "0";
 }
 
 function inputGetValue(input) {
-    return input.getAttribute('value');
+    return input.value;
 }
 
 function actionlinkGetValue(actionlink) {
-    return actionlink.getAttribute('value');
+    return actionlink.value;
 }
 
 function actionlink2GetValue(actionlink) {
@@ -80,5 +79,16 @@ function actionlink2GetValue(actionlink) {
 }
 
 function textareacomponentGetValue(textarea) {
-    return textarea.getAttribute('value');
+    return textarea.value;
+}
+
+function selectGetValue(select) {
+    return select.selectedIndex;
+}
+
+function radiobuttonGetValue(radiobutton) {
+    if (radiobutton.checked)
+        return "1";
+    else
+        return "0";
 }

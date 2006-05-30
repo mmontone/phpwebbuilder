@@ -4,8 +4,12 @@ class CheckBox extends FormComponent {
 
 	function CheckBox(& $boolHolder) {
 		parent :: FormComponent($boolHolder);
+		$this->onFocusSend('changedTest', $this);
 	}
 
+	function changedTest() {
+		echo "DSFASDFASDFASDF";
+	}
 	function initializeView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'checkbox');
@@ -34,12 +38,13 @@ class CheckBox extends FormComponent {
 			$this->view->setAttribute('checked', 'checked');
 	}
 
+	/*
 	function onChangeSend($selector, & $target) {
 		$this->addEventListener(array (
 			'changed' => $selector
 		), $target);
 		$this->view->setAttribute('onchange', 'javascript:checkBoxChanged(this,sendUpdate)');
-	}
+	}*/
 
 	function &valueFromForm(&$params) {
 		if ($params == 'on')

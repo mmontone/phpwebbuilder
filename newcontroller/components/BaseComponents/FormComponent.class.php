@@ -5,6 +5,7 @@ require_once dirname(__FILE__) . '/../../Component.class.php';
 class FormComponent extends Component
 {
 	var $value_model;
+	var $enqueued_hooks = array();
 
 	function FormComponent(&$value_model, $callback_actions=array()) {
 		if ($value_model==null) {
@@ -13,7 +14,19 @@ class FormComponent extends Component
 			$this->value_model =& $value_model;
 		}
 		$this->value_model->onChangeSend('valueChanged', $this);
+		$this->enqueued_hooks = array();
 		parent::Component($callback_actions);
+	}
+
+	function setView(&$view) {
+		parent::setView($view);
+		$this->setEnqueuedHooks($view);
+	}
+
+	function setEnqueuedHooks(&$view) {
+		foreach(array_keys($this->enqueued_hooks) as $i) {
+			$this->enqueued_hooks[$i]->callWith($view);
+		}
 	}
 
 	function setEvents(&$view) {
@@ -37,8 +50,10 @@ class FormComponent extends Component
 
 	function valueChanged(){}
 	function viewUpdated($params) {
+		echo $params;
 		if (preg_match('/_ui_event_((?:.)*)/',$params, $event)) {
 			$event = $event[1];
+			echo "Event: " . $event;
 			$this->triggerEvent($event, $this);
 		}
 		else
@@ -72,19 +87,30 @@ class FormComponent extends Component
 		return $this->view;
 	}
 
+	function setHook(&$hook) {
+		if ($this->view)
+			$hook->callWith($this->view);
+		else
+			$this->enqueueHook($hook);
+	}
+
+	function enqueueHook(&$hook) {
+		$this->enqueued_hooks[] = $hook;
+	}
+
 	function onChangeSend($selector, &$target) {
 		$this->addEventListener(array('changed'=>$selector), $target);
-		$this->setOnChangeEvent($this->view);
+		$this->setHook(new FunctionObject($this, 'setOnChangeEvent'));
 	}
 
 	function onFocusSend($selector, &$target) {
 		$this->addEventListener(array('focus'=>$selector), $target);
-		$this->setOnFocusEvent($this->view);
+		$this->setHook(new FunctionObject($this, 'setOnFocusEvent'));
 	}
 
 	function onBlurSend($selector, &$target) {
 		$this->addEventListener(array('blur'=>$selector), $target);
-		$this->setOnBlurEvent($this->view);
+		$this->setHook(new FunctionObject($this, 'setOnBlurEvent'));
 	}
 
 	function &printValue() {
