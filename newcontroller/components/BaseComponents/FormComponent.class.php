@@ -50,10 +50,8 @@ class FormComponent extends Component
 
 	function valueChanged(){}
 	function viewUpdated($params) {
-		echo $params;
 		if (preg_match('/_ui_event_((?:.)*)/',$params, $event)) {
 			$event = $event[1];
-			echo "Event: " . $event;
 			$this->triggerEvent($event, $this);
 		}
 		else

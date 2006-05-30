@@ -4,12 +4,8 @@ class CheckBox extends FormComponent {
 
 	function CheckBox(& $boolHolder) {
 		parent :: FormComponent($boolHolder);
-		$this->onFocusSend('changedTest', $this);
 	}
 
-	function changedTest() {
-		echo "DSFASDFASDFASDF";
-	}
 	function initializeView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'checkbox');
