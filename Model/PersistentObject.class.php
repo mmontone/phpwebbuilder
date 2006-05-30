@@ -8,10 +8,6 @@ class PersistentObject extends Model {
 	 */
 	var $parent = NULL;
 	/**
-	 * Special var, for get_subclass
-	 */
-	var $isClassOfPWB = true;
-	/**
 	 * @var string The table this object is related to
 	 */
 	var $table;

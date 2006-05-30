@@ -217,4 +217,8 @@ function lambda( $args, $code, &$env ) {
    return $functionName;
 }
 
+function isPWBObject(&$e){
+	return is_object($e) && isset($e->isClassOfPWB);
+}
+
 ?>

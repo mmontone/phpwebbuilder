@@ -9,7 +9,10 @@ class PWBObject
     var $service_request_listeners;
     var $config;
     var $__instance_id;
-
+	/**
+	 * Special var, for get_subclass
+	 */
+	var $isClassOfPWB = true;
     function PWBObject() {
 		$id_assigner =& PWBInstanceIdAssigner::instance();
 		$id_assigner->assignIdTo($this);

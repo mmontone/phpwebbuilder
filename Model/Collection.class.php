@@ -5,6 +5,26 @@ class Collection extends PWBObject{
 	function size(){
 		return count($this->elements);
 	}
+	function &at($pos){
+		$es =& $this->elements();
+	    return $es[$pos];
+	}
+	function indexOf(&$elem){
+		$es =& $this->elements();
+		$ks = array_keys($es);
+		if (isPWBObject($elem)){
+			$f = lambda('&$e1','return $elem->is($e1);',get_defined_vars());
+		} else {
+			$f = lambda('&$e1','return $elem==$e1;',get_defined_vars());
+		}
+		foreach($ks as $k){
+			$e =& $es[$k];
+			if ($f($e)){
+				return $k;
+			}
+		}
+		return -1;
+	}
 	function &elements(){
 		return $this->elements;
 	}
@@ -36,19 +56,13 @@ class Collection extends PWBObject{
 		$es =& $this->elements();
 		$ks = array_keys($es);
 		foreach($ks as $k){
-			echo "applying to $k";
 			$col->add($func($es[$k]));
 		}
 		return $col;
 	}
 	function &collect($mess){
-		$col =& new Collection;
-		$es =& $this->elements();
-		$ks = array_keys($es);
-		foreach($ks as $k){
-			$col->add(($es[$k]->$mess));
-		}
-		return $col;
+		$f = lambda('&$e', 'return $e->$mess();', get_defined_vars());
+		return $this->map($f);
 	}
 }
 ?>
