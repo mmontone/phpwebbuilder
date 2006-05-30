@@ -48,17 +48,13 @@ class FormComponent extends Component
 		$view->setAttribute('onfocus',"javascript:componentFocus(this)");
 	}
 
-	function valueChanged(){}
-	function viewUpdated($params) {
-		if (preg_match('/_ui_event_((?:.)*)/',$params, $event)) {
-			$event = $event[1];
-			$this->triggerEvent($event, $this);
-		}
-		else
-			$this->updateValue($params);
+	function setOnClickEvent(&$view) {
+		$view->setAttribute('onclick', "javascript:componentClicked(this)");
 	}
 
-	function updateValue(&$params) {
+	function valueChanged(){}
+
+	function viewUpdated($params) {
 		$new_value =& $this->valueFromForm($params);
 		$value =& $this->getValue();
 
@@ -98,18 +94,38 @@ class FormComponent extends Component
 
 	function onChangeSend($selector, &$target) {
 		$this->addEventListener(array('changed'=>$selector), $target);
-		$this->setHook(new FunctionObject($this, 'setOnChangeEvent'));
 	}
 
 	function onFocusSend($selector, &$target) {
 		$this->addEventListener(array('focus'=>$selector), $target);
-		$this->setHook(new FunctionObject($this, 'setOnFocusEvent'));
 	}
 
 	function onBlurSend($selector, &$target) {
 		$this->addEventListener(array('blur'=>$selector), $target);
-		$this->setHook(new FunctionObject($this, 'setOnBlurEvent'));
 	}
+
+	function onClickSend($selector, &$target) {
+		$this->addEventListener(array('click'=>$selector), $target);
+	}
+
+	function addEventListener($event_specs, &$listener) {
+        parent::addEventListener($event_specs, $listener);
+
+        foreach ($event_specs as $event_selector => $event_callback) {
+            switch ($event_selector) {
+            	case 'change' : $this->setHook(new FunctionObject($this, 'setOnChangeEvent'));
+            					break;
+            	case 'blur' : $this->setHook(new FunctionObject($this, 'setOnBlurEvent'));
+            					break;
+            	case 'focus' : $this->setHook(new FunctionObject($this, 'setOnFocusEvent'));
+            					break;
+            	case 'click' : $this->setHook(new FunctionObject($this, 'setOnClickEvent'));
+            					break;
+            }
+        }
+
+    }
+
 
 	function &printValue() {
 		return $this->getValue();

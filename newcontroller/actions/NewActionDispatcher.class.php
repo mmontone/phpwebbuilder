@@ -72,6 +72,7 @@ class NewActionDispatcher {
 		return $app->backbutton_manager->resolve_application_from_request();
 	}
 
+	/*
 	function &dispatch() {
 		$form = array_merge($_REQUEST, $_FILES);
 		$delayed = array ();
@@ -110,6 +111,61 @@ class NewActionDispatcher {
 			$delayed[$k2][0]->viewUpdated($delayed[$k2][1]);
 		}
 		return $app;
+	}*/
+
+	function &dispatch() {
+		$form = array_merge($_REQUEST, $_FILES);
+		$event = array();
+		$view_updates = array ();
+		$de = 0;
+
+		$app =& $this->getApp($form);
+		$event['app'] =& $app;
+
+		foreach ($form as $dir => $param) {
+			if ($dir == 'event')
+				$event['event'] =  $param;
+			else
+				if ($dir == 'event_target')
+					$event['target'] = $param;
+				else {
+					$c = & $this->getComponent($dir, $app);
+					if ($c!=null) {
+						$temp =& $view_updates[$de++];
+						$temp[] = & $c;
+						$temp[] = $param;
+						$temp[] = $dir;
+					}
+				}
+		}
+
+		$this->updateViews($view_updates);
+		$this->triggerEvent($event);
+
+		return $app;
+	}
+
+	function updateViews(&$updates) {
+		$ks = array_keys($updates);
+		foreach ($ks as $k) {
+			$updates[$k][0]->viewUpdated($updates[$k][1]);
+		}
+	}
+
+	function triggerEvent(&$event) {
+		$target =& $this->getComponent($event['target'], $event['app']);
+		$target->triggerEvent($event['event'], $v = array());
+	}
+
+	function &getApp($form) {
+		foreach ($form as $dir => $param) {
+			$path = split("/", $dir);
+			if ($path[0] == "app") {
+				$appclass = $path[1];
+				break;
+			}
+		}
+		return Application :: getInstanceOf($appclass);
 	}
 
 	function & getComponent($path, &$app) {

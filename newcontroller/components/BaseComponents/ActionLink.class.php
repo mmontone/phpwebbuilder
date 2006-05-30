@@ -15,26 +15,17 @@ class ActionLink extends FormComponent
 		$this->action = $action;
 		$this->params = &$params;
 		$this->addComponent(new Label($text), "linkName");
+		$this->onClickSend('execute', $this);
 	}
 
 	function initializeView(&$view){
 		$view->setTagName('a');
 	}
-	function prepareToRender(){
-		parent::prepareToRender();
-		$action = 'callAction(&#34;' . $this->getId() . '&#34;);';
-		$this->view->setAttribute('onclick', $action);
-	}
+
 	function execute(){
 		$action = $this->action;
 		$this->target->$action($this->params);
 	}
-	function viewUpdated($p){
-		if ($p=='execute'){
-			$this->execute();
-		}
-	}
-
 }
 
 class ActionLink2 extends ActionLink
@@ -50,29 +41,15 @@ class ActionLink2 extends ActionLink
 			$this->text =& $spec['text'];
 
 		$this->addComponent(new Text($this->text), "linkName");
+		$this->onClickSend('execute', $this);
 	}
 
 	function initializeView(&$view){
 		$view->setTagName('a');
 	}
 
-	function prepareToRender(){
-		parent::prepareToRender();
-		$link =& $this->view;
-		$app =& $this->application();
-		//$action = $app->page_renderer->renderActionLinkAction($this);
-		$action = 'callAction(&#34;' . $this->getId() . '&#34;);';
-		$link->setAttribute('onclick', $action);
-	}
-	function execute(){
+	function execute() {
 		$this->action->call();
 	}
-
-	function viewUpdated($p){
-		if ($p=="execute"){
-			$this->execute();
-		}
-	}
-
 }
 ?>

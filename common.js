@@ -28,6 +28,7 @@ function Update(t, v) {
 
 function enqueueUpdate(update) {
     //eval("updates." + update.target + "=update.value");
+    // TODO: improve. Flag the modified fields only?
     updates[update.target] = update.value;
 }
 
@@ -46,17 +47,25 @@ function appendQueuedUpdates(url) {
 }
 
 function componentChange(comp,getValue) {
-    var target = comp.getAttribute('id');
-    var value = getValue(comp);
-    sendUpdate(new Update(target,value));
+    sendEvent('change', comp);
 }
 
 function componentFocus(comp) {
-    sendUpdate(new Update(comp.getAttribute('id'),"_ui_event_focus"));
+    sendEvent('focus', comp);
 }
 
 function componentBlur(comp) {
-    sendUpdate(new Update(comp.getAttribute('id'),"_ui_event_blur"));
+    sendEvent('blur', comp)
+}
+
+function componentClicked(comp) {
+    sendEvent('click', comp);
+}
+
+function sendEvent(event, comp) {
+    enqueueUpdate(new Update('event',event));
+    sendUpdate(new Update('event_target', comp.getAttribute('id')));
+
 }
 
 function checkboxGetValue(checkbox) {
