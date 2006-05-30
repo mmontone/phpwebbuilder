@@ -20,6 +20,7 @@ class FormComponent extends Component
 
 	function setView(&$view) {
 		parent::setView($view);
+		$this->setEvents($this->view);
 		$this->setEnqueuedHooks($view);
 	}
 
@@ -37,7 +38,7 @@ class FormComponent extends Component
 
 	function setOnChangeEvent(&$view) {
 		$class = get_class($this);
-		$view->setAttribute('onchange',"javascript:componentChange(this,{$class}GetValue)");
+		$view->setAttribute('onchange',"javascript:enqueueChange(this,{$class}GetValue);componentChange(this)");
 	}
 
 	function setOnBlurEvent(&$view) {
@@ -76,8 +77,6 @@ class FormComponent extends Component
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
 		$this->initializeView($this->view);
-		$this->setEvents($this->view);
-
 		return $this->view;
 	}
 

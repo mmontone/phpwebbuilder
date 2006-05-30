@@ -46,7 +46,7 @@ function appendQueuedUpdates(url) {
     return url + s;
 }
 
-function componentChange(comp,getValue) {
+function componentChange(comp) {
     sendEvent('change', comp);
 }
 
@@ -65,7 +65,6 @@ function componentClicked(comp) {
 function sendEvent(event, comp) {
     enqueueUpdate(new Update('event',event));
     sendUpdate(new Update('event_target', comp.getAttribute('id')));
-
 }
 
 function checkboxGetValue(checkbox) {
