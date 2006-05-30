@@ -1,7 +1,7 @@
 <?php
 
 class Collection extends PWBObject{
-	var $elements=null;
+	var $elements=array();
 	function size(){
 		return count($this->elements);
 	}
@@ -10,7 +10,7 @@ class Collection extends PWBObject{
 	}
 	function add(&$elem){
 		$es =& $this->elements();
-	    $esv[]=&$elem;
+	    $es[]=&$elem;
 	}
 	function &pop(){
 		$es =& $this->elements();
@@ -36,6 +36,7 @@ class Collection extends PWBObject{
 		$es =& $this->elements();
 		$ks = array_keys($es);
 		foreach($ks as $k){
+			echo "applying to $k";
 			$col->add($func($es[$k]));
 		}
 		return $col;
