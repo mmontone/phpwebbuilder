@@ -158,7 +158,9 @@ class NewActionDispatcher {
 
 	function triggerEvent(& $event) {
 		$target = & $this->getComponent($event['target'], $event['app']);
-		$target->triggerEvent($event['event'], $v = array ());
+		if ($target!=null){
+			$target->triggerEvent($event['event'], $v = array ());
+		}
 	}
 
 	function & getApp($form) {
