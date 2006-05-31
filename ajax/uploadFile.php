@@ -15,11 +15,11 @@ if (isset($_REQUEST["filenamefield"])){
 <input type="button"  />
 </form>
 <script type="text/javascript">
-remf = document.getElementById("fileelem");
+var remf = document.getElementById("fileelem");
 document.getElementById("nodeid").setAttribute('value','<?=$_REQUEST["filenamefield"]?>');
-doc = window.frameElement.ownerDocument;
-parwin = doc.window;
-movf = doc.getElementById('<?=$_REQUEST["filenamefield"]?>');
+var doc = window.frameElement.ownerDocument;
+var parwin = doc.window;
+var movf = doc.getElementById('<?=$_REQUEST["filenamefield"]?>');
 document.getElementById("basedir").setAttribute('value', doc.getElementById("basedir").getAttribute('value'));
 parwin.start_uploading('<?=$_REQUEST["filenamefield"]?>');
 remf.parentNode.replaceChild(movf, remf);
@@ -35,9 +35,9 @@ window.onload=function (){document.getElementById('fm').submit();}
 	$comp->loadFile($_FILES["fileelem"]);
 ?>
 <script>
-ifr = window.frameElement;
-doc = ifr.ownerDocument;
-parwin = doc.window;
+var ifr = window.frameElement;
+var doc = ifr.ownerDocument;
+var parwin = doc.window;
 parwin.end_uploading('<?=$_REQUEST["nodeid"]?>', '<?=$_FILES["fileelem"]["name"]?>');
 ifr.parentNode.removeChild(ifr);
 </script>

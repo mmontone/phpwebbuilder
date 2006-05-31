@@ -83,15 +83,13 @@ function appendDebug(str){
 }
 ajax_queue = new Array;
 function enqueue(elem){
-    elem.index_ajax=ajax_queue.length;
     ajax_queue.push(elem);
 }
 function dequeue(elem){
-    ajax_queue.splice(elem.index_ajax,1);
-    var i = elem.index_ajax;
-    for(var j =i; j<ajax_queue.length; j++){
-       ajax_queue[j].index_ajax--;
+    for(var j=0; j<ajax_queue.length; j++){
+       if (ajax_queue[j]==elem) break;
     }
+    ajax_queue.splice(j,1);
 }
 function cancel_ajax(){
 	var http = ajax_queue.pop();

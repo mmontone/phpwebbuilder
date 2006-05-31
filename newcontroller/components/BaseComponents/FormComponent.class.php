@@ -33,24 +33,24 @@ class FormComponent extends Component
 	function setEvents(&$view) {
 		/* Default events, override in subclasses */
 		$class = get_class($this);
-		$view->setAttribute('onchange',"javascript:enqueueChange(this,{$class}GetValue)");
+		$view->setAttribute('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue)");
 	}
 
 	function setOnChangeEvent(&$view) {
 		$class = get_class($this);
-		$view->setAttribute('onchange',"javascript:enqueueChange(this,{$class}GetValue);componentChange(this)");
+		$view->setAttribute('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue);componentChange(this)");
 	}
 
 	function setOnBlurEvent(&$view) {
-		$view->setAttribute('onblur',"javascript:componentBlur(this)");
+		$view->setAttribute('onblur',"javascript:componentBlur(getEventTarget(event))");
 	}
 
 	function setOnFocusEvent(&$view) {
-		$view->setAttribute('onfocus',"javascript:componentFocus(this)");
+		$view->setAttribute('onfocus',"javascript:componentFocus(getEventTarget(event))");
 	}
 
 	function setOnClickEvent(&$view) {
-		$view->setAttribute('onclick', "javascript:componentClicked(this)");
+		$view->setAttribute('onclick', "javascript:componentClicked(getEventTarget(event))");
 	}
 
 	function valueChanged(){}

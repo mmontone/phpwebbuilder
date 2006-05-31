@@ -32,8 +32,8 @@ function createSubmitForm(url) {
     for (var target in updates) {
         appendUpdate(form,target,updates[target]);
     }
-    app = document.getElementById("app").getAttribute("app");
-    appendUpdate(form, "app", app);
+    var a = document.getElementById("app").getAttribute("app");
+    appendUpdate(form, "app", a);
     form.setAttribute("action", url);
     return form;
 }
@@ -98,6 +98,11 @@ function inputGetValue(input) {
     return input.value;
 }
 
+function passwordGetValue(input) {
+    return input.value;
+}
+
+
 function actionlinkGetValue(actionlink) {
     return actionlink.value;
 }
@@ -119,4 +124,19 @@ function radiobuttonGetValue(radiobutton) {
         return "1";
     else
         return "0";
+}
+
+function getEventTarget(e)
+{
+	var targ;
+	if (!e) var e = window.event;
+	if (e.target) targ = e.target;
+	else if (e.srcElement) targ = e.srcElement;
+	if (targ.nodeType == 3) {// defeat Safari bug
+		targ = targ.parentNode;
+	}
+	while (!targ["on"+e.type]){ //Bubbling up
+	   targ = targ.parentNode;
+	}
+	return targ;
 }
