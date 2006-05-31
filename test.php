@@ -1,12 +1,12 @@
 <?
 require_once "/var/www/cefi/Configuration/pwbapp.php";
 
-
-$o1 =& new PersistentObject;
-$o2 =& $o1;
-$o3 = $o1;
-var_dump($o1->__instance_id);
-var_dump($o1->is($o2));
-var_dump($o1->is($o3));
+$c =& new Collection;
+$c->addAll(array(1,3,4,5,62,2));
+print_r($c->toArray());
+$d =& $c->map(lambda('$e', 'return $e*2;', get_defined_vars()));
+$f =& $c->filter(lambda('$e', 'return $e%2==0;', get_defined_vars()));
+print_r($d->toArray());
+print_r($f->toArray());
 
 ?>

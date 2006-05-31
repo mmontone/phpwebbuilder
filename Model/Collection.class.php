@@ -31,6 +31,7 @@ class Collection extends PWBObject{
 	function add(&$elem){
 		$es =& $this->elements();
 	    $es[]=&$elem;
+	    $this->triggerEvent('changed', $elem);
 	}
 	function &pop(){
 		$es =& $this->elements();
@@ -38,6 +39,7 @@ class Collection extends PWBObject{
 		$pos = $ks[count($ks)-1];
 		$elem =& $es[$pos];
 		unset($es[$this->size()-1]);
+		$this->triggerEvent('changed', $elem);
 		return $elem;
 	}
 	function &shift(){
@@ -46,23 +48,42 @@ class Collection extends PWBObject{
 		$pos = $ks[0];
 		$elem =& $es[$pos];
 		unset($es[$this->size()-1]);
+		$this->triggerEvent('changed', $elem);
 		return $elem;
 	}
 	function push(&$elem){
 		$this->add($elem);
 	}
 	function &map($func){
-		$col =& new Collection;
+		return $this->foldr(new Collection, lambda('&$col,&$elem',
+			'$col->add($func($elem)); return $col;', get_defined_vars()));
+	}
+	function &filter($pred){
+		return $this->foldr(new Collection, lambda('&$col,&$elem',
+			'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
+	}
+	function foldr($z, $f){
+		$acc = $z;
 		$es =& $this->elements();
 		$ks = array_keys($es);
 		foreach($ks as $k){
-			$col->add($func($es[$k]));
+			$acc = $f($acc, $es[$k]);
 		}
-		return $col;
+		return $acc;
 	}
 	function &collect($mess){
-		$f = lambda('&$e', 'return $e->$mess();', get_defined_vars());
-		return $this->map($f);
+		return $this->map(
+				lambda('&$e', 'return $e->$mess();', get_defined_vars())
+			);
+	}
+	function &toArray(){
+		return $this->elements();
+	}
+	function addAll($arr){
+		$ks = array_keys($arr);
+		foreach($ks as $k){
+			$this->add($arr[$k]);
+		}
 	}
 }
 ?>

@@ -5,9 +5,17 @@ class Select extends FormComponent {
     function Select(&$value_model, &$collection) {
     	parent::FormComponent($value_model);
     	$this->options =& $collection;
-    	//$collection->addEventListener(array('changed'=>'initializeView'), $this);
+    	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
     }
-
+	function updateViewFromCollection(){
+		$v =& $this->view;
+		$cn =& $this->opts;
+		$ks = array_keys($cn);
+		foreach($ks as $k){
+			$v->removeChild($cn[$k]);
+		}
+		$this->initializeView(&$v);
+	}
     function initializeView(&$view){
 		$view->setTagName('select');
 		$this->appendOptions($view);
@@ -15,17 +23,14 @@ class Select extends FormComponent {
 
 	function appendOptions(&$view) {
 		$i=0;
-		$es =& $this->options->elements();
-		$ks = array_keys($es);
-		foreach($ks as $k){
-			$elem =& $es [$k];
-			$option =& new XMLNodeModificationsTracker('option');
-			$option->setAttribute('value', $i);
+		$this->options->elements->map(
+			lambda('&$elem',
+			'$option =& new XMLNodeModificationsTracker(\'option\');
+			$option->setAttribute(\'value\', $i);
 			$option->appendChild(new XMLTextNode($elem));
 			$this->opts[$i] =& $option;
 			$view->appendChild($option);
-			$i++;
-		}
+			$i++;', get_defined_vars()));
 	}
 
 	function valueChanged(&$value_model, &$params) {
@@ -43,7 +48,10 @@ class Select extends FormComponent {
 	}
 	function setValue(&$v){
 		$pos = $this->options->indexOf($v);
-		$this->value_model->setValue($pos);
+		$this->setValueIndex($pos);
+	}
+	function setValueIndex(&$v){
+		parent::setValue($v);
 	}
 	function prepareToRender(){
 		$this->opts[$this->getValueIndex()]->setAttribute('selected', 'selected');
