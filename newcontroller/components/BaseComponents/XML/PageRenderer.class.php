@@ -37,6 +37,8 @@ class StandardPageRenderer extends PageRenderer {
 		$ret = '';
 		$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
 
+		$ret .= $app->renderExtraHeaderContent();
+
 		foreach ($this->page->style_sheets as $c) {
 			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $c . "\" />";
 		}

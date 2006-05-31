@@ -151,6 +151,8 @@ class Application extends ComponentHolder
 		$this->wholeView->style_sheets[] =& $url;
 	}
 
+	function renderHeader() {}
+
 	function &view(){
 		return $this->wholeView;
 	}
