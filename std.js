@@ -1,15 +1,15 @@
 function submitFormToUrl(url) {
-    url = appendQueuedUpdates(url);
-    alert(url);
-    var formName = "app";
-    var form = document.getElementById(formName);
-    form.setAttribute('action', url);
+
+    body = document.getElementsByTagName("body")[0];
+    form = createSubmitForm(url);
+    body.appendChild(form);
     form.submit();
 }
 
 function sendUpdate(update) {
-    var url = "new_dispatch.php?"+ update.target + "=" + update.value;
-    submitFormToUrl(url);
+    //var url = "new_dispatch.php?"+ update.target + "=" + update.value;
+    enqueueUpdate(update);
+    submitFormToUrl("new_dispatch.php");
 }
 
 function uploadFile() {}

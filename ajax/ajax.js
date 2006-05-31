@@ -57,8 +57,7 @@ function ajaxError() {
 }
 
 
-function encodeForm(formName) {
-  var form = document.getElementById(formName);
+function encodeForm(form) {
   var ret = "";
   var elems = form.elements;
   for(var i = 0;i< elems.length; i++) {
@@ -73,7 +72,7 @@ function appendDebug(str){
    if (!db) {
        db = document.createElement('div');
        db.setAttribute('id', 'debug');
-       form = document.getElementById(formName);
+       form = document.getElementById("app");
        form.appendChild(db);
        t = document.createTextNode(str);
        db.appendChild(t);
@@ -100,12 +99,12 @@ function cancel_ajax(){
 }
 
 
-function postAjax(url, func, formName, obj) {
+function postAjax(form, func, obj) {
       var http = getHTTPObject();
        enqueue(http);
        loadingStart();
        http.abort();
-       var params = encodeForm(formName);
+       var params = encodeForm(form);
 
        /*-------------------------------------------------------------------------
        ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
@@ -113,7 +112,7 @@ function postAjax(url, func, formName, obj) {
        //       prompt("url",url);prompt("paramans",params);
 //       prompt("url", url + params);
        try {
-              http.open("POST", url, true);
+              http.open("POST", form.getAttribute('action'), true);
           http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           http.setRequestHeader("Content-length", params.length);
           http.setRequestHeader("Connection", "close");
@@ -388,7 +387,8 @@ function callAction(action_id) {
 function postInAjax(){
     url = "new_dispatch.php";
     formName = "app";
-    postAjax(url,updatePage,formName);
+    var form = document.getElementById(formName);
+    postAjax(url,updatePage,form);
     return false;
 }
 
@@ -407,9 +407,8 @@ function push(){
 //push();
 
 function sendUpdate(update) {
-    var url = "new_dispatch.php?"+ update.target + "=" + update.value;
-    alert(url);
-    postAjax(url,updatePage,"app");
+    enqueueUpdate(update);
+    postAjax(createSubmitForm("new_dispatch.php"),updatePage);
 }
 
 function uploadFile(fileelement){

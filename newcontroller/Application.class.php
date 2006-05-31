@@ -32,8 +32,8 @@ class Application extends ComponentHolder
 		                                                       'component_not_found' => 'InvalidComponentReporter',
 		                                                       'invalid_application' => 'SimpleErrorReporter',
 		                                                       'paged_expired' => 'SimpleErrorReporter'),
-		                             //'page_renderer' => 'AjaxPageRenderer');
-		                             'page_renderer' => 'StandardPageRenderer');
+		                             'page_renderer' => 'AjaxPageRenderer');
+		                             //'page_renderer' => 'StandardPageRenderer');
 		                             //'page_renderer' => 'DebugPageRenderer');
 		                             //'page_renderer' => 'DebugAjaxPageRenderer');
     }
@@ -97,7 +97,7 @@ class Application extends ComponentHolder
 		$this->viewCreator->createAllViews();
 		$initial_page_renderer =& new StandardPageRenderer($this->wholeView);
 		//$initial_page_renderer =& new DebugPageRenderer($this->wholeView);
-		echo $initial_page_renderer->renderPage();
+		echo $initial_page_renderer->renderPage($this);
 	}
 	function &getInstanceOf($class){
 		if (!isset($_SESSION[sitename][$class])){
@@ -107,7 +107,7 @@ class Application extends ComponentHolder
 	}
 	function render() {
 		$this->viewCreator->createAllViews();
-		echo $this->page_renderer->renderPage();
+		echo $this->page_renderer->renderPage($this);
 	}
 	function createView(){
 		if (!$this->viewCreator){

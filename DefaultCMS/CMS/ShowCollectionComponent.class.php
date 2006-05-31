@@ -36,9 +36,14 @@ class ShowCollectionComponent extends NavigationComponent {
 		$this->editObject($obj);
 	}
 	function deleteObject(&$fc) {
+		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => 'deleteConfirmed'), $fc));
+	}
+
+	function deleteConfirmed(&$fc) {
 		$fc->obj->delete();
 		$this->refresh();
 	}
+
 	function addLine(&$obj) {
 		$fc = & new ShowObjectComponent($obj, $this->fields);
 		$this->objs->addComponent($fc);

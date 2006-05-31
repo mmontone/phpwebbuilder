@@ -21,11 +21,12 @@ class StandardPageRenderer extends PageRenderer {
 		$app->addStdRenderingSpecificScripts();
 	}
 
-	function renderPage() {
+	function renderPage(&$app) {
 		$this->page->tagName = 'form';
 		$this->page->setAttribute('action', 'new_dispatch.php');
 		$this->page->setAttribute('method', 'post');
 		$this->page->setAttribute('enctype', 'multipart/form-data');
+		$this->page->setAttribute('app', get_class($app));
 
 		/*
 		$ret = '<!DOCTYPE html
@@ -74,7 +75,7 @@ class StandardPageRenderer extends PageRenderer {
 }
 
 class DebugModificationsPageRenderer extends StandardPageRenderer {
-	function renderPage() {
+	function renderPage(&$app) {
 		//$this->page->updateFullPath();
 		header("Content-type: text/xml");
 		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';

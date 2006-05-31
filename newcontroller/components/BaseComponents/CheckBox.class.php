@@ -33,20 +33,5 @@ class CheckBox extends FormComponent {
 		if ($this->getValue())
 			$this->view->setAttribute('checked', 'checked');
 	}
-
-	/*
-	function onChangeSend($selector, & $target) {
-		$this->addEventListener(array (
-			'changed' => $selector
-		), $target);
-		$this->view->setAttribute('onchange', 'javascript:checkBoxChanged(this,sendUpdate)');
-	}*/
-
-	function &valueFromForm(&$params) {
-		if ($params == 'on')
-			return 1;
-		else
-			return 0;
-	}
 }
  ?>

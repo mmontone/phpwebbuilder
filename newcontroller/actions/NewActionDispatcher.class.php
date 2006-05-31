@@ -113,30 +113,34 @@ class NewActionDispatcher {
 		return $app;
 	}*/
 
-	function &dispatch() {
+	function & dispatch() {
 		$form = array_merge($_REQUEST, $_FILES);
-		$event = array();
+		$event = array ();
 		$view_updates = array ();
 		$de = 0;
 
-		$app =& $this->getApp($form);
-		$event['app'] =& $app;
+		$app = & $this->getApp($form);
+		$event['app'] = & $app;
 
 		foreach ($form as $dir => $param) {
-			if ($dir == 'event')
-				$event['event'] =  $param;
-			else
-				if ($dir == 'event_target')
+			switch ($dir) {
+				case 'event' :
+					$event['event'] = $param;
+					break;
+				case 'event_target' :
 					$event['target'] = $param;
-				else {
+					break;
+				case 'app' :
+					break;
+				default :
 					$c = & $this->getComponent($dir, $app);
-					if ($c!=null) {
-						$temp =& $view_updates[$de++];
+					if ($c != null) {
+						$temp = & $view_updates[$de++];
 						$temp[] = & $c;
 						$temp[] = $param;
 						$temp[] = $dir;
 					}
-				}
+			}
 		}
 
 		$this->updateViews($view_updates);
@@ -145,18 +149,24 @@ class NewActionDispatcher {
 		return $app;
 	}
 
-	function updateViews(&$updates) {
+	function updateViews(& $updates) {
 		$ks = array_keys($updates);
 		foreach ($ks as $k) {
 			$updates[$k][0]->viewUpdated($updates[$k][1]);
 		}
 	}
 
-	function triggerEvent(&$event) {
-		$target =& $this->getComponent($event['target'], $event['app']);
-		$target->triggerEvent($event['event'], $v = array());
+	function triggerEvent(& $event) {
+		$target = & $this->getComponent($event['target'], $event['app']);
+		$target->triggerEvent($event['event'], $v = array ());
 	}
 
+	function & getApp($form) {
+		$appclass = $form['app'];
+		assert($appclass);
+		return Application :: getInstanceOf($appclass);
+	}
+	/*
 	function &getApp($form) {
 		foreach ($form as $dir => $param) {
 			$path = split("/", $dir);
@@ -165,10 +175,12 @@ class NewActionDispatcher {
 				break;
 			}
 		}
+		assert($appclass);
 		return Application :: getInstanceOf($appclass);
 	}
+	*/
 
-	function & getComponent($path, &$app) {
+	function & getComponent($path, & $app) {
 		$path = split("/", $path);
 		if ($path[0] == "app") { // Maybe the parameter wasn't for us'
 			$comp = & $app->component;
@@ -177,7 +189,7 @@ class NewActionDispatcher {
 			array_shift($path);
 			foreach ($path as $p) {
 				$comp1 = & $comp->componentAt($p);
-				if ($comp1==null) {
+				if ($comp1 == null) {
 					$comp->redraw(); //We sent something to a thing that wasn't there. We render the parent to see what'ts there.
 					return null;
 				}

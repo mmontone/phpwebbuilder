@@ -5,30 +5,28 @@ require_once dirname(__FILE__) . '/../Component.class.php';
 class QuestionDialog extends Component
 {
 	var $question;
+	// TODO: there should be no context. Make callbacks more general. FunctionObjects may be a good aproach
+	var $context;
 
-	function QuestionDialog($question, $callback_actions=array('on_yes'=>'question_accepted', 'on_no' => 'question_cancelled')) {
+	function QuestionDialog($question, $callback_actions=array('on_yes'=>'question_accepted', 'on_no' => 'question_cancelled'), &$context) {
 		$this->question = $question;
+		$this->context =& $context;
 		parent::Component($callback_actions);
 	}
 
-	function declare_actions() {
-		return array('yes', 'no');
-	}
 	function initialize(){
-		/*$this->addComponent(new Text("<h1>"));
-		$this->addComponent(new Text($this->question), "question");
-		$this->addComponent(new Text("</h1><br />"));
-		$this->addComponent(new ActionLink($this, 'yes', 'Yes'),"yes");
-		$this->addComponent(new Text("<br />"));*/
-		$this->addComponent(new ActionLink($this, 'no', 'No'), "no");
+		$this->addComponent(new Label($this->question), 'question');
+		$this->addComponent(new ActionLink2(array('action' => new FunctionObject($this, 'yes'),
+		                                          'text' => 'Yes'),'yes'));
+		$this->addComponent(new ActionLink2(array('action' => new FunctionObject($this, 'no'), 'text' => 'No'), 'no'));
 	}
 
 	function yes() {
-		$this->callback('on_yes');
+		$this->callbackWith('on_yes', $this->context);
 	}
 
 	function no() {
-		$this->callback('on_no');
+		$this->callbackWith('on_no', $this->context);
 	}
 }
 ?>

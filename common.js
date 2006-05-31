@@ -26,6 +26,26 @@ function Update(t, v) {
     }
 }
 
+function createSubmitForm(url) {
+    form = document.createElement("form");
+    form.setAttribute("method","post");
+    for (var target in updates) {
+        appendUpdate(form,target,updates[target]);
+    }
+    app = document.getElementById("app").getAttribute("app");
+    appendUpdate(form, "app", app);
+    form.setAttribute("action", url);
+    return form;
+}
+
+function appendUpdate(form, target, value) {
+    u = document.createElement("input");
+    u.setAttribute("type","hidden");
+    u.setAttribute("name", target);
+    u.setAttribute("value", value);
+    form.appendChild(u);
+}
+
 function enqueueUpdate(update) {
     //eval("updates." + update.target + "=update.value");
     // TODO: improve. Flag the modified fields only?
@@ -68,7 +88,7 @@ function sendEvent(event, comp) {
 }
 
 function checkboxGetValue(checkbox) {
-    if (!checkbox.checked)
+    if (checkbox.checked)
         return "1";
     else
         return "0";
