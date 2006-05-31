@@ -4,19 +4,12 @@ class PageRenderer // extends PWBObject
 	var $page;
 	var $csss = array ();
 
-	function PageRenderer(& $page) {
-		$this->page = & $page;
-	}
 	function setPage(&$view){
 		$this->page=&$view;
 	}
 }
 
 class StandardPageRenderer extends PageRenderer {
-	function StandardPageRenderer(& $page) {
-		parent :: PageRenderer($page);
-	}
-
 	function initializeScripts(&$app) {
 		$app->addStdRenderingSpecificScripts();
 	}
@@ -98,9 +91,6 @@ class DebugPageRenderer extends StandardPageRenderer {
 }
 
 class AjaxPageRenderer extends PageRenderer {
-	function AjaxRenderer(& $page) {
-		parent :: PageRenderer($page);
-	}
 	function setPage(&$page){
 		parent::setPage($page);
 		$page->setAttribute('onsubmit','postInAjax();');
