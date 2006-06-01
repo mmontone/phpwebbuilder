@@ -29,9 +29,7 @@ class Application extends ComponentHolder {
 
 	function initialRender() {
 		$this->viewCreator->createAllViews();
-		$initial_page_renderer = & new StandardPageRenderer();
-		$initial_page_renderer->setPage($this->wholeView);
-		echo $initial_page_renderer->renderPage($this);
+		echo $this->page_renderer->initialPageRenderPage($this);
 	}
 
 	function & getInstanceOf($class) {
@@ -92,7 +90,7 @@ class Application extends ComponentHolder {
 		$this->wholeView->style_sheets[] = & $url;
 	}
 
-	function renderHeader() {}
+	function renderExtraHeaderContent() {}
 
 	function & view() {
 		return $this->wholeView;

@@ -7,6 +7,12 @@ class PageRenderer // extends PWBObject
 	function setPage(&$view){
 		$this->page=&$view;
 	}
+	function initialPageRenderPage(&$app){
+		$initial_page_renderer = & new StandardPageRenderer();
+		$initial_page_renderer->setPage($app->wholeView);
+		echo $initial_page_renderer->renderPage($app);
+	}
+
 }
 
 class StandardPageRenderer extends PageRenderer {
