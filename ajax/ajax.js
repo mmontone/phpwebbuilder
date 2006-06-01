@@ -256,27 +256,27 @@ function ajax_insert_html(action) {
   target.innerHTML = xml2str(getActionChild(action));
 }
 
-function ajax_replace_node(action) {
+function ajax_repn(action) {
   var target = getActionTarget(action);
   var html = xml2html(getActionChild(action));
   target.parentNode.replaceChild(html, target);
 }
 
-function ie_ajax_replace_node(action) {
+function ie_ajax_repn(action) {
     var target = getActionTarget(action);
     var html = xml2str(getActionChild(action));
     target.outerHTML = html;
 }
 
 /*
-function ajax_replace_child(action) {
+function ajax_repc(action) {
   var target = getActionTarget(action);
   var child = getActionChild(action);
   var html = xml2html(getActionChild(action));
   target.replaceChild(html, child);
 }
 
-function ie_ajax_replace_child(action) {
+function ie_ajax_repc(action) {
   var target = getActionTarget(action);
   var child = getActionChild(action);
   var html = xml2html(getActionChild(action));
@@ -285,13 +285,13 @@ function ie_ajax_replace_child(action) {
 */
 
 
-function ajax_append_child(action) {
+function ajax_append(action) {
   var target = getActionTarget(action);
   var html = xml2html(getActionChild(action));
   target.appendChild(html);
 }
 
-function ie_ajax_append_child(action) {
+function ie_ajax_append(action) {
     var target = getActionTarget(action);
     var child = document.createElement('');
     target.appendChild(child);
@@ -299,57 +299,57 @@ function ie_ajax_append_child(action) {
 
 }
 
-function ajax_remove_node(action) {
+function ajax_remn(action) {
   var target = getActionTarget(action);
   target.parentNode.removeChild(target);
 }
 
-function ie_ajax_remove_node(action) {
-    return ajax_remove_node(action);
+function ie_ajax_remn(action) {
+    return ajax_remn(action);
 }
 
-function ajax_remove_child(action) {
+function ajax_rem(action) {
   var target = getActionTarget(action);
   var child = getActionChild(action);
   target.removeChild(child);
 }
 
-function ie_ajax_remove_child(action) {
-    return ajax_remove_child(action);
+function ie_ajax_rem(action) {
+    return ajax_rem(action);
 }
 
-function ajax_insert_before(action) {
+function ajax_insert(action) {
   var target = getActionTarget(action);
   var child = xml2html(getActionChild(action));
   target.parentNode.insertBefore(child, target);
 }
 
-function ie_ajax_insert_before(action) {
+function ie_ajax_insert(action) {
    var target = getActionTarget(action);
    var child = document.createElement();
    target.parentNode.insertBefore(child, target);
    child.outerHTML = xml2str(getActionChild(action));
 }
 
-function ajax_set_attribute(action) {
+function ajax_setatt(action) {
     var target = getActionTarget(action);
     var attribute = action.childNodes[0].firstChild.data;
     var value = action.childNodes[1].firstChild.data;
     target.setAttribute(attribute, value);
 }
 
-function ie_ajax_set_attribute(action) {
-    return ajax_set_attribute(action);
+function ie_ajax_setatt(action) {
+    return ajax_setatt(action);
 }
 
-function ajax_remove_attribute(action) {
+function ajax_rematt(action) {
     var target = getActionTarget(action);
     var attribute = action.childNodes[0].firstChild.data;
     target.removeAttribute(attribute);
 }
 
-function ie_ajax_remove_attribute(action) {
-    return ajax_remove_attribute(action);
+function ie_ajax_rematt(action) {
+    return ajax_rematt(action);
 }
 
 function xml2str (xml) {

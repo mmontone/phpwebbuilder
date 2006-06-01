@@ -49,25 +49,21 @@ class XMLNode extends DOMXMLNode {
 		if ($this->getAttribute('id')!='' && !$this->controller) {
 			return;
 		}
-		if (count($this->childNodes) == 0) {
-			echo implode('',array("\n<",$this->tagName));
-			foreach ($this->attributes as $name => $val) {
-				echo implode('' , array(' ', $name , '="' , $val, '"'));
-			}
-			echo '/>';
+		$cn =& $this->childNodes;
+		echo implode('',array('<',$this->tagName));
+		foreach ($this->attributes as $name => $val) {
+			echo implode('' , array(' ', $name , '="' , $val, '"'));
 		}
-		else {
-			$childs = array();
-			echo implode('',array("\n<",$this->tagName));
-			foreach ($this->attributes as $name => $val) {
-				echo implode('' , array("\n   ",$name , '="' , $val, '"'));
-			}
+		if (count($cn) == 0) {
+			echo '/>';
+		} else {
 			echo '>';
-			$ks = array_keys($this->childNodes);
+			$ks = array_keys($cn);
 			foreach ($ks as $k) {
-				$this->childNodes[$k]->renderEcho();
+				$cn[$k]->renderEcho();
 			}
-			echo "\n</".$this->tagName.'>';
+			//echo implode(array("\n</".$this->tagName.'>'));
+			echo implode(array('</'.$this->tagName.'>'));
 		}
 	}
 	// For debugging

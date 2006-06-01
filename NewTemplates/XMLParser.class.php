@@ -4,26 +4,26 @@
 
 class XMLParser {
    var $parser;
-   var $xmls = array();
+   var $xmls;
    function &parse($data)
    {
-       $this->parser = xml_parser_create('ISO-8859-1');
+       $parser = xml_parser_create('ISO-8859-1');
 
-       xml_set_object($this->parser, $this);
-       xml_set_element_handler($this->parser, 'tag_open', 'tag_close');
-       xml_set_character_data_handler($this->parser, 'cdata');
-       xml_parser_set_option($this->parser,XML_OPTION_CASE_FOLDING,FALSE);
+       xml_set_object($parser, $this);
+       xml_set_element_handler($parser, 'tag_open', 'tag_close');
+       xml_set_character_data_handler($parser, 'cdata');
+       xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,FALSE);
        $arr = array();
        $this->xmls=&$arr;
-       $err = xml_parse($this->parser, $data);
+       $err = xml_parse($parser, $data);
        $x =& $this->xmls[0];
  	   if (!$x->childNodes) {
           die(sprintf("XML error: %s at line %d, column %d",
-                   xml_error_string(xml_get_error_code($this->parser)),
-                   xml_get_current_line_number($this->parser),
-                   xml_get_current_column_number ($this->parser)+1));
+                   xml_error_string(xml_get_error_code($parser)),
+                   xml_get_current_line_number($parser),
+                   xml_get_current_column_number ($parser)+1));
    	   }
-       xml_parser_free($this->parser);
+       xml_parser_free($parser);
        return $x;
    }
 
@@ -31,8 +31,9 @@ class XMLParser {
    {
    	   $x =& new XMLNode;
    	   $x->setTagName($tag);
+   	   $atts =& $x->attributes;
    	   foreach($attributes as $n => $v){
-   	   	   $x->attributes[$n] = $v;
+   	   	   $atts[$n] = $v;
    	   }
    	   $this->xmls[]=& $x;
    }
@@ -40,18 +41,19 @@ class XMLParser {
    function cdata($parser, $cdata)
    {
    	   if (trim($cdata)!=""){
-   	   		$cant = count($this->xmls);
-	   		$n = null;
-       		$this->xmls[$cant-1]->appendChild(new XMLTextNode($cdata, $n));
+   	   		$xs =& $this->xmls;
+   	   		$cant = count($xs);
+       		$xs[$cant-1]->appendChild(new XMLTextNode($cdata));
    	   }
    }
    function tag_close($parser, $tag)
    {
-   	    $cant = count($this->xmls);
+   	   	$xs =& $this->xmls;
+   	    $cant = count($xs);
        	if ($cant>=2){
-	   		$xchild =& $this->xmls[$cant-1];
-	       	array_pop($this->xmls);
-	   		$this->xmls[$cant-2]->appendChild($xchild);
+	   		$xchild =& $xs[$cant-1];
+	       	array_pop($xs);
+	   		$xs[$cant-2]->appendChild($xchild);
        	}
    }
 }

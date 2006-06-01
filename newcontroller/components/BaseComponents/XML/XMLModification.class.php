@@ -33,9 +33,9 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand(&$target) {
 		//assert($this->target->fullPath!="");
-		$xml = '<replace_node id="' . $target->getId() . '">';
+		$xml = '<repn id="' . $target->getId() . '">';
 		$xml .= $this->replacement->render();
-		$xml .= '</replace_node>';
+		$xml .= '</repn>';
 		return $xml;
 	}
 
@@ -83,9 +83,9 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->child->fullPath!="");
-		$xml = '<replace_node id="' . $this->childId . '">';
+		$xml = '<repn id="' . $this->childId . '">';
 		$xml .= $this->replacement->render();
-		$xml .= '</replace_node>';
+		$xml .= '</repn>';
 		return $xml;
 	}
 	function apply_replace(&$elem){
@@ -124,9 +124,9 @@ class InsertBeforeXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->child->fullPath!="");
-		$xml = '<insert_before id="' . $this->old->getId() . '">';
+		$xml = '<insert id="' . $this->old->getId() . '">';
 		$xml .= $this->new->render();
-		$xml .= '</insert_before>';
+		$xml .= '</insert>';
 		return $xml;
 	}
 	function apply_replace(&$elem){
@@ -162,9 +162,9 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath);
-		$xml = '<append_child id="' . $this->target->getId() . '">';
+		$xml = '<append id="' . $this->target->getId() . '">';
 		$xml .= $this->child->render();
-		$xml .= '</append_child>';
+		$xml .= '</append>';
 		return $xml;
 	}
 	function apply_replace(&$elem){
@@ -206,7 +206,7 @@ class RemoveNodeXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath!="");
-		$xml = '<remove_node id="' . $this->target->getId() . '" />';
+		$xml = '<remn id="' . $this->target->getId() . '" />';
 		return $xml;
 	}
 
@@ -240,7 +240,7 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 	*/
 
 	function renderAjaxResponseCommand() {
-		$xml = '<remove_node id="' . $this->child->getId() . '" />';
+		$xml = '<rem id="' . $this->child->getId() . '" />';
 		return $xml;
 	}
 
@@ -280,11 +280,11 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath!="");
-		$xml = '<set_attribute id="' . $this->target->getId() . '">';
-		$xml .= '<attribute>' . $this->attribute . '</attribute>';
-		$xml .= '<value> ' . $this->value . '</value>';
-		$xml .= '</set_attribute>';
-		return $xml;
+		$ret = '<setatt id="' . $this->target->getId() . '">';
+		$ret.= '<att>' . $this->attribute . '</att>';
+		$ret.= '<val> ' . $this->value . '</val>';
+		$ret.= '</setatt>';
+		return $ret;
 	}
 
 	/*
@@ -301,13 +301,13 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	*/
 
 	function printString() {
-		$ret = '<set_attribute path="' . $this->target->getId() . '">';
+		$ret = '<setatt path="' . $this->target->getId() . '">';
 		$ret .= "\n   ";
-		$ret .= '<attribute>' . $this->attribute . '</attribute>';
+		$ret .= '<att>' . $this->attribute . '</att>';
 		$ret .= "\n   ";
-		$ret.= '<value> ' . $this->value . '</value>';
+		$ret.= '<val> ' . $this->value . '</val>';
 		$ret .= "\n";
-		$ret .= '</set_attribute>';
+		$ret .= '</setatt>';
 		return $ret;
 	}
 }
@@ -333,9 +333,9 @@ class RemoveAttributeXMLNodeModification extends XMLNodeModification {
 
 	function renderAjaxResponseCommand() {
 		//assert($this->target->fullPath!="");
-		$xml = '<remove_attribute id="' . $this->target->getId() . '">';
-		$xml .= '<attribute>' . $this->attribute . '</attribute>';
-		$xml .= '</remove_attribute>';
+		$xml = '<rematt id="' . $this->target->getId() . '">';
+		$xml .= '<att>' . $this->attribute . '</att>';
+		$xml .= '</rematt>';
 		return $xml;
 	}
 

@@ -3,9 +3,6 @@
 //require_once dirname(__FILE__) . '/HTMLRendererNew.class.php';
 
 class HTMLContainer extends XMLNodeModificationsTracker {
-	function HTMLContainer() {
-		parent::XMLNodeModificationsTracker();
-	}
 	function renderEcho() {
 		$fid = $this->getId();
 		echo "<span style=\"visibility:hidden\" id=\"$fid\"></span>";

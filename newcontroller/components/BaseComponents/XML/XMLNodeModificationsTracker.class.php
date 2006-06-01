@@ -18,8 +18,9 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$this->modifications = array();
 		$n = null;
 		$this->toFlush =& $n;
-		foreach (array_keys($this->childNodes) as $key) {
-			$this->childNodes[$key]->flushModifications();
+		$cn =& $this->childNodes;
+		foreach (array_keys($cn) as $key) {
+			$cn[$key]->flushModifications();
 		}
 	}
 

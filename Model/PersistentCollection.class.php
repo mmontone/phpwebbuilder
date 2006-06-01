@@ -67,8 +67,7 @@ class PersistentCollection extends Collection{
 			$reg = $db->SQLExec($sql, FALSE, $this);
 			$col = array ();
 			while ($data = $db->fetchrecord($reg)) {
-				$o =& $obj->loadFromRec($data);
-				$col[] = & $o;
+				$col[] =& $obj->loadFromRec($data);
 			}
 			$this->elements =& $col;
 		}

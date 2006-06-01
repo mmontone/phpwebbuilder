@@ -70,7 +70,7 @@ class ViewCreator {
 		$view  =& $component->view;
 		$hasView = $view!=null && strcasecmp(get_class($view),'NullView')!=0;
 		if ($hasView){
-			if ($view->parentNode != null && $view->parentNode->getRealId() == $parentView->getRealId()) return $view;
+			if ($view->parentNode != null && $view->parentNode->is($parentView)) return $view;
 		}
 		$id = $component->getSimpleId();
 		$vid =& $parentView->childrenWithId($id);
