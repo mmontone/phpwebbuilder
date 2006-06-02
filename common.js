@@ -27,7 +27,7 @@ function Update(t, v) {
 }
 
 function createSubmitForm(url) {
-    form = document.createElement("form");
+    var form = document.createElement("form");
     form.setAttribute("method","post");
     for (var target in updates) {
         appendUpdate(form,target,updates[target]);

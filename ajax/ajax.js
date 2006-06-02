@@ -284,6 +284,16 @@ function ie_ajax_repc(action) {
 }
 */
 
+function ie_ajax_undefined(action) {
+    ajax_undefined(action);
+}
+
+function ajax_undefined(action) {
+      ajaxError();
+      appendDebug('');
+      loadingStop();
+}
+
 
 function ajax_append(action) {
   var target = getActionTarget(action);
@@ -299,19 +309,9 @@ function ie_ajax_append(action) {
 
 }
 
-function ajax_remn(action) {
-  var target = getActionTarget(action);
-  target.parentNode.removeChild(target);
-}
-
-function ie_ajax_remn(action) {
-    return ajax_remn(action);
-}
-
 function ajax_rem(action) {
   var target = getActionTarget(action);
-  var child = getActionChild(action);
-  target.removeChild(child);
+  target.parentNode.removeChild(target);
 }
 
 function ie_ajax_rem(action) {
