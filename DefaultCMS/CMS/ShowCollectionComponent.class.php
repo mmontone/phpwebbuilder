@@ -6,7 +6,11 @@ class ShowCollectionComponent extends NavigationComponent {
 	function initialize() {
 		$class = & $this->classN;
 		$this->addComponent(new Text(new ValueHolder($class)), 'className');
-		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
+		$u =& User::logged();
+		PermissionChecker::addComponent($this,
+					new ActionLink($this, 'newObject', 'New', $n = null),
+					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Add', '*',$class.'=>*'))
+					,'new');
 		parent::initialize();
 	}
 	/* Editing */
@@ -36,19 +40,27 @@ class ShowCollectionComponent extends NavigationComponent {
 		$this->editObject($obj);
 	}
 	function deleteObject(&$fc) {
-		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => 'deleteConfirmed'), $fc));
+		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => callback($this, 'deleteConfirmed')), $fc));
 	}
 
 	function deleteConfirmed(&$fc) {
-		$fc->obj->delete();
+		$ok = $fc->obj->delete();
 		$this->refresh();
 	}
 
 	function addLine(&$obj) {
 		$fc = & new ShowObjectComponent($obj, $this->fields);
+		$class = & $this->classN;
 		$this->objs->addComponent($fc);
-		$fc->addComponent(new ActionLink($this, 'editObject', 'Edit', $obj), 'edit');
-		$fc->addComponent(new ActionLink($this, 'deleteObject', 'Delete', $fc), 'delete');
+		$u =& User::logged();
+		PermissionChecker::addComponent($fc,
+					new ActionLink($this, 'editObject', 'Edit', $obj),
+					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))
+					,'edit');
+		PermissionChecker::addComponent($fc,
+					new ActionLink($this, 'deleteObject', 'Delete', $fc),
+					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Delete', '*',$class.'=>*'))
+					,'delete');
 	}
 }
 ?>

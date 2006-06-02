@@ -59,6 +59,10 @@ class PersistentCollection extends Collection{
 		$obj = & new $this->dataType;
 		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
 	}
+	function refresh() {
+		$a = array();
+		$this->elements=&$a;
+	}
 	function elements() {
 		if (!$this->elements){
 			$obj = & new $this->dataType;

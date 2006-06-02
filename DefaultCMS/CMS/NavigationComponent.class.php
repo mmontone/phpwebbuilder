@@ -50,6 +50,7 @@ class NavigationComponent extends Component {
 		$col->offset = $this->firstElement->getValue()-1;
 		$this->size->setValue($col->size());
 		$this->objs->deleteChildren();
+		$col->refresh();
 		$objects = & $col->objects();
 		$ks = array_keys($objects);
 		foreach ($ks as $k) {

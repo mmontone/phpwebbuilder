@@ -139,14 +139,9 @@ class Component extends PWBObject
 	function takeControlOf(&$callbackComponent, $callback=null, &$params) {
 		$callbackComponent->replaceView($this);
 		$callbackComponent->app->needsView($this);
-        if ($callback == null) {
-			$callbackComponent->holder->hold($this);
-		}
-		else {
-			if ($callbackComponent->registered_callbacks[$callback] != null) {
-				$callbackComponent->holder->hold($this);
-				$callbackComponent->registered_callbacks[$callback]->callWith($params);
-			}
+		$callbackComponent->holder->hold($this);
+        if ($callback != null || $callbackComponent->registered_callbacks[$callback] != null) {
+			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
 	}
 

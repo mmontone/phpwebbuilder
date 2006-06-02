@@ -27,6 +27,7 @@ require_once 'components/BaseComponents/Input.class.php';
 require_once 'components/BaseComponents/ActionLink.class.php';
 require_once 'components/BaseComponents/Select.class.php';
 require_once 'components/BaseComponents/Link.class.php';
+require_once 'components/BaseComponents/PermissionChecker.class.php';
 require_once 'components/BaseComponents/Password.class.php';
 require_once 'components/BaseComponents/Filename.class.php';
 require_once 'components/BaseComponents/Label.class.php';

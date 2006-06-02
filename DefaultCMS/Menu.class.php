@@ -51,26 +51,29 @@ class Menu extends Component {
 		$sect = & new MenuSectionComponent();
 		$this->menus->addComponent($sect);
 		$sect->addComponent(new Text(new ValueHolder($t = 'Objects')), 'secName');
-		$all = fHasPermission(0, '*');
-		foreach ($arr as $class) {
-			if ($all ||
-				fHasPermission(0, $class.'=>Menu')) {
-				$obj =& new $class;
-				$this->addelement($class, $obj->displayString, $sect);
-			}
+		$u =& User::logged();
+		$temp = array();
+		foreach ($arr as $p=>$c) {
+			$class =& $arr[$p];
+			$obj =& new $class;
+			PermissionChecker::addComponent($sect,
+				new MenuItemComponent($this, $obj->displayString,
+					$temp[$p] = array ('Component' => 'ShowCollectionComponent',
+					'params' => new PersistentCollection($class))),
+				new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Menu', '*')));
 		}
 		$log = array (
 			'Component' => 'Logout'
 		);
 		$this->additem($log, 'Logout', $sect);
 	}
-	function addelement($class, $text, & $sect) {
+	/*function addelement($class, $text, & $sect) {
 		$comp = array (
 			'Component' => 'ShowCollectionComponent',
 			'params' => new PersistentCollection($class)
 		);
 		return $this->additem($comp, $text, $sect);
-	}
+	}*/
 	function additem(& $comp, $text, & $sect) {
 		$sect->addComponent(new MenuItemComponent($this, $text, $comp));
 	}
