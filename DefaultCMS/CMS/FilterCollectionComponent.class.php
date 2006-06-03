@@ -19,7 +19,7 @@ class FilterCollectionComponent extends ObjectComponent {
 	function addField($name, &$field){
 		parent::addField($name, &$field);
 		$cs =& $this->col->conditions;
-		$this->fields[$name]->setSearchValue($cs, $name);
+		$this->fieldComponents[$name]->setSearchValue($cs, $name);
 	}
 	function filter(){
 		$fs =& $this->fieldNames;

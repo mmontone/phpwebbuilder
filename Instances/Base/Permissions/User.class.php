@@ -57,5 +57,12 @@ class User extends PersistentObject {
 	function hasPermission($permission){
 		return in_array($permission, $this->permissions);
 	}
+	function hasPermissions($permissions){
+		$ok = false;
+		foreach($permissions as $p){
+			$ok |= $this->hasPermission($p);
+		}
+		return $ok;
+	}
 }
 ?>
