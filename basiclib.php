@@ -179,7 +179,7 @@ function toHTML($s) {
 }
 function toXML($s) {
     $s = str_replace('&', '&amp;', $s);
-    $s = ereg_replace('&(amp;)+(.*;)', '&\\2', $s);
+    $s = ereg_replace('&(amp;|&amp;)+(([A-Za-z0-9#]+);)','&\\2', $s);
     $s = str_replace('>', '&gt;', $s);
     $s = str_replace('<', '&lt;', $s);
     $s = str_replace('"', '&#34;', $s);
