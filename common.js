@@ -39,7 +39,7 @@ function createSubmitForm(url) {
 }
 
 function appendUpdate(form, target, value) {
-    u = document.createElement("input");
+    var u = document.createElement("input");
     u.setAttribute("type","hidden");
     u.setAttribute("name", target);
     u.setAttribute("value", value);
