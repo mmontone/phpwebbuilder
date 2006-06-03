@@ -161,6 +161,7 @@ function &array_next(&$array) {
 
 function toHTML($s) {
     $s = str_replace('ñ', '&ntilde;', $s);
+    $s = str_replace('¿', '&iquest;', $s);
     $s = str_replace('Ñ', '&Ntilde;', $s);
     $s = str_replace('á', '&aacute;',  $s);
     $s = str_replace('é', '&eacute;', $s);
@@ -183,6 +184,7 @@ function toXML($s) {
     $s = str_replace('>', '&gt;', $s);
     $s = str_replace('<', '&lt;', $s);
     $s = str_replace('"', '&#34;', $s);
+    $s = str_replace('&iquest;','&#191;', $s);
     $s = str_replace('&aacute;', '&#225;', $s);
     $s = str_replace('&eacute;', '&#233;', $s);
     $s = str_replace('&iacute;', '&#237;', $s);
