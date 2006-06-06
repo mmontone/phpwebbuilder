@@ -9,7 +9,7 @@ class Menu extends Component {
 	function initialize() {
 		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
 		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
-		$this->addComponent(new CompositeFormComponent, 'menus');
+		$this->addComponent(new CompositeWidget, 'menus');
 		$this->menus();
 	}
 	function newmenu() {

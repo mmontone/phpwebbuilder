@@ -28,7 +28,7 @@ class NavigationComponent extends Component {
 		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
 		$this->addComponent(new Input($this->firstElement), 'firstElem');
-		$this->addComponent(new CompositeFormComponent, 'objs');
+		$this->addComponent(new CompositeWidget, 'objs');
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->addComponent(new Text($this->size), 'realSize');
@@ -36,7 +36,7 @@ class NavigationComponent extends Component {
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
 		foreach ($this->fields as $f) {
-			$fc = & new CompositeFormComponent;
+			$fc = & new CompositeWidget;
 			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
 			$this->addComponent($fc, $f->colName);
 		}

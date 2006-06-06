@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__FILE__) . '/FormComponent.class.php';
+require_once dirname(__FILE__) . '/Widget.class.php';
 
-class TextAreaComponent extends FormComponent{
+class TextAreaComponent extends Widget{
 	function initializeView(&$view){
 		$view->setTagName('textarea');
 	}

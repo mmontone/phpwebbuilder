@@ -1,13 +1,13 @@
 <?php
 
-require_once dirname(__FILE__) . '/FormComponent.class.php';
+require_once dirname(__FILE__) . '/Widget.class.php';
 
-class Link extends FormComponent
+class Link extends Widget
 {
 	var $target;
 
 	function Link ($target, $text) {
-		parent::FormComponent($vm = null);
+		parent::Widget($vm = null);
 		$this->target = $target;
 		$this->addComponent(new Label($text), "linkName");
 	}

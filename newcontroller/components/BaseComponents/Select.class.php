@@ -1,9 +1,9 @@
 <?php
 
-class Select extends FormComponent {
+class Select extends Widget {
 	var $options;
     function Select(&$value_model, &$collection) {
-    	parent::FormComponent($value_model);
+    	parent::Widget($value_model);
     	$this->options =& $collection;
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
     }

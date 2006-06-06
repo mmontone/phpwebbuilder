@@ -1,15 +1,15 @@
 <?php
 
-require_once dirname(__FILE__) . '/FormComponent.class.php';
+require_once dirname(__FILE__) . '/Widget.class.php';
 
-class ActionLink extends FormComponent
+class ActionLink extends Widget
 {
 	var $target;
 	var $action;
 	var $params;
 	var $token;
 	function ActionLink (&$target, $action, $text, &$params) {
-		parent::FormComponent($vm = null);
+		parent::Widget($vm = null);
 
 		$this->target =& $target;
 		$this->action = $action;

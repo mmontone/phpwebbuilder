@@ -1,6 +1,6 @@
 <?php
 
-class RadioButton extends FormComponent {
+class RadioButton extends Widget {
     function initializeView(&$view){
 		$view->setTagName('input');
 		$view->setAttribute('type','radio');

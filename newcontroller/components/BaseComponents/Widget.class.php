@@ -2,12 +2,12 @@
 
 require_once dirname(__FILE__) . '/../../Component.class.php';
 
-class FormComponent extends Component
+class Widget extends Component
 {
 	var $value_model;
 	var $enqueued_hooks = array();
 
-	function FormComponent(&$value_model, $callback_actions=array()) {
+	function Widget(&$value_model, $callback_actions=array()) {
 		if ($value_model==null) {
 			$this->value_model =& new ValueHolder($null = null);
 		} else {

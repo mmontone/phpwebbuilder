@@ -1,9 +1,9 @@
 <?php
-require_once dirname(__FILE__) . '/FormComponent.class.php';
+require_once dirname(__FILE__) . '/Widget.class.php';
 
-class Text extends FormComponent {
+class Text extends Widget {
 	function Text(& $string_holder) {
-		parent :: FormComponent($string_holder);
+		parent :: Widget($string_holder);
 		if (is_string($string_holder)) {
 			print_backtrace();
 		}

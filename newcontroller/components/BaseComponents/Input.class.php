@@ -1,10 +1,10 @@
 <?php
 
-require_once dirname(__FILE__) . '/FormComponent.class.php';
+require_once dirname(__FILE__) . '/Widget.class.php';
 
-class Input extends FormComponent{
+class Input extends Widget{
 	function Input(&$value_model) {
-		parent::FormComponent($value_model);
+		parent::Widget($value_model);
 	}
 
 	function initializeDefaultView(&$view){

@@ -1,9 +1,9 @@
 <?php
-class CheckBox extends FormComponent {
+class CheckBox extends Widget {
 	var $disabled = false;
 
 	function CheckBox(& $boolHolder) {
-		parent :: FormComponent($boolHolder);
+		parent :: Widget($boolHolder);
 	}
 
 	function initializeDefaultView(&$view) {

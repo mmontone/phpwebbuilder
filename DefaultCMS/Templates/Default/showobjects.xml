@@ -22,7 +22,7 @@
 		<container id="className" /> class
 	 	<table><thead>
  			<tr>
-				<template class="CompositeFormComponent" >
+				<template class="CompositeWidget" >
 					<td>
 						<container class="ActionLink" />
 					</td>
