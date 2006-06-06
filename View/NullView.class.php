@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__) . '/XMLNodeModificationsTracker.class.php';
+require_once 'XML/XMLNodeModificationsTracker.class.php';
 
 class NullView extends XMLNodeModificationsTracker
 {
