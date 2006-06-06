@@ -118,7 +118,7 @@ class NewActionDispatcher {
 		$event = array ();
 		$view_updates = array ();
 		$de = 0;
-
+		//echo $form['app'] . " : ".$_REQUEST['app'];
 		$app = & $this->getApp($form);
 		$event['app'] = & $app;
 
@@ -165,7 +165,7 @@ class NewActionDispatcher {
 
 	function & getApp($form) {
 		$appclass = $form['app'];
-		assert($appclass);
+		assert($appclass!="");
 		return Application :: getInstanceOf($appclass);
 	}
 	/*

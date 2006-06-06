@@ -22,6 +22,7 @@ class FormComponent extends Component
 		parent::setView($view);
 		$this->setEvents($this->view);
 		$this->setEnqueuedHooks($view);
+		$this->initializeView($view);
 	}
 
 	function setEnqueuedHooks(&$view) {
@@ -50,7 +51,7 @@ class FormComponent extends Component
 	}
 
 	function setOnClickEvent(&$view) {
-		$view->setAttribute('onclick', "javascript:componentClicked(getEventTarget(event))");
+		$view->setAttribute('onclick', "componentClicked(getEventTarget(event));");
 	}
 
 	function valueChanged(){}
@@ -76,10 +77,13 @@ class FormComponent extends Component
 	}
 	function &createDefaultView(){
 		$this->view =& parent::createDefaultView();
-		$this->initializeView($this->view);
+		$this->initializeDefaultView($this->view);
 		return $this->view;
 	}
-
+	function initializeDefaultView(&$view){
+		$this->initializeView($view);
+	}
+	function initializeView(&$view){}
 	function setHook(&$hook) {
 		if ($this->view)
 			$hook->callWith($this->view);

@@ -7,7 +7,7 @@ class Application extends ComponentHolder {
 	var $viewCreator;
 	var $page_renderer;
 	var $needView = array ();
-
+	var $historylistener;
 	function Application() {
 		$_SESSION[sitename][get_class($this)] = & $this;
 		$rc = & $this->setRootComponent();
@@ -16,6 +16,7 @@ class Application extends ComponentHolder {
 		$page_renderer = page_renderer;
 		$this->page_renderer = new $page_renderer;
 		$this->createView();
+		$this->historylistener =& new HistoryListener;
 	}
 
 	function start() {
@@ -31,7 +32,12 @@ class Application extends ComponentHolder {
 		$this->viewCreator->createAllViews();
 		echo $this->page_renderer->initialPageRenderPage($this);
 	}
-
+	function standardRender() {
+		$this->viewCreator->createAllViews();
+		$pr =& new StandardPageRenderer();
+		$pr->setPage($this->wholeView);
+		echo $pr->renderPage($this);
+	}
 	function & getInstanceOf($class) {
 		if (!isset ($_SESSION[sitename][$class])) {
 			$_SESSION[sitename][$class] = & new $class;

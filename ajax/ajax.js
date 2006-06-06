@@ -107,8 +107,8 @@ function postAjax(form, func, obj) {
        /*-------------------------------------------------------------------------
        ACA ABAJO ESTA EL PROMPT-------------------------------------------------*/
 
-       //       prompt("url",url);prompt("paramans",params);
-//       prompt("url", url + params);
+       //prompt("url",url);prompt("paramans",params);
+//       prompt("params", params);
        try {
               http.open("POST", form.getAttribute('action'), true);
           http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

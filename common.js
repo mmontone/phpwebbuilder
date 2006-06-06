@@ -68,18 +68,22 @@ function appendQueuedUpdates(url) {
 
 function componentChange(comp) {
     sendEvent('change', comp);
+    return false;
 }
 
 function componentFocus(comp) {
     sendEvent('focus', comp);
+    return false;
 }
 
 function componentBlur(comp) {
     sendEvent('blur', comp)
+    return false;
 }
 
 function componentClicked(comp) {
     sendEvent('click', comp);
+    return false;
 }
 
 function sendEvent(event, comp) {
@@ -126,10 +130,10 @@ function radiobuttonGetValue(radiobutton) {
         return "0";
 }
 
-function getEventTarget(e)
+function getEventTarget(e2)
 {
 	var targ;
-	if (!e) var e = window.event;
+    var e = getEvent(e2);
 	if (e.target) targ = e.target;
 	else if (e.srcElement) targ = e.srcElement;
 	if (targ.nodeType == 3) {// defeat Safari bug
@@ -139,4 +143,9 @@ function getEventTarget(e)
 	   targ = targ.parentNode;
 	}
 	return targ;
+}
+
+function getEvent(e){
+	if (!e) var e = window.event;
+    return e;
 }

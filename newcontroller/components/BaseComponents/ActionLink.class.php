@@ -7,7 +7,7 @@ class ActionLink extends FormComponent
 	var $target;
 	var $action;
 	var $params;
-
+	var $token;
 	function ActionLink (&$target, $action, $text, &$params) {
 		parent::FormComponent($vm = null);
 
@@ -20,11 +20,19 @@ class ActionLink extends FormComponent
 
 	function initializeView(&$view){
 		$view->setTagName('a');
+		$this->app->historylistener->getToken($this);
 	}
-
+	function setToken($token){
+		$this->token=$token;
+		$this->view->setAttribute('href', 'link_dispatch.php?app='.get_class($this->app).'&amp;token='.$token);
+	}
 	function execute(){
 		$action = $this->action;
 		$this->target->$action($this->params);
+	}
+	function setOnClickEvent(&$view){
+		parent::setOnClickEvent($view);
+		$view->setAttribute('onclick', $view->getAttribute('onclick').'var ev = getEvent(event); ev.returnValue=false;return false;');
 	}
 }
 
