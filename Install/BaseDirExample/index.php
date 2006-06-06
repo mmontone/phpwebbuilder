@@ -1,5 +1,5 @@
 <?php
 
-header('location:Action.php?reset=yes');
+header('location:incoming.html');
 
 ?>
