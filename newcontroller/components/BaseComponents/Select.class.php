@@ -16,11 +16,13 @@ class Select extends FormComponent {
 		}
 		$this->initializeView(&$v);
 	}
-    function initializeView(&$view){
+    function initializeDefaultView(&$view){
 		$view->setTagName('select');
 		$this->appendOptions($view);
 	}
-
+	function initializeView(&$v){
+		$this->appendOptions($v);
+	}
 	function appendOptions(&$view) {
 		$i=0;
 		$this->options->elements->map(

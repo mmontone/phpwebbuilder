@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . '/Input.class.php';
 
 class Password extends Input {
 
-	function initializeView(&$view) {
+	function initializeDefaultView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'password');
 	}

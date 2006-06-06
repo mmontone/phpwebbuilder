@@ -12,7 +12,7 @@ class Link extends FormComponent
 		$this->addComponent(new Label($text), "linkName");
 	}
 
-	function initializeView(&$view){
+	function initializeDefaultView(&$view){
 		$view->setTagName('a');
 	}
 	function prepareToRender(){

@@ -7,7 +7,7 @@ class Input extends FormComponent{
 		parent::FormComponent($value_model);
 	}
 
-	function initializeView(&$view){
+	function initializeDefaultView(&$view){
 		$view->setTagName('input');
 		$view->setAttribute('type', 'text');
 	}

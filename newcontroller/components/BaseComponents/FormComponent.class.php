@@ -80,9 +80,7 @@ class FormComponent extends Component
 		$this->initializeDefaultView($this->view);
 		return $this->view;
 	}
-	function initializeDefaultView(&$view){
-		$this->initializeView($view);
-	}
+	function initializeDefaultView(&$view){}
 	function initializeView(&$view){}
 	function setHook(&$hook) {
 		if ($this->view)

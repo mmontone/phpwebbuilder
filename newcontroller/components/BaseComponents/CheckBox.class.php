@@ -6,7 +6,7 @@ class CheckBox extends FormComponent {
 		parent :: FormComponent($boolHolder);
 	}
 
-	function initializeView(&$view) {
+	function initializeDefaultView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'checkbox');
 	}

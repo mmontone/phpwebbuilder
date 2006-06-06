@@ -130,6 +130,10 @@ function radiobuttonGetValue(radiobutton) {
         return "0";
 }
 
+function getEvent(e){
+	if (!e) var e = window.event;
+    return e;
+}
 function getEventTarget(e2)
 {
 	var targ;
@@ -145,7 +149,3 @@ function getEventTarget(e2)
 	return targ;
 }
 
-function getEvent(e){
-	if (!e) var e = window.event;
-    return e;
-}

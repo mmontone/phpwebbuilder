@@ -17,9 +17,10 @@ class ActionLink extends FormComponent
 		$this->addComponent(new Label($text), "linkName");
 		$this->onClickSend('execute', $this);
 	}
-
-	function initializeView(&$view){
+	function initializeDefaultView(&$view){
 		$view->setTagName('a');
+	}
+	function initializeView(&$view){
 		$this->app->historylistener->getToken($this);
 	}
 	function setToken($token){

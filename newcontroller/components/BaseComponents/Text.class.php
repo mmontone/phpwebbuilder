@@ -9,8 +9,6 @@ class Text extends FormComponent {
 		}
 	}
 
-	function initializeView(&$view) {}
-
 	function valueChanged(& $value_model, & $params) {
 		/*WARNING!!! If there's an error, look here first ;) */
 		if ($this->view){

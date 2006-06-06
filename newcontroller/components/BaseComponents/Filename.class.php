@@ -3,7 +3,7 @@ require_once dirname(__FILE__) . '/Input.class.php';
 
 class Filename extends Input {
 	var $file;
-	function initializeView(&$view) {
+	function initializeDefaultView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'file');
 	}
