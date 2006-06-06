@@ -160,6 +160,7 @@ function &array_next(&$array) {
 }
 
 function toHTML($s) {
+	$s = str_replace('&', '&amp;', $s);
     $s = str_replace('ñ', '&ntilde;', $s);
     $s = str_replace('¿', '&iquest;', $s);
     $s = str_replace('Ñ', '&Ntilde;', $s);
@@ -202,7 +203,7 @@ function toXML($s) {
 
     $s = str_replace('&quote;', '&#34;', $s);
     $s = str_replace('&nbsp;','&#160;', $s);
-
+	$s = ereg_replace('&([A-Za-z0-9]+);','&amp;\\1;', $s);
     return $s;
 }
 
