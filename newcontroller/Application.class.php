@@ -2,12 +2,13 @@
 require_once dirname(__FILE__) . '/ComponentHolder.class.php';
 
 class Application extends ComponentHolder {
-	var $configuration;
 	var $wholeView;
 	var $viewCreator;
 	var $page_renderer;
 	var $needView = array ();
 	var $historylistener;
+	var $config;
+
 	function Application() {
 		$_SESSION[sitename][get_class($this)] = & $this;
 		$rc = & $this->setRootComponent();
