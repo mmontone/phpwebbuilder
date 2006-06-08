@@ -3,8 +3,6 @@
  * This controller helps configuring and checking the database.
  */
 
-require_once pwbdir.'/deprecated/OldViews/Structure/TableCheckView.class.php';
-
 class DBController extends Component {
 	var $sql;
 	var $sql_result;
