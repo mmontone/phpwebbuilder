@@ -1,22 +1,19 @@
 <?
 
-require_once dirname(__FILE__) . "/../Links/MixLinker.class.php";
-require_once(dirname(__FILE__) . "/../Action/TableCheckAction.class.php");
-require_once("HtmlFormEditView.class.php");
-
-class TableCheckView extends HtmlFormEditView  {
-	function fieldShowObjectFactory () {
-		return new TableCheckAction;
-	}
-	function visitedPersistentObject ($obj) {
-		$view = new PersistentObjectTableCheckView;
-		$view->obj = $obj;
-		return $view;
-	}
-}
-
-class PersistentObjectTableCheckView extends TableCheckView  {
+class PersistentObjectTableCheckView  extends PersistentObject {
 	var $gotFields;
+	function &fieldsMap(&$fields){  /* la variable indica si los campos que referencian a otros objetos se incluyen*/
+		$ret = array();
+		$obj =& $this->obj;
+		$fs =& $obj->getFields($fields);
+		for ($i=0; $i<count($fs) ; $i++) {
+			$field =& $fs[$i];
+			$showField =& $this->fieldShowObject($field);
+			$ret[$field->colName]=& $showField->showMap($this);
+		}
+		return $ret;
+ 	}
+
 	function show () {
 		$table = $this->obj->tablename();
 		$sql = "SHOW TABLES FROM " . basename . " LIKE '" . $table ."'";
@@ -131,7 +128,7 @@ class PersistentObjectTableCheckView extends TableCheckView  {
 	}
 }
 
-class AllTablesCheckView {
+class TablesChecker {
 	function checkTables(){
 		$arr = get_subclasses("PersistentObject");
 		/*Comparing existing tables, existing objects, and added objects*/

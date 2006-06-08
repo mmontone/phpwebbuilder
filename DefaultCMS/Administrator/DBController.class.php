@@ -38,7 +38,7 @@ class DBController extends Component {
 		}
 	}
 	function modsNeeded(){
-		return AllTablesCheckView::checkTables();
+		return TablesChecker::checkTables();
 	}
 }
 ?>
