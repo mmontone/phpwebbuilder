@@ -1,5 +1,5 @@
 <?php
-class NewActionDispatcher {
+class ActionDispatcher {
 	function & application() {
 		return Application :: instance();
 	}
