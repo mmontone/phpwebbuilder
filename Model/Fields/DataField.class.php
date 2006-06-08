@@ -1,5 +1,5 @@
 <?
-require_once dirname(__FILE__) . '/../../newcontroller/PWBObject.class.php';
+require_once dirname(__FILE__) . '/../../Application/PWBObject.class.php';
 
 class DataField extends PWBObject {
 	var $colName; // el nombre del campo

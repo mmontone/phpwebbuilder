@@ -1,7 +1,7 @@
 <?
 define('modules',
 	"Model,Instances,database," .
-	"Controllers,deprecated,newcontroller,flowviews");
+	"Controllers,deprecated,Application,flowviews");
 
 define('app_class',"DefaultCMS");
 

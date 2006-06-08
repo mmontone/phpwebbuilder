@@ -1,5 +1,5 @@
 <?
-//require_once dirname(__FILE__).'/../newcontroller/Component.class.php';
+//require_once dirname(__FILE__).'/../Application/Component.class.php';
 
 class Controller //extends Component
 {

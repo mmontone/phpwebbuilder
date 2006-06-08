@@ -23,7 +23,7 @@ $app = array(
 define('modules',"Model,OldViews,Controllers,deprecated," .
 				 "Instances,database,".
             	 "templates,ajax,NewTemplates, DefaultCMS," .
-            	 "flowview, newcontroller"
+            	 "flowview, Application"
       );
 
 define('app_class',"DefaultCMSApplication");

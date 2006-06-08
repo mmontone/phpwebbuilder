@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . '/../../newcontroller/PWBObject.class.php';
+require_once dirname(__FILE__) . '/../../Application/PWBObject.class.php';
 
 class ValueModel extends PWBObject {
 	function ValueModel() {
