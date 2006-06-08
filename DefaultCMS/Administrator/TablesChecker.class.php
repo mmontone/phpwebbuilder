@@ -1,6 +1,6 @@
 <?
 
-class PersistentObjectTableCheckView  extends PersistentObject {
+class PersistentObjectTableCheckView {
 	var $gotFields;
 	function &fieldsMap(&$fields){  /* la variable indica si los campos que referencian a otros objetos se incluyen*/
 		$ret = array();
