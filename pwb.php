@@ -41,5 +41,10 @@ $app = split(",", app);
 foreach ($app as $dir) {
 	includemodule(basedir."/".$dir);
 }
-require_once "session.php";
+
+session_start();
+if(!isset($_SESSION["install"]))
+	if (!isset($_SESSION[sitename])) {
+		User::login("guest", "guest");
+	}
 ?>
