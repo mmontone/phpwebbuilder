@@ -22,7 +22,7 @@ class StandardPageRenderer extends PageRenderer {
 
 	function renderPage(&$app) {
 		$this->page->tagName = 'form';
-		$this->page->setAttribute('action', 'new_dispatch.php');
+		$this->page->setAttribute('action', 'dispatch.php');
 		$this->page->setAttribute('method', 'post');
 		$this->page->setAttribute('enctype', 'multipart/form-data');
 		$this->page->setAttribute('app', get_class($app));
