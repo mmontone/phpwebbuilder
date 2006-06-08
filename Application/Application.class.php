@@ -82,7 +82,7 @@ class Application extends ComponentHolder {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
-		$this->addScript(pwb_url . '/ajax/ajax.js');
+		$this->addScript(pwb_url . '/lib/ajax.js');
 	}
 
 	function addStdRenderingSpecificScripts() {
