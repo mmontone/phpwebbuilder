@@ -12,7 +12,7 @@ ini_set('display_errors', true);
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 //error_reporting(E_ALL);
 
-require_once dirname(__FILE__) . "/basiclib.php";
+require_once dirname(__FILE__) . "/lib/basiclib.php";
 
 
 

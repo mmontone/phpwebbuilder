@@ -72,7 +72,7 @@ class Application extends ComponentHolder {
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array ();
-		$this->addScript(pwb_url . '/common.js');
+		$this->addScript(pwb_url . '/lib/common.js');
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}
@@ -86,7 +86,7 @@ class Application extends ComponentHolder {
 	}
 
 	function addStdRenderingSpecificScripts() {
-		$this->addScript(pwb_url . '/std.js');
+		$this->addScript(pwb_url . '/lib/std.js');
 	}
 
 	function addScript($url) {
