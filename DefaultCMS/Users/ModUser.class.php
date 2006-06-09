@@ -1,6 +1,6 @@
 <?
 
-class ModUser extends EditObjectComponent{
+class ModUser extends PersistentObjectEditor {
 	function hasPermission(){
 		return $_SESSION[sitename]['Username']!='guest';
 	}
@@ -10,7 +10,7 @@ class ModUser extends EditObjectComponent{
 		unset($fs['UserRoleuser']);
 		unset($fs['super']);
 		unset($fs['id']);
-		parent::EditObjectComponent($u,$fs);
+		parent::PersistentObjectEditor($u,$fs);
 	}
 }
 ?>

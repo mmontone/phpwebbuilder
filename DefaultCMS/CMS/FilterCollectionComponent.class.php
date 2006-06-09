@@ -1,15 +1,15 @@
 <?php
 
-require_once 'NavigationComponent.class.php';
+require_once 'CollectionNavigator.class.php';
 
-class FilterCollectionComponent extends ObjectComponent {
+class FilterCollectionComponent extends PersistentObjectPresenter {
 	var $col;
 	var $classN;
 	function FilterCollectionComponent(&$col) {
 		$this->col = & $col;
 		$this->classN = $col->dataType;
 		$c = $col->dataType;
-		parent :: ObjectComponent(new $c);
+		parent :: PersistentObjectPresenter(new $c);
 	}
 	function initialize() {
 		$this->factory =& new SearchComponentFactory;

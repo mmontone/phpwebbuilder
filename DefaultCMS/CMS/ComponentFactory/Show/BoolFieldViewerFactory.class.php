@@ -1,8 +1,8 @@
 <?php
 
-require_once 'ShowComponentFactory.class.php';
+require_once 'ViewerFactory.class.php';
 
-class BoolFieldShowComponentFactory extends ShowComponentFactory {
+class BoolFieldViewerFactory extends ViewerFactory {
 
     function &componentForField(&$field) {
     	$cb =& new CheckBox(new ValueHolder($field->value));

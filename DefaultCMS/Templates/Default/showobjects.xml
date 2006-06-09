@@ -1,5 +1,5 @@
 <templates>
- 	<template class="EditObjectComponent">
+ 	<template class="PersistentObjectEditor">
 	 	<template class="ValidationErrorsDisplayer">
 			<div>Correct the following errors:</div>
 			<container class="Label"/>
@@ -17,7 +17,7 @@
 		<a href="#" id="cancel"><img class="operation" title="Cancel" src="$templatesdir/icons/stock_cancel.png"/></a>
 		<a href="#" id="delete"><img class="operation" title="Delete" src="$templatesdir/icons/stock_delete.png"/></a>
 	</template>
- 	<template class="ShowCollectionComponent">
+ 	<template class="CollectionViewer">
  		<div>
 		<container id="className" /> class
 	 	<table><thead>
@@ -32,7 +32,7 @@
 			</tr>
 			</thead>
 			<tbody id="objs">
-			<template class="ShowObjectComponent">
+			<template class="PersistentObjectViewer">
 	 			<tr>
 					<template class="FieldValueComponent" >
 						<td><container id="value"/></td>

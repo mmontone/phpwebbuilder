@@ -58,7 +58,7 @@ class Menu extends Component {
 			$obj =& new $class;
 			PermissionChecker::addComponent($sect,
 				new MenuItemComponent($this, $obj->displayString,
-					$temp[$p] = array ('Component' => 'ShowCollectionComponent',
+					$temp[$p] = array ('Component' => 'CollectionViewer',
 					'params' => new PersistentCollection($class))),
 				new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Menu', '*')));
 		}
@@ -69,7 +69,7 @@ class Menu extends Component {
 	}
 	/*function addelement($class, $text, & $sect) {
 		$comp = array (
-			'Component' => 'ShowCollectionComponent',
+			'Component' => 'CollectionViewer',
 			'params' => new PersistentCollection($class)
 		);
 		return $this->additem($comp, $text, $sect);

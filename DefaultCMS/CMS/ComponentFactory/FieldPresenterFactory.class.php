@@ -1,6 +1,6 @@
 <?php
 
-class FieldComponentFactory {
+class FieldPresenterFactory {
 	function &createFor(&$field){
 		$ok = false;
 		$c = get_class($field);

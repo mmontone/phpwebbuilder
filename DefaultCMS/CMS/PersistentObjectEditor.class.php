@@ -1,17 +1,15 @@
 <?php
 
-require_once 'ObjectComponent.class.php';
-
-class EditObjectComponent extends ObjectComponent {
-	function EditObjectComponent(&$object) {
-		parent::ObjectComponent($object);
+class PersistentObjectEditor extends PersistentObjectPresenter {
+	function PersistentObjectEditor(&$object) {
+		parent::PersistentObjectPresenter($object);
 	}
 
     function initialize(){
     	$obj =& $this->obj;
     	$this->addComponent(new Label($this->classN), 'className');
     	$this->addComponent(new Label($obj->id->value), 'idN');
-    	$this->factory =& new EditComponentFactory;
+    	$this->factory =& new EditorFactory;
        	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
        	//$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n), 'cancel');

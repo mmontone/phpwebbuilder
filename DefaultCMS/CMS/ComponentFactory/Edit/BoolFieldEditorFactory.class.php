@@ -1,8 +1,8 @@
 <?php
 
-require_once 'EditComponentFactory.class.php';
+require_once 'EditorFactory.class.php';
 
-class BoolFieldEditComponentFactory extends EditComponentFactory {
+class BoolFieldEditorFactory extends EditorFactory {
 	function &componentForField(&$field){
 		$value = $field->getValue();
 		return new CheckBox(new ValueHolder($value));

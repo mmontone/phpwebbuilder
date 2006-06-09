@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/../FieldComponentFactory.class.php';
+require_once dirname(__FILE__).'/../FieldPresenterFactory.class.php';
 require_once 'SearchComponentFactory.class.php';
 
 class TextFieldSearchComponentFactory extends SearchComponentFactory {

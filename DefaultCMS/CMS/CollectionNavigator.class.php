@@ -1,10 +1,10 @@
 <?php
-class NavigationComponent extends Component {
+class CollectionNavigator extends Component {
 	var $col;
 	var $fields;
 	var $classN;
 
-	function NavigationComponent(&$col, $fields=null, $callbacks=array()) {
+	function CollectionNavigator(&$col, $fields=null, $callbacks=array()) {
 		$this->col = & $col;
 		$this->classN = $col->dataType;
 

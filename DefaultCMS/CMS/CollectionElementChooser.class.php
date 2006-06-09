@@ -1,11 +1,9 @@
 <?php
 
-require_once 'NavigationComponent.class.php';
+class CollectionElementChooser extends CollectionNavigator {
 
-class SelectCollectionComponent extends NavigationComponent {
-
-	function SelectCollectionComponent(&$col) {
-		parent::NavigationComponent($col);
+	function CollectionElementChooser(&$col) {
+		parent::CollectionNavigator($col);
 	}
 
 	function initialize() {
@@ -15,7 +13,7 @@ class SelectCollectionComponent extends NavigationComponent {
 
 	function newObject(&$n) {
 		$obj = & new $this->classN;
-		$ec =& new EditObjectComponent($obj);
+		$ec =& new PersistentObjectEditor($obj);
     	$ec->registerCallback('refresh', callback($this, 'refresh'));
     	$ec->registerCallback('object_edited', new FunctionObject($this,'objectEdited'));
 		$this->call($ec);
@@ -27,7 +25,7 @@ class SelectCollectionComponent extends NavigationComponent {
 	}
 
 	function addLine(&$obj) {
-		$fc = & new ShowObjectComponent($obj, $this->fields);
+		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$this->objs->addComponent($fc);
 		$fc->addComponent(new ActionLink($this, 'selectObject', 'Select', $obj), 'select');
 	}

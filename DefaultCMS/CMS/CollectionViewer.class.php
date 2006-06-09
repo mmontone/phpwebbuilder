@@ -1,8 +1,8 @@
 <?php
 
-require_once 'NavigationComponent.class.php';
+require_once 'CollectionNavigator.class.php';
 
-class ShowCollectionComponent extends NavigationComponent {
+class CollectionViewer extends CollectionNavigator {
 	function initialize() {
 		$class = & $this->classN;
 		$this->addComponent(new Text(new ValueHolder($class)), 'className');
@@ -15,7 +15,7 @@ class ShowCollectionComponent extends NavigationComponent {
 	}
 	/* Editing */
 	function editObject(&$obj) {
-		$ec =& new EditObjectComponent($obj);
+		$ec =& new PersistentObjectEditor($obj);
     	$ec->registerCallback('cancel', new FunctionObject($this, 'cancel'));
     	$ec->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
     	$ec->registerCallback('refresh', new FunctionObject($this, 'refresh'));
@@ -49,7 +49,7 @@ class ShowCollectionComponent extends NavigationComponent {
 	}
 
 	function addLine(&$obj) {
-		$fc = & new ShowObjectComponent($obj, $this->fields);
+		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$class = & $this->classN;
 		$this->objs->addComponent($fc);
 		$u =& User::logged();

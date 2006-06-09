@@ -32,7 +32,7 @@ class IndexFieldChooser extends Component {
 	}
 
 	function chooseTarget() {
-		$selection = & new SelectCollectionComponent($this->field->collection);
+		$selection = & new CollectionElementChooser($this->field->collection);
 		$callback =& new FunctionObject($this, 'targetSelected');
 		$selection->registerCallback('selected', $callback);
 		$this->call($selection);

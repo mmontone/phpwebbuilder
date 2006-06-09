@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__FILE__).'/../FieldComponentFactory.class.php';
+require_once dirname(__FILE__).'/../FieldPresenterFactory.class.php';
 
-class SearchComponentFactory extends FieldComponentFactory {}
+class SearchComponentFactory extends FieldPresenterFactory {}
 
 class DataFieldSearchComponentFactory extends SearchComponentFactory {
 	function &componentForField(&$field){

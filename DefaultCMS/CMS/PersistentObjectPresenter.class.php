@@ -1,11 +1,11 @@
 <?php
 
-class ObjectComponent extends Component {
+class PersistentObjectPresenter extends Component {
 	var $obj;
 	var $classN;
 	var $fieldNames;
 	var $fieldComponents;
-    function ObjectComponent(&$object, $fields=null) {
+    function PersistentObjectPresenter(&$object, $fields=null) {
 		$this->obj =& $object;
 		$this->classN = get_class($object);
 		if ($fields==null){
@@ -15,6 +15,7 @@ class ObjectComponent extends Component {
 		}
     	parent::Component();
     }
+
     function initialize(){
     	$obj =& $this->obj;
     	$fields =& $obj->fieldsWithNames($this->fieldNames);
@@ -22,6 +23,7 @@ class ObjectComponent extends Component {
     		$this->addField($f2, $fields[$f2]);
        	}
     }
+
     function addField($name, &$field){
 		$fc =& new FieldValueComponent;
 		$fc->addComponent(new Label($field->displayString), 'fieldName');

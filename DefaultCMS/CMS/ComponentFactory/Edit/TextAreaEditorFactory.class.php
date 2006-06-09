@@ -1,8 +1,8 @@
 <?php
 
-require_once 'EditComponentFactory.class.php';
+require_once 'EditorFactory.class.php';
 
-class TextAreaEditComponentFactory extends EditComponentFactory {
+class TextAreaEditorFactory extends EditorFactory {
 	function &componentForField(&$field){
 		return new TextAreaComponent(new ValueHolder($field->value));
 	}

@@ -1,5 +1,5 @@
 <templates>
- 	<template class="SelectCollectionComponent">
+ 	<template class="CollectionElementChooser">
  		<div>
 		<container id="className" /> class
 	 	<table id="objs"><tbody>
@@ -11,7 +11,7 @@
 				</template>
 				<td>Select</td>
 			</tr>
-			<template class="ShowObjectComponent">
+			<template class="PersistentObjectViewer">
 	 			<tr>
 					<template class="FieldValueComponent" >
 						<td><container id="value"/></td>

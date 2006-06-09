@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/../CMS/EditObjectComponent.class.php';
+require_once dirname(__FILE__).'/../CMS/PersistentObjectEditor.class.php';
 
 class AddUser extends Component {
 	function initialize(){
