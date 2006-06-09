@@ -1,7 +1,7 @@
 <?php
 
 define('modules',
-	"Model,Application,View,Instances,database, DefaultCMS");
+	"Model,Application,View,Instances,database,DefaultCMS,View");
 
 define('app_class',"DefaultCMSApplication");
 

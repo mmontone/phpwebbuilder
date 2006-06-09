@@ -17,7 +17,7 @@ require_once dirname(__FILE__) . "/lib/basiclib.php";
 
 
 if (!defined('modules')) {
-	define('modules', "Model,Instances,Application,XML,database,NewTemplates,DefaultCMS");
+	define('modules', "Model,Instances,Application,XML,View,database,NewTemplates,DefaultCMS");
 	define('app_class', "DefaultCMSApplication");
 }
 
