@@ -40,12 +40,16 @@ class CollectionViewer extends CollectionNavigator {
 		$this->editObject($obj);
 	}
 	function deleteObject(&$fc) {
-		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => callback($this, 'deleteConfirmed')), $fc));
+		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $fc), 'on_no' => new FunctionObject($this, 'deleteRejected')), $fc));
 	}
 
 	function deleteConfirmed(&$fc) {
 		$ok = $fc->obj->delete();
 		$this->refresh();
+	}
+
+	function deleteRejected() {
+
 	}
 
 	function addLine(&$obj) {
