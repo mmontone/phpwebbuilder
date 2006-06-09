@@ -22,6 +22,12 @@ class CollectionViewer extends CollectionNavigator {
     	$this->call($ec);
 	}
 
+	function viewObject(&$obj) {
+		$viewer =& new PersistentObjectViewer($obj);
+    	$viewer->registerCallback('refresh', new FunctionObject($this, 'refresh'));
+    	$this->call($viewer);
+	}
+
 	function objectEdited(&$object) {
 		$object->save();
 		$this->refresh();
@@ -40,7 +46,12 @@ class CollectionViewer extends CollectionNavigator {
 		$this->editObject($obj);
 	}
 	function deleteObject(&$fc) {
-		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $fc), 'on_no' => new FunctionObject($this, 'deleteRejected')), $fc));
+		$translator = translator;
+		if (!$translator)
+			$translator = 'EnglishTranslator';
+		$translator =& new $translator;
+		$msg = $translator->translate('Are you sure that you want to delete the object?');
+		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $fc), 'on_no' => new FunctionObject($this, 'deleteRejected')), $fc));
 	}
 
 	function deleteConfirmed(&$fc) {
@@ -57,6 +68,7 @@ class CollectionViewer extends CollectionNavigator {
 		$class = & $this->classN;
 		$this->objs->addComponent($fc);
 		$u =& User::logged();
+		//$fc->addComponent(new ActionLink2(array('action'=>new FunctionObject($this, 'viewObject'), 'text'=>'View')), 'view');
 		PermissionChecker::addComponent($fc,
 					new ActionLink($this, 'editObject', 'Edit', $obj),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))

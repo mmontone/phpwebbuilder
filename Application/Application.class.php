@@ -8,6 +8,7 @@ class Application extends ComponentHolder {
 	var $needView = array ();
 	var $historylistener;
 	var $config;
+	var $translator;
 
 	function Application() {
 		$_SESSION[sitename][get_class($this)] = & $this;

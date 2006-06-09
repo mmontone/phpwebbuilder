@@ -11,7 +11,7 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     	$this->addComponent(new Label($obj->id->value), 'idN');
     	$this->factory =& new EditorFactory;
        	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
-       	//$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
+       	$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n), 'cancel');
 		parent::initialize();
     }
@@ -47,12 +47,18 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 		$this->addComponent(new ValidationErrorsDisplayer($error_msgs), 'validation_errors');
 	}
 
-	/*
 	function deleteObject(&$fc) {
-		$this->obj->delete();
-		$this->callback('refresh');
+		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $fc), 'on_no' => new FunctionObject($this, 'deleteRejected')), $fc));
 	}
-	*/
+
+	function deleteConfirmed(&$fc) {
+		$ok = $fc->obj->delete();
+		$this->refresh();
+	}
+
+	function deleteRejected() {
+
+	}
 }
 
 ?>
