@@ -1,15 +1,15 @@
 <?php
 
 require_once dirname(__FILE__).'/../FieldPresenterFactory.class.php';
-require_once 'SearchComponentFactory.class.php';
+require_once 'SearcherFactory.class.php';
 
-class TextFieldSearchComponentFactory extends SearchComponentFactory {
+class TextFieldSearcherFactory extends SearcherFactory {
 	function &componentForField(&$field){
-		return new TextFieldSearchComponent();
+		return new TextFieldSearcher();
 	}
 }
 
-class TextFieldSearchComponent extends DataFieldSearchComponent{
+class TextFieldSearcher extends DataFieldSearcher{
 	function setSearchValue(&$conds, $fname){
 		$this->comparator->setValue($conds[$fname][0]);
 		$s = substr(substr($conds[$fname][1], 0, -1), 1);

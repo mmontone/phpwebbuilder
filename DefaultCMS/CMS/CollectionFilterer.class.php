@@ -1,18 +1,16 @@
 <?php
 
-require_once 'CollectionNavigator.class.php';
-
-class FilterCollectionComponent extends PersistentObjectPresenter {
+class CollectionFilterer extends PersistentObjectPresenter {
 	var $col;
 	var $classN;
-	function FilterCollectionComponent(&$col) {
+	function CollectionFilterer(&$col) {
 		$this->col = & $col;
 		$this->classN = $col->dataType;
 		$c = $col->dataType;
 		parent :: PersistentObjectPresenter(new $c);
 	}
 	function initialize() {
-		$this->factory =& new SearchComponentFactory;
+		$this->factory =& new SearcherFactory;
 		parent::initialize();
 		$this->addComponent(new ActionLink($this, 'filter','Search',$n=null));
 	}

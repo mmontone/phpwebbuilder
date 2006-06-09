@@ -60,7 +60,7 @@ class CollectionNavigator extends Component {
 	function getValue(){}
 	/* Navigation */
 	function filter(){
-		$fc =& new FilterCollectionComponent($this->col);
+		$fc =& new CollectionFilterer($this->col);
 		$fc->registerCallbacks(array('done'=>callback($this, 'refresh')));
 		$this->call($fc);
 	}

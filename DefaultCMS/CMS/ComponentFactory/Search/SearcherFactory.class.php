@@ -2,15 +2,15 @@
 
 require_once dirname(__FILE__).'/../FieldPresenterFactory.class.php';
 
-class SearchComponentFactory extends FieldPresenterFactory {}
+class SearcherFactory extends FieldPresenterFactory {}
 
-class DataFieldSearchComponentFactory extends SearchComponentFactory {
+class DataFieldSearcherFactory extends SearcherFactory {
 	function &componentForField(&$field){
-		return new DataFieldSearchComponent();
+		return new DataFieldSearcher();
 	}
 }
 
-class DataFieldSearchComponent extends Component{
+class DataFieldSearcher extends Component{
 	function initialize(){
 		$this->addComponent(new Input(new ValueHolder($c0="")), 'comparator');
 		$this->addComponent(new Input(new ValueHolder($c1="")), 'value');
