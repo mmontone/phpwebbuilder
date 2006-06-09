@@ -34,6 +34,11 @@ class PersistentObject extends Model {
 
 	var $dirty = true;
 
+	function PersistentObject() {
+		parent::Model();
+		$this->createInstance();
+	}
+
 	function & allFieldsThisLevel() {
 		return $this->fieldsWithNames($this->allFieldNamesThisLevel());
 	}
@@ -436,13 +441,7 @@ class PersistentObject extends Model {
 			return $this;
 		}
 	}
-	/**
-	 * @category Creation
-	 */
-	function PersistentObject() {
-		parent::Model();
-		$this->createInstance();
-	}
+
 	function & createInstance() {
 		if ($this->isNotTopClass($this)) {
 			$this->setParent($this->create(get_parent_class(get_class($this))));
@@ -577,6 +576,24 @@ class PersistentObject extends Model {
 
 	function addBoolField($name, $params = array ()) {
 		$this->addField(new BoolField($name, $params));
+	}
+
+	function &copy() {
+		$copy =& parent::copy();
+
+		$copy->table = $this->table;
+
+		// Not sure about copying children and parent
+		if ($this->parent != null)
+			$copy->parent =& $this->parent->copy();
+
+		foreach($this->allFieldsThisLevel() as $field) {
+			$copy->addField($field->copy());
+		}
+
+		$copy->displayString = $this->displayString;
+
+		return $copy;
 	}
 }
 ?>

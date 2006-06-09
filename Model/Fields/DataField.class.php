@@ -9,6 +9,7 @@ class DataField extends PWBObject {
 	var $displayString;
 
 	function DataField($name, $isIndex = false) {
+		//parent::PWBObject();
 		$this->colName = $name;
 		if (is_array($isIndex)) {
 			$this->isIndex = $isIndex['is_index'];
@@ -120,6 +121,18 @@ class DataField extends PWBObject {
 	}
 	function toArrayValue() {
 		return $this->value;
+	}
+
+	function &copy() {
+		/* Be aware that we don't copy the owner */
+		$copy =& parent::copy();
+
+		$copy->colName = $this->colName;
+		$copy->value = $this->value;
+		$copy->isIndex = $this->isIndex;
+		$copy->displayString = $this->displayString;
+
+		return $copy;
 	}
 }
 

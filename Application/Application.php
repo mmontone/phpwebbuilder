@@ -1,6 +1,7 @@
 <?php
 
 require_once 'PWBObject.class.php';
+require_once 'PWBInstanceIdAssigner.class.php';
 require_once 'ActionDispatcher.class.php';
 require_once 'Application.class.php';
 require_once 'ApplicationLauncher.class.php';

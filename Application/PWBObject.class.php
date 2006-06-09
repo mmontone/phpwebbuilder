@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/PWBInstanceIdAssigner.class.php';
-
 class PWBObject
 {
     var $service_request_handlers;
@@ -165,6 +163,19 @@ class PWBObject
             return $value;
         else
             return $param;
+    }
+
+    function &copy() {
+		$class = get_class($this);
+		$copy =& new $class;
+
+		// If this fails then it means that the PWBObject constructor is not being called
+		assert($copy->__instance_id != $this->__instance_id);
+
+		// Don't share the listeners
+		$copy->event_listeners = array();
+
+		return $copy;
     }
 }
 
