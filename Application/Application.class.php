@@ -122,5 +122,9 @@ class Application extends ComponentHolder {
 	function needsView(& $comp) {
 		$this->needView[] = & $comp;
 	}
+
+	function translate($msg) {
+		return $this->translator->translate($msg);
+	}
 }
 ?>

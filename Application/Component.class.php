@@ -217,6 +217,10 @@ class Component extends PWBObject
 		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);
 		return $ret;
 	}
+
+	function tranlate($msg) {
+		return $this->app->translate($msg);
+	}
 }
 
 
