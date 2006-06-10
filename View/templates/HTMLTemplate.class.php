@@ -38,8 +38,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 			case 'container': $temp = & new HTMLContainer($tag,$xml->attributes); break;
 			case 'translated':
 				$text = $xml->childNodes[0]->data;
-				$translator = translator;
-				$translator =& new $translator;
+				$translator =& $this->getTranslator();
 				$translated_text = $translator->translate($text);
 				return new XMLTextNode($translated_text);
 				break;
@@ -66,5 +65,16 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	function isTemplate() {
 		return true;
 	}
+
+	function &getTranslator() {
+		$translator = translator;
+		$translator =& new $translator;
+		return $translator;
+	}
+
+	/*
+	function &getTranslator() {
+		return Translator::forLanguage(translation);
+	}*/
 }
 ?>

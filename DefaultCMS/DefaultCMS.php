@@ -4,6 +4,7 @@ require_once 'DefaultCMS.class.php';
 require_once 'Administrator/RolesController.class.php';
 require_once 'Administrator/DBController.class.php';
 require_once 'Administrator/TablesChecker.class.php';
+require_once 'Administrator/TableCheckAction.class.php';
 require_once 'Menu.class.php';
 require_once 'DefaultCMSApplication.class.php';
 require_once 'Files/FileLoader.class.php';

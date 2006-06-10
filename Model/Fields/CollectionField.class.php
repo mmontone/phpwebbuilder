@@ -38,10 +38,13 @@ class CollectionField extends DataField {
 	function updateString() {}
 	function loadFrom() {}
 	function & objects() {
-		return $this->collection->objects();
+		return $this->elements();
+	}
+	function &elements() {
+		return $this->collection->elements();
 	}
 	function canDelete() {
-		$arr = & $this->collection->objects();
+		$arr = & $this->collection->elements();
 		$can = count($arr) == 0;
 		if (!$can)
 			trace("The " . $this->colName . " collection is not empty<BR>\n");

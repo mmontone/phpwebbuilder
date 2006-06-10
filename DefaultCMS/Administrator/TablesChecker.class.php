@@ -8,8 +8,12 @@ class PersistentObjectTableCheckView {
 		$fs =& $obj->getFields($fields);
 		for ($i=0; $i<count($fs) ; $i++) {
 			$field =& $fs[$i];
+			/*
 			$showField =& $this->fieldShowObject($field);
-			$ret[$field->colName]=& $showField->showMap($this);
+			$ret[$field->colName]=& $showField->showMap($this);*/
+			$c =& new TableCheckAction;
+			$showField =& $c->viewFor($field);
+			$ret[$field->colName] =& $showField->showMap($this);
 		}
 		return $ret;
  	}
