@@ -1,10 +1,10 @@
 <?
 
-class PersistentObject extends ObjectDescription {
+class PersistentObject extends DescriptedObject {
 	var $table;
 
 	function PersistentObject() {
-		parent::ObjectDescription();
+		parent::DescriptedObject();
 		$this->createInstance();
 	}
 
@@ -46,7 +46,7 @@ class PersistentObject extends ObjectDescription {
 		$rcs = get_related_classes(get_class($this));
 		$fs = array();
 		foreach($rcs as $rc){
-			if ($rc != 'persistentobject' && $rc != 'objectdescription' && $rc != 'pwbobject') {
+			if ($rc != 'persistentobject' && $rc != 'descriptedobject' && $rc != 'pwbobject') {
 				$o = new $rc;
 				$fs = array_merge($fs, $o->allSQLFields());
 			}
@@ -70,7 +70,7 @@ class PersistentObject extends ObjectDescription {
 		$o0 =& $this;
 		foreach($pcs as $pc){
 			$o1 =& new $pc;
-			if ($pc != 'persistentobject' && $pc != 'objectdescription' && $pc != 'pwbobject' && $pc != ''){
+			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
 				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o1->tableName().'.id = '.$o0->tableName().'.super';
 			}
 			$o0 =& $o1;
@@ -81,7 +81,7 @@ class PersistentObject extends ObjectDescription {
 			$o1 =& new $sc;
 			$pc = get_parent_class($sc);
 			$o2 =& new $pc;
-			if ($pc != 'persistentobject' && $pc != 'model' && $pc != 'pwbobject' && $pc != ''){
+			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
 				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
 			}
 		}
@@ -99,7 +99,7 @@ class PersistentObject extends ObjectDescription {
 		$rss []='1=1';
 		foreach($rcs as $rc){
 			$sup = get_parent_class($rc);
-			if ($sup != 'persistentobject' && $sup != 'objectdescription' && $sup != 'pwbobject' && $sup != ''){
+			if ($sup != 'persistentobject' && $sup != 'descriptedobject' && $sup != 'pwbobject' && $sup != ''){
 				$o1 = new $rc;
 				$o2 = new $sup;
 				$rss[] = '('.$o2->tableName().'.id = '.$o1->tableName().'.super'.

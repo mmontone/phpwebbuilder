@@ -18,6 +18,21 @@ class PersistentObjectTableCheckView {
 		return $ret;
  	}
 
+ 	function fieldsForm(&$linker, &$fields, $objFields){  /* la variable indica si los campos que referencian a otros objetos se incluyen*/
+		$ret = "";
+		$obj =& $this->obj;
+		$fs =& $obj->getFields($fields);
+		for ($i=0; $i<count($fs) ; $i++) {
+			$field =& $fs[$i];
+			/*
+			$showField =& $this->fieldShowObject($field);*/
+			$c =& new TableCheckAction;
+			$showField =& $c->viewFor($field);
+			$ret .= $showField->show($this, $linker, $objFields);
+		}
+		return $ret;
+ 	}
+
 	function show () {
 		$table = $this->obj->tablename();
 		$sql = "SHOW TABLES FROM " . basename . " LIKE '" . $table ."'";
@@ -82,7 +97,7 @@ class PersistentObjectTableCheckView {
 			//Si no est�, crearla:
 				//$ret = "\n-- Object: ".get_class($this->obj);
 				$ret =	"\nCREATE TABLE IF NOT EXISTS $table (" ;
-				$ret .= $this->fieldsForm(new MixLinker, $this->obj->fieldNames, TRUE);
+				$ret .= $this->fieldsForm($this, $this->obj->fieldNames, TRUE);
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
 				if ($u) {
