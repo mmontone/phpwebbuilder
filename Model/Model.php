@@ -19,7 +19,6 @@ require_once 'Fields/SuperField.class.php';
 require_once 'Fields/TextField.class.php';
 require_once 'Fields/WikiArea.class.php';
 require_once 'ObjectDescription.class.php';
-require_once 'Model.php';
 require_once 'PersistentCollection.class.php';
 require_once 'PersistentObject.class.php';
 require_once 'Validation/Validation.class.php';

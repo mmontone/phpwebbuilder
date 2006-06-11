@@ -20,7 +20,10 @@ class Application extends ComponentHolder {
 		$this->createView();
 		$this->historylistener =& new HistoryListener;
 	}
-
+	function setRootComponent(){
+		trigger_error("Subclass responsibility");
+		exit;
+	}
 	function start() {
 		$this->component->start();
 	}

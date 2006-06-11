@@ -218,7 +218,7 @@ class Component extends PWBObject
 		return $ret;
 	}
 
-	function tranlate($msg) {
+	function translate($msg) {
 		return $this->app->translate($msg);
 	}
 }
