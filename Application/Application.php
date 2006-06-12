@@ -1,7 +1,5 @@
 <?php
 
-require_once 'PWBObject.class.php';
-require_once 'PWBInstanceIdAssigner.class.php';
 require_once 'ActionDispatcher.class.php';
 require_once 'Application.class.php';
 require_once 'ApplicationLauncher.class.php';
@@ -9,7 +7,6 @@ require_once 'Component.class.php';
 require_once 'HistoryListener.class.php';
 require_once 'ComponentHolder.class.php';
 require_once 'ChildCallbackHandler.class.php';
-require_once 'FunctionObject.class.php';
 require_once 'LambdaObject.class.php';
 require_once 'Translator.class.php';
 require_once 'EnglishTranslator.class.php';

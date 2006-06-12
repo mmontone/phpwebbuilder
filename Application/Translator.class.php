@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/PWBObject.class.php';
-
 class Translator extends PWBObject
 {
     var $dictionary;

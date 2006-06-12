@@ -1,5 +1,4 @@
 <?php
-require_once 'Collection.class.php';
 require_once 'Fields/BlobField.class.php';
 require_once 'Fields/BoolField.class.php';
 require_once 'Fields/ColecField.class.php';
@@ -30,14 +29,5 @@ require_once 'Validation/LikeValidation.class.php';
 require_once 'Validation/LikeValidationException.class.php';
 require_once 'Validation/OrValidation.class.php';
 require_once 'Validation/PluggableValidation.class.php';
-require_once 'ValueModels/AspectAdaptor.class.php';
-require_once 'ValueModels/PluggableAdaptor.class.php';
-require_once 'ValueModels/ValueHolder.class.php';
-require_once 'ValueModels/ValueModel.class.php';
-require_once 'ValueObjects/ValueObject.class.php';
-require_once 'ValueObjects/Null.class.php';
-require_once 'ValueObjects/Number.class.php';
-require_once 'ValueObjects/String.class.php';
-require_once 'ValueObjects/Vector.class.php';
 
 ?>

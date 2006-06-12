@@ -8,7 +8,8 @@ tar cvzf ../$F.tgz *
 zip -r ../$F.zip * 
 cd ..
 rm -rf tempdir
-gftp anonymous:upload.sourceforge.net /incoming
 firefox http://sourceforge.net/project/admin/editpackages.php?group_id=153123
+wput $F.zip ftp://anonymous@upload.sourceforge.net/incoming/
+wput $F.tgz ftp://anonymous@upload.sourceforge.net/incoming/
 rm $F.tgz
 rm $F.zip
