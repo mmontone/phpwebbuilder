@@ -182,9 +182,10 @@ function toHTML($s) {
 function toXML($s) {
     $s = str_replace('&', '&amp;', $s);
     $s = ereg_replace('&(amp;|&amp;)+(([A-Za-z0-9#]+);)','&\\2', $s);
-    $s = str_replace('>', '&gt;', $s);
-    $s = str_replace('<', '&lt;', $s);
+    $s = str_replace('>', '&#62;', $s);
+    $s = str_replace('<', '&#60;', $s);
     $s = str_replace('"', '&#34;', $s);
+    $s = str_replace('&amp;', '&#38;', $s);
     $s = str_replace('&iquest;','&#191;', $s);
     $s = str_replace('&aacute;', '&#225;', $s);
     $s = str_replace('&eacute;', '&#233;', $s);
@@ -203,7 +204,7 @@ function toXML($s) {
 
     $s = str_replace('&quote;', '&#34;', $s);
     $s = str_replace('&nbsp;','&#160;', $s);
-	$s = ereg_replace('&([A-Za-z0-9]+);','&amp;\\1;', $s);
+	$s = ereg_replace('&([A-Za-z0-9]+);','&#38;\\1;', $s);
     return $s;
 }
 

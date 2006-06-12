@@ -19,7 +19,7 @@ class File extends PersistentObject {
        	    return $this->checkNotEmpty(array('label'), $error_msgs);
        }
        function downloadLink(){
-       		return pwb_url."/Action.php?Controller=ReadFile&id=".$this->id->value;
+       		return pwb_url."/lib/ReadFile.php?id=".$this->id->value;
 	   }
 }
 
