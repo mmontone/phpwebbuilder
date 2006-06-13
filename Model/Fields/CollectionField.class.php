@@ -36,7 +36,9 @@ class CollectionField extends DataField {
 	}
 	function SQLvalue() {}
 	function updateString() {}
-	function loadFrom() {}
+	function loadFrom(&$reg) {
+		return true;
+	}
 	function & objects() {
 		return $this->elements();
 	}

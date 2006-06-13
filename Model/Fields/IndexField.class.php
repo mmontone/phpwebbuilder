@@ -41,11 +41,11 @@ class IndexField extends NumField {
 	}
 
 	function getValue() {
-		if ($this->value == null) {
+		if (parent::getValue() == null) {
 			return 0;
 		}
 		else {
-			return $this->value;
+			return parent::getValue();
 		}
 	}
 }

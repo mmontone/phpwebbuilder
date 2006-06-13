@@ -3,9 +3,13 @@
 require_once 'CollectionNavigator.class.php';
 
 class CollectionViewer extends CollectionNavigator {
+	function CollectionViewer(&$collection, $fields=null, $callbacks=null) {
+		parent::CollectionNavigator($collection, $fields, $callbacks);
+	}
+
 	function initialize() {
 		$class = & $this->classN;
-		$this->addComponent(new Text(new ValueHolder($class)), 'className');
+		$this->addComponent(new Label($class), 'className');
 		$u =& User::logged();
 		PermissionChecker::addComponent($this,
 					new ActionLink($this, 'newObject', 'New', $n = null),
@@ -34,14 +38,14 @@ class CollectionViewer extends CollectionNavigator {
 	}
 
 	function cancel() {
-		$this->refresh();
+		//$this->refresh();
 	}
 
 	function newObject(&$n) {
 		$obj = & new $this->classN;
 		$c =& $this->col->conditions;
 		foreach($c as $f=>$cond){
-			$obj->$f->value = $cond[1];
+			$obj->$f->setValue($cond[1]);
 		}
 		$this->editObject($obj);
 	}

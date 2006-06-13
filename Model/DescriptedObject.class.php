@@ -13,6 +13,20 @@ class DescriptedObject extends PWBObject {
     	parent::PWBObject();
     }
 
+	function commitChanges() {
+		foreach($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			$field->commitChanges();
+		}
+	}
+
+	function flushChanges() {
+		foreach($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			$field->flushChanges();
+		}
+	}
+
 	function & createInstance() {
 		if ($this->isNotTopClass($this)) {
 			$this->setParent($this->create(get_parent_class(get_class($this))));
@@ -37,20 +51,30 @@ class DescriptedObject extends PWBObject {
 	}
 	function initialize(){}
     function updateFields() {
-    	$this->table = $this->table_field->value;
-    	$this->displayString = $this->display_field->value;
+    	$this->table = $this->table_field->getValue();
+    	$this->displayString = $this->display_field->getValue();
     }
 
     function loadFrom(&$reg) {
 		if ($this->isNotTopClass($this)){
 			$this->parent->loadFrom($reg);
 		}
+		$ok = true;
 		foreach ($this->allFieldNamesThisLevel() as $index) {
 			$field = & $this-> $index;
-			$field->loadFrom($reg);
+			$ok = $ok and $field->loadFrom($reg);
 		}
-		$this->setID($this->id->value);
-		$this->existsObject = TRUE;
+
+		if (!$ok) {
+			$this->flushChanges();
+			return false;
+		}
+		else {
+			$this->commitChanges();
+			$this->setID($this->id->getValue());
+			$this->existsObject = TRUE;
+			return true;
+		}
 	}
 
 	function isNotTopClass(& $class) {
@@ -161,7 +185,7 @@ class DescriptedObject extends PWBObject {
 		$ret = true;
 		$is_valid = false;
 		foreach ($fields as $field) {
-			$is_valid = $this-> $field->value != "";
+			$is_valid = $this-> $field->getValue() != "";
 			if (!$is_valid) {
 				$error_msgs[$field] = "Fill in the " . $this->$field->displayString . ", please";
 			}
@@ -178,7 +202,7 @@ class DescriptedObject extends PWBObject {
 		foreach ($fields as $field) {
 			if (!isset ($first_field))
 				$first_field = $field;
-			$ret |= $this-> $field->value != "";
+			$ret |= $this-> $field->getValue() != "";
 		}
 		if (!$ret) {
 			$error_msgs[$first_field] = $error_msg;

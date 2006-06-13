@@ -10,7 +10,7 @@ class NumField extends DataField {
         return $obj->visitedNumField($this);
     }
     function getValue() {
-        return str_replace(",",".",$this->value);
+        return str_replace(",",".",parent::getValue());
     }
     function SQLvalue() {
         return $this->getValue(). ", " ;

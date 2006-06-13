@@ -2,7 +2,7 @@
 
 class Number extends ValueObject {
     function &plus(&$number) {
-    	return new Number($this->value + $number->value);
+    	return new Number($this->getValue() + $number->getValue());
     }
 }
 ?>

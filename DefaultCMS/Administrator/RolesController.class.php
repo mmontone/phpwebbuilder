@@ -71,7 +71,7 @@ class RolesController extends Component {
 		$ret = "";
 		$ret .="<form action=\"Action.php?Controller=RolesController";
 		$ret .=		"\" method=\"POST\">" .
-				"<input type=\"hidden\" name=\"roleidold\" value=\"".$this->roleid."\" />Editing Role " . $role->name->value;
+				"<input type=\"hidden\" name=\"roleidold\" value=\"".$this->roleid."\" />Editing Role " . $role->name->getValue();
 		$rolecol = new PersistentCollection(Role);
 		$view = new HTMLTableEditView;
 		$view = $view->viewFor($rolecol);

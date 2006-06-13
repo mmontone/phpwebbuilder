@@ -6,13 +6,11 @@ class SuperField extends NumField {
         return $obj->visitedSuperField($this);
     }
     function updateString() {}
-    function loadFrom($reg){
-   		parent::loadFrom($reg);
-   }
+
    function check() {
         return TRUE;
 
-    }    
+    }
 }
 
 ?>

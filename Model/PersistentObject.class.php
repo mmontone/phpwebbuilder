@@ -22,7 +22,7 @@ class PersistentObject extends DescriptedObject {
 
     function getIdOfClass($class){
 	    	if (strcasecmp(get_class($this), $class)==0) {
-	    		return $this->id->value;
+	    		return $this->id->getValue();
 	    	} else {
 	    		return $this->parent->getIdOfClass($class);
 	    	}
@@ -224,7 +224,7 @@ class PersistentObject extends DescriptedObject {
 			/* We have to load all the way up */
 			$parclass = get_parent_class($class);
 			$par = & new $parclass;
-			$parid = $this->super->value;
+			$parid = $this->super->getValue();
 			trace("Loading parent from " . $parid . " for ");
 			$par->loadFromId($parid);
 			$p = & $par->getWithIdParent();
@@ -294,7 +294,7 @@ class PersistentObject extends DescriptedObject {
 	function update() {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
-			$p->id->value = $this->super->value;
+			$p->id->setValue($this->super->getValue());
 			$ok = $p->update();
 		} else $ok=true;
 		if ($ok){
@@ -308,7 +308,7 @@ class PersistentObject extends DescriptedObject {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$ok = $p->insert();
-			$this->super->value = $p->id->value;
+			$this->super->setValue($p->id->getValue());
 		} else $ok=true;
 		if ($ok){
 			$ok = $this->basicInsert();

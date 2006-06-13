@@ -12,6 +12,7 @@ class Application extends ComponentHolder {
 
 	function Application() {
 		$_SESSION[sitename][get_class($this)] = & $this;
+		User::login('guest', 'guest');
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
@@ -19,6 +20,7 @@ class Application extends ComponentHolder {
 		$this->page_renderer = new $page_renderer;
 		$this->createView();
 		$this->historylistener =& new HistoryListener;
+
 	}
 	function setRootComponent(){
 		trigger_error("Subclass responsibility");

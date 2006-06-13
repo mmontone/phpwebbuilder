@@ -10,7 +10,7 @@ class BlobField extends DataField {
 		return $obj->visitedBlobField($this);
    }
    function SQLvalue() {
-     return "'$this->value'" . ", " ;
+     return "'$this->getValue()'" . ", " ;
    }
 }
 ?>

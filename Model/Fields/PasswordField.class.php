@@ -13,7 +13,7 @@ class PasswordField extends TextField  {
 	  	$name = $this->colName;
 		if (isset($form[$name."1"])) {
 			if ($form[$name."1"] == $form[$name."2"]){
-				if ($form[$name."1"] == "") { 
+				if ($form[$name."1"] == "") {
 					$this->setValue("");
 				} else {
 					$val = $this->trim($form[$name."1"]);
@@ -21,22 +21,23 @@ class PasswordField extends TextField  {
 				}
 	  		}
 		}
-      }      
+		return true;
+      }
       function SQLvalue() {
-   		if ($this->value == "") {return "";} 
-    	else {      	
+   		if ($this->getValue() == "") {return "";}
+    	else {
          	return "'".$this->getValue()."'" . ", " ;
     	}
       }
     function fieldName ($operation) {
-	    	if ($this->value == "") {
+	    	if ($this->getValue() == "") {
 	    		return "";
 	    	} else {
       		return $this->colName . ", ";
     		}
     }
     function updateString() {
-	    	if ($this->value == "") {return "";} else {    	
+	    	if ($this->getValue() == "") {return "";} else {
 	       		return $this->colName . " = ". $this->SQLvalue();
 	    	}
     }

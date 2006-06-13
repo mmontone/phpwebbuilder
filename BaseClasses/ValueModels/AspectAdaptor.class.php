@@ -30,7 +30,7 @@ class AspectAdaptor extends ValueModel
 
     function &getValue() {
     	$get_selector = $this->get_selector;
-    	return $this->subject->$get_selector;
+    	return $this->subject->$get_selector();
     }
 }
 ?>

@@ -60,7 +60,7 @@ if(!isset($formm["serverhost"])){ /* First phase - collecting info */
 	$formdata .="</table>";
 	$formdata .= "Eliminar lo anterior:<input type=\"checkbox\" name=\"execEliminar\"/><br/>";
 	$formdata .= "<input type=\"hidden\" name=\"DEBUG\" value=\"".$_REQUEST["DEBUG"]."\"/><br/>";
-	$form =	"<form action=\"install.php".
+	$form =	"<form action=\"index.php".
 			"\" method=\"POST\" name=\"Install\">" . $formdata.
 			"<input name=\"execInstall\" type=\"submit\" /></form>";
 	echo $form;

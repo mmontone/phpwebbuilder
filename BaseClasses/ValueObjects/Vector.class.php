@@ -11,7 +11,7 @@ class Vector extends ValueObject
     }
 
     function contents(&$object) {
-    	return in_array($object, $this->value);
+    	return in_array($object, $this->getValue());
     }
 
     function &at($index) {
@@ -23,7 +23,7 @@ class Vector extends ValueObject
     }
 
     function size() {
-    	return count($this->value);
+    	return count($this->getValue());
     }
 
     function set($index, &$object) {

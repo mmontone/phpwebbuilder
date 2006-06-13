@@ -6,20 +6,18 @@ class IndexFieldChooser extends Component {
 	var $value;
 
 	function IndexFieldChooser(& $field) {
-		$this->field = $field;
-		$var = $this->field->getValue();
-		$this->value =& new ValueHolder($var);
+		$this->field =& $field;
 		$this->display =& new ValueHolder($v = 'choose');
 		$this->updateDisplay();
 		$this->addComponent(new ActionLink2(array('action'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->display), 'value'));
 	}
 
 	function &getValue() {
-		return $this->value->getValue();
+		return $this->field->getValue();
 	}
 
 	function setValue(&$value) {
-		$this->value->setValue($value);
+		$this->field->setValue($value);
 	}
 
 	function updateDisplay() {
@@ -39,8 +37,7 @@ class IndexFieldChooser extends Component {
 	}
 
 	function targetSelected(&$selectedTarget) {
-		$this->field->setValue($selectedTarget->getId());
-		$this->setValue($this->field->getValue());
+		$this->setValue($selectedTarget->getId());
 		$this->updateDisplay();
 	}
 }

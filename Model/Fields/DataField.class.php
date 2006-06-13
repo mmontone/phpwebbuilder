@@ -6,9 +6,10 @@ class DataField extends PWBObject {
 	var $isIndex; // Si se utiliza para identificarlo (por el usuario)
 	var $owner; // The object the field belongs to
 	var $displayString;
+	var $buffered_value = null;
 
 	function DataField($name, $isIndex = false) {
-		//parent::PWBObject();
+		parent::PWBObject();
 		$this->colName = $name;
 		if (is_array($isIndex)) {
 			$this->isIndex = $isIndex['is_index'];
@@ -95,15 +96,27 @@ class DataField extends PWBObject {
 		return $this->colName . " = " . $this->SQLvalue();
 	}
 	function viewValue() {
-		return $this->value;
+		return $this->getValue();
 	}
 	function setValue($data) {
-		$this->value = $data;
+		$this->buffered_value = $data;
 		$this->triggerEvent('changed', $no_params = null);
 	}
 	function getValue() {
-		return $this->value;
+		if ($this->buffered_value != null)
+			return $this->buffered_value;
+		else
+			return $this->value;
 	}
+
+	function commitChanges() {
+		$this->value = $this->buffered_value;
+	}
+
+	function flushChanges() {
+		$this->buffered_value = $this->value;
+	}
+
 	function loadFrom($reg) {
 		$val = $reg[$this->sqlName()];
 		$this->setValue($val);
@@ -119,7 +132,7 @@ class DataField extends PWBObject {
 		return true;
 	}
 	function toArrayValue() {
-		return $this->value;
+		return $this->getValue();
 	}
 
 	function &copy() {
@@ -128,6 +141,7 @@ class DataField extends PWBObject {
 
 		$copy->colName = $this->colName;
 		$copy->value = $this->value;
+		$copy->buffered_value = $this->buffered_value;
 		$copy->isIndex = $this->isIndex;
 		$copy->displayString = $this->displayString;
 

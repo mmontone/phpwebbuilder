@@ -17,7 +17,7 @@ class MenuSection extends PersistentObject {
 	        echo $menu->showMenu();
 	    }
 	    $ret = ob_get_contents();
-	    return "<h4>".$this->name->value."</h4><ul>" . $ret ."</ul>";
+	    return "<h4>" . $this->name->getValue() . "</h4><ul>" . $ret ."</ul>";
 	}
 	function &itemsVisible(){
 		if (!is_array($this->itemsVisible)){

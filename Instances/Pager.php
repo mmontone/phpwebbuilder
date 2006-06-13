@@ -45,7 +45,7 @@ class Pager {
       function init(){
          $data = new Data;
          $d = $data->name("designNum");
-         $this->designNum = $d->value;
+         $this->designNum = $d->getValue();
       }
       function show($obj, $action){
          $views = new Views;

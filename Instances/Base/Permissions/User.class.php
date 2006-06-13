@@ -36,7 +36,7 @@ class User extends PersistentObject {
 		$usr =& User::loadUser($user, $pass);
 		if ($usr) {
 		    $_SESSION[sitename]["id"] = $usr->getUserId();
-	    	$_SESSION[sitename]["Username"] = $usr->user->value;
+	    	$_SESSION[sitename]["Username"] = $usr->user->getValue();
 			$_SESSION[sitename]["User"] =& $usr;
   	  	}
   		return $usr;

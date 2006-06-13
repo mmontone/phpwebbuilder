@@ -36,14 +36,14 @@ class Menu extends Component {
 	function realMenuSection(& $menu) {
 		$sect = & new MenuSectionComponent();
 		$this->menus->addComponent($sect);
-		$sect->addComponent(new Text(new ValueHolder($menu->name->value)), 'secName');
+		$sect->addComponent(new Text(new ValueHolder($menu->name->getValue())), 'secName');
 		$col = & $menu->itemsVisible();
 		$ks2 = & array_keys($col);
 		foreach ($ks2 as $k2) {
 			$menu = & $col[$k2];
 			$this->additem(array_merge(array (
-				'Component' => $menu->controller->value
-			), parse_str($menu->params->value)), $menu->name->value, $sect);
+				'Component' => $menu->controller->getValue()
+			), parse_str($menu->params->getValue())), $menu->name->getValue(), $sect);
 		}
 	}
 	function objMenus() {

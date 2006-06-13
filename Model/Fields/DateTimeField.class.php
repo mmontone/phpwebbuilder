@@ -24,8 +24,8 @@ class DateTimeField extends DataField {
         return $d3;
     }
     function getValue() {
-        if (ereg("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $this->value)) {
-            return $this->value;
+        if (ereg("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", parent::getValue())) {
+            return parent::getValue();
         } else {
             $date = getDate();
             return $this->format($date);

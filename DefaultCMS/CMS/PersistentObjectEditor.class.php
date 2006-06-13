@@ -8,7 +8,7 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     function initialize(){
     	$obj =& $this->obj;
     	$this->addComponent(new Label($this->classN), 'className');
-    	$this->addComponent(new Label($obj->id->value), 'idN');
+    	$this->addComponent(new Label($obj->id->getValue()), 'idN');
     	$this->factory =& new EditorFactory;
        	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
        	$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
@@ -17,26 +17,18 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     }
 
     function cancel() {
+    	$this->obj->flushChanges();
     	$this->callback('cancel');
     }
 
     function save(){
-    	// Refactor: population shouldn't be necessary
-    	$this->populateObject($this->obj);
-
     	$error_msgs = array();
-    	if ($this->validate($this->obj, $error_msgs))
+    	if ($this->validate($this->obj, $error_msgs)) {
+    		$this->obj->commitChanges();
     		$this->callbackWith('object_edited', $this->obj);
+    	}
     	else
     		$this->displayValidationErrors($error_msgs);
-    }
-
-    function populateObject(&$object) {
-    	$fs =& $this->fieldNames;
-    	foreach($fs as $f){
-    		$v = $this->fieldComponents[$f]->getValue();
-    		$object->$f->setValue($v);
-    	}
     }
 
     function validate(&$object, &$error_msgs) {

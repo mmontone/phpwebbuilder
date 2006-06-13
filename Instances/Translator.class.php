@@ -9,10 +9,10 @@ class Translator extends PersistentObject {
     }
 
     function &forLanguage($language) {
-    	if ($translator =& $_SESSION['translator'][$this->language->value])
+    	if ($translator =& $_SESSION['translator'][$this->language->getValue()])
     		return $translator;
     	$translator =& new Translator;
-    	$translator->language->value = $language;
+    	$translator->language->setValue($language);
     	$translator->load();
     	return $translator;
     }
@@ -24,7 +24,7 @@ class Translator extends PersistentObject {
 		$this->dictionary = array();
 		foreach ($translations as $translation) {
 			$message = $translation->message->getTarget();
-			$this->dictionary[$message->message->value] = $translation->translation->value;
+			$this->dictionary[$message->message->getValue()] = $translation->translation->value;
 		}
 	}
 
@@ -39,7 +39,7 @@ class Translator extends PersistentObject {
 
     function refresh() {
     	$this->dictionary = null;
-    	$_SESSION['translator'][$this->language->value] = null;
+    	$_SESSION['translator'][$this->language->getValue()] = null;
     }
 }
 ?>

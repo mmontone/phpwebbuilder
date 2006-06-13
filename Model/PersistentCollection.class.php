@@ -59,10 +59,11 @@ class PersistentCollection extends Collection{
 		$obj = & new $this->dataType;
 		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
 	}
+
 	function refresh() {
-		$a = array();
-		$this->elements=&$a;
+		$this->elements = array();
 	}
+
 	function elements() {
 		if (!$this->elements){
 			$obj = & new $this->dataType;
@@ -76,6 +77,12 @@ class PersistentCollection extends Collection{
 			$this->elements =& $col;
 		}
 		return $this->elements;
+	}
+
+	function add(&$element) {
+		$elements =& $this->elements();
+		$elements[] =& $element;
+		$this->triggerEvent('changed');
 	}
 
 	/* Deprecated */

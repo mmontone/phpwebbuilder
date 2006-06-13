@@ -6,6 +6,7 @@ class CollectionNavigator extends Component {
 
 	function CollectionNavigator(&$col, $fields=null, $callbacks=array()) {
 		$this->col = & $col;
+		$this->col->addEventListener(array('changed'=>'refresh'), $this);
 		$this->classN = $col->dataType;
 
 		if ($fields==null){
@@ -50,11 +51,13 @@ class CollectionNavigator extends Component {
 		$col->offset = $this->firstElement->getValue()-1;
 		$this->size->setValue($col->size());
 		$this->objs->deleteChildren();
+		// The next line is only necessary if elements are not added or removed
+		// through the collection interface (the in-memory collection doesn't get notified)
 		$col->refresh();
-		$objects = & $col->objects();
-		$ks = array_keys($objects);
+		$elements = & $col->elements();
+		$ks = array_keys($elements);
 		foreach ($ks as $k) {
-			$this->addLine($objects[$k]);
+			$this->addLine($elements[$k]);
 		}
 	}
 	function getValue(){}

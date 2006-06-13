@@ -62,7 +62,7 @@ class Role extends PersistentObject {
 			/*Necesito relacionar UserRole con RolePermission*/
 			$sql = "SELECT * FROM ".baseprefix."RolePermission p".
 					" WHERE $perm".
-					" AND ".$this->id->value."=p.role";
+					" AND " . $this->id->getValue() . "=p.role";
 			$reg=$db->SQLExec($sql, FALSE, 0);
 	    	return ((mysql_num_rows ($reg) > 0));
 	}
