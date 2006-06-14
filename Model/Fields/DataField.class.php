@@ -107,7 +107,7 @@ class DataField extends PWBObject {
 		$this->triggerEvent('changed', $no_params = null);
 	}
 	function getValue() {
-		if ($this->buffered_value != null)
+		if ($this->buffered_value !== null)
 			return $this->buffered_value;
 		else
 			return $this->value;

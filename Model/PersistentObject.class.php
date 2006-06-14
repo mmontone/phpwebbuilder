@@ -10,13 +10,12 @@ class PersistentObject extends DescriptedObject {
 
 	function setID($id) {
 		foreach ($this->allFieldNamesThisLevel() as $field) {
-			$this-> $field->setID($id);
+			$this->$field->setID($id);
 		}
 	}
 
 	function getID() {
-		$f = $this->id;
-		return $f->getValue();
+		return $this->id->getValue();
 
 	}
 
