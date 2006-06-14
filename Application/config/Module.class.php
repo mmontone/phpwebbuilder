@@ -2,6 +2,7 @@
 
 class Module extends DescriptedObject {
     function initialize() {
+    	$this->addTextField('directory');
     	$this->addCollectionField('dependent', array('type' => 'ModuleDependency'));
     }
 }

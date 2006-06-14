@@ -3,18 +3,30 @@
 require_once dirname(__FILE__) . '/DataField.class.php';
 
 class TextField extends DataField {
+    var $set = null;
+
+    function TextField ($name, $isIndex) {
+    	parent::Datafield($name, $isIndex);
+    	if (is_array($isIndex)) {
+    		$this->set = $isIndex['set'];
+    	}
+    }
+
+    function hasSet() {
+    	return $this->set != null;
+    }
+
+    function getSet() {
+    	return $this->set;
+    }
+
     function &visit(&$obj) {
         return $obj->visitedTextField($this);
     }
 
-      function textField ($name, $isIndex) {
-               parent::Datafield($name, $isIndex);
-      }
-
-     function SQLvalue() {
-         return "'".$this->getValue()."'" . ", " ;
-      }
-
+    function SQLvalue() {
+	    return "'".$this->getValue()."'" . ", " ;
+    }
 }
 
 class TextArea extends DataField {
