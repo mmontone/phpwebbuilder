@@ -24,7 +24,7 @@ class IndexField extends NumField {
 	}
 
 	function & obj() {
-		return $this->collection->getObj($this->getValue());
+		return $this->getTarget();
 	}
 
 	function setTarget(& $target) {
@@ -32,7 +32,7 @@ class IndexField extends NumField {
 	}
 
 	function & getTarget() {
-		return $this->obj();
+		return $this->collection->getObj($this->getValue());
 	}
 
 	function viewValue() {
