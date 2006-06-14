@@ -63,8 +63,7 @@ class PersistentCollection extends Collection{
 	function refresh() {
 		$this->elements = array();
 	}
-
-	function elements() {
+	function &elements() {
 		if (!$this->elements){
 			$obj = & new $this->dataType;
 			$sql = $this->selectsql();
@@ -86,7 +85,7 @@ class PersistentCollection extends Collection{
 	}
 
 	/* Deprecated */
-	function objects() {
+	function &objects() {
 		return $this->elements();
 	}
 

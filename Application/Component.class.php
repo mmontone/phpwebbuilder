@@ -143,7 +143,7 @@ class Component extends PWBObject
 	function hasPermission($form){
         $permission = $this->permissionNeeded($form);
 		if ($permission!=''){
-			return fHasPermission($id, $permission);
+			return fHasPermission(0, $permission);
 		} else
 			return true;
 	}

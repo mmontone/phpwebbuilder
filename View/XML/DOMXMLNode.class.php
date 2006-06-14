@@ -105,7 +105,11 @@ class DOMXMLNode
 		$this->attributes[$name] = $val;
 	}
 	function getAttribute($attribute) {
-		return $this->attributes[$attribute];
+		if (isset($this->attributes[$attribute])){
+			return $this->attributes[$attribute];
+		} else {
+			return '';
+		}
 	}
 
 	function removeAttribute($attr) {

@@ -13,7 +13,7 @@ class DefaultCMSApplication extends Application{
  	function addStyleSheets(){
  		$this->addStyleSheet(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
  	}
- 	function &addAjaxRenderingSpecificScripts(){
+ 	function addAjaxRenderingSpecificScripts(){
  		parent::addAjaxRenderingSpecificScripts();
  		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');
  	}

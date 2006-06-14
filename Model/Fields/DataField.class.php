@@ -12,8 +12,12 @@ class DataField extends PWBObject {
 		parent::PWBObject();
 		$this->colName = $name;
 		if (is_array($isIndex)) {
-			$this->isIndex = $isIndex['is_index'];
-			$this->displayString = $isIndex['display'];
+			if (isset($isIndex['is_index'])){
+				$this->isIndex = $isIndex['is_index'];
+			}
+			if (isset($isIndex['display'])){
+				$this->displayString = $isIndex['display'];
+			}
 		}
 		else {
 			$this->isIndex = $isIndex;

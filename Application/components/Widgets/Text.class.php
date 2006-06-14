@@ -20,7 +20,8 @@ class Text extends Widget {
 	}
 
 	function & createDefaultView() {
-		return new XMLNodeModificationsTracker('span');
+		$t =& new XMLNodeModificationsTracker('span');
+		return $t;
 	}
 	function prepareToRender(){
 		$text = $this->value_model->getValue();

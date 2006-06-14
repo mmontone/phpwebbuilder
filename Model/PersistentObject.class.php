@@ -42,7 +42,7 @@ class PersistentObject extends DescriptedObject {
 		return $fieldnames;
 	}
 
-	function allFieldsAllLevels(){
+	function &allFieldsAllLevels(){
 		$rcs = get_related_classes(get_class($this));
 		$fs = array();
 		foreach($rcs as $rc){

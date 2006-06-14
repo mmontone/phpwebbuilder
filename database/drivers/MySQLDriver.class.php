@@ -51,7 +51,7 @@ class MySQLdb extends DB {
     }
     function openDatabase() {
     	if (!$this->conn){
-	      $this->conn =& mysql_connect(serverhost, baseuser, basepass) or
+	      $this->conn = mysql_connect(serverhost, baseuser, basepass) or
 	          die (print_backtrace(mysql_error()));
 	      mysql_select_db(basename) or
 	          die (print_backtrace(mysql_error()));

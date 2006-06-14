@@ -65,12 +65,16 @@ class Application extends ComponentHolder {
 			$this->wholeView->controller = & $this;
 			$this->wholeView->appendChild($this->component->myContainer());
 			$this->wholeView->getTemplatesAndContainers();
+			$this->setTitle($this->getTitle());
 			$this->initializeStyleSheets();
 			$this->initializeScripts();
 			$this->page_renderer->setPage($this->wholeView);
 		}
 	}
-
+	function setTitle($title){
+		$this->wholeView->title=$title;
+	}
+	function getTitle(){}
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
 		$this->addStyleSheets();

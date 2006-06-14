@@ -6,7 +6,7 @@ class MenuItem extends PersistentObject {
          $this->addField(new textField("name", TRUE));
          $this->addField(new textField("controller", FALSE));
          $this->addField(new textField("params", FALSE));
-         $this->addField(new indexField("section", TRUE, MenuSection));
+         $this->addField(new indexField("section", TRUE, 'MenuSection'));
     }
 	function isVisible(){
 		$conclass = $this->controller->getValue();

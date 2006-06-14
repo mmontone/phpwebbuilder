@@ -7,7 +7,7 @@ class PermissionChecker {
 		}*/
 		return PermissionChecker::exec($parent, 'addComponent', $cond, $a=array(&$comp, $position));
     }
-    function exec(&$obj, $mess, $func, &$params){
+    function &exec(&$obj, $mess, $func, &$params){
     	if (is_object($func)){
     		$ok = $func->call();
     	} else {
@@ -17,7 +17,11 @@ class PermissionChecker {
 			$rec= array();
 			$rec[0]=&$obj;
 			$rec[1]=$mess;
-    		return call_user_func_array($rec,$params);
+			$ret = call_user_func_array($rec,$params);
+    		return $ret;
+    	} else {
+    		$ret = null;
+    		return $ret;
     	}
     }
 }

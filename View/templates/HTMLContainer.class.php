@@ -23,8 +23,9 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	function isContainerForClass(&$component){
 		return is_a($component, $this->attributes["class"]);
 	}
-	function createCopy(){
-		return new HTMLContainer;
+	function &createCopy(){
+		$c = new HTMLContainer;
+		return $c;
 	}
 }
 

@@ -20,7 +20,7 @@ class MenuSection extends PersistentObject {
 	    return "<h4>" . $this->name->getValue() . "</h4><ul>" . $ret ."</ul>";
 	}
 	function &itemsVisible(){
-		if (!is_array($this->itemsVisible)){
+		if (!isset($this->itemsVisible)){
 		    $col =& $this->MenuItemsection->collection;
 		    $col->limit=0;
 		    $menus0 =& $col->objects();
@@ -40,7 +40,7 @@ class MenuSection extends PersistentObject {
 	function isVisible(){
 		return count($this->itemsVisible())>0;
 	}
-	function availableMenus(){
+	function &availableMenus(){
 		$col =& new PersistentCollection('MenuSection');
 	    $col->limit=0;
 		$col2 =& $col->objects();

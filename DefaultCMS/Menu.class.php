@@ -28,7 +28,7 @@ class Menu extends Component {
 	}
 	function realMenus() {
 		$menus = & MenuSection :: availableMenus();
-		$ks = & array_keys($menus);
+		$ks = array_keys($menus);
 		foreach ($ks as $k) {
 			$this->realMenuSection($menus[$k]);
 		}
@@ -36,9 +36,10 @@ class Menu extends Component {
 	function realMenuSection(& $menu) {
 		$sect = & new MenuSectionComponent();
 		$this->menus->addComponent($sect);
-		$sect->addComponent(new Text(new ValueHolder($menu->name->getValue())), 'secName');
+		$mv = $menu->name->getValue();
+		$sect->addComponent(new Text(new ValueHolder($mv)), 'secName');
 		$col = & $menu->itemsVisible();
-		$ks2 = & array_keys($col);
+		$ks2 =  array_keys($col);
 		foreach ($ks2 as $k2) {
 			$menu = & $col[$k2];
 			$this->additem(array_merge(array (

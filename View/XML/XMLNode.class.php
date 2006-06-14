@@ -93,14 +93,15 @@ class XMLNode extends DOMXMLNode {
 			$this->unsetChildWithId($i);
 			return $new;
 		} else {
-			return null;
+			$n = null;
+			return $n;
 		}
 	}
 	function unsetChildWithId($id){
 		if (isset($this->childById[$id])){
 			unset($this->childById[$id]);
-			if ($this->parentView){
-				$this->parentView->unsetChildWithId($id);
+			if ($this->parentNode){
+				$this->parentNode->unsetChildWithId($id);
 			}
 		}
 	}
@@ -155,7 +156,8 @@ class XMLNode extends DOMXMLNode {
 				return $t;
 			}
 		}
-		return null;
+		$n = null;
+		return $n;
 	}
 	function & containerForClass(& $component) {
 		$res = array ();
@@ -166,7 +168,8 @@ class XMLNode extends DOMXMLNode {
 				return $t;
 			}
 		}
-		return null;
+		$n=null;
+		return $n;
 	}
 	function isTemplateForClass(& $component) {
 		return false;
