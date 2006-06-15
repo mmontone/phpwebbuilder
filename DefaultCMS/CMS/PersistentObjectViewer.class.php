@@ -3,9 +3,6 @@
 require_once 'PersistentObjectPresenter.class.php';
 
 class PersistentObjectViewer extends PersistentObjectPresenter {
-    function PersistentObjectViewer(&$object) {
-		parent::PersistentObjectPresenter($object);
-	}
 
     function initialize(){
     	$obj =& $this->obj;
