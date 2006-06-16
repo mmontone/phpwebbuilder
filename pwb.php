@@ -43,7 +43,5 @@ $app = split(",", app);
 foreach ($app as $dir) {
 	includemodule(basedir."/".$dir);
 }
-
 session_start();
-
 ?>

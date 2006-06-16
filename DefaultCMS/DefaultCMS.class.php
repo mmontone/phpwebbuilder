@@ -2,7 +2,6 @@
 
 class DefaultCMS extends Component{
 	var $menu;
-	var $lastParams = array();
 	function initialize(){
 		$menu =& $this->addComponent(new Menu, 'menu');
 		$this->menu->addEventListener(array('menuClicked'=>'changeBody'),$this);
