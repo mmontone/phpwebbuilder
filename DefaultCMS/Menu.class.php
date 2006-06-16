@@ -1,11 +1,5 @@
 <?php
 class Menu extends Component {
-	var $rendered = '';
-	function declare_actions() {
-		return array (
-			'menuclick'
-		);
-	}
 	function initialize() {
 		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
 		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
@@ -14,12 +8,7 @@ class Menu extends Component {
 	}
 	function newmenu() {
 		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
-		$ms = & $this->menus;
-		$cs = & $ms->__children;
-		$ks = array_keys($cs);
-		foreach ($ks as $k) {
-			$ms->$k->delete();
-		}
+		$this->menus->deleteChildren();
 		$this->menus();
 	}
 	function menus() {
