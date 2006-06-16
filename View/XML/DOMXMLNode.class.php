@@ -1,6 +1,5 @@
 <?php
-class DOMXMLNode
-{
+class DOMXMLNode extends PWBObject{
 	var $childNodes = array ();
 	var $parentNode = null;
 	var $tagName;
