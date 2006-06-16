@@ -73,7 +73,7 @@ class Collection extends PWBObject{
 	}
 	function &collect($mess){
 		return $this->map(
-				lambda('&$e', 'return $e->$mess();', get_defined_vars())
+				lambda('&$e', 'return apply_messages($e,$mess);', get_defined_vars())
 			);
 	}
 	function &toArray(){

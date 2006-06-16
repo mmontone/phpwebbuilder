@@ -86,8 +86,6 @@ class Component extends PWBObject
 		$pos =&  $h->__owner_index;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
-		unset($p->__children[$pos]);
-		unset($p->$pos);
 	}
 	function redraw(){
 		if ($this->view){

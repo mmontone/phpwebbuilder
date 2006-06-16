@@ -169,9 +169,9 @@ function toHTML($s) {
     $s = str_replace('í', '&iacute;', $s);
     $s = str_replace('ó', '&oacute;', $s);
     $s = str_replace('ú', '&uacute;', $s);
-    $s = str_replace('�?', '&Aacute;',$s);
+    $s = str_replace('�?', '&Aacute;',$s);
     $s = str_replace('É', '&Eacute;', $s);
-    $s = str_replace('�?', '&Iacute;', $s);
+    $s = str_replace('�?', '&Iacute;', $s);
     $s = str_replace('Ó', '&Ooacute;',$s);
     $s = str_replace('Ú', '&Uacute;', $s);
 
@@ -224,5 +224,24 @@ function lambda( $args, $code, &$env ) {
 function isPWBObject(&$e){
 	return is_object($e) && isset($e->isClassOfPWB);
 }
+
+function &apply_messages(&$u, $mess){
+	$temp =& $u;
+	$ms = split('->',$mess);
+	foreach($ms as $m){
+		$temp =& $temp->$m;
+	}
+	return $temp;
+}
+
+function &apply_message(&$u, $mess){
+	if (substr($mess,-2)=='()'){
+		$m = substr($mess,0,-2);
+		return $u->$m();
+	} else {
+		return $u->$mess;
+	}
+}
+
 
 ?>
