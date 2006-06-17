@@ -163,11 +163,7 @@ class TextFieldTableCheckAction extends TableCheckAction {
 		return "TEXT";
 	}
 }
-class EmailFieldTableCheckAction extends TextFieldTableCheckAction {
-	function type (){
-		return "TEXT";
-	}
-}
+class EmailFieldTableCheckAction extends TextFieldTableCheckAction {}
 
 class IdFieldTableCheckAction extends NumFieldTableCheckAction {
 	function type(){
@@ -182,11 +178,7 @@ class SuperFieldTableCheckAction extends NumFieldTableCheckAction {
 
 }
 
-class FilenameFieldTableCheckAction extends TableCheckAction {
-	function type (){
-		return "TEXT";
-	}
-}
+class FilenameFieldTableCheckAction extends TextFieldTableCheckAction {}
 class BlobFieldTableCheckAction extends TableCheckAction {
 	function type (){
 		return "LONGBLOB";

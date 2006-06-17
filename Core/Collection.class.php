@@ -25,6 +25,9 @@ class Collection extends PWBObject{
 		}
 		return -1;
 	}
+	function includes(&$elem){
+		return $this->indexOf($elem) != -1;
+	}
 	function &elements(){
 		return $this->elements;
 	}

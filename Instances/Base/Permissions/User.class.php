@@ -64,5 +64,9 @@ class User extends PersistentObject {
 		}
 		return $ok;
 	}
+	function is_guest(){
+		$u =& User::logged();
+		return $u->user->getValue()=='guest';
+	}
 }
 ?>
