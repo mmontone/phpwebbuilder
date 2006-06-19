@@ -1,0 +1,13 @@
+<templates>
+<template class="InstallComponent">
+<container id="status"/>
+<table>
+<template class="CompositeWidget">
+<tr><td><container id="name"/></td><td><container id="value"/></td></tr>
+</template>
+<tfoot>
+<tr><td><input type="button" id="install" value="install"/></td></tr>
+</tfoot>
+</table>
+</template>
+</templates>
