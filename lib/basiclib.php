@@ -22,6 +22,7 @@ function includemodule ($module){
 	if (file_exists($modf)){
 		require_once($modf);
 	} else{
+		trigger_error('Falling back to includefile for '.$module,E_USER_NOTICE);
 		includefile($module);
 	}
 }
@@ -88,7 +89,8 @@ function get_related_classes($str){
  * This function checks if the user with $id id, has the permission $permission
  */
 function fHasPermission($id, $permission){
-	return $_SESSION[sitename]['User']->hasPermission($permission);
+	$u =& User::logged();
+	return $u->hasPermission($permission);
 }
 
 /**
