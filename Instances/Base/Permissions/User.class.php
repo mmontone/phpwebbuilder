@@ -42,6 +42,9 @@ class User extends PersistentObject {
   		return $usr;
 	}
 	function &logged(){
+		if (!isset($_SESSION[sitename]["User"])){
+			User::login('guest','guest');
+		}
 		return $_SESSION[sitename]["User"];
 	}
 	function getPermissions(){

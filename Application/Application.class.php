@@ -12,7 +12,6 @@ class Application extends ComponentHolder {
 
 	function Application() {
 		$_SESSION[sitename][get_class($this)] = & $this;
-		User::login('guest', 'guest');
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
