@@ -3,7 +3,13 @@
 class DB {
 	function fetchArray($res) {
 		$arr = array();
-		while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
+		if ($res===true) {
+			$arr[]="Query suceeded";
+		} else if ($res===false) {
+			$arr[]="Query failed";
+		} else {
+			while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
+		}
 		return $arr;
 	}
 	function batchExec($sqls) {
