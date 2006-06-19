@@ -18,7 +18,10 @@ class InstallComponent extends Component {
 			"DBObject" => "Database Class",
 			"baseprefix" => "Database table prefix",
 			"sitename" => "Application Name",
+			"page_renderer" => "Page Renderer(Ajax, or Standard)",
+			"translator" => "Translator(Spanish or English available)",
 			"peardir" => "PEAR Directory (leave blank if in path)"
+
 		);
 		$c =& new CompositeWidget();
 		$c->addComponent(new Label("Config.php file's location"),'name');
@@ -35,8 +38,10 @@ class InstallComponent extends Component {
 		$default["DBObject"] = "MySQLdb";
 		$default["baseprefix"] = "";
 		$default["pwbdir"] = dirname($_SERVER["DOCUMENT_ROOT"] . dirname($_SERVER["PHP_SELF"]));
-		$default["icons_url"] = "http://" . $_SERVER["HTTP_HOST"] . dirname(dirname($_SERVER["PHP_SELF"]));
 		$default["peardir"] = "";
+		$default["page_renderer"] = "AjaxPageRenderer";
+		$default["translator"] = "EnglishTranslator";
+
 		foreach ($this->datas as $data => $name) {
 			$this->addPrompt("$name:",$data, $default[$data]);
 		}
@@ -81,19 +86,15 @@ class InstallComponent extends Component {
 		includemodule($form["pwbdir"]."/database");
 		includemodule($form["pwbdir"]."/Model");
 		includemodule($form["pwbdir"]."/DefaultCMS");
-
 		includemodule($form["pwbdir"]."/Instances");
-
-		$app = split(",", app);
-
+		$app = split(",", $form["app"]);
+		includemodule($form["appdir"]);
 		foreach ($app as $dir) {
-			includemodule(basedir."/".$dir);
+			$d = trim($dir);
+			if ($d!=""){
+				includemodule($form["basedir"]."/".$d);
+			}
 		}
-/*		define('serverhost', $form['serverhost']);
-		define('baseuser', $form['baseuser']);
-		define('basepass', $form['basepass']);
-		define('basename', $form['basename']);
-		define('baseprefix', $form['baseprefix']);*/
 		if ($this->execEliminar->value->getValue()) {
 			$sql = "";
 			foreach (get_subclasses('PersistentObject') as $c) {
