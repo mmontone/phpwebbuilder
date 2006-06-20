@@ -32,7 +32,7 @@ class OrValidationErrorHandler
 		}
 
 		if (!$this->success) {
-			$e =& new OrValidationException($or_validation->errorMessage());
+			$e =& new OrValidationPWBException($or_validation->errorMessage());
 			$e->raise($error_handler);
 		}
 	}
@@ -42,7 +42,7 @@ class OrValidationErrorHandler
 	}
 }
 
-class OrValidationException extends Exception {}
+class OrValidationPWBException extends PWBException {}
 
 class NonEmptyOrValidationErrorMsg extends FunctionObject {
 	function callWith(&$or_validation) {

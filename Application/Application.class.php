@@ -11,7 +11,7 @@ class Application extends ComponentHolder {
 	var $translator;
 
 	function Application() {
-		$_SESSION[sitename][get_class($this)] = & $this;
+		$_SESSION[sitename][getClass($this)] = & $this;
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
@@ -124,7 +124,7 @@ class Application extends ComponentHolder {
 	}
 
 	function getRealId() {
-		return "app/" . get_class($this) . "/main";
+		return "app/" . getClass($this) . "/main";
 	}
 
 	function needsView(& $comp) {

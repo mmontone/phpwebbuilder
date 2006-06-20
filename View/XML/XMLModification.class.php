@@ -8,7 +8,7 @@ class XMLNodeModification {
 	}
 
 	function visit(&$visitor, $params) {
-		$visit_selector = 'visit' . get_class($this);
+		$visit_selector = 'visit' . getClass($this);
 		return $visitor->$visit_selector($this, $params);
 	}
 }

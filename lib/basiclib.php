@@ -53,7 +53,7 @@ function find_subclasses(){
 	$arr = get_declared_classes();
 	$ret = array();
 	foreach ($arr as $o) {
-		$vars = get_class_vars($o);
+		$vars = getClass_vars($o);
 		if (isset($vars["isClassOfPWB"]) &&
 			$vars["isClassOfPWB"]){
 			$PWBclasses[strtolower($o)] = array();
@@ -245,5 +245,8 @@ function &apply_message(&$u, $mess){
 	}
 }
 
+function getClass(&$o){
+	return strtolower(get_class($o));
+}
 
 ?>

@@ -7,7 +7,7 @@ class PersistentObjectPresenter extends Component {
 	var $fieldComponents;
     function PersistentObjectPresenter(&$object, $fields=null) {
 		$this->obj =& $object;
-		$this->classN = get_class($object);
+		$this->classN = getClass($object);
 		if ($fields==null){
     		$this->fieldNames =& $this->obj->allFieldNames();
 		} else {

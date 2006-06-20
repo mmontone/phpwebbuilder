@@ -25,7 +25,7 @@ class ActionLink extends Widget
 	}
 	function setToken($token){
 		$this->token=$token;
-		$this->view->setAttribute('href', 'link_dispatch.php?app='.get_class($this->app).'&amp;token='.$token);
+		$this->view->setAttribute('href', 'link_dispatch.php?app='.getClass($this->app).'&amp;token='.$token);
 	}
 	function execute(){
 		$action = $this->action;

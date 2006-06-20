@@ -14,7 +14,7 @@ class DOMXMLNode extends PWBObject{
 	}
 
 	function & createElement($tag_name) {
-		$class_name = get_class($this);
+		$class_name = getClass($this);
 		$element = & new $class_name($tag_name);
 		return $element;
 	}

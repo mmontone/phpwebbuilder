@@ -33,12 +33,12 @@ class Widget extends Component
 
 	function setEvents(&$view) {
 		/* Default events, override in subclasses */
-		$class = get_class($this);
+		$class = getClass($this);
 		$view->setAttribute('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue)");
 	}
 
 	function setOnChangeEvent(&$view) {
-		$class = get_class($this);
+		$class = getClass($this);
 		$view->setAttribute('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue);componentChange(this)");
 	}
 

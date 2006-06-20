@@ -81,7 +81,7 @@ class PgSQLdb extends DB {
     function SQLExec ($sql, $getID, $obj) {
         if ($getID) {
 		$tempsql = "SELECT nextval('". $obj->tablename() . "_id_seq') as id";
-		$thisclass = get_class($this);
+		$thisclass = getClass($this);
 		$db = new $thisclass;
 		$resID = $db->SQLExec($tempsql, FALSE, $obj);
 		$resID2 = $db->fetchrecord($resID);

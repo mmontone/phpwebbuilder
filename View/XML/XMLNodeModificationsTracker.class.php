@@ -58,7 +58,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 
 	function removeChild(& $child) {
 		if ($child->toFlush) {
-			if (get_class($child->toFlush) == "replacechildxmlnodemodification"){
+			if (getClass($child->toFlush) == "replacechildxmlnodemodification"){
 				$old =& $child->toFlush->child;
 				$old->toFlush = & new RemoveChildXMLNodeModification($this, $old);
 				$this->modifications[] = & $old->toFlush;

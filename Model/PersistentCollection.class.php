@@ -126,7 +126,7 @@ class PersistentCollection extends Collection{
 			ereg_replace("%",
 			"%25",
 			serialize($this->conditions
-		)))), "ObjType" => get_class($this));
+		)))), "ObjType" => getClass($this));
 		return $arr;
 	}
 

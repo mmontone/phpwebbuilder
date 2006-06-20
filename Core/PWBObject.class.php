@@ -63,7 +63,7 @@ class PWBObject
     }
 
     function visit(&$obj) {
-        $method_name = 'visited' . $this->get_class();
+        $method_name = 'visited' . $this->getClass();
         $obj->$method_name($this);
     }
 
@@ -166,7 +166,7 @@ class PWBObject
     }
 
     function &copy() {
-		$class = get_class($this);
+		$class = getClass($this);
 		$copy =& new $class;
 
 		// If this fails then it means that the PWBObject constructor is not being called

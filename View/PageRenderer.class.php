@@ -25,7 +25,7 @@ class StandardPageRenderer extends PageRenderer {
 		$this->page->setAttribute('action', 'dispatch.php');
 		$this->page->setAttribute('method', 'post');
 		$this->page->setAttribute('enctype', 'multipart/form-data');
-		$this->page->setAttribute('app', get_class($app));
+		$this->page->setAttribute('app', getClass($app));
 
 		/*
 		$ret = '<!DOCTYPE html
@@ -134,7 +134,7 @@ class AjaxPageRenderer extends PageRenderer {
 	}
 
 	function renderModification(& $mod) {
-		switch (get_class($mod)) {
+		switch (getClass($mod)) {
 			case 'replacechildxmlnodemodification' :
 				$mod->replacement->flushModifications();
 				return $mod->renderAjaxResponseCommand();
@@ -155,7 +155,7 @@ class AjaxPageRenderer extends PageRenderer {
 				return '';
 			default :
 				echo "Not match in AjaxPageRenderer>>renderModification" .
-						" for ".get_class($mod);
+						" for ".getClass($mod);
 				exit;
 		}
 	}

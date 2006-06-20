@@ -38,8 +38,8 @@ class PersistentObjectTableCheckView {
 		$sql = "SHOW TABLES FROM " . basename . " LIKE '" . $table ."'";
 		$db = new MySQLDB;
 		$res = $db->SQLexec($sql, FALSE, $this->obj);
-		if (strcasecmp(get_class($this->obj),"ObjSQL")!=0) {
-			trace("Inspecting object ". get_class($this->obj));
+		if (strcasecmp(getClass($this->obj),"ObjSQL")!=0) {
+			trace("Inspecting object ". getClass($this->obj));
 			if(mysql_num_rows($res)) {
 				trace("Tables with name $table are" . mysql_num_rows($res));
 				$ret ="";
@@ -84,7 +84,7 @@ class PersistentObjectTableCheckView {
 					$temp .= "\n   ADD ".$this->uniques().", ";
 				}
 				if ($temp!="") {
-					//$ret .= "\n-- Object: ".get_class($this->obj);
+					//$ret .= "\n-- Object: ".getClass($this->obj);
 					$ret .= "\nALTER TABLE $table";
 					$ret .= $temp;
 					$ret = substr($ret,0, -2);
@@ -95,7 +95,7 @@ class PersistentObjectTableCheckView {
 		*/
 			} else {
 			//Si no est�, crearla:
-				//$ret = "\n-- Object: ".get_class($this->obj);
+				//$ret = "\n-- Object: ".getClass($this->obj);
 				$ret =	"\nCREATE TABLE IF NOT EXISTS $table (" ;
 				$ret .= $this->fieldsForm($this, $this->obj->fieldNames, TRUE);
 				$ret .= "\n   PRIMARY KEY  (`id`)";

@@ -20,7 +20,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
     function getIdOfClass($class){
-	    	if (strcasecmp(get_class($this), $class)==0) {
+	    	if (strcasecmp(getClass($this), $class)==0) {
 	    		return $this->id->getValue();
 	    	} else {
 	    		return $this->parent->getIdOfClass($class);
@@ -42,7 +42,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function &allFieldsAllLevels(){
-		$rcs = get_related_classes(get_class($this));
+		$rcs = get_related_classes(getClass($this));
 		$fs = array();
 		foreach($rcs as $rc){
 			if ($rc != 'persistentobject' && $rc != 'descriptedobject' && $rc != 'pwbobject') {
@@ -64,7 +64,7 @@ class PersistentObject extends DescriptedObject {
 
 	function tableNames(){
 		$tns[] = $this->tableName();
-		$p0 = get_class($this);
+		$p0 = getClass($this);
 		$pcs = get_superclasses($p0);
 		$o0 =& $this;
 		foreach($pcs as $pc){
@@ -75,7 +75,7 @@ class PersistentObject extends DescriptedObject {
 			$o0 =& $o1;
 			$p0 = $pc;
 		}
-		$scs = get_subclasses(get_class($this));
+		$scs = get_subclasses(getClass($this));
 		foreach($scs as $sc){
 			$o1 =& new $sc;
 			$pc = get_parent_class($sc);
@@ -93,8 +93,8 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function idRestrictions(){
-		$rcs = get_related_classes(get_class($this));
-		$rcs [] = get_class($this);
+		$rcs = get_related_classes(getClass($this));
+		$rcs [] = getClass($this);
 		$rss []='1=1';
 		foreach($rcs as $rc){
 			$sup = get_parent_class($rc);
@@ -179,7 +179,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function & getWithIdChildren($id) {
-		$class = get_class($this);
+		$class = getClass($this);
 		$subs = get_subclasses($class);
 		$cant = 0;
 		foreach ($subs as $sub) {
@@ -218,7 +218,7 @@ class PersistentObject extends DescriptedObject {
 		return $this->parent;
 	}
 	function & getWithIdParent() {
-		$class = get_class($this);
+		$class = getClass($this);
 		if ($this->isNotTopClass($class)) {
 			/* We have to load all the way up */
 			$parclass = get_parent_class($class);
@@ -269,7 +269,7 @@ class PersistentObject extends DescriptedObject {
 		return $obj;
 	}
 	function &chooseSubclass(&$rec){
-		$c = get_class($this);
+		$c = getClass($this);
 		$rcs = get_subclasses($c);
 		foreach($rcs as $rc){
 			$o =& new $rc;

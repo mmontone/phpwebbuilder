@@ -29,7 +29,7 @@ class DescriptedObject extends PWBObject {
 
 	function & createInstance() {
 		if ($this->isNotTopClass($this)) {
-			$this->setParent($this->create(get_parent_class(get_class($this))));
+			$this->setParent($this->create(get_parent_class(getClass($this))));
 		}
 		$this->basicInitialize();
 		return $this;
@@ -42,9 +42,9 @@ class DescriptedObject extends PWBObject {
 		if ($this->isNotTopClass($this)) {
 			$this->addField(new superField("super", FALSE));
 		}
-		$this->displayString = ucfirst(get_class($this));
+		$this->displayString = ucfirst(getClass($this));
 		if($this->table==''){
-			$this->table = get_class($this);
+			$this->table = getClass($this);
 		}
 
 		$this->initialize();
@@ -92,7 +92,7 @@ class DescriptedObject extends PWBObject {
 		foreach ($names as $name) {
 			$f =& $this->fieldNamed($name);
 			if ($f==null){
-				print_backtrace('Object '.get_class($this).' doesn\'t have field '.
+				print_backtrace('Object '.getClass($this).' doesn\'t have field '.
 					$name.' in '.print_r($names, TRUE));
 			}
 			$arr[$name] = & $f;
@@ -101,9 +101,9 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function allFieldNames() {
-		if ($this->isNotTopClass(get_class($this))) {
+		if ($this->isNotTopClass(getClass($this))) {
 			if ($this->parent == null)
-				print_backtrace(get_class($this));
+				print_backtrace(getClass($this));
 
 			return array_merge($this->parent->allFieldNames(), $this->allFieldNamesThisLevel());
 		}
@@ -112,7 +112,7 @@ class DescriptedObject extends PWBObject {
 		}
 	}
 	function allIndexFieldNames() {
-		if ($this->isNotTopClass(get_class($this))) {
+		if ($this->isNotTopClass(getClass($this))) {
 			if ($this->parent == null)
 				backtrace();
 			return array_merge($this->parent->allIndexFieldNames(), $this->indexFields);
@@ -152,7 +152,7 @@ class DescriptedObject extends PWBObject {
 			$this->indexFields[$name] = $name;
 		}
 		$field->owner = & $this;
-		//classkit_method_add ( get_class($this), 'get' . $name, '', 'return $this->get' . $name . ';');
+		//classkit_method_add ( getClass($this), 'get' . $name, '', 'return $this->get' . $name . ';');
 
 		/*$field->addEventListener($this, $a = array (
 			'change' => 'fieldChanged'

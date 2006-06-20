@@ -23,10 +23,10 @@ require_once 'PersistentObject.class.php';
 require_once 'ObjectDescription.class.php';
 require_once 'FieldDescription.class.php';
 require_once 'Validation/Validation.class.php';
-require_once 'Validation/Exception.class.php';
-require_once 'Validation/ValidationException.class.php';
+require_once 'Validation/PWBException.class.php';
+require_once 'Validation/ValidationPWBException.class.php';
 require_once 'Validation/LikeValidation.class.php';
-require_once 'Validation/LikeValidationException.class.php';
+require_once 'Validation/LikeValidationPWBException.class.php';
 require_once 'Validation/OrValidation.class.php';
 require_once 'Validation/PluggableValidation.class.php';
 

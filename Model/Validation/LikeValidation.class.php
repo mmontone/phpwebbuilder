@@ -10,7 +10,7 @@ class LikeValidation extends Validation {
 
     function validate(&$error_handler) {
     	if ($this->getValue() != $this->likeValue) {
-    		$e =& new LikeValidationException($this->getValue(), $this->likeValue);
+    		$e =& new LikeValidationPWBException($this->getValue(), $this->likeValue);
     		$e->raise($error_handler);
     	}
     }

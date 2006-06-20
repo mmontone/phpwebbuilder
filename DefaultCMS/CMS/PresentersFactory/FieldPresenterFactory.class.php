@@ -3,9 +3,9 @@
 class FieldPresenterFactory {
 	function &createFor(&$field){
 		$ok = false;
-		$c = get_class($field);
+		$c = getClass($field);
 		while(!$ok) {
-			$name = $c.get_class($this);
+			$name = $c.getClass($this);
 			$ok = class_exists($name);
 			$c = get_parent_class($c);
 		}

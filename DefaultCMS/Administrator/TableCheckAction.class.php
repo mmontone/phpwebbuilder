@@ -5,9 +5,9 @@ class TableCheckAction {
 
 	function &viewFactory(&$obj) {
 		$ok = false;
-		$c = get_class($obj);
+		$c = getClass($obj);
 		while(!$ok) {
-			$name = $c.get_class($this);
+			$name = $c.getClass($this);
 			$ok = class_exists($name);
 			$c = get_parent_class($c);
 		}
