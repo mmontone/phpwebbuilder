@@ -1,15 +1,7 @@
 Optimizations:
 
-
-*htmltemplate->xml2template: 0.0034915619
-*xmlnodemodificationstracker->flushmodifications
-
-
 ToDo:
-- Reinsert permissions into DefaultCMS
-- Select (uses Collection). Object to string Method and var to String Function
 - ajax.js has "admin" as pwb_url. Think a way to work it around.
 - Templates: Buttons should stay right below table. tfooter?
 - Checkboxes, and edit or delete many elements at the same time (ShowCollectionComponent).
 - (ShowCollectionComponent): Elements should be added by the id on the class (so consecutive actions, like deletions, can be carried out).
-- Action Validation on delete
