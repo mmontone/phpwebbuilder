@@ -53,7 +53,7 @@ function find_subclasses(){
 	$arr = get_declared_classes();
 	$ret = array();
 	foreach ($arr as $o) {
-		$vars = getClass_vars($o);
+		$vars = get_class_vars($o);
 		if (isset($vars["isClassOfPWB"]) &&
 			$vars["isClassOfPWB"]){
 			$PWBclasses[strtolower($o)] = array();

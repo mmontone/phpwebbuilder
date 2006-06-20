@@ -39,7 +39,7 @@ class Widget extends Component
 
 	function setOnChangeEvent(&$view) {
 		$class = getClass($this);
-		$view->setAttribute('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue);componentChange(this)");
+		$view->setAttribute('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue);componentChange(getEventTarget(event))");
 	}
 
 	function setOnBlurEvent(&$view) {

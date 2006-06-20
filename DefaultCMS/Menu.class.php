@@ -31,9 +31,9 @@ class Menu extends Component {
 		$ks2 =  array_keys($col);
 		foreach ($ks2 as $k2) {
 			$menu = & $col[$k2];
-			$this->additem(array_merge(array (
+			$this->additem($arr=array (
 				'Component' => $menu->controller->getValue()
-			), parse_str($menu->params->getValue())), $menu->name->getValue(), $sect);
+			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
 		}
 	}
 	function objMenus() {
