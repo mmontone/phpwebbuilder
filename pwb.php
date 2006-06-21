@@ -4,6 +4,7 @@
  * Includes all files and makes initialization for the application.
  * Controller Version.
  * */
+
 ob_start("ob_gzhandler");
 ini_set('memory_limit', '-1');
 set_time_limit(0);
@@ -25,14 +26,6 @@ if (!defined('app_class')) {
 
 $modules = split(",", modules);
 
-/*$config = array (
-	basedir . "/MyConfig"
-);
-
-foreach ($config as $dir) {
-	includemodule($dir);
-}*/
-
 foreach ($modules as $dir) {
 	includemodule(pwbdir.'/'.trim($dir));
 }
@@ -43,5 +36,6 @@ $app = split(",", app);
 foreach ($app as $dir) {
 	includemodule(basedir."/".$dir);
 }
+session_name(strtolower(app_class));
 session_start();
 ?>

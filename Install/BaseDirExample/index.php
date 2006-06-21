@@ -1,5 +1,5 @@
 <?php
 
-header('location:incoming.html');
+header('location:Action.php');
 
 ?>

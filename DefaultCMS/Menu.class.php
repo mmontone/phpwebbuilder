@@ -29,9 +29,10 @@ class Menu extends Component {
 		$sect->addComponent(new Text(new ValueHolder($mv)), 'secName');
 		$col = & $menu->itemsVisible();
 		$ks2 =  array_keys($col);
+		$arr=array();
 		foreach ($ks2 as $k2) {
 			$menu = & $col[$k2];
-			$this->additem($arr=array (
+			$this->additem($arr[$k2]=array (
 				'Component' => $menu->controller->getValue()
 			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
 		}
