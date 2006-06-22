@@ -7,10 +7,10 @@ class CollectionNavigator extends Component {
 	function CollectionNavigator(&$col, $fields=null, $callbacks=array()) {
 		$this->col = & $col;
 		$this->col->addEventListener(array('changed'=>'refresh'), $this);
-		$this->classN = $col->dataType;
+		$this->classN = $col->getDataType();
 
 		if ($fields==null){
-			$obj = & new $col->dataType;
+			$obj = & new $this->classN;
 			$this->fields = & $obj->allIndexFields();
 		} else {
 			$this->fields = $fields;

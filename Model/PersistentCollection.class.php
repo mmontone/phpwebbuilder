@@ -99,9 +99,7 @@ class PersistentCollection extends Collection{
 	}
 
 	function & getObj($id) {
-		$obj = & new $this->dataType;
-		$ret = & $obj->getWithId($this->dataType, $id);
-		return $ret;
+		return PersistentObject::getWithId($this->dataType, $id);
 	}
 
 	function toArray() {
@@ -154,6 +152,9 @@ class PersistentCollection extends Collection{
 		$reg = $db->SQLExec($sql, FALSE, $this);
 		$data = $db->fetchrecord($reg);
 		return $data['collection_size'];
+	}
+	function getDataType(){
+		return $this->dataType;
 	}
 }
 

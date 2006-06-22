@@ -3,10 +3,6 @@
 require_once 'CollectionNavigator.class.php';
 
 class CollectionViewer extends CollectionNavigator {
-	function CollectionViewer(&$collection, $fields=null, $callbacks=null) {
-		parent::CollectionNavigator($collection, $fields, $callbacks);
-	}
-
 	function initialize() {
 		$class = & $this->classN;
 		$this->addComponent(new Label($class), 'className');

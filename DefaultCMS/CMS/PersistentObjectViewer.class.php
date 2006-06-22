@@ -6,8 +6,8 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 
     function initialize(){
     	$obj =& $this->obj;
-    	$this->addComponent(new Label($this->classN), 'className');
-    	$this->addComponent(new Label($obj->id->getValue()), 'idN');
+    	//$this->addComponent(new Label($this->classN), 'className');
+    	//$this->addComponent(new Label($obj->id->getValue()), 'idN');
     	$this->factory =& new ViewerFactory;
        	$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
        	$this->addComponent(new ActionLink($this, 'goback', 'goback', $n), 'goback');

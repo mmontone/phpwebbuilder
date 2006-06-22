@@ -8,10 +8,12 @@ class PersistentObjectPresenter extends Component {
     function PersistentObjectPresenter(&$object, $fields=null) {
 		$this->obj =& $object;
 		$this->classN = getClass($object);
-		if ($fields==null){
+		if ($fields===null){
     		$this->fieldNames =& $this->obj->allFieldNames();
-		} else {
+		} else if (is_subclass_of($fields[array_keys($fields[0])],'DataField')){
 			$this->fieldNames = array_map(create_function('$field','return $field->colName;'),$fields);
+		} else {
+			$this->fieldNames = $fields;
 		}
     	parent::Component();
     }

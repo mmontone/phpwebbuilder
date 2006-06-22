@@ -231,7 +231,7 @@ function &apply_messages(&$u, $mess){
 	$temp =& $u;
 	$ms = split('->',$mess);
 	foreach($ms as $m){
-		$temp =& $temp->$m;
+		$temp =& apply_message($temp,$m);
 	}
 	return $temp;
 }
