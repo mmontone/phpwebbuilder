@@ -76,9 +76,9 @@ class Widget extends Component
 		return $this->value_model->getValue();
 	}
 	function &createDefaultView(){
-		$this->view =& parent::createDefaultView();
-		$this->initializeDefaultView($this->view);
-		return $this->view;
+		$view =& parent::createDefaultView();
+		$this->initializeDefaultView($view);
+		return $view;
 	}
 	function initializeDefaultView(&$view){}
 	function initializeView(&$view){}

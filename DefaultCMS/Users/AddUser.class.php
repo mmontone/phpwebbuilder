@@ -29,9 +29,9 @@ class AddUser extends Component {
     	}
 		$ok = $this->createUser($un, $p1);
 		if ($ok){
-			$this->status->setValue('registration successful');
+			$this->status->setValue($v = 'registration successful');
 		}else{
-			$this->status->setValue('registration failed, try another username');
+			$this->status->setValue($v = 'registration failed, try another username');
 		}
     }
     function createUser($un, $p){

@@ -68,7 +68,9 @@ class ViewCreator {
 		 * */
 		$parentView =& $pV;
 		$view  =& $component->view;
-		$hasView = $view!=null && strcasecmp(getClass($view),'NullView')!=0;
+		$hasView = $view!=null && strcasecmp(getClass($view),'NullView')!=0 && strcasecmp(getClass($view),'StdClass')!=0;
+		//Somewhere er're setting a value in view where the view is not initialized;
+		//if (strcasecmp(getClass($view),'StdClass')==0) print_backtrace(get_class($component));
 		if ($hasView){
 			if ($view->parentNode != null && $view->parentNode->is($parentView)) return $view;
 		}
