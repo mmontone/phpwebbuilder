@@ -2,11 +2,11 @@
 
 class ModUser extends PersistentObjectEditor {
 	function hasPermission(){
-		return $_SESSION[sitename]['Username']!='guest';
+		return !User::is_guest();
 	}
 	function ModUser(){
-		$u =& $_SESSION[sitename]['User'];
-		$fs =& $u->allFields();
+		$u =& User::logged();
+		$fs = $u->allFieldNames();
 		unset($fs['UserRoleuser']);
 		unset($fs['super']);
 		unset($fs['id']);

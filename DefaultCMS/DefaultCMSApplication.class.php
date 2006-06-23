@@ -17,6 +17,7 @@ class DefaultCMSApplication extends Application{
  		parent::addAjaxRenderingSpecificScripts();
  		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');
  	}
+ 	function getTitle(){return sitename.'\'s Content Management System';}
 }
 
 ?>

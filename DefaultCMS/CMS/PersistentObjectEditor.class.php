@@ -1,10 +1,6 @@
 <?php
 
 class PersistentObjectEditor extends PersistentObjectPresenter {
-	function PersistentObjectEditor(&$object) {
-		parent::PersistentObjectPresenter($object);
-	}
-
     function initialize(){
     	$obj =& $this->obj;
     	$this->addComponent(new Label($this->classN), 'className');
