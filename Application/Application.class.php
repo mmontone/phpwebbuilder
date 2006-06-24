@@ -9,17 +9,23 @@ class Application extends ComponentHolder {
 	var $historylistener;
 	var $config;
 	var $translator;
-
+	var $commands;
+	var $urlManager;
 	function Application() {
 		$_SESSION[sitename][getClass($this)] = & $this;
+		$this->commands =& new Collection();
+		$this->urlManager =& new UrlManager($this);
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
-		$page_renderer = page_renderer;
+		$page_renderer = constant('page_renderer');
 		$this->page_renderer = new $page_renderer;
 		$this->createView();
 		$this->historylistener =& new HistoryListener;
 
+	}
+	function pushCommand(&$command){
+		$this->commands->push($command);
 	}
 	function setRootComponent(){
 		trigger_error("Subclass responsibility");
