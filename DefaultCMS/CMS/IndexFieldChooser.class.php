@@ -9,7 +9,7 @@ class IndexFieldChooser extends Component {
 		$this->field =& $field;
 		$this->display =& new ValueHolder($v = 'choose');
 		$this->updateDisplay();
-		$this->addComponent(new ActionLink2(array('action'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->display), 'value'));
+		$this->addComponent(new CommandLink(array('proceedFunction'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->display), 'value'));
 	}
 
 	function &getValue() {

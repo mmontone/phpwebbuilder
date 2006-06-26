@@ -32,11 +32,11 @@ class Menu extends Component {
 		$arr=array();
 		foreach ($ks2 as $k2) {
 			$menu = & $col[$k2];
-			$this->additem($arr[$k2]=array (
+			$this->additem($arr[$k2]=array ('bookmark'=>'MenuItem',
 				'Component' => $menu->controller->getValue()
 			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
 		}
-	}
+	} 
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
 		$sect = & new MenuSectionComponent();
@@ -49,22 +49,15 @@ class Menu extends Component {
 			$obj =& new $class;
 			PermissionChecker::addComponent($sect,
 				new MenuItemComponent($this, $obj->displayString,
-					$temp[$p] = array ('Component' => 'CollectionViewer',
-					'params' => new PersistentCollection($class))),
+					$temp[$p] = array ('bookmark'=>'CollectionViewer',
+					'class' => $class)),
 				new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Menu', '*')));
 		}
-		$log = array (
+		$log = array ('bookmark'=>'MenuItem',
 			'Component' => 'Logout'
 		);
 		$this->additem($log, 'Logout', $sect);
 	}
-	/*function addelement($class, $text, & $sect) {
-		$comp = array (
-			'Component' => 'CollectionViewer',
-			'params' => new PersistentCollection($class)
-		);
-		return $this->additem($comp, $text, $sect);
-	}*/
 	function additem(& $comp, $text, & $sect) {
 		$sect->addComponent(new MenuItemComponent($this, $text, $comp));
 	}
@@ -72,7 +65,6 @@ class Menu extends Component {
 		$c = & new $comp['Component'] ($comp['params']);
 		$this->triggerEvent('menuClicked', $c);
 	}
-
 }
 
 class MenuSectionComponent extends Component {}
@@ -88,7 +80,25 @@ class MenuItemComponent extends Component {
 	function declare_actions() {}
 
 	function initialize() {
-		$this->addComponent(new ActionLink($this->menu, 'menuclick', $this->text, $this->item), "link");
+		$items = $this->item;
+		$bk =$items['bookmark'];
+
+		unset($items['bookmark']);
+		$this->addComponent(new NavigationLink($this->item['bookmark'], $this->text,$items), "link");
+	}
+}
+
+class MenuItemBookmark extends Bookmark{
+	function launchIn(&$app, $params){
+		$con =& new $params['Component']($params['class']);
+		$app->component->body->stopAndCall($con);
+	}
+}
+
+class CollectionViewerBookmark extends Bookmark{
+	function launchIn(&$app, $params){
+		$con =& new CollectionViewer(new PersistentCollection($params['class']));
+		$app->component->body->stopAndCall($con);
 	}
 }
 ?>

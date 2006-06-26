@@ -1,15 +1,15 @@
 var loader = document.createElement("div");
 
 function initialize_loading(){
-t = document.createTextNode('');
-loader.setAttribute("id", "loader");
-loader.onclick = cancel_ajax;
-loader.appendChild(t);
-ap = document.getElementById('app');
-ap.appendChild(loader);
+	t = document.createTextNode('');
+	loader.setAttribute("id", "loader");
+	loader.onclick = cancel_ajax;
+	loader.appendChild(t);
+	ap = document.getElementById('app');
+	ap.appendChild(loader); 
 }
 
-window.onload=initialize_loading;
+addOnLoad(initialize_loading);
 
 function loadingStart() {
         loader.style.visibility="visible";

@@ -9,7 +9,7 @@
 				<container id="secName" />
 				<template class="MenuItemComponent">
 					<li>
-						<template class="ActionLink">
+						<template class="CommandLink">
 						    <a href="#" ><container id="linkName" /></a>
 						 </template>
 					</li>
