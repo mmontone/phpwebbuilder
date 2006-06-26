@@ -21,7 +21,6 @@ class Application extends ComponentHolder {
 		$page_renderer = constant('page_renderer');
 		$this->page_renderer = new $page_renderer;
 		$this->createView();
-		$this->historylistener =& new HistoryListener;
 
 	}
 	function pushCommand(&$command){
@@ -31,19 +30,11 @@ class Application extends ComponentHolder {
 		trigger_error("Subclass responsibility");
 		exit;
 	}
-	function start() {
-		$this->component->start();
-	}
-
-	function redraw() {
+	function redraw() { 
 		$this->wholeView->flushModifications();
 		$this->wholeView->replaceChild($this->wholeView->first_child(), $other = $this->wholeView->first_child());
 	}
 
-	function initialRender() {
-		$this->viewCreator->createAllViews();
-		echo $this->page_renderer->initialPageRenderPage($this);
-	}
 	function standardRender() {
 		$this->viewCreator->createAllViews();
 		$pr =& new StandardPageRenderer();
@@ -56,10 +47,16 @@ class Application extends ComponentHolder {
 		}
 		return $_SESSION[sitename][$class];
 	}
-
+	function &instance(){
+		return Application::getInstanceOf(app_class);
+	}
+	function initialRender() {
+		$this->page_renderer->firstRender=true;
+		$this->render();
+	}
 	function render() {
 		$this->viewCreator->createAllViews();
-		echo $this->page_renderer->renderPage($this);
+		echo $this->page_renderer->render($this);
 	}
 
 	function createView() {
@@ -97,6 +94,7 @@ class Application extends ComponentHolder {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
+		$this->addScript(pwb_url . '/lib/dhtmlHistory.js');
 		$this->addScript(pwb_url . '/lib/ajax.js');
 	}
 
@@ -119,12 +117,6 @@ class Application extends ComponentHolder {
 	}
 
 	function loadTemplates() {}
-
-	function run() {
-		$this->start();
-		$this->initialRender();
-	}
-
 	function getId() {
 		return "app";
 	}
@@ -139,6 +131,31 @@ class Application extends ComponentHolder {
 
 	function translate($msg) {
 		return $this->translator->translate($msg);
+	}
+	function launch() {
+		if ($_REQUEST["restart"]=="yes") {
+			session_destroy();
+			session_start();
+		}
+		if ($_REQUEST["reset"]=="yes") {
+			unset($_SESSION[sitename][app_class]);
+		}
+		$ad =& new ActionDispatcher();
+		$app =& $ad->dispatch();
+		if (isset($_REQUEST["start"])){
+			$app->initialRender();
+		} else {
+			$app->render();
+		}
+	}
+	function setLinkTarget($bookmark, $params){
+		return $this->urlManager->setLinkTarget($bookmark, $params);
+	}
+	function navigate($bookmark, $params){
+		$this->urlManager->navigate($bookmark, $params);
+	}
+	function goToUrl($url){
+		$this->urlManager->goToUrl($url);
 	}
 }
 ?>

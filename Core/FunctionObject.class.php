@@ -14,10 +14,7 @@ class FunctionObject
 
     function call() {
       	$method_name = $this->method_name;
-        if (empty($this->params))
-        	return $this->target->$method_name();
-        else
-        	return $this->target->$method_name($this->params);
+       	return $this->target->$method_name($this->params);
     }
 
     function callWith(&$params) {
