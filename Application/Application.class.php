@@ -143,11 +143,7 @@ class Application extends ComponentHolder {
 		}
 		$ad =& new ActionDispatcher();
 		$app =& $ad->dispatch();
-		if (isset($_REQUEST["start"])){
-			$app->initialRender();
-		} else {
-			$app->render();
-		}
+		$app->render();
 	}
 	function setLinkTarget($bookmark, $params){
 		return $this->urlManager->setLinkTarget($bookmark, $params);
