@@ -12,7 +12,9 @@ class PageRenderer // extends PWBObject
 		$initial_page_renderer->setPage($app->wholeView);
 		echo $initial_page_renderer->renderPage($app);
 	}
-
+	function render(&$page){
+		return $this->renderPage($page);
+	}
 }
 
 class StandardPageRenderer extends PageRenderer {
@@ -22,7 +24,7 @@ class StandardPageRenderer extends PageRenderer {
 
 	function renderPage(&$app) {
 		$this->page->tagName = 'form';
-		$this->page->setAttribute('action', 'dispatch.php');
+		$this->page->setAttribute('action', 'Action.php');
 		$this->page->setAttribute('method', 'post');
 		$this->page->setAttribute('enctype', 'multipart/form-data');
 		$this->page->setAttribute('app', getClass($app));
@@ -105,8 +107,14 @@ class AjaxPageRenderer extends PageRenderer {
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();
 	}
-
-	function renderPage() {
+	function render(&$page){
+		if ($_REQUEST['ajax']=='true'){
+			return $this->renderPage(&$page);
+		} else {
+			return $this->initialPageRenderPage(&$page);
+		}
+	}
+	function renderPage(&$page) {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
@@ -153,6 +161,8 @@ class AjaxPageRenderer extends PageRenderer {
 			case '' :
 				trace('null object in modifications');
 				return '';
+			case 'bookmarkxmlnodemodification':
+				return $mod->renderAjaxResponseCommand();
 			default :
 				echo "Not match in AjaxPageRenderer>>renderModification" .
 						" for ".getClass($mod);

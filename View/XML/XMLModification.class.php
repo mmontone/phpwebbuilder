@@ -28,6 +28,19 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 	}
 }
 
+
+class BookmarkXMLNodeModification extends XMLNodeModification {
+	var $hash;
+
+	function BookmarkXMLNodeModification($hash) {
+		$this->hash = $hash;
+	}
+	function renderAjaxResponseCommand() {
+		$xml = '<bookmark hash="' . $this->hash. '"/>';
+		return $xml;
+	}
+}
+
 class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	var $child;
 	var $replacement;

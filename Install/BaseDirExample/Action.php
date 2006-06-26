@@ -1,9 +1,7 @@
 <?php
-/**
-* Launches the application defined in config.ini
-*/
+ini_set('memory_limit', '32M');
+define('app_class',$_REQUEST["app"]);
 require_once dirname(__FILE__).'/Configuration/pwbapp.php';
-$app_launcher =& new ApplicationLauncher();
-$app_launcher->launch(app_class);
+Application::launch();
 
 ?>
