@@ -1,7 +1,8 @@
 <?php
 
 class UrlManager extends PWBObject{
-	var $application; 
+	var $actUrl="Home";
+	var $application;
     function UrlManager(&$app) {
     	$this->application =& $app;
     }
@@ -21,8 +22,9 @@ class UrlManager extends PWBObject{
     	$this->navigate($bm, $params);
     }
     function navigate($bookmark, $params){
+    	$this->actUrl = $this->setBookmarkTarget($bookmark, $params);
     	$this->application->wholeView->modifications[] = &
-    		new BookmarkXMLNodeModification($this->setBookmarkTarget($bookmark, $params));
+    		new BookmarkXMLNodeModification($this->actUrl);
     	$bmc = $bookmark.'Bookmark';
     	$bm =& new $bmc;
     	$bm->launchIn($this->application, $params);

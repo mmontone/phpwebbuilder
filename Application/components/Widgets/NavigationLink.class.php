@@ -6,13 +6,14 @@ class NavigationLink extends CommandLink{
 				'proceedFunction'=> new FunctionObject($this, 'navigate')));
 		$this->bookmark = $bookmark;
 		$this->params = $params;
-	} 
+	}
 	function initialize(){}
 	function initializeView(&$view){
 		$view->setAttribute('href', toAjax($this->app->setLinkTarget($this->bookmark, $this->params)));
 	}
 	function navigate(){
-		$this->app->navigate($this->bookmark, $this->params);
+		$app =& Application::instance();
+		$app->navigate($this->bookmark, $this->params);
 	}
 }
 ?>

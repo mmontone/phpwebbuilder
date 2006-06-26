@@ -21,7 +21,7 @@ class Application extends ComponentHolder {
 		$page_renderer = constant('page_renderer');
 		$this->page_renderer = new $page_renderer;
 		$this->createView();
-
+		$this->component->start();
 	}
 	function pushCommand(&$command){
 		$this->commands->push($command);
@@ -30,7 +30,7 @@ class Application extends ComponentHolder {
 		trigger_error("Subclass responsibility");
 		exit;
 	}
-	function redraw() { 
+	function redraw() {
 		$this->wholeView->flushModifications();
 		$this->wholeView->replaceChild($this->wholeView->first_child(), $other = $this->wholeView->first_child());
 	}
@@ -41,7 +41,8 @@ class Application extends ComponentHolder {
 		$pr->setPage($this->wholeView);
 		echo $pr->renderPage($this);
 	}
-	function & getInstanceOf($class) {
+	function & getInstanceOf($c) {
+		$class = strtolower($c);
 		if (!isset ($_SESSION[sitename][$class])) {
 			$_SESSION[sitename][$class] = & new $class;
 		}

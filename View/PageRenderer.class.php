@@ -28,6 +28,7 @@ class StandardPageRenderer extends PageRenderer {
 		$this->page->setAttribute('method', 'post');
 		$this->page->setAttribute('enctype', 'multipart/form-data');
 		$this->page->setAttribute('app', getClass($app));
+		$this->page->setAttribute('bookmark', $app->urlManager->actUrl);
 
 		/*
 		$ret = '<!DOCTYPE html
