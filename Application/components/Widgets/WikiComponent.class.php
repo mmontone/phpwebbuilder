@@ -14,9 +14,9 @@ class WikiComponent extends Widget{
     		$ls = explode(' ', $l,2);
     		$bookmark = $ls[0];
     		$name = $ls[1];
-    		if (strcasecmp('http://',substr($bookmark,7))==0){
+    		if (strcasecmp('http://',substr($bookmark,0,7))==0){
 	    		$this->addComponent(new Link($bookmark, $name));
-    		} else if (strcasecmp('mailto:',substr($bookmark,7))==0){
+    		} else if (strcasecmp('mailto:',substr($bookmark,0,7))==0){
 				$this->addComponent(new Link($bookmark, $name));
     		} else {
 	    		$app =& Application::instance();
