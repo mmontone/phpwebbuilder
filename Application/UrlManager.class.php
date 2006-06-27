@@ -15,10 +15,10 @@ class UrlManager extends PWBObject{
 		$this->setUrl($this->prevUrl);
     }
     function goToUrl($url){
-    	$pms = $this->getBookmrkAndParams($url);
+    	$pms = $this->getBookmarkAndParams($url);
     	$this->navigate($pms['bookmark'], $pms['params']);
     }
-    function getBookmrkAndParams($url){
+    function getBookmarkAndParams($url){
     	$urls = explode('\|', $url);
     	$bm = $urls[0];
     	$params=array();
