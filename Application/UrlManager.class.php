@@ -19,7 +19,7 @@ class UrlManager extends PWBObject{
     	$this->navigate($pms['bookmark'], $pms['params']);
     }
     function getBookmarkAndParams($url){
-    	$urls = explode('\|', $url);
+    	$urls = explode('|', $url);
     	$bm = $urls[0];
     	$params=array();
     	array_shift($urls);
