@@ -14,7 +14,9 @@ class WikiComponent extends Widget{
     		$ls = explode(' ', $l,2);
     		$bookmark = $ls[0];
     		$name = $ls[1];
-    		$this->addComponent(new NavigationLink($bookmark, $name));
+    		$app =& Application::instance();
+    		$pms = $app->urlManager->getBookmrkAndParams($bookmark);
+    		$this->addComponent(new NavigationLink($pms['bookmark'], $name, $pms['params']));
     	}
     	$this->addComponent(new Label($arr[$i]));
     }
