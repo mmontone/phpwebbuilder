@@ -1,6 +1,11 @@
 <templates>
+	<template class="DefaultCMS">
+		<container id="menu"/>
+		<div class="Body">
+			<container id="body"/>
+		</div>
+	</template>
  	<template class="Menu">
-
  		<div class="Menu">
 		<container id="SiteName"/> CMS <br/>
 		User: <container id="username"/>

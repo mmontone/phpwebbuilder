@@ -1,3 +1,13 @@
+body {
+overflow:hidden;
+height:100%;
+}
+
+div.Body,div.Menu {
+overflow:auto;
+height:90%;
+}
+
 table{
 	background-color: #DEF3FE;
     border:thin outset #000000;
@@ -44,7 +54,7 @@ img {
 div.Menu{
         float:left;
  		background-color:#DEF3DE;
- 		max-width:25%;
+ 		width:25%;
  		border:thin inset #000000;
  		padding: 10px;
  		margin: 10px;

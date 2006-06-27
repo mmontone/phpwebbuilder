@@ -5,8 +5,8 @@ function initialize_loading(){
 	loader.setAttribute("id", "loader");
 	loader.onclick = cancel_ajax;
 	loader.appendChild(t);
-	ap = document.getElementById('app');
-	ap.appendChild(loader); 
+	var ap = document.getElementsByTagName('body').item(0);
+	ap.appendChild(loader);
 }
 
 addOnLoad(initialize_loading);
