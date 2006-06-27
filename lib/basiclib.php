@@ -230,7 +230,7 @@ function isPWBObject(&$e){
 
 function &apply_messages(&$u, $mess){
 	$temp =& $u;
-	$ms = split('->',$mess);
+	$ms = explode('->',$mess);
 	foreach($ms as $m){
 		$temp =& apply_message($temp,$m);
 	}

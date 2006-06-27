@@ -15,12 +15,12 @@ class UrlManager extends PWBObject{
 		$this->setUrl($this->prevUrl);
     }
     function goToUrl($url){
-    	$urls = split('\|', $url);
+    	$urls = explode('\|', $url);
     	$bm = $urls[0];
     	$params=array();
     	array_shift($urls);
     	foreach($urls as $u){
-    		$temp = split('=', $u);
+    		$temp = explode('=', $u);
     		$params [$temp[0]] = $temp[1];
     	}
     	$this->navigate($bm, $params);

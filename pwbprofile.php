@@ -28,7 +28,7 @@ define('modules',"Model,OldViews,Controllers,deprecated," .
 
 define('app_class',"DefaultCMSApplication");
 
-$modules = split(",",modules);
+$modules = explode(",",modules);
 
 foreach ($config as $dir) {
     includefile($dir);

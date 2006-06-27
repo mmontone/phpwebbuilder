@@ -24,14 +24,14 @@ if (!defined('app_class')) {
 	define('app_class', "DefaultCMSApplication");
 }
 
-$modules = split(",", modules);
+$modules = explode(",", modules);
 
 foreach ($modules as $dir) {
 	includemodule(pwbdir.'/'.trim($dir));
 }
 
 define('app', "MyInstances,MyComponents" );
-$app = split(",", app);
+$app = explode(",", app);
 
 foreach ($app as $dir) {
 	includemodule(basedir."/".$dir);

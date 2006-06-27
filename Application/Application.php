@@ -14,6 +14,7 @@ require_once 'components/Widgets/Text.class.php';
 require_once 'components/Widgets/Widget.class.php';
 require_once 'components/Widgets/CompositeWidget.class.php';
 require_once 'components/Widgets/Input.class.php';
+require_once 'components/Widgets/WikiComponent.class.php';
 require_once 'components/Widgets/CommandLink.class.php';
 require_once 'components/Widgets/ActionLink.class.php';
 require_once 'components/Widgets/Select.class.php';

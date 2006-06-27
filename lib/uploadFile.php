@@ -28,7 +28,7 @@ movf.setAttribute('name', 'fileelem');
 window.onload=function (){document.getElementById('fm').submit();}
 </script>
 <? } else {
-	$path = split("/", $_REQUEST["nodeid"]);
+	$path = explode("/", $_REQUEST["nodeid"]);
 	$appclass = $path[1];
 	$app = & Application :: getInstanceOf($appclass);
 	$comp =& $_SESSION['action_dispatcher']->getComponent($_REQUEST["nodeid"], $app);

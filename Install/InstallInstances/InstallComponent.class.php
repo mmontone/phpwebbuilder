@@ -87,7 +87,7 @@ class InstallComponent extends Component {
 		includemodule($form["pwbdir"]."/Model");
 		includemodule($form["pwbdir"]."/DefaultCMS");
 		includemodule($form["pwbdir"]."/Instances");
-		$app = split(",", $form["app"]);
+		$app = explode(",", $form["app"]);
 		includemodule($form["appdir"]);
 		foreach ($app as $dir) {
 			$d = trim($dir);
@@ -103,7 +103,7 @@ class InstallComponent extends Component {
 				$c = new $c;
 				$sql .= "DROP TABLE IF EXISTS `" . $c->tableName() . "`;";
 			}
-			$sqls = split(";", $sql);
+			$sqls = explode(";", $sql);
 			$db = DB::Instance();
 			$db->batchExec($sqls);
 		}
@@ -112,7 +112,7 @@ class InstallComponent extends Component {
 		// crear las tablas
 		require_once dirname(__FILE__) . "/../SQLs/minimal-data.php";
 		$sql .= $basesql;
-		$sqls = split(";", $sql);
+		$sqls = explode(";", $sql);
 		$db = DB::Instance();
 		$db->batchExec($sqls);
 		$this->status->setValue($t="Installation Successful");

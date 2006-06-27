@@ -5,7 +5,7 @@ class ActionDispatcher {
 		$event = array ();
 		$view_updates = array ();
 		$de = 0;
-		$app = & Application::instance(); 
+		$app = & Application::instance();
 		$event['app'] = & $app;
 		foreach ($form as $dir => $param) {
 			switch ($dir) {
@@ -45,7 +45,7 @@ class ActionDispatcher {
 		}
 	}
 	function & getComponent($path, & $app) {
-		$path = split("/", $path);
+		$path = explode("/", $path);
 		if ($path[0] == "app") { // Maybe the parameter wasn't for us'
 			$comp = & $app->component;
 			array_shift($path);
