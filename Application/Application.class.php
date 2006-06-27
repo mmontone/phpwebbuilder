@@ -154,5 +154,12 @@ class Application extends ComponentHolder {
 	function goToUrl($url){
 		$this->urlManager->goToUrl($url);
 	}
+	function resetUrl(){
+		$this->urlManager->resetUrl();
+	}
+	function badUrl($bm, $params){
+		$this->resetUrl();
+	}
+
 }
 ?>

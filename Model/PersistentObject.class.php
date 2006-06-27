@@ -113,7 +113,9 @@ class PersistentObject extends DescriptedObject {
 	function &basicLoad() {
 		$sql = $this->loadSQL();
 		$db =& DB::Instance();
-		$record = $db->fetchRecord($db->SQLExec($sql, FALSE, $this));
+		$rec = $db->SQLExec($sql, FALSE, $this);
+		if (!$rec) return false;
+		$record = $db->fetchRecord($rec);
 		return $record;
 	}
 
@@ -263,6 +265,7 @@ class PersistentObject extends DescriptedObject {
 	function & loadFromId($id) {
 		$this->setID($id);
 		$rec =& $this->basicLoad();
+		if (!$rec) return $f = false;
 		return $this->loadFromRec(&$rec);
 	}
 	function &loadFromRec(&$rec){

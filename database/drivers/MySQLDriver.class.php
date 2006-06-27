@@ -1,6 +1,7 @@
 <?
 
 class DB {
+	var $lastError;
 	function fetchArray($res) {
 		$arr = array();
 		if ($res===true) {
@@ -37,10 +38,13 @@ class DB {
 class MySQLdb extends DB {
 	var $conn;
     function SQLExec ($sql, $getID, $obj, $rows=0) {
-    	trace($sql. "<BR>");
+    	trace($sql. '<br/>');
 		$this->openDatabase();
-        $reg = mysql_query ($sql) or
-        	die (print_backtrace(mysql_error() . ": $sql"));
+        $reg = mysql_query ($sql);
+        if (!$reg){
+        	$this->lastError=mysql_error() . ': '.$sql;
+        	return false;
+        }
         if ($getID) { $obj->setID(mysql_insert_id());};
         $rows = mysql_affected_rows();
         return $reg;
@@ -48,7 +52,7 @@ class MySQLdb extends DB {
 
     function query($sql) {
         $reg = mysql_query ($sql) or
-        	die (print_backtrace(mysql_error() . ": $sql"));
+        	die (print_backtrace(mysql_error() . ': '.$sql));
         return $reg;
     }
 
@@ -57,11 +61,18 @@ class MySQLdb extends DB {
     }
     function openDatabase() {
     	if (!$this->conn){
-	      $this->conn = mysql_connect(serverhost, baseuser, basepass) or
-	          die (print_backtrace(mysql_error()));
-	      mysql_select_db(basename) or
-	          die (print_backtrace(mysql_error()));
+	      $this->conn = mysql_connect(serverhost, baseuser, basepass);
+	      if (!$this->conn){
+	          $this->lastError = mysql_error();
+	          return false;
+	      }
+	      $b = mysql_select_db(basename);
+	      if (!$b){
+	          $this->lastError = mysql_error();
+	          return false;
+	      }
     	}
+    	return true;
     }
     function closeDatabase() {
       mysql_close($this->conn);

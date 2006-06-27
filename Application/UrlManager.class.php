@@ -1,7 +1,8 @@
 <?php
 
 class UrlManager extends PWBObject{
-	var $actUrl="Home";
+	var $actUrl='Home';
+	var $prevUrl='Home';
 	var $application;
     function UrlManager(&$app) {
     	$this->application =& $app;
@@ -9,6 +10,9 @@ class UrlManager extends PWBObject{
     function goBack(){
     	$c =& $this->application->commands->pop();
     	$c->revert();
+    }
+    function resetUrl(){
+		$this->setUrl($this->prevUrl);
     }
     function goToUrl($url){
     	$urls = split('\|', $url);
@@ -21,13 +25,24 @@ class UrlManager extends PWBObject{
     	}
     	$this->navigate($bm, $params);
     }
-    function navigate($bookmark, $params){
-    	$this->actUrl = $this->setBookmarkTarget($bookmark, $params);
-    	$this->application->wholeView->modifications[] = &
+    function setUrl($url){
+		$this->prevUrl = $this->actUrl;
+    	$this->actUrl = $url;
+    	if (!$this->application->wholeView->toFlush){
+    		$this->application->wholeView->modifications[] = & $this->application->wholeView->toFlush;
+    	}
+    	$this->application->wholeView->toFlush =
     		new BookmarkXMLNodeModification($this->actUrl);
+    }
+    function navigate($bookmark, $params){
+    	$this->setUrl($this->setBookmarkTarget($bookmark, $params));
     	$bmc = $bookmark.'Bookmark';
-    	$bm =& new $bmc;
-    	$bm->launchIn($this->application, $params);
+    	if (class_exists($bmc)){
+	    	$bm =& new $bmc;
+	    	$bm->launchIn($this->application, $params);
+    	} else {
+    		$this->application->badUrl($bookmark, $params);
+    	}
     }
 	function setLinkTarget($bookmark, $params){
 		return 'Action.php?app='.getClass($this->application).'&bookmark='.$this->setBookmarkTarget($bookmark, $params);
