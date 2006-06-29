@@ -134,13 +134,6 @@ class Application extends ComponentHolder {
 		return $this->translator->translate($msg);
 	}
 	function launch() {
-		if ($_REQUEST["restart"]=="yes") {
-			session_destroy();
-			session_start();
-		}
-		if ($_REQUEST["reset"]=="yes") {
-			unset($_SESSION[sitename][app_class]);
-		}
 		$ad =& new ActionDispatcher();
 		$app =& $ad->dispatch();
 		$app->render();
