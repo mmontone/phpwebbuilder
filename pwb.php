@@ -49,7 +49,6 @@ if ($_REQUEST["restart"]=="yes") {
    unlink($path.'sess_'.$sessionid);
   }
   chdir($orgpath);
-  setcookie( session_name() ,"",0,"/");
   session_regenerate_id();
 }
 session_start();
