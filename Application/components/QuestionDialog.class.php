@@ -16,9 +16,9 @@ class QuestionDialog extends Component
 
 	function initialize(){
 		$this->addComponent(new Label($this->question), 'question');
-		$this->addComponent(new ActionLink2(array('action' => new FunctionObject($this, 'yes'),
+		$this->addComponent(new CommandLink(array('proceedFunction' => new FunctionObject($this, 'yes'),
 		                                          'text' => 'Yes'),'yes'));
-		$this->addComponent(new ActionLink2(array('action' => new FunctionObject($this, 'no'), 'text' => 'No'), 'no'));
+		$this->addComponent(new CommandLink(array('proceedFunction' => new FunctionObject($this, 'no'), 'text' => 'No'), 'no'));
 	}
 
 	function yes() {
