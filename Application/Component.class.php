@@ -167,6 +167,9 @@ class Component extends PWBObject
 
 	function &createDefaultView(){
 		$v =& new XMLNodeModificationsTracker;
+/*		$t =& new HTMLContainer;
+		$t->setAttribute('class', 'Component');
+		$v->appendChild($t);*/
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$v->appendChild(
