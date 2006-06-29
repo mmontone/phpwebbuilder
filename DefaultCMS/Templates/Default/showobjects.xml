@@ -50,7 +50,7 @@
 					<template class="FieldValueComponent" >
 						<td><container id="value"/></td>
 					</template>
-					<td><a href="#" id="view"><img class="operation" title="View" src="$templatesdir/icons/stock_properties.png"/></a></td>
+					<!-- <td><a href="#" id="view"><img class="operation" title="View" src="$templatesdir/icons/stock_properties.png"/></a></td> -->
 					<td><a href="#" id="edit"><img class="operation" title="Edit" src="$templatesdir/icons/stock_edit.png"/></a></td>
 					<td><a href="#" id="delete"><img class="operation" title="Delete" src="$templatesdir/icons/stock_delete.png"/></a></td>
 				</tr>
