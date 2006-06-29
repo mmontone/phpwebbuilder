@@ -24,9 +24,10 @@ class ViewCreator {
 		foreach($xs as $x){
 			$tps[]=&$tpr->xml2template($x);
 		}
-		$this->setTemplates($tps);
+		$this->addTemplates($tps);
 	}
 	function loadTemplatesDir ($templatesdir){
+		if (!file_exists($templatesdir)) return;
  		$gestor=opendir($templatesdir);
  		$fs = array();
 		while (false !== ($f = readdir($gestor))) {
@@ -43,9 +44,10 @@ class ViewCreator {
  		$this->parseTemplates($fs, $temp_url);
  	}
 
-	function setTemplates(&$templates){
-		$this->templates =& $templates;
+	function addTemplates(&$templates){
+		$this->templates = array_merge($templates,$this->templates);
 	}
+
 	function createAllViews(){
 		$nv =& $this->app->needView;
 		$ks = array_keys($nv);

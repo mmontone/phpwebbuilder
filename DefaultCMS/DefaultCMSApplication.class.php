@@ -9,6 +9,7 @@ class DefaultCMSApplication extends Application{
  	}
  	function loadTemplates (){
  		$this->viewCreator->loadTemplatesDir(pwbdir . "/DefaultCMS/Templates/".$this->templateName);
+ 		$this->viewCreator->loadTemplatesDir(basedir . "/MyTemplates/");
  	}
  	function addStyleSheets(){
  		$this->addStyleSheet(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
