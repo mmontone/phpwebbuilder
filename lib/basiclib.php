@@ -171,9 +171,9 @@ function toHTML($s) {
     $s = str_replace('í', '&iacute;', $s);
     $s = str_replace('ó', '&oacute;', $s);
     $s = str_replace('ú', '&uacute;', $s);
-    $s = str_replace('�?', '&Aacute;',$s);
+    $s = str_replace('Á', '&Aacute;',$s);
     $s = str_replace('É', '&Eacute;', $s);
-    $s = str_replace('�?', '&Iacute;', $s);
+    $s = str_replace('Í', '&Iacute;', $s);
     $s = str_replace('Ó', '&Ooacute;',$s);
     $s = str_replace('Ú', '&Uacute;', $s);
 
