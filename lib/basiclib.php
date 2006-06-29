@@ -185,7 +185,9 @@ function toXML($s) {
     $s = str_replace('&', '&amp;', $s);
     $s = ereg_replace('&(amp;|&amp;)+(([A-Za-z0-9#]+);)','&\\2', $s);
     $s = str_replace('>', '&#62;', $s);
+    $s = str_replace('&gt;', '&#62;', $s);
     $s = str_replace('<', '&#60;', $s);
+    $s = str_replace('&lt;', '&#60;', $s);
     $s = str_replace('"', '&#34;', $s);
     //$s = str_replace('|', '&#166;', $s);
     $s = str_replace('&amp;', '&#38;', $s);

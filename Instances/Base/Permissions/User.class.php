@@ -54,11 +54,11 @@ class User extends PersistentObject {
 				' AND u.role=p.role'));
 		 $ps = $db->queryDB($sql);
 		 foreach($ps as $p){
-		 	$this->permissions[]=$p['permission'];
+		 	$this->permissions[]=strtolower($p['permission']);
 		 }
 	}
 	function hasPermission($permission){
-		return in_array($permission, $this->permissions);
+		return in_array(strtolower($permission), $this->permissions);
 	}
 	function hasPermissions($permissions){
 		$ok = false;

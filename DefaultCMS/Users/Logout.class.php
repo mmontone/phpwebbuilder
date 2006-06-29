@@ -7,6 +7,8 @@ class Logout extends Component{
 	function logout_do (){
 		User::login('guest','guest');
 		$this->triggerEvent('menuChanged', $n=null);
+		$app =&Application::instance();
+		$app->navigate('Home',array());
 	}
 }
 ?>
