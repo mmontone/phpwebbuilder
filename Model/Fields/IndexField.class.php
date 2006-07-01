@@ -37,7 +37,11 @@ class IndexField extends NumField {
 
 	function viewValue() {
 		$obj = & $this->obj();
-		return $obj->indexValues();
+		if ($obj){
+			return $obj->indexValues();
+		} else {
+			return '';
+		}
 	}
 
 	function getValue() {

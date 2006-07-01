@@ -7,7 +7,7 @@ class Component extends PWBObject
  	var $app;
 	var $listener;
 	var $holder;
-	var $registered_callbacks;
+	var $registered_callbacks = array();
 	var $configuration;
 	var $__children;
 	var $nextChildrenPosition =0;
@@ -124,9 +124,7 @@ class Component extends PWBObject
 	}
 
 	function callbackWith($callback=null, &$params) {
-		if ($this->listener){
-			$this->listener->takeControlOf($this, $callback, $params);
-		}
+		$this->listener->takeControlOf($this, $callback, $params);
 	}
 
 	function takeControlOf(&$callbackComponent, $callback=null, &$params) {

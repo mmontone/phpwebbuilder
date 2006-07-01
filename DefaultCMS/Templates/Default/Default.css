@@ -1,5 +1,5 @@
 body {
-overflow:hidden;
+/*overflow:hidden;*/
 height:100%;
 }
 
@@ -51,14 +51,21 @@ img {
 	font-weight:bold;
 }
 
-div.Menu{
+div.Menu, div.Body{
         float:left;
- 		background-color:#DEF3DE;
- 		width:25%;
- 		border:thin inset #000000;
  		padding: 10px;
+        border:1px inset grey;
  		margin: 10px;
 }
+div.Menu{
+ 		width:25%;
+ 		background-color:#DEF3DE;
+}
+div.Body{
+ 		width:65%;
+}
+
+
 ul.MenuList{
     list-style-type: square;
 }

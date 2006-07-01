@@ -7,7 +7,10 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     	$this->addComponent(new Label($obj->id->getValue()), 'idN');
     	$this->factory =& new EditorFactory;
        	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
-       	$this->addComponent(new ActionLink($this, 'deleteObject', 'delete', $n=null), 'delete');
+		PermissionChecker::addComponent($this,
+					new ActionLink($this, 'deleteObject', 'delete', $n=null),
+					new FunctionObject(User::logged(), 'hasPermissions', array(getClass($obj).'=>Delete', '*',getClass($obj).'=>*'))
+					,'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n), 'cancel');
 		parent::initialize();
     }
@@ -22,9 +25,10 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     	if ($this->validate($this->obj, $error_msgs)) {
     		$this->obj->commitChanges();
     		$this->callbackWith('object_edited', $this->obj);
-    	}
-    	else
+    	} else {
+    		$this->triggerEvent('invalid', $this->obj);
     		$this->displayValidationErrors($error_msgs);
+    	}
     }
 
     function validate(&$object, &$error_msgs) {
