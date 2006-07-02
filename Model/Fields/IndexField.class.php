@@ -5,6 +5,7 @@ require_once dirname(__FILE__) . '/../PersistentCollection.class.php';
 class IndexField extends NumField {
 	var $collection;
 	var $nullValue;
+	var $target = null;
 
 	function IndexField($name, $isIndex=true, $dataType='__NoType', $nullValue='') {
 		if (is_array($isIndex)) {
@@ -29,10 +30,13 @@ class IndexField extends NumField {
 
 	function setTarget(& $target) {
 		$this->setValue($target->getIdOfClass($this->collection->dataType));
+		$this->target =& $target;
 	}
 
 	function & getTarget() {
-		return $this->collection->getObj($this->getValue());
+		if (!$this->target)
+			$this->target =& $this->collection->getObj($this->getValue());
+		return $this->target;
 	}
 
 	function viewValue() {
@@ -51,6 +55,16 @@ class IndexField extends NumField {
 		else {
 			return parent::getValue();
 		}
+	}
+
+	function setValue($value) {
+		parent::setValue($value);
+		$this->target = null;
+	}
+
+	function flushChanges() {
+		parent::commitChanges();
+		$this->target = null;
 	}
 }
 ?>

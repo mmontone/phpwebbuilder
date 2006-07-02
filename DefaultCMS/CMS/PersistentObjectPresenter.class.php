@@ -24,7 +24,8 @@ class PersistentObjectPresenter extends Component {
     function initialize(){
     	$obj =& $this->obj;
     	$fields =& $obj->fieldsWithNames($this->fieldNames);
-    	foreach($this->fieldNames as $f2){
+
+       	foreach(array_keys($fields) as $f2){
     		$this->addField($f2, $fields[$f2]);
        	}
     }
@@ -38,5 +39,9 @@ class PersistentObjectPresenter extends Component {
     }
 }
 
-class FieldValueComponent extends Component{}
+class FieldValueComponent extends Component{
+	function FieldValueComponent() {
+		parent::Component();
+	}
+}
 ?>

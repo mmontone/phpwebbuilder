@@ -18,8 +18,10 @@ class IdField extends NumField {
     	return "";
     }
     function setID($id) {
-        $this->setValue($id);
+        // Don't register a modification, so we don't call setValue
+        $this->value = $id;
     }
+
     function check($val) {
     	return true;
     }

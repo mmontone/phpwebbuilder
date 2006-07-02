@@ -56,12 +56,6 @@ class PWBObject
 
     /* Useful methods */
 
-    function &copy_for_backtracking() {
-        $my_copy = $this;
-        $my_copy->event_listeners =& array_map(create_function('$listener', 'return $listener->copy_for_backtracking();'), $this->event_listeners);
-        return $my_copy;
-    }
-
     function visit(&$obj) {
         $method_name = 'visited' . $this->getClass();
         $obj->$method_name($this);
@@ -92,6 +86,10 @@ class PWBObject
             $this->event_listeners[$event_selector][] =& $n;
         }
 
+    }
+
+    function on($params) {
+    	$this->addEventListener(array($params['event'] => 'callWith'), $params['do']);
     }
 
     function triggerEvent($event_selector, &$params) {

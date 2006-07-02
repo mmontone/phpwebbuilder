@@ -9,6 +9,8 @@ class DescriptedObject extends PWBObject {
 
 	var $displayString;
 
+	var $modified = false;
+
 	function DescriptedObject() {
     	parent::PWBObject();
     }
@@ -18,6 +20,7 @@ class DescriptedObject extends PWBObject {
 			$field =& $this->fieldNamed($f);
 			$field->commitChanges();
 		}
+		$this->modified = false;
 	}
 
 	function flushChanges() {
@@ -25,6 +28,11 @@ class DescriptedObject extends PWBObject {
 			$field =& $this->fieldNamed($f);
 			$field->flushChanges();
 		}
+		$this->modified = false;
+	}
+
+	function isModified() {
+		return $this->modified;
 	}
 
 	function & createInstance() {
@@ -152,15 +160,15 @@ class DescriptedObject extends PWBObject {
 			$this->indexFields[$name] = $name;
 		}
 		$field->owner = & $this;
-		//classkit_method_add ( getClass($this), 'get' . $name, '', 'return $this->get' . $name . ';');
 
-		/*$field->addEventListener($this, $a = array (
-			'change' => 'fieldChanged'
-		));*/
+		$field->addEventListener($a = array (
+			'changed' => 'fieldChanged'
+		), $this);
 	}
 
 	function fieldChanged(& $field) {
-		$this->triggerEvent('fieldChanged', $field);
+		$this->modified = true;
+		//$this->triggerEvent('fieldChanged', $field);
 	}
 
 	function & findIndexField() {

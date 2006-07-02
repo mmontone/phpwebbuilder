@@ -1,6 +1,10 @@
 <?php
 
 class PersistentObjectEditor extends PersistentObjectPresenter {
+    function PersistentObjectEditor(&$object, $fields=null) {
+    	parent::PersistentObjectPresenter($object, $fields);
+    }
+
     function initialize(){
     	$obj =& $this->obj;
     	$this->addComponent(new Label($this->classN), 'className');
@@ -16,6 +20,22 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     }
 
     function cancel() {
+    	if ($this->obj->isModified()) {
+    		$this->confirmCancel();
+    	}
+    	else
+    		$this->cancelConfirmed();
+    }
+
+    function confirmCancel() {
+    	$this->call(new QuestionDialog('Are you sure you want to cancel your changes?', array('on_yes' => new FunctionObject($this, 'cancelConfirmed'), 'on_no' => new FunctionObject($this, 'cancelRejected'))));
+    }
+
+    function cancelRejected() {
+
+    }
+
+    function cancelConfirmed() {
     	$this->obj->flushChanges();
     	$this->callback('cancel');
     }
