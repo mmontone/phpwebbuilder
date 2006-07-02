@@ -4,12 +4,13 @@ class IndexFieldChooser extends Component {
 	var $display;
 	var $field;
 	var $value;
+	var $displayValue;
 
 	function IndexFieldChooser(& $field) {
 		$this->field =& $field;
-		$this->display =& new ValueHolder($v = 'choose');
+		$this->display =& new ValueHolder($this->displayValue = 'choose');
 		$this->updateDisplay();
-		$this->addComponent(new CommandLink(array('proceedFunction'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->display), 'value'));
+		$this->addComponent(new CommandLink(array('proceedFunction'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->displayValue), 'value'));
 	}
 
 	function &getValue() {
@@ -23,10 +24,10 @@ class IndexFieldChooser extends Component {
 	function updateDisplay() {
 		if ($this->getValue() != 0) {
 			$target =& $this->field->getTarget();
-			$this->display->setValue($target->indexValues());
+			$this->display->setValue($this->displayValue=$target->indexValues());
 		}
 		else
-			$this->display->setValue($s = 'choose');
+			$this->display->setValue($this->displayValue = 'choose');
 	}
 
 	function chooseTarget() {
