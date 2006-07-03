@@ -20,6 +20,7 @@ class IdField extends NumField {
     function setID($id) {
         // Don't register a modification, so we don't call setValue
         $this->value = $id;
+        $this->buffered_value = null;
     }
 
     function check($val) {

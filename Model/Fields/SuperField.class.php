@@ -11,6 +11,12 @@ class SuperField extends NumField {
         return TRUE;
 
     }
+
+    function setValue($value) {
+		// Don't register modifications
+    	$this->value = $value;
+    	$this->buffered_value = null;
+    }
 }
 
 ?>

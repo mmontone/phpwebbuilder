@@ -320,7 +320,6 @@ class PersistentObject extends DescriptedObject {
 			$p = & $this->getParent();
 			$ok = $p->insert();
 			$this->super->setValue($p->id->getValue());
-			$this->commitChanges();
 		} else $ok=true;
 		if ($ok){
 			$ok = $this->basicInsert();
