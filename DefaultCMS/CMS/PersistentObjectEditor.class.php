@@ -1,10 +1,6 @@
 <?php
 
 class PersistentObjectEditor extends PersistentObjectPresenter {
-    function PersistentObjectEditor(&$object, $fields=null) {
-    	parent::PersistentObjectPresenter($object, $fields);
-    }
-
     function initialize(){
     	$obj =& $this->obj;
     	$this->addComponent(new Label($this->classN), 'className');
@@ -12,7 +8,7 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     	$this->factory =& new EditorFactory;
        	$this->addComponent(new ActionLink($this, 'save', 'save', $n=null), 'save');
 		PermissionChecker::addComponent($this,
-					new ActionLink($this, 'deleteObject', 'delete', $n=null),
+					new ActionLink($this, 'deleteObject', 'delete', $obj),
 					new FunctionObject(User::logged(), 'hasPermissions', array(getClass($obj).'=>Delete', '*',getClass($obj).'=>*'))
 					,'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n), 'cancel');
@@ -59,12 +55,12 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 		$this->addComponent(new ValidationErrorsDisplayer($error_msgs), 'validation_errors');
 	}
 
-	function deleteObject(&$fc) {
-		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $fc), 'on_no' => new FunctionObject($this, 'deleteRejected')), $fc));
+	function deleteObject(&$obj) {
+		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $obj), 'on_no' => new FunctionObject($this, 'deleteRejected')), $obj));
 	}
 
-	function deleteConfirmed(&$fc) {
-		$ok = $fc->obj->delete();
+	function deleteConfirmed(&$obj) {
+		$ok = $obj->delete();
 		$this->refresh();
 	}
 

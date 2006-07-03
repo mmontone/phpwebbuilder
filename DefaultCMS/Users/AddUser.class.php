@@ -9,22 +9,22 @@ class AddUser extends Component {
 		$this->addComponent(new Input(new ValueHolder($p2="")),'password_confirm');
 		$this->addComponent(new Text(new ValueHolder($s="")),'status');
        	$this->addComponent(new ActionLink($this, 'save', 'register', $n=null), 'save');
-       	$this->addComponent(new ActionLink($this, 'callback', 'cancel', $n), 'cancel');
+       	$this->addComponent(new GoBackLink('cancel'), 'cancel');
 	}
     function save(){
     	$p1 = $this->password->getValue();
     	$p2 = $this->password_confirm->getValue();
     	$un = $this->username->getValue();
 		if ($un == ""){
-			$this->status->setValue('username is blank');
+			$this->status->setValue($v = 'username is blank');
 			return;
     	}
     	if ($p1 == ""){
-			$this->status->setValue('password is blank');
+			$this->status->setValue($v = 'password is blank');
 			return;
     	}
     	if ($p1 != $p2){
-			$this->status->setValue('passwords do not match');
+			$this->status->setValue($v = 'passwords do not match');
 			return;
     	}
 		$ok = $this->createUser($un, $p1);

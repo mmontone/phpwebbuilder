@@ -8,7 +8,8 @@
  	<template class="Menu">
  		<div class="Menu">
 		<container id="SiteName"/> CMS <br/>
-		User: <container id="username"/>
+		User: <container id="username"/><br/>
+		<container id="refresh"/>
 		<ul id="menus" class="MenuList">
 			<template class="MenuSectionComponent">
 				<container id="secName" />

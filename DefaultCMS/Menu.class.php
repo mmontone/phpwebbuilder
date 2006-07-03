@@ -4,6 +4,7 @@ class Menu extends Component {
 		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
 		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
 		$this->addComponent(new CompositeWidget, 'menus');
+		$this->addComponent(new ActionLink($this, 'newmenu', 'refresh', $n=null), 'refresh');
 		$this->menus();
 	}
 	function newmenu() {
@@ -36,7 +37,7 @@ class Menu extends Component {
 				'Component' => $menu->controller->getValue()
 			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
 		}
-	} 
+	}
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
 		$sect = & new MenuSectionComponent();

@@ -23,8 +23,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	}
 
 	function deleteConfirmed(&$fc) {
-		$ok = $fc->obj->delete();
-		$this->refresh();
+		$ok = $this->obj->delete();
 	}
 
 	function deleteRejected() {

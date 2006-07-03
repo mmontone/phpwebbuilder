@@ -88,6 +88,9 @@ class Collection extends PWBObject{
 			$this->add($arr[$k]);
 		}
 	}
+	function concat(&$col){
+		$this->addAll($col->elements());
+	}
 	function getDataType(){
 		return 'PersistentObject';
 	}
