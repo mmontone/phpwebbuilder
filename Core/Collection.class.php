@@ -5,6 +5,12 @@ class Collection extends PWBObject{
 	function size(){
 		return count($this->elements);
 	}
+	function isEmpty(){
+		return $this->size()==0;
+	}
+	function &first(){
+		return $this->at(0);
+	}
 	function &at($pos){
 		$es =& $this->elements();
 	    return $es[$pos];

@@ -5,6 +5,7 @@ class ViewCreator {
 	var $app;
 	function ViewCreator(&$app){
 		$this->app =& $app;
+		$this->templates =& new Collection;
 	}
 	function parseTemplates ($files, $templatesdir){
 		$p =& new XMLParser;
@@ -45,7 +46,7 @@ class ViewCreator {
  	}
 
 	function addTemplates(&$templates){
-		$this->templates = array_merge($templates,$this->templates);
+		$this->templates->addAll($templates);
 	}
 
 	function createAllViews(){
@@ -117,12 +118,10 @@ class ViewCreator {
 		return $tp->instantiateFor($component);
 	}
 	function &templateForClass(&$component){
-		$ks = array_keys ($this->templates);
-		foreach ($ks as $k){
-			$t =& $this->templates[$k];
-			if ($t->isTemplateForClass($component)){
-				return $t;
-			}
+		$ts =& $this->templates->filter(lambda(
+				'&$t','return $t->isTemplateForClass($component);',get_defined_vars()));
+		if (!$ts->isEmpty()){
+			return $ts->first();
 		}
 		return $this->defaultTemplate($component);
 	}
