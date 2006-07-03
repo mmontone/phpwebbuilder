@@ -16,6 +16,7 @@ class Component extends PWBObject
 		parent::PWBObject();
 		$this->registered_callbacks = $registered_callbacks;
 		$this->__children = array();
+		$this->listener =& new ChildCallbackHandler();
 		$this->initialize();
 	}
 	function initialize(){}
@@ -55,7 +56,6 @@ class Component extends PWBObject
 			if ($index===null){$index = $this->nextChildrenPosition;}
 			if ($this->app!=null) $component->linkToApp($this->app);
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
-			$component->listener =& new ChildCallbackHandler();
 			$this->nextChildrenPosition++;
 		}
 		return $component;
