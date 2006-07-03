@@ -3,10 +3,12 @@
 require_once dirname(__FILE__) . '/Widget.class.php';
 
 class TextAreaComponent extends Widget{
-	function initializeView(&$view){
-		$view->setTagName('textarea');
-	}
 
+	function &createDefaultView(){
+		$v =& new XMLNodeModificationsTracker;
+		$v->setTagName('textarea');
+		return $v;
+	}
 	function prepareToRender(){
 		$this->view->appendChild(new XMLTextNode($this->printValue()));
 	}

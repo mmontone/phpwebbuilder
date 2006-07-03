@@ -15,12 +15,12 @@ class Application extends ComponentHolder {
 		$_SESSION[sitename][getClass($this)] = & $this;
 		$this->commands =& new Collection();
 		$this->urlManager =& new UrlManager($this);
-		$rc = & $this->setRootComponent();
-		parent :: ComponentHolder($rc, $index = 0, $n = null);
-		$rc->linkToApp($this);
 		$page_renderer = constant('page_renderer');
 		$this->page_renderer = new $page_renderer;
 		$this->createView();
+		$rc = & $this->setRootComponent();
+		parent :: ComponentHolder($rc, $index = 0, $n = null);
+		$rc->linkToApp($this);
 		$this->component->start();
 	}
 	function pushCommand(&$command){
@@ -65,8 +65,11 @@ class Application extends ComponentHolder {
 			$this->viewCreator = & new ViewCreator($this);
 			$this->loadTemplates();
 			$this->wholeView = & new XMLNodeModificationsTracker;
+			$tc =& new HTMLContainer;
+			$tc->setAttribute('class','Component');
+			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;
-			$this->wholeView->appendChild($this->component->myContainer());
+			//$this->wholeView->appendChild($this->component->myContainer());
 			$this->wholeView->getTemplatesAndContainers();
 			$this->setTitle($this->getTitle());
 			$this->initializeStyleSheets();
@@ -127,7 +130,8 @@ class Application extends ComponentHolder {
 	}
 
 	function needsView(& $comp) {
-		$this->needView[] = & $comp;
+		//$this->needView[$comp->getId()] = & $comp;
+		$this->viewCreator->createElemView($comp->parentView(),$comp);
 	}
 
 	function translate($msg) {

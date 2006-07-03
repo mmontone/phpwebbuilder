@@ -60,7 +60,7 @@ class DOMXMLNode extends PWBObject{
 		$this->childNodes[$pos] =& $null;
 		$old->parentNode = & $null;
 		$old->parentPosition = & $null;*/
-		if (!$this->childNodes[$pos]) {
+		if (!isset($this->childNodes[$pos])) {
 			print_backtrace('Error removing child');
 			echo $this->printString();
 			exit;

@@ -17,14 +17,14 @@ class Component extends PWBObject
 		$this->registered_callbacks = $registered_callbacks;
 		$this->__children = array();
 		$this->listener =& new ChildCallbackHandler();
-		$this->initialize();
 	}
 	function initialize(){}
 	function start() {}
 	function linkToApp(&$app){
 		$this->app =& $app;
-		$ks = array_keys($this->__children);
 		$app->needsView($this);
+		$this->initialize();
+		$ks = array_keys($this->__children);
 		foreach($ks as $k){
 			$this->__children[$k]->component->linkToApp($app);
 		}
@@ -54,7 +54,7 @@ class Component extends PWBObject
 			$index =& $keys[$ind];
 			$index = $ind;
 			if ($index===null){$index = $this->nextChildrenPosition;}
-			if ($this->app!=null) $component->linkToApp($this->app);
+			//if ($this->app!=null) $component->linkToApp($this->app);
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$this->nextChildrenPosition++;
 		}
@@ -165,15 +165,15 @@ class Component extends PWBObject
 
 	function &createDefaultView(){
 		$v =& new XMLNodeModificationsTracker;
-/*		$t =& new HTMLContainer;
+		$t =& new HTMLContainer;
 		$t->setAttribute('class', 'Component');
-		$v->appendChild($t);*/
-		$ks = array_keys($this->__children);
+		$v->appendChild($t);
+		/*$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$v->appendChild(
 				$this->$key->myContainer()
 			);
-		}
+		}*/
 		return $v;
 	}
 	function &createView(&$parentView){
