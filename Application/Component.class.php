@@ -24,10 +24,11 @@ class Component extends PWBObject
 		$this->app =& $app;
 		$app->needsView($this);
 		$this->initialize();
-		$ks = array_keys($this->__children);
+		/*$ks = array_keys($this->__children);
 		foreach($ks as $k){
 			$this->__children[$k]->component->linkToApp($app);
-		}
+		}*/
+		$this->start();
 	}
 
 	function &application() {
@@ -54,9 +55,10 @@ class Component extends PWBObject
 			$index =& $keys[$ind];
 			$index = $ind;
 			if ($index===null){$index = $this->nextChildrenPosition;}
-			//if ($this->app!=null) $component->linkToApp($this->app);
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$this->nextChildrenPosition++;
+			if (!$this->app) print_backtrace(getClass($this));
+			$component->linkToApp($this->app);
 		}
 		return $component;
 	}
@@ -109,9 +111,9 @@ class Component extends PWBObject
 	}
 
     function stopAndCall(&$component) {
-		if ($this->app!=null) $component->linkToApp($this->app);
     	$this->replaceView($component);
     	$this->holder->hold($component);
+		$component->linkToApp($this->app);
         $component->start();
     }
 

@@ -3,11 +3,15 @@
 class CommandLink extends Widget{
 	var $proceed;
 	var $revert;
+	var $textv;
     function CommandLink($params) {
-		parent::Widget($vm = null);
 		$this->proceed =& $params['proceedFunction'];
 		$this->revert =& $params['revertFunction'];
-		$this->addComponent(new Label($params['text']), 'linkName');
+		$this->textv =& $params['text'];
+		parent::Widget($vm = null);
+    }
+    function initialize(){
+		$this->addComponent(new Label($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);
     }
 	function initializeDefaultView(&$view){
@@ -15,7 +19,7 @@ class CommandLink extends Widget{
 	}
 	function initializeView(&$view){}
 	function execute(){
-		$this->proceed->call(); 
+		$this->proceed->call();
 	}
 	function setOnClickEvent(&$view){
 		parent::setOnClickEvent($view);

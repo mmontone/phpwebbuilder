@@ -1,11 +1,9 @@
 <?php
 
 class DefaultCMSApplication extends Application{
-	//var $templateName = 'BFSalud';
 	var $templateName = 'Default';
  	function &setRootComponent() {
- 		$cms =& new DefaultCMS;
- 		return $cms;
+ 		return new DefaultCMS;
  	}
  	function loadTemplates (){
  		$this->viewCreator->loadTemplatesDir(pwbdir . "/DefaultCMS/Templates/".$this->templateName);

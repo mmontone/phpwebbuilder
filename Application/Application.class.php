@@ -21,7 +21,6 @@ class Application extends ComponentHolder {
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
-		$this->component->start();
 	}
 	function pushCommand(&$command){
 		$this->commands->push($command);
