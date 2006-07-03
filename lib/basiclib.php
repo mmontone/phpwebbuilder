@@ -221,7 +221,7 @@ function lambda( $args, $code, &$env ) {
    static $n = 0;
    $functionName = sprintf('ref_lambda_%d',++$n);
    $_SESSION[$functionName]['environment_vars'] =& $env;
-   $declaration = sprintf('function &%s(%s) {$arr =& $_SESSION["'.$functionName.'"]["environment_vars"]; extract($arr,EXTR_REFS); %s}',$functionName,$args,$code);
+   $declaration = sprintf('function &%s(%s) {extract($_SESSION["'.$functionName.'"]["environment_vars"],EXTR_REFS); %s}',$functionName,$args,$code);
    eval($declaration);
    return $functionName;
 }
