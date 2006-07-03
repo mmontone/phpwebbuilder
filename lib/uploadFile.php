@@ -31,7 +31,8 @@ window.onload=function (){document.getElementById('fm').submit();}
 	$path = explode("/", $_REQUEST["nodeid"]);
 	$appclass = $path[1];
 	$app = & Application :: getInstanceOf($appclass);
-	$comp =& $_SESSION['action_dispatcher']->getComponent($_REQUEST["nodeid"], $app);
+	$ad =& new  ActionDispatcher;
+	$comp =& $ad->getComponent($_REQUEST["nodeid"], $app);
 	$comp->loadFile($_FILES["fileelem"]);
 ?>
 <script>
