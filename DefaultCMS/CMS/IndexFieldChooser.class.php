@@ -8,26 +8,29 @@ class IndexFieldChooser extends Component {
 
 	function IndexFieldChooser(& $field) {
 		$this->field =& $field;
+		parent::Component();
+	}
+	function initialize(){
 		$this->display =& new ValueHolder($this->displayValue = 'choose');
 		$this->updateDisplay();
-		$this->addComponent(new CommandLink(array('proceedFunction'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->displayValue), 'value'));
 	}
 
-	function &getValue() {
-		return $this->field->getValue();
+	function &getTarget() {
+		return $this->field->getTarget();
 	}
 
-	function setValue(&$value) {
-		$this->field->setValue($value);
+	function setTarget(&$value) {
+		$this->field->setTarget($value);
 	}
 
 	function updateDisplay() {
-		if ($this->getValue() != 0) {
+		if ($this->getTarget()) {
 			$target =& $this->field->getTarget();
 			$this->display->setValue($this->displayValue=$target->indexValues());
-		}
-		else
+		} else {
 			$this->display->setValue($this->displayValue = 'choose');
+		}
+		$this->addComponent(new CommandLink(array('proceedFunction'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->displayValue), 'value'), 'setvalue');
 	}
 
 	function chooseTarget() {
@@ -38,7 +41,7 @@ class IndexFieldChooser extends Component {
 	}
 
 	function targetSelected(&$selectedTarget) {
-		$this->setValue($selectedTarget->getId());
+		$this->setTarget($selectedTarget);
 		$this->updateDisplay();
 	}
 }
