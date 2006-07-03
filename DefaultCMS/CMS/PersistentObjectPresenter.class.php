@@ -31,9 +31,9 @@ class PersistentObjectPresenter extends Component {
 
     function addField($name, &$field){
 		$fc =& new FieldValueComponent;
-		$fc->addComponent(new Label($field->displayString), 'fieldName');
 		$this->fieldComponents[$name] = &$this->factory->createFor($field);
 		$fc->addComponent($this->fieldComponents[$name], 'value');
+		$fc->addComponent(new Label($field->displayString), 'fieldName');
 		$this->addComponent($fc, $name);
     }
 }

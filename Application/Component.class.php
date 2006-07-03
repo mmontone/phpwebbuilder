@@ -4,7 +4,7 @@ class Component extends PWBObject
 {
 	var $view;
  	var $model;
- 	var $app;
+ 	var $app=null;
 	var $listener;
 	var $holder;
 	var $registered_callbacks = array();
@@ -21,14 +21,16 @@ class Component extends PWBObject
 	function initialize(){}
 	function start() {}
 	function linkToApp(&$app){
-		$this->app =& $app;
-		$app->needsView($this);
-		$this->initialize();
-		/*$ks = array_keys($this->__children);
-		foreach($ks as $k){
-			$this->__children[$k]->component->linkToApp($app);
-		}*/
-		$this->start();
+		if (!isset($this->app)){
+			$this->app =& $app;
+			$app->needsView($this);
+			$this->initialize();
+			$ks = array_keys($this->__children);
+			foreach($ks as $k){
+				$this->__children[$k]->component->linkToApp($app);
+			}
+			$this->start();
+		}
 	}
 
 	function &application() {
@@ -57,8 +59,7 @@ class Component extends PWBObject
 			if ($index===null){$index = $this->nextChildrenPosition;}
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$this->nextChildrenPosition++;
-			if (!$this->app) print_backtrace(getClass($this));
-			$component->linkToApp($this->app);
+			if (isset($this->app)) $component->linkToApp($this->app);
 		}
 		return $component;
 	}

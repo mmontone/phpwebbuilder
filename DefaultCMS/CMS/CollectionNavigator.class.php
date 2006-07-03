@@ -38,8 +38,8 @@ class CollectionNavigator extends Component {
 		$this->pageSize->onChangeSend('refresh', $this);
 		foreach ($this->fields as $f) {
 			$fc = & new CompositeWidget;
-			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
 			$this->addComponent($fc, $f->colName);
+			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
 		}
 		$this->refresh();
 	}
