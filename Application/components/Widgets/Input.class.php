@@ -3,10 +3,6 @@
 require_once dirname(__FILE__) . '/Widget.class.php';
 
 class Input extends Widget{
-	function Input(&$value_model) {
-		parent::Widget($value_model);
-	}
-
 	function initializeDefaultView(&$view){
 		$view->setTagName('input');
 		$view->setAttribute('type', 'text');

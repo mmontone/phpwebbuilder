@@ -29,13 +29,15 @@ class CollectionNavigator extends Component {
 		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
 		$this->addComponent(new Input($this->firstElement), 'firstElem');
+		//$this->firstElem->addEventListener(array('change'=>'refresh'), $this);
 		$this->addComponent(new CompositeWidget, 'objs');
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->addComponent(new Text($this->size), 'realSize');
 		$this->pageSize =& new ValueHolder($pz = 10);
-		$this->addComponent(new Input($this->pageSize), 'pSize');
 		$this->pageSize->onChangeSend('refresh', $this);
+		$this->addComponent(new Input($this->pageSize), 'pSize');
+		//$this->pSize->addEventListener(array('change'=>'refresh'), $this);
 		foreach ($this->fields as $f) {
 			$fc = & new CompositeWidget;
 			$this->addComponent($fc, $f->colName);
@@ -67,17 +69,21 @@ class CollectionNavigator extends Component {
 		$fc->registerCallbacks(array('done'=>callback($this, 'refresh')));
 		$this->call($fc);
 	}
+	function setStartValue($val){
+		$last = $this->col->size()-$this->pageSize->getValue();
+		$this->firstElement->setValue($r = max(min($val,$last), 1));
+	}
 	function prevPage(){
-		$this->firstElement->setValue($r = max($this->firstElement->getValue()-$this->pageSize->getValue(), 1));
+		$this->setStartValue($this->firstElement->getValue()-$this->pageSize->getValue());
 	}
 	function nextPage(){
-		$this->firstElement->setValue($r = max(1,min($this->firstElement->getValue()+$this->pageSize->getValue(), $this->col->size()-$this->pageSize->getValue()+1)));
+		$this->setStartValue($this->firstElement->getValue()+$this->pageSize->getValue());
 	}
 	function firstPage(){
-		$this->firstElement->setValue($r = 1);
+		$this->setStartValue($r = 1);
 	}
 	function lastPage(){
-		$this->firstElement->setValue($r = $this->col->size()-$this->pageSize->getValue()+1);
+		$this->setStartValue($this->col->size());
 	}
 	function sort($fname){
 		if ($this->colorder == $fname){
