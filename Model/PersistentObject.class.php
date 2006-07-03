@@ -206,6 +206,13 @@ class PersistentObject extends DescriptedObject {
 			return $sub2;
 		}
 	}
+	function & createInstance() {
+		if ($this->isNotTopClass($this)) {
+			$this->setParent($this->create(get_parent_class(getClass($this))));
+		}
+		$this->basicInitialize();
+		return $this;
+	}
 	/**
 	 * Setter for the parent of the object.
 	 * @access private

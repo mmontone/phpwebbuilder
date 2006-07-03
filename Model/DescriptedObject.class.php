@@ -35,13 +35,6 @@ class DescriptedObject extends PWBObject {
 		return $this->modified;
 	}
 
-	function & createInstance() {
-		if ($this->isNotTopClass($this)) {
-			$this->setParent($this->create(get_parent_class(getClass($this))));
-		}
-		$this->basicInitialize();
-		return $this;
-	}
 	function & create($class) {
 		return new $class;
 	}
