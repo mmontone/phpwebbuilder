@@ -7,15 +7,18 @@ class PWBObject
     var $service_request_listeners;
     var $config;
     var $__instance_id;
+	var $creationParams;
 	/**
 	 * Special var, for get_subclass
 	 */
 	var $isClassOfPWB = true;
-    function PWBObject() {
+    function PWBObject($params) {
 		$id_assigner =& PWBInstanceIdAssigner::instance();
 		$id_assigner->assignIdTo($this);
+		$this->creationParams =& $params;
+		$this->createInstance();
 	}
-
+	function createInstance(){}
 	function equalTo(&$other_pwb_object) {
 		return $this->__instance_id == $other_pwb_object->__instance_id;
 	}
