@@ -2,7 +2,8 @@
 class Menu extends Component {
 	function initialize() {
 		$u =& User::logged();
-		$this->addComponent(new Text(new ValueHolder($u->user->getValue())), "username");
+		$un = $u->user->getValue();
+		$this->addComponent(new Text(new ValueHolder($un)), "username");
 		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
 		$this->addComponent(new CompositeWidget, 'menus');
 		$this->addComponent(new ActionLink($this, 'newmenu', 'refresh', $n=null), 'refresh');
