@@ -142,14 +142,22 @@ class PersistentObject extends DescriptedObject {
 			$values .= $field->updateString();
 		}
 		$values = substr($values, 0, -2);
-		return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID();
+		if (trim($values)==''){
+			return false;
+		} else {
+			return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID();
+		}
 	}
 
 	function basicUpdate() {
 		$sql = $this->updateString();
-		$db =& DB::Instance();
-		$ok = $db->SQLExec($sql, FALSE, $this, &$rows);
-		return $ok !== FALSE;
+		if ($sql) {
+			$db =& DB::Instance();
+			$ok = $db->SQLExec($sql, FALSE, $this, &$rows);
+			return $ok !== FALSE;
+		} else {
+			return true;
+		}
 	}
 
 	function basicDelete() {

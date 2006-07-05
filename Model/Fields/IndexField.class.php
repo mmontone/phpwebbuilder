@@ -54,7 +54,14 @@ class IndexField extends NumField {
 		parent::setValue($value);
 		$this->buffered_target = null;
 	}
-
+	function getValue(){
+		$v = parent::getValue();
+		if ($v!=null){
+			return $v;
+		} else {
+			return 0;
+		}
+	}
 	function flushChanges() {
 		parent::flushChanges();
 		$this->buffered_target =& $this->target;
