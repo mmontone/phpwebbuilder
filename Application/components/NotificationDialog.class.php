@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/../Component.class.php';
-
 class NotificationDialog extends Component
 {
 	var $message;
@@ -11,19 +9,13 @@ class NotificationDialog extends Component
 		parent::Component($callback_actions);
 	}
 
-	function configure() {
-		return array('use_action_namemangling' => true);
-	}
-
 	function declare_actions() {
 		return array('accept');
 	}
 
 	function initialize() {
-	/*	$this->addComponent(new Text("<h1>"));
-		$this->addComponent(new Text($this->message));
-		$this->addComponent(new Text("</h1></br>"));*/
-		$this->addComponent(new ActionLink($this, 'accept', 'Accept'), "accept");
+		$this->addComponent(new Label($this->message), 'message_label');
+		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept_link');
 	}
 
 	function accept() {

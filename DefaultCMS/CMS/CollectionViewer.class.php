@@ -53,6 +53,7 @@ class CollectionViewer extends CollectionNavigator {
 		}
 		$this->editObject($obj);
 	}
+
 	function deleteObject(&$fc) {
 		$translator = translator;
 		if (!$translator)
@@ -65,10 +66,16 @@ class CollectionViewer extends CollectionNavigator {
 	function deleteConfirmed($params, $fcparams) {
 		$fc =& $fcparams['object'];
 		$ok = $fc->obj->delete();
-		if (!$ok)
-			echo 'Error deleting object';
+		if (!$ok) {
+			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
+		}
 		$this->refresh();
 	}
+
+	function warningAccepted() {
+
+	}
+
 
 	function deleteRejected() {
 
