@@ -1,7 +1,8 @@
 <?
 
 class DB {
-	var $lastError;
+	var $lastError = 'No Error';
+	var $lastSQL = '';
 	function fetchArray($res) {
 		$arr = array();
 		if ($res===true) {
@@ -22,6 +23,14 @@ class DB {
 		}
 		return $ret;
 	}
+	function lastError(){
+		$db =& DB::instance();
+		return $db->lastError;
+	}
+	function lastSQL(){
+		$db =& DB::instance();
+		return $db->lastSQL;
+	}
 	function queryDB($query){
 		$res = $this->batchExec(array($query));
 		return $res[0];
@@ -40,19 +49,22 @@ class MySQLdb extends DB {
     function SQLExec ($sql, $getID, $obj, $rows=0) {
     	trace($sql. '<br/>');
 		$this->openDatabase();
-        $reg = mysql_query ($sql);
-        if (!$reg){
-        	$this->lastError=mysql_error() . ': '.$sql;
-        	return false;
-        }
+		$this->lastSQL = $sql;
+        $reg = $this->query ($sql);
         if ($getID) { $obj->setID(mysql_insert_id());};
         $rows = mysql_affected_rows();
         return $reg;
     }
 
     function query($sql) {
-        $reg = mysql_query ($sql) or
-        	die (print_backtrace(mysql_error() . ': '.$sql));
+    	trace($sql. '<br/>');
+		$this->openDatabase();
+		$this->lastSQL = $sql;
+        $reg = mysql_query ($sql);
+        if (!$reg){
+        	$this->lastError=mysql_error() . ': '.$sql;
+        	return false;
+        }
         return $reg;
     }
 

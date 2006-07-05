@@ -16,7 +16,6 @@ class PersistentObject extends DescriptedObject {
 
 	function getID() {
 		return $this->id->getValue();
-
 	}
 
     function getIdOfClass($class){
@@ -132,8 +131,9 @@ class PersistentObject extends DescriptedObject {
 		$sql = 'INSERT IGNORE INTO ' . $this->tableName() . '(' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DB::Instance();
 		$db->SQLExec($sql, TRUE, & $this, & $rows);
-		$this->existsObject = TRUE;
-		return $rows > 0;
+		$ok = $rows > 0;
+		$this->existsObject = $ok;
+		return $ok;
 	}
 
 	function updateString() {
@@ -148,9 +148,8 @@ class PersistentObject extends DescriptedObject {
 	function basicUpdate() {
 		$sql = $this->updateString();
 		$db =& DB::Instance();
-		$db->SQLExec($sql, FALSE, $this, &$rows);
-		$this->existsObject = TRUE;
-		return $rows > 0;
+		$ok = $db->SQLExec($sql, FALSE, $this, &$rows);
+		return $ok !== FALSE;
 	}
 
 	function basicDelete() {
@@ -160,9 +159,10 @@ class PersistentObject extends DescriptedObject {
 		foreach ($this->allFieldsThisLevel() as $f) {
 			$can = $can & $f->canDelete();
 		}
-		if ($can)
+		if ($can){
 			$db->SQLExec($sql, FALSE, $this);
-		else {
+			$this->existsObject=FALSE;
+		} else {
 			trace('The object is not erasable<BR>\n');
 		}
 		return $can;
@@ -295,6 +295,7 @@ class PersistentObject extends DescriptedObject {
 		return isset($rec[$this->id->sqlName()]);
 	}
 	function save() {
+		$this->commitChanges();
 		if ($this->existsObject) {
 			return $this->update();
 		}

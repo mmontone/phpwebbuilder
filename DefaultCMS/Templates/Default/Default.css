@@ -1,9 +1,13 @@
-body {
+body, html, form {
 /*overflow:hidden;*/
 height:100%;
 }
 
-div.Body,div.Menu {
+form#app > div{
+  /*height:100%;*/
+}
+
+div.Body, div.Menu{
 overflow:auto;
 height:90%;
 }
@@ -55,7 +59,7 @@ div.Menu, div.Body{
         float:left;
  		padding: 10px;
         border:1px inset grey;
- 		margin: 10px;
+		margin: 10px;
 }
 div.Menu{
  		width:25%;
@@ -97,6 +101,6 @@ textarea {
 width:30em;
 height:15em;
 }
-input[type="text"],input[type="password"] {
+input[type="text"], input[type="password"] {
 width:30em;
 }

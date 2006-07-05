@@ -14,11 +14,14 @@ class CollectionViewer extends CollectionNavigator {
 		parent::initialize();
 	}
 	/* Editing */
-	function editObject(&$obj) {
+	function editObject(&$obj, $msg=array()) {
 		$ec =& new PersistentObjectEditor($obj);
     	$ec->registerCallback('cancel', new FunctionObject($this, 'cancel'));
     	$ec->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
     	$ec->registerCallback('refresh', new FunctionObject($this, 'refresh'));
+    	if (!empty($msg)){
+    		$ec->displayValidationErrors($msg);
+    	}
     	$this->call($ec);
 	}
 
@@ -29,8 +32,12 @@ class CollectionViewer extends CollectionNavigator {
 	}
 
 	function objectEdited(&$object) {
-		$object->save();
-		$this->refresh();
+		$ok = $object->save();
+		if ($ok){
+			$this->refresh();
+		} else {
+			$this->editObject($object, array('save'=>DB::lastError() . DB::lastSQL()));
+		}
 	}
 
 	function cancel() {
@@ -42,6 +49,7 @@ class CollectionViewer extends CollectionNavigator {
 		$c =& $this->col->conditions;
 		foreach($c as $f=>$cond){
 			$obj->$f->setValue($cond[1]);
+
 		}
 		$this->editObject($obj);
 	}

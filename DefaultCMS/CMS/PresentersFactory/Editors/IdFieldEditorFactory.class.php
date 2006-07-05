@@ -8,5 +8,11 @@ class IdFieldEditorFactory extends EditorFactory {
 	}
 }
 
+class SuperFieldEditorFactory extends EditorFactory {
+	function &componentForField(&$field){
+		return new Text(new AspectAdaptor($field, 'Value'));
+	}
+}
+
 
 ?>

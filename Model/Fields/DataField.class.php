@@ -114,7 +114,7 @@ class DataField extends PWBObject {
 	}
 
 	function commitChanges() {
-		$this->value = $this->buffered_value;
+		$this->value = $this->getValue();
 	}
 
 	function flushChanges() {
