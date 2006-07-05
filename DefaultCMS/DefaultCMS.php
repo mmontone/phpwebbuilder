@@ -8,6 +8,7 @@ require_once 'Administrator/TableCheckAction.class.php';
 require_once 'Menu.class.php';
 require_once 'DefaultCMSApplication.class.php';
 require_once 'Files/FileLoader.class.php';
+require_once 'Files/ReadFile.class.php';
 require_once 'CMS/CollectionViewer.class.php';
 require_once 'CMS/PersistentObjectViewer.class.php';
 require_once 'CMS/PersistentObjectEditor.class.php';
