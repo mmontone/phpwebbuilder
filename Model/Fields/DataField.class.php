@@ -103,7 +103,7 @@ class DataField extends PWBObject {
 		return $this->getValue();
 	}
 	function setValue($data) {
-		$this->buffered_value = $data;
+		$this->buffered_value =& $data;
 		$this->triggerEvent('changed', $no_params = null);
 	}
 	function getValue() {
@@ -114,11 +114,11 @@ class DataField extends PWBObject {
 	}
 
 	function commitChanges() {
-		$this->value = $this->getValue();
+		$this->value =& $this->buffered_value;
 	}
 
 	function flushChanges() {
-		$this->buffered_value = $this->value;
+		$this->buffered_value =& $this->value;
 	}
 
 	function loadFrom($reg) {

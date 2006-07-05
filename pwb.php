@@ -10,8 +10,8 @@ ini_set('memory_limit', '-1');
 set_time_limit(0);
 ini_set('display_errors', true);
 
-//error_reporting(E_ERROR | E_WARNING | E_PARSE);
-error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+//error_reporting(E_ERROR | E_PARSE);
 //error_reporting(E_ALL);
 
 require_once dirname(__FILE__) . "/lib/basiclib.php";

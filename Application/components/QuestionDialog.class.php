@@ -5,12 +5,9 @@ require_once dirname(__FILE__) . '/../Component.class.php';
 class QuestionDialog extends Component
 {
 	var $question;
-	// TODO: there should be no context. Make callbacks more general. FunctionObjects may be a good aproach
-	var $context;
 
-	function QuestionDialog($question, $callback_actions=array('on_yes'=>'question_accepted', 'on_no' => 'question_cancelled'), &$context) {
+	function QuestionDialog($question, $callback_actions=array('on_yes'=>'question_accepted', 'on_no' => 'question_cancelled')) {
 		$this->question = $question;
-		$this->context =& $context;
 		parent::Component($callback_actions);
 	}
 
@@ -22,11 +19,11 @@ class QuestionDialog extends Component
 	}
 
 	function yes() {
-		$this->callbackWith('on_yes', $this->context);
+		$this->callback('on_yes');
 	}
 
 	function no() {
-		$this->callbackWith('on_no', $this->context);
+		$this->callback('on_no');
 	}
 }
 ?>

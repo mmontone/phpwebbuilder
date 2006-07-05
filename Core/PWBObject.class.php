@@ -12,7 +12,7 @@ class PWBObject
 	 * Special var, for get_subclass
 	 */
 	var $isClassOfPWB = true;
-    function PWBObject($params) {
+    function PWBObject($params=array()) {
 		$id_assigner =& PWBInstanceIdAssigner::instance();
 		$id_assigner->assignIdTo($this);
 		$this->creationParams =& $params;

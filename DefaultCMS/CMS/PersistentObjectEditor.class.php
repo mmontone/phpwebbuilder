@@ -56,12 +56,13 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 	}
 
 	function deleteObject(&$obj) {
-		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $obj), 'on_no' => new FunctionObject($this, 'deleteRejected')), $obj));
+		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => $obj)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
 	}
 
-	function deleteConfirmed(&$obj) {
+	function deleteConfirmed($params, $fparams) {
+		$obj =& $fparams['object'];
 		$ok = $obj->delete();
-		$this->refresh();
+		$this->callback('refresh');
 	}
 
 	function deleteRejected() {

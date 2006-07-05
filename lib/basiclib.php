@@ -171,9 +171,9 @@ function toHTML($s) {
     $s = str_replace('í', '&iacute;', $s);
     $s = str_replace('ó', '&oacute;', $s);
     $s = str_replace('ú', '&uacute;', $s);
-    $s = str_replace('Á', '&Aacute;',$s);
+    $s = str_replace('�?', '&Aacute;',$s);
     $s = str_replace('É', '&Eacute;', $s);
-    $s = str_replace('Í', '&Iacute;', $s);
+    $s = str_replace('�?', '&Iacute;', $s);
     $s = str_replace('Ó', '&Ooacute;',$s);
     $s = str_replace('Ú', '&Uacute;', $s);
 
@@ -258,5 +258,17 @@ if (version_compare(phpversion(), '5.0') < 0) {
       return $object;
     }
     ');
+}
+
+function try_catch($try_code, $catch_matches) {
+	$maybe_exception = $try_code();
+	if (!is_exception($maybe_exception))
+		return $maybe_exception;
+
+	foreach ($catch_matches as $catch_exception => $catch_code) {
+		if (matches_exception($maybe_exception, $catch_exception)) {
+			return $catch_code($maybe_exception);
+		}
+	}
 }
 ?>

@@ -17,12 +17,16 @@ class IdField extends NumField {
     function insertValue() {
     	return '';
     }
+
     function setID($id) {
-        // Don't register a modification, so we don't call setValue
-        $this->value = $id;
-        $this->buffered_value = null;
+        $this->setValue($id);
     }
-	function commitChanges(){}
+
+    function setValue($value) {
+		// Don't register a modification
+    	$this->buffered_value =& $value;
+    }
+
     function check($val) {
     	return true;
     }

@@ -59,11 +59,14 @@ class CollectionViewer extends CollectionNavigator {
 			$translator = 'EnglishTranslator';
 		$translator =& new $translator;
 		$msg = $translator->translate('Are you sure that you want to delete the object?');
-		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', $fc), 'on_no' => new FunctionObject($this, 'deleteRejected')), $fc));
+		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
 	}
 
-	function deleteConfirmed(&$fc) {
+	function deleteConfirmed($params, $fcparams) {
+		$fc =& $fcparams['object'];
 		$ok = $fc->obj->delete();
+		if (!$ok)
+			echo 'Error deleting object';
 		$this->refresh();
 	}
 
