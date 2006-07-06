@@ -1,0 +1,20 @@
+<?/*
+[global]
+sitename=Broadcast Application
+page_renderer=AjaxPageRenderer
+translator=EnglishTranslator
+app_class=BroadcastApplication
+[server]
+serverhost=localhost
+basename=
+baseuser=
+basepass=
+basedir=
+appdir=MyInstances
+pwbdir=../../
+site_url=
+pwb_url=../../
+DBObject=MySQLdb
+baseprefix=
+peardir=
+*/?>

@@ -1,0 +1,20 @@
+<?/*
+[global]
+sitename=Multicounter Application
+page_renderer=AjaxPageRenderer
+translator=EnglishTranslator
+app_class=MulticounterApplication
+[server]
+serverhost=localhost
+basename=
+baseuser=
+basepass=
+basedir=
+appdir=MyInstances
+pwbdir=../../
+site_url=
+pwb_url=../../
+DBObject=MySQLdb
+baseprefix=
+peardir=
+*/?>

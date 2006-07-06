@@ -1,0 +1,21 @@
+<templates>
+<template class="MultiCounter">
+<center>
+	<template class="Counter">
+		<h3><container id="count"/></h3>
+		<input type="button" value="Increment" id="inc"/>
+		<input type="button" value="Decrement" id="dec"/>
+	</template>
+</center>
+</template>
+<template class="NotificationDialog">
+		<h3><container id="message_label"/></h3>
+		<input type="button" value="Accept" id="accept_link"/>
+</template>
+<template class="QuestionDialog">
+		<h3><container id="question"/></h3>
+		<input type="button" value="Yes" id="yes"/>
+		<input type="button" value="No" id="no"/>
+</template>
+<template></template>
+</templates>
