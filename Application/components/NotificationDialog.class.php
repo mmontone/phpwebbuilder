@@ -9,10 +9,6 @@ class NotificationDialog extends Component
 		parent::Component($callback_actions);
 	}
 
-	function declare_actions() {
-		return array('accept');
-	}
-
 	function initialize() {
 		$this->addComponent(new Label($this->message), 'message_label');
 		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept_link');

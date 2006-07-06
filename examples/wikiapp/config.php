@@ -1,20 +1,20 @@
 <?/*
+[global]
+sitename=Wiki Application
+page_renderer=AjaxPageRenderer
+translator=EnglishTranslator
 [server]
 serverhost=localhost
 basename=
 baseuser=
 basepass=
-basedir=/var/www/alex/phpwebbuilder/examples/wikiapp
-appdir=/var/www/alex/phpwebbuilder/examples/wikiapp/MyInstances
-pwbdir=/var/www/alex/phpwebbuilder
+basedir=
+appdir=MyInstances
+pwbdir=../../
 app_class=WikiApp
-site_url=http://10.0.0.2/alex/phpwebbuilder/examples/wikiapp
-pwb_url=http://10.0.0.2/alex/phpwebbuilder/
+site_url=
+pwb_url=../../
 DBObject=MySQLdb
 baseprefix=
-sitename=Wiki Application
-page_renderer=AjaxPageRenderer
-translator=EnglishTranslator
 peardir=
-[global]
 */?>

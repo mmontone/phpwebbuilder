@@ -28,7 +28,24 @@ class ConfigReader
     function load($file_name){
     	$conf = $this->readAct($file_name);
         foreach ($conf as $key => $value) {
-        	define($key, $value);
+        	switch (substr($key,-3)){
+        		case 'dir':
+	        		if (substr($value,0,1)=='/'){
+	        			$v = $value;
+	        		} else {
+	        			$v = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$value;
+	        		}
+	        		break;
+	        	case 'url':
+					if (substr($value,0,7)=='http://'){
+	        			$v = $value;
+	        		} else {
+	        			$v = dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']).'/'.$value;
+	        		}break;
+        		default:
+        			$v = $value;
+        	}
+        	define($key, $v);
         }
     }
     function write($file_name, $configuration) {
@@ -37,7 +54,7 @@ class ConfigReader
     	$changes ="";
 		$diff = array_diff_assoc($present, $configuration);
 		$nochanges = count($diff)==0;
-		$changes .= print_r($diff, TRUE); 
+		$changes .= print_r($diff, TRUE);
 		$conf = $this->readAll($file_name);
 		$sect = $this->sectionName($file_name);
 		$global_keys=array_keys($conf["global"]);
@@ -52,18 +69,18 @@ class ConfigReader
     		$str .= "[".$sectName."]\n";
     		foreach ($sect as $key => $value) {
     			$str .= $key . "=" . $value . "\n";
-    		}	
+    		}
     	}
     	$str .= "*/?>";
     	$c = fopen($file_name, "w+");
 		if (!$c) { //No puedo guardar el archivo
 			if (file_exists($file_name) && $nochanges) {
-				//El archivo existe, y la configuración está bien
-				echo("El Archivo de configuración no pudo ser creado,\n".
+				//El archivo existe, y la configuraciï¿½n estï¿½ bien
+				echo("El Archivo de configuraciï¿½n no pudo ser creado,\n".
 								"usando el actual que es correcto.");
 			} else {
-				echo"El Archivo de configuración no pudo ser creado,\n".
-								"deberá crear $file_name a mano.";
+				echo"El Archivo de configuraciï¿½n no pudo ser creado,\n".
+								"deberï¿½ crear $file_name a mano.";
 				echo "las diferencias son ".$changes;
 				echo "dump del archivo:<br />\n";
 				echo ereg_replace("\n", "<br/>\n", $str);
@@ -71,7 +88,7 @@ class ConfigReader
 		} else {
 			fwrite($c,$str);
 			fclose($c);
-		} 
+		}
     }
     function sectionName($file_name){
    		$conf = dirname($file_name)."/serverconfig";
