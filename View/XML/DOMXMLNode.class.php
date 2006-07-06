@@ -36,7 +36,10 @@ class DOMXMLNode extends PWBObject{
 		$ks = array_keys($this->childNodes);
 		return $this->childNodes[$ks[0]];
 	}
-
+	function & last_child() {
+		$ks = array_keys($this->childNodes);
+		return $this->childNodes[$ks[count($ks)-1]];
+	}
 	function insert_in(& $xml, $position) {
 		$this->childNodes[$position] = & $xml;
 		$xml->parentNode = & $this;

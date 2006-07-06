@@ -40,11 +40,16 @@ class XMLParser {
 
    function cdata($parser, $cdata)
    {
-   	   if (trim($cdata)!=""){
-   	   		$xs =& $this->xmls;
-   	   		$cant = count($xs);
-       		$xs[$cant-1]->appendChild(new XMLTextNode($cdata));
-   	   }
+   	   	$xs =& $this->xmls;
+   	   	$cant = count($xs);
+   		$xchild =& $xs[$cant-1]->last_child();
+   		if (getClass($xchild)=='xmltextnode'){
+			$xchild->data.=$cdata;
+   		} else {
+   			if (trim($cdata)!=""){
+	       		$xs[$cant-1]->appendChild(new XMLTextNode($cdata));
+   			}
+   		}
    }
    function tag_close($parser, $tag)
    {

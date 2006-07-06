@@ -119,7 +119,9 @@ class Application extends ComponentHolder {
 		return $this->wholeView;
 	}
 
-	function loadTemplates() {}
+	function loadTemplates(){
+		$this->viewCreator->loadTemplatesDir(basedir.'/MyTemplates');
+	}
 	function getId() {
 		return "app";
 	}
