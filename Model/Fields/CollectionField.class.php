@@ -45,6 +45,12 @@ class CollectionField extends DataField {
 	function &elements() {
 		return $this->collection->elements();
 	}
+
+	function setValue($value) {
+		// Don't register modification
+		$this->buffered_value = $value;
+	}
+
 	function canDelete() {
 		$arr = & $this->collection->elements();
 		$can = count($arr) == 0;

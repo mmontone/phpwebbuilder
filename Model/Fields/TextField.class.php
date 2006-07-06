@@ -26,6 +26,10 @@ class TextField extends DataField {
 	function SQLvalue() {
 		return "'" . $this->getValue() . "'" . ", ";
 	}
+
+	function isEmpty() {
+		return $this->getValue() == '';
+	}
 }
 
 class TextArea extends DataField {

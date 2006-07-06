@@ -1,17 +1,31 @@
 <?php
 
 class ValidationErrorsDisplayer extends Component {
-	var  $error_msgs;
+	var  $errors;
 
-    function ValidationErrorsDisplayer(&$error_msgs) {
-    	$this->error_msgs =& $error_msgs;
+    function ValidationErrorsDisplayer(&$errors) {
+    	$this->errors =& $errors;
     	parent::Component();
     }
 
     function initialize() {
-		foreach(array_keys($this->error_msgs) as $i) {
-    		$this->addComponent(new Label($this->error_msgs[$i]), $i);
+		//print_backtrace();
+		foreach(array_keys($this->errors) as $i) {
+    		$error =& $this->errors[$i];
+    		$error->accept($this);
     	}
+    }
+
+    function visitOneOfException(&$ex) {
+    	$this->addComponent(new Label($ex->getMessage()));
+    }
+
+    function visitEmptyFieldException(&$ex) {
+    	$this->addComponent(new Label($ex->getMessage()));
+    }
+
+    function visitValidationException(&$ex) {
+    	$this->addComponent(new Label($ex->getMessage()));
     }
 }
 

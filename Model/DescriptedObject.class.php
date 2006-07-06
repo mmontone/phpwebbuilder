@@ -11,6 +11,8 @@ class DescriptedObject extends PWBObject {
 
 	var $modified = false;
 
+	var $validation_errors = array();
+
 	function DescriptedObject() {
     	parent::PWBObject();
     }
@@ -71,8 +73,8 @@ class DescriptedObject extends PWBObject {
 			return false;
 		}
 		else {
-			$this->commitChanges();
 			$this->setID($this->id->getValue());
+			$this->commitChanges();
 			$this->existsObject = TRUE;
 			return true;
 		}
@@ -85,9 +87,11 @@ class DescriptedObject extends PWBObject {
     function & allFieldsThisLevel() {
 		return $this->fieldsWithNames($this->allFieldNamesThisLevel());
 	}
+
 	function & allFields() {
 		return $this->fieldsWithNames($this->allFieldNames());
 	}
+
 	function & fieldsWithNames($names) {
 		$arr = array ();
 		foreach ($names as $name) {
@@ -112,6 +116,7 @@ class DescriptedObject extends PWBObject {
 			return $this->allFieldNamesThisLevel();
 		}
 	}
+
 	function allIndexFieldNames() {
 		if ($this->isNotTopClass(getClass($this))) {
 			if ($this->parent == null)
@@ -122,22 +127,28 @@ class DescriptedObject extends PWBObject {
 			return $this->indexFields;
 		}
 	}
+
 	function & allIndexFields() {
 		return $this->fieldsWithNames($this->allIndexFieldNames());
 	}
+
 	function allFieldNamesThisLevel() {
 		return $this->fieldNames;
 	}
+
 	function & fieldNamed($name) {
 		$f = & $this-> $name;
 		return $f;
 	}
+
 	function setField($name, & $field) {
 		$this-> $name = & $field;
 	}
+
 	function & getField($f) {
 		return $this-> $f;
 	}
+
 	function & getFields($fs) {
 		$arr = array ();
 		foreach ($fs as $f) {
@@ -145,6 +156,7 @@ class DescriptedObject extends PWBObject {
 		}
 		return $arr;
 	}
+
 	function addField(& $field) {
 		$name = $field->colName;
 		$this-> $name = & $field;
@@ -182,37 +194,73 @@ class DescriptedObject extends PWBObject {
 		return $visitor->visitedPersistentObject($this);
 	}
 
-	function checkNotEmpty($fields, & $error_msgs) {
+	function checkNotEmpty($fields) {
 		$ret = true;
-		$is_valid = false;
+		$ex = array();
+		$i = 1;
+
 		foreach ($fields as $field) {
-			$is_valid = $this-> $field->getValue() != "";
-			if (!$is_valid) {
-				$error_msgs[$field] = "Fill in the " . $this->$field->displayString . ", please";
+			if ($this-> $field->isEmpty()) {
+				$ex[$i] =& new EmptyFieldException(array('message' => 'Fill in the ' . $this->$field->displayString . ', please', 'content' => & $this->$field));
+				$this->validation_errors[] =& $ex[$i++];
+				$ret = true;
 			}
-			$ret &= $is_valid;
 		}
 		return $ret;
 	}
+
 	/*@deprecated*/
 	function check_not_null($fields, & $error_msgs) {
 		return $this->checkNotEmpty($fields, $error_msgs);
 	}
-	function checkOneOf($fields, $error_msg, & $error_msgs) {
+
+	function checkOneOf($field_names, $error_msg) {
 		$ret = false;
-		foreach ($fields as $field) {
-			if (!isset ($first_field))
-				$first_field = $field;
-			$ret |= $this-> $field->getValue() != "";
+
+		foreach ($field_names as $field) {
+			$ret |= ! $this-> $field->isEmpty();
 		}
+
 		if (!$ret) {
-			$error_msgs[$first_field] = $error_msg;
+			$fields =& $this->getFieldsNamed($field_names);
+			$ex =& new OneOfException(array('message' => $error_msg, 'content' => $fields));
+			$this->validation_errors[] =& $ex;
+			return $ex;
 		}
+
+		return false;
+	}
+
+	function validateAll() {
+		$this->validation_errors = array();
+
+		$this->validateFields();
+
+		$this->validate();
+
+		return !empty($this->validation_errors);
+	}
+
+	function validateFields() {
+		$ret = true;
+		$ex = array();
+		$i = 1;
+
+		foreach ($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			if ($ex[$i] =& $field->validate()) {
+				$this->validation_errors[] =& $ex[$i++];
+				$ret = false;
+			}
+		}
+
 		return $ret;
 	}
-	function validate(& $error_msgs) {
-		return true;
+
+	function validate() {
+		return false;
 	}
+
 	/* Population */
 	function populate($form, & $error_msgs) {
 		$success = true;
@@ -226,6 +274,7 @@ class DescriptedObject extends PWBObject {
 		//if (!$success) trace(print_r($error_msgs, TRUE));
 		return $success;
 	}
+
 	function populateField(& $field, & $form, & $error_msgs) {
 		// Checks the field data
 		if (!$field->populate($form)) {
@@ -234,6 +283,7 @@ class DescriptedObject extends PWBObject {
 		}
 		return true;
 	}
+
 	function toArray() {
 		$arr = array ();
 		foreach ($this->allFields() as $index => $field) {

@@ -6,13 +6,13 @@ class SuperField extends NumField {
 	}
 	function updateString() {}
 
-	function check() {
-		return TRUE;
-	}
-
-    function setValue($value) {
+	function setValue($value) {
 		// Don't register modifications
     	$this->buffered_value =& $value;
+    }
+
+    function validate() {
+    	return false;
     }
 }
 ?>

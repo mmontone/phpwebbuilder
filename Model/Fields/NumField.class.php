@@ -31,9 +31,13 @@ class NumField extends DataField {
 
     }
 
-    function check() {
-        return ereg ("[0-9]+(\.[0-9]*)?", $this->getValue());
+    function validate() {
+        $ok =& ereg ("[0-9]+(\.[0-9]*)?", $this->getValue());
+        if (!$ok) {
+			return new ValidationException(array('message' => $this->displayString . ' is not a number', 'content' => & $this));
+        }
 
+        return false;
     }
 }
 ?>

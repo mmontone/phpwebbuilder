@@ -22,10 +22,15 @@ class BoolField extends DataField {
 		if ($val == null)
 			$val = 0;
 		$this->setValue($val);
-		return $this->check($val);
+		return true;
 	}
+
 	function & visit(& $obj) {
 		return $obj->visitedBoolField($this);
+	}
+
+	function isEmpty() {
+		return !$this->getValue();
 	}
 }
 ?>

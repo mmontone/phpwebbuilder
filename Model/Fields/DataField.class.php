@@ -106,6 +106,7 @@ class DataField extends PWBObject {
 		$this->buffered_value =& $data;
 		$this->triggerEvent('changed', $no_params = null);
 	}
+
 	function getValue() {
 		if ($this->buffered_value !== null)
 			return $this->buffered_value;
@@ -124,19 +125,23 @@ class DataField extends PWBObject {
 	function loadFrom($reg) {
 		$val = $reg[$this->sqlName()];
 		$this->setValue($val);
-		return $this->check($val);
+		return $this->validate();
 	}
-	function check($val) {
-		return TRUE;
+
+	function validate() {
+		return false;
 	}
-	function validate($val, & $errors) {
-		return true;
-	}
+
 	function canDelete() {
 		return true;
 	}
+
 	function toArrayValue() {
 		return $this->getValue();
+	}
+
+	function isEmpty() {
+		return $this->getValue() == '';
 	}
 
 	function &copy() {

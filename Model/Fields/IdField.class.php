@@ -27,8 +27,9 @@ class IdField extends NumField {
     	$this->buffered_value =& $value;
     }
 
-    function check($val) {
-    	return true;
+    function validate() {
+    	return false;
     }
 }
+
 ?>

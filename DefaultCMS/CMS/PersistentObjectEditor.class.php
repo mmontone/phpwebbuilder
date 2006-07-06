@@ -37,22 +37,17 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     }
 
     function save(){
-    	$error_msgs = array();
-    	if ($this->validate($this->obj, $error_msgs)) {
+    	if (!$this->obj->validateAll()) {
     		$this->obj->commitChanges();
     		$this->callbackWith('object_edited', $this->obj);
     	} else {
     		$this->triggerEvent('invalid', $this->obj);
-    		$this->displayValidationErrors($error_msgs);
+    		$this->displayValidationErrors($this->obj->validation_errors);
     	}
     }
 
-    function validate(&$object, &$error_msgs) {
-		return $object->validate($error_msgs);
-    }
-
-	function displayValidationErrors($error_msgs) {
-		$this->addComponent(new ValidationErrorsDisplayer($error_msgs), 'validation_errors');
+    function displayValidationErrors($errors) {
+		$this->addComponent(new ValidationErrorsDisplayer($errors), 'validation_errors');
 	}
 
 	function deleteObject(&$obj) {
