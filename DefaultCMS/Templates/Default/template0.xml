@@ -24,8 +24,9 @@
 		</ul>
 		</div>
 	</template>
+
 	<template class="Login">
- <table><tbody>
+ 	<table><tbody>
 		<tr><td colspan="2">Ingrese su nombre de usuario y contraseña:</td></tr>
 		<tr><td>Nombre de Usuario: </td><td> <input type="text" id="comp_username" /></td></tr>
 		<tr><td>Contraseña: </td><td> <input type="password" id="comp_password" /></td></tr>

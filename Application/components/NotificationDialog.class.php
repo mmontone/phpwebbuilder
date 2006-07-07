@@ -10,8 +10,8 @@ class NotificationDialog extends Component
 	}
 
 	function initialize() {
-		$this->addComponent(new Label($this->message), 'message_label');
-		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept_link');
+		$this->addComponent(new Label($this->message), 'notification');
+		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept');
 	}
 
 	function accept() {

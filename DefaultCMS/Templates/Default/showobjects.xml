@@ -1,9 +1,30 @@
 <templates>
+ 	<template class="QuestionDialog">
+		<div>
+			<container id="question"/>
+		</div>
+		<input type="button" id="yes" value="Yes"/>
+		<input type="button" id="no" value="No"/>
+	</template>
+
+	<template class="NotificationDialog">
+		<div>
+			<container id="notification"/>
+		</div>
+		<input type="button" id="accept" value="Accept"/>
+	</template>
+
+ 	<template class="ValidationErrorsDisplayer">
+		<div><translated>Correct the following errors</translated>:</div>
+		<template class="Label">
+			<div>
+				sadf
+				<container class="Label"/>
+			</div>
+		</template>
+ 	</template>
+
  	<template class="PersistentObjectEditor">
-	 	<template class="ValidationErrorsDisplayer">
-			<div><translated>Correct the following errors</translated>:</div>
-			<container class="Label"/>
-	 	</template>
 	 	<translated>Object of class</translated> <container id="className"/> id: <container id="idN"/>
 	 	<table><tbody>
 			<template class="FieldValueComponent" >
