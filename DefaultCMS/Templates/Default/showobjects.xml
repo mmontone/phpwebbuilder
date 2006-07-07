@@ -17,7 +17,9 @@
  	<template class="ValidationErrorsDisplayer">
 		<div><translated>Correct the following errors</translated>:</div>
 		<template class="Label">
-			<div></div>
+			<div class="invalid">asdf
+				<container id="Label"/>
+			</div>
 		</template>
  	</template>
 
