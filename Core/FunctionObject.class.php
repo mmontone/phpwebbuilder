@@ -26,6 +26,14 @@ class FunctionObject
 
     }
 
+    function callWithWith(&$param1, &$param2) {
+    	$method_name = $this->method_name;
+    	if (empty($this->params))
+        	return $this->target->$method_name($param1, $param2);
+        else
+        	return $this->target->$method_name($param1, $param2, $this->params);
+    }
+
     /* We may want to use function objects as ValueHolders. Similar to Aspect adaptors */
 
     function &getValue() {

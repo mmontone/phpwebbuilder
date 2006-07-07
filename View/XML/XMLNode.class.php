@@ -6,8 +6,25 @@ class XMLNode extends DOMXMLNode {
 	var $templates = array ();
 	var $containers = array ();
 	var $childById = array ();
+	var $css_classes = array();
+
 	function XMLNode($tag_name = 'div', $attributes = array ()) {
 		return parent :: DOMXMLNode($tag_name, $attributes);
+	}
+
+	function addCSSClass($class) {
+		$this->css_classes[$class] = $class;
+		$this->setAttribute('class', implode(' ', $this->css_classes));
+	}
+
+	function removeCSSClass($class) {
+		unset($this->css_classes[$class]);
+		if (empty($this->css_classes)) {
+			$this->removeAttribute('class');
+		}
+		else {
+			$this->view->setAttribute('class', implode(' ', $this->css_classes));
+		}
 	}
 
 	function & createElement($tag_name, & $controller) {

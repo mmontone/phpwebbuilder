@@ -26,12 +26,15 @@ class EmailField extends TextField {
 		$bool = eregi($regex, $this->getValue());
 
 		if (!$bool) {
-			return new ValidationException(array (
+			$ex =& new ValidationException(array (
 				'message' => $this->displayString . ' is not a valid email',
 				'content' => & $this
 			));
+			$this->triggerEvent('invalid', $ex);
+			return $ex;
 		}
 
+		$this->triggerEvent('validated', $this);
 		return false;
 
 	}

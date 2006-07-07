@@ -70,7 +70,7 @@ class DOMXMLNode extends PWBObject{
 		}
 
 		unset($this->childNodes[$pos]);
-		$this->checkConsistency();
+		//$this->checkConsistency();
 	}
 
 	function removeChilds(){
@@ -91,7 +91,7 @@ class DOMXMLNode extends PWBObject{
 			$this->insert_in($this->childNodes[$ks[$i-1]], $ks[$i]);
 		}
 		$this->insert_in($new, $pos);
-		$this->checkConsistency();
+		//$this->checkConsistency();
 	}
 
 	function checkConsistency() {

@@ -81,31 +81,27 @@ class PWBObject
 
     function addEventListener($event_specs, &$listener) {
         foreach ($event_specs as $event_selector => $event_callback) {
-            if (!isset($this->event_listeners[$event_selector])) {
-                $this->event_listeners[$event_selector] = array();
-            }
-            $n = array('listener' => &$listener,
-					    'callback' => $event_callback);
-            $this->event_listeners[$event_selector][] =& $n;
+  			$callback =& new FunctionObject($listener, $event_callback);
+  			$this->addInterestIn($event_selector, $callback);
         }
-
     }
 
-    function on($params) {
-    	$this->addEventListener(array($params['event'] => 'callWith'), $params['do']);
+    function addInterestIn($event, &$function) {
+    	if (!isset($this->event_listeners[$event])) {
+	        $this->event_listeners[$event] = array();
+        }
+    	$this->event_listeners[$event][] =& $function;
     }
 
     function triggerEvent($event_selector, &$params) {
         trigger_error('Triggering event: ' . $event_selector);
-        if ($this->event_listeners[$event_selector] == null) return;
+        $listeners =& $this->event_listeners[$event_selector];
 
-        /* Should this be DFS or BFS? (DFS now) */
-        for($i=0, $max = count($this->event_listeners[$event_selector]); $i<$max; $i++){
-        	$listener_data =& $this->event_listeners[$event_selector][$i];
-            $callback =& $listener_data['callback'];
-            $listener =& $listener_data['listener'];
-            $listener->$callback(&$this, $params);
-            //$listener->triggerEvent($event_selector, $params);
+		if ($listeners == null) return;
+
+        foreach(array_keys($listeners) as $l) {
+        	$listener =& $listeners[$l];
+        	$listener->callWithWith($this, $params);
         }
     }
 

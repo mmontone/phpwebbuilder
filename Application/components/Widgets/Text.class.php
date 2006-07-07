@@ -9,7 +9,7 @@ class Text extends Widget {
 		}
 	}
 
-	function valueChanged(& $value_model, & $params) {
+	function valueChanged(& $value_model, &$params) {
 		/*WARNING!!! If there's an error, look here first ;) */
 		if ($this->view){
 			$text = & $this->value_model->getValue();

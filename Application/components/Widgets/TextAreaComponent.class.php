@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/Widget.class.php';
-
 class TextAreaComponent extends Widget{
 
 	function &createDefaultView(){

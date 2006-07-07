@@ -1,8 +1,12 @@
 <?php
 
-require_once dirname(__FILE__) . '/Widget.class.php';
+class Input extends Widget {
+	/*
+	function initialize() {
+		parent::initialize();
 
-class Input extends Widget{
+	}
+	*/
 	function initializeDefaultView(&$view){
 		$view->setTagName('input');
 		$view->setAttribute('type', 'text');

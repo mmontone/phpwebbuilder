@@ -125,10 +125,10 @@ class DataField extends PWBObject {
 	function loadFrom($reg) {
 		$val = $reg[$this->sqlName()];
 		$this->setValue($val);
-		return $this->validate();
 	}
 
 	function validate() {
+		$this->triggerEvent('validated', $this);
 		return false;
 	}
 
