@@ -17,14 +17,12 @@
  	<template class="ValidationErrorsDisplayer">
 		<div><translated>Correct the following errors</translated>:</div>
 		<template class="Label">
-			<div>
-				sadf
-				<container class="Label"/>
-			</div>
+			<div></div>
 		</template>
  	</template>
 
  	<template class="PersistentObjectEditor">
+ 		<container id="validation_errors"/>
 	 	<translated>Object of class</translated> <container id="className"/> id: <container id="idN"/>
 	 	<table><tbody>
 			<template class="FieldValueComponent" >
@@ -38,6 +36,7 @@
 		<a href="#" id="cancel"><img class="operation" title="Cancel" src="$templatesdir/icons/stock_cancel.png"/></a>
 		<a href="#" id="delete"><img class="operation" title="Delete" src="$templatesdir/icons/stock_delete.png"/></a>
 	</template>
+
 	<template class="PersistentObjectViewer">
 	 	<translated>Object of class</translated><container id="className"/> id: <container id="idN"/>
 	 	<table><tbody>
@@ -51,6 +50,7 @@
 		<a href="#" id="delete"><img class="operation" title="Delete" src="$templatesdir/icons/stock_delete.png"/></a>
 		<a href="#" id="goback"><img class="operation" title="Go back" src="$templatesdir/icons/stock_cancel.png"/></a>
 	</template>
+
  	<template class="CollectionViewer">
  		<div>
 		<translated>Class</translated>:<container id="className" />
@@ -87,8 +87,6 @@
 		<br/><a href="#" id="refresh"><translated>refresh</translated></a>
 		<a href="#" id="filter"><img class="operation" title="Search" src="$templatesdir/icons/stock_search.png"/></a>
 		<translated>Showing</translated> <input type="text" id="pSize" style="width:4em"/> <translated>per page</translated>. <container id="realSize"/> <translated>elements available</translated>.
-
-
 	 	</div>
 	</template>
 </templates>
