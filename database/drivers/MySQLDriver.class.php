@@ -60,7 +60,7 @@ class MySQLdb extends DB {
     	trace($sql. '<br/>');
 		$this->openDatabase();
 		$this->lastSQL = $sql;
-        $reg = mysql_query ($sql);
+		$reg = mysql_query ($sql);
         if (!$reg){
         	$this->lastError=mysql_error() . ': '.$sql;
         	return false;

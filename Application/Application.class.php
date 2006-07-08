@@ -22,6 +22,11 @@ class Application extends ComponentHolder {
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
 	}
+
+	function commonCSS() {
+		return '<style type="text/css"> .clickable{cursor:pointer;} </style>';
+	}
+
 	function pushCommand(&$command){
 		$this->commands->push($command);
 	}
@@ -82,6 +87,7 @@ class Application extends ComponentHolder {
 	function getTitle(){}
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
+		$this->addStyleSheet(pwb_url . '/View/common.css');
 		$this->addStyleSheets();
 	}
 

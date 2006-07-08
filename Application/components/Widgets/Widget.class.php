@@ -61,6 +61,7 @@ class Widget extends Component {
 
 	function setOnClickEvent(& $view) {
 		$view->setAttribute('onclick', "componentClicked(getEventTarget(event));");
+		$view->addCSSClass('clickable');
 	}
 
 	function valueChanged() {}
