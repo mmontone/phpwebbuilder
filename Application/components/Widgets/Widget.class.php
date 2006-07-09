@@ -13,7 +13,8 @@ class Widget extends Component {
 		$this->value_model->addEventListener(array (
 			'changed' => 'valueChanged',
 			'validated' => 'fieldValidated',
-			'invalid' => 'fieldInvalid'
+			'invalid' => 'fieldInvalid',
+			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
 		$this->enqueued_hooks = array ();
 		parent :: Component($callback_actions);
@@ -24,6 +25,10 @@ class Widget extends Component {
 	}
 
 	function fieldInvalid(&$field) {
+		$this->view->addCSSClass('invalid');
+	}
+
+	function fieldRequiredButEmpty(&$field) {
 		$this->view->addCSSClass('invalid');
 	}
 

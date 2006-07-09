@@ -132,6 +132,10 @@ class DataField extends PWBObject {
 		return false;
 	}
 
+	function requiredButEmpty() {
+		$this->triggerEvent('required_but_empty', $this);
+	}
+
 	function canDelete() {
 		return true;
 	}

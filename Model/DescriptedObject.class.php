@@ -201,6 +201,7 @@ class DescriptedObject extends PWBObject {
 
 		foreach ($fields as $field) {
 			if ($this-> $field->isEmpty()) {
+				$this->$field->requiredButEmpty();
 				$ex[$i] =& new EmptyFieldException(array('message' => 'Fill in the ' . $this->$field->displayString . ', please', 'content' => & $this->$field));
 				$this->validation_errors[] =& $ex[$i++];
 				$ret = true;
