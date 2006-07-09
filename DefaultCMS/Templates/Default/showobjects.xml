@@ -42,6 +42,27 @@
 		</table>
 	</template>
 
+	<template class="ErrorDialog">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<img
+							src="$templatesdir/icons/Neu/48x48/status/dialog-error.png" />
+					</td>
+					<td>
+						<div>
+							<h3>
+								<container id="error"/>
+							</h3>
+						</div>
+						<input type="button" id="accept" value="Accept" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+
 	<template class="ValidationErrorsDisplayer">
 		<table>
 			<tbody>
