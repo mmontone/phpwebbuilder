@@ -43,14 +43,26 @@
 	</template>
 
 	<template class="ValidationErrorsDisplayer">
-		<div>
-			<h3><translated>Correct the following errors</translated>:</h3>
-		</div>
-		<template class="ErrorMessage">
-			<div class="error_message">
-				<container id="error_message"/>
-			</div>
-		</template>
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<img
+							src="$templatesdir/icons/Neu/48x48/status/dialog-error.png" />
+					</td>
+					<td>
+						<div>
+							<h3><translated>Correct the following errors</translated>:</h3>
+						</div>
+						<template class="ErrorMessage">
+							<div class="error_message">
+								<container id="error_message"/>
+							</div>
+						</template>
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</template>
 
 	<template class="PersistentObjectEditor">
