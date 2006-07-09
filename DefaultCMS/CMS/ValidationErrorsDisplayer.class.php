@@ -17,16 +17,33 @@ class ValidationErrorsDisplayer extends Component {
     }
 
     function visitOneOfException(&$ex) {
-    	$this->addComponent(new Label($ex->getMessage()));
+    	$this->addComponent(new ErrorMessage(array('error_message' => $ex->getMessage())));
     }
 
     function visitEmptyFieldException(&$ex) {
-    	$this->addComponent(new Label($ex->getMessage()));
+    	$this->addComponent(new ErrorMessage(array('error_message' => $ex->getMessage())));
     }
 
     function visitValidationException(&$ex) {
-    	$this->addComponent(new Label($ex->getMessage()));
+    	$this->addComponent(new ErrorMessage(array('error_message' => $ex->getMessage())));
     }
+}
+
+class ErrorMessage extends Component {
+	var $error_msg;
+
+	function ErrorMessage($params) {
+		parent::Component();
+		$this->createInstance($params); // Patch...
+	}
+
+	function createInstance($params) {
+		$this->error_msg = $params['error_message'];
+	}
+
+	function initialize() {
+		$this->addComponent(new Label($this->error_msg),'error_message');
+	}
 }
 
 ?>

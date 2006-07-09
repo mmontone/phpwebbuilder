@@ -108,3 +108,8 @@ width:30em;
 .invalid {
     background-color:red;
 }
+
+.error_message {
+	color: red;
+	font-weight: bold;
+}

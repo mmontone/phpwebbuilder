@@ -16,7 +16,7 @@ class PWBObject
 		$id_assigner =& PWBInstanceIdAssigner::instance();
 		$id_assigner->assignIdTo($this);
 		$this->creationParams =& $params;
-		$this->createInstance();
+		$this->createInstance($params);
 	}
 	function createInstance(){}
 	function equalTo(&$other_pwb_object) {
