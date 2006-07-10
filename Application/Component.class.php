@@ -147,7 +147,7 @@ class Component extends PWBObject
 			return true;
 	}
 
-	function permissionNeeded($form){
+	function permissionNeeded(){
 		return '';
 	}
 

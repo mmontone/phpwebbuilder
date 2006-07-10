@@ -1,16 +1,15 @@
 <?php
 class Menu extends Component {
 	function initialize() {
-		$u =& User::logged();
-		$un = $u->user->getValue();
-		$this->addComponent(new Text(new ValueHolder($un)), "username");
 		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
 		$this->addComponent(new CompositeWidget, 'menus');
 		$this->addComponent(new ActionLink($this, 'newmenu', 'refresh', $n=null), 'refresh');
-		$this->menus();
+		$this->newmenu();
 	}
 	function newmenu() {
-		$this->addComponent(new Text(new ValueHolder($_SESSION[sitename]["Username"])), "username");
+		$u =& User::logged();
+		$un = $u->user->getValue();
+		$this->addComponent(new Text(new ValueHolder($un)), "username");
 		$this->menus->deleteChildren();
 		$this->menus();
 	}
