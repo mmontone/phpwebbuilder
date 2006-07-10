@@ -161,6 +161,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function basicDelete() {
+		if (!$this->existsObject) return true;
 		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DB::Instance();
 		$can = TRUE;
