@@ -17,6 +17,9 @@ class DefaultCMSApplication extends Application{
  		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');
  	}
  	function getTitle(){return sitename.'\'s Content Management System';}
+ 	function renderExtraHeaderContent() {
+ 		return '<!--[if lt IE 7]><script defer="defer" type="text/javascript" src="'.pwb_url.'/Templates/Default/pngfix.js"></script><![endif]-->';
+ 	}
 }
 
 ?>

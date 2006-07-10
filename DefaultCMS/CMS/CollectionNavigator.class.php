@@ -61,6 +61,7 @@ class CollectionNavigator extends Component {
 		foreach ($ks as $k) {
 			$this->addLine($elements[$k]);
 		}
+		$this->view->redraw();
 	}
 	function getValue(){}
 	/* Navigation */
