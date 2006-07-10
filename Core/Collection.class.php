@@ -98,7 +98,7 @@ class Collection extends PWBObject{
 		$this->addAll($col->elements());
 	}
 	function getDataType(){
-		return 'PersistentObject';
+		return '';
 	}
 	function refresh(){}
 }
