@@ -71,7 +71,7 @@ class CollectionNavigator extends Component {
 		$this->call($fc);
 	}
 	function setStartValue($val){
-		$last = $this->col->size()-$this->pageSize->getValue();
+		$last = $this->col->size()-$this->pageSize->getValue()+1;
 		$this->firstElement->setValue($r = max(min($val,$last), 1));
 	}
 	function prevPage(){
