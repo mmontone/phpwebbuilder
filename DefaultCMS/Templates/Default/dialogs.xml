@@ -1,0 +1,88 @@
+<templates>
+	<template class="QuestionDialog">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<img
+							src="$templatesdir/icons/Neu/48x48/status/dialog-question.png" />
+					</td>
+					<td>
+						<div>
+							<h3>
+								<container id="question" />
+							</h3>
+						</div>
+						<input type="button" id="yes" value="Yes" />
+						<input type="button" id="no" value="No" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+
+	<template class="NotificationDialog">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<img
+							src="$templatesdir/icons/Neu/48x48/status/dialog-information.png" />
+					</td>
+					<td>
+						<div>
+							<h3>
+								<container id="notification"/>
+							</h3>
+						</div>
+						<input type="button" id="accept" value="Accept" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+
+	<template class="ErrorDialog">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<img
+							src="$templatesdir/icons/Neu/48x48/status/dialog-error.png" />
+					</td>
+					<td>
+						<div>
+							<h3>
+								<container id="error"/>
+							</h3>
+						</div>
+						<input type="button" id="accept" value="Accept" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+
+	<template class="ValidationErrorsDisplayer">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<img
+							src="$templatesdir/icons/Neu/48x48/status/dialog-error.png" />
+					</td>
+					<td>
+						<div>
+							<h3><translated>Correct the following errors</translated>:</h3>
+						</div>
+						<template class="ErrorMessage">
+							<div class="error_message">
+								<container id="error_message"/>
+							</div>
+						</template>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+</templates>
