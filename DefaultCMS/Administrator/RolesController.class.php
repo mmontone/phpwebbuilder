@@ -6,16 +6,17 @@
  */
 
 class RolesController extends Component {
-	var $roleid = 1;
+	var $role;
 	function permissionNeeded () {
 		return "UserAdmin";
 	}
 	function actions (){
-	return array("Add", "Edit", "Show", "Delete", "List", "*", "Menu");
-
+		$col =& new Collection;
+		$col->addAll(array("Add", "Edit", "Show", "Delete", "List", "*", "Menu"));
+		return $col;
 	}
 	function specialPermissions ($form){
-		$cons = get_subclasses ("Controller");
+		$cons = get_subclasses ('Component');
 		$arr = array();
 		foreach($cons as $c) {
 			$con = new $c;
@@ -64,41 +65,57 @@ class RolesController extends Component {
 
 		return "";
 	}
-	function showOptions($form) {
-		$role = new Role;
-		$role->setID($this->roleid);
-		$role->load();
-		$ret = "";
-		$ret .="<form action=\"Action.php?Controller=RolesController";
-		$ret .=		"\" method=\"POST\">" .
-				"<input type=\"hidden\" name=\"roleidold\" value=\"".$this->roleid."\" />Editing Role " . $role->name->getValue();
-		$rolecol = new PersistentCollection(Role);
-		$view = new HTMLTableEditView;
-		$view = $view->viewFor($rolecol);
-		$ret .=	$view->asSelect (new NoLinker(), "roleidnext", $this->roleid, "");
+	function initialize() {
+		$this->addComponent(new Label('aaa'),'status');
+		$s =& new Select(new ValueHolder($v2=0),new PersistentCollection(Role));
+		$s->addEventListener(array('change'=>'setRole'), $this);
+		$this->addComponent($s, 'roles');
 
-		$ret .=		"<table><tr><td>&nbsp</td>";
 		foreach($this->actions() as $act){
 			$ret .="<td>$act</td>";
 		}
-		$ret .="<tr>";
-		foreach(get_subclasses('PersistentObject') as $name) {
-			$ret .="<tr><td>$name</td>";
-			foreach($this->actions() as $act){
-				$ret .="<td><input type=\"checkbox\" name=\"".$name ."=>". $act."\"";
-				if ($role->havePermission($name."=>".$act)) $ret .=	"checked=\"checked\"";
-				$ret .=	" value=\"Insert\"></td>";
-			}
-			$ret .="</tr>";
+		$this->setRole();
+	}
+	function addCheckBox($perm){
+		$fc =& new Component;
+		$cb =& new CheckBox(new ValueHolder($this->role->havePermission($perm)));
+		$cb->addEventListener(array('change'=>'changePermission'),$this);
+		$fc->addComponent(new Label($perm), 'name');
+		$fc->addComponent($cb, 'val');
+		$this->perms->addComponent($fc);
+	}
+	function changePermission(&$cb){
+		$perm = $cb->holder->parent->name->getValue();
+		if ($cb->getValue()){
+			$sql = "INSERT INTO RolePermission (permission,role)VALUES ('$perm', ".$this->role->getId().")";
+		} else {
+			$sql= "DELETE FROM RolePermission WHERE permission='$perm' AND role=".$this->role->getId();
 		}
-		$ret .="</table>";
-		foreach($this->specialPermissions($form) as $perm){
+		$db =& DB::instance();
+		$ok = $db->query($sql);
+		if ($ok){
+			$this->status->setValue('changed permission '.$perm);
+		} else {
+			$this->status->setValue(DB::lastError());
+		}
+
+	}
+	function setRole(){
+		$this->role =& $this->roles->getValue();
+		if (getClass($this->role)=='role'){
+			$acts =& $this->actions();
+			$self =& $this;
+			$this->addComponent(new Component, 'perms');
+			foreach(get_subclasses('PersistentObject') as $name) {
+				 $acts->map(lambda('$act','$self->addCheckBox($name."=>".$act);',get_defined_vars()));
+			}
+		}
+/*		foreach($this->specialPermissions() as $perm){
 				$ret .="<td><input type=\"checkbox\" name=\"".$perm."\"";
 				if ($role->havePermission($perm)) $ret .=	"checked=\"checked\"";
 				$ret .=	" value=\"Insert\">$perm</td>";
 		}
-		$ret .=		"<input name=\"execform\" type=\"submit\"></form>";
-		return $ret;
+		$ret .=		"<input name=\"execform\" type=\"submit\"></form>";*/
 	}
 }
 

@@ -24,14 +24,17 @@ class DateTimeField extends DataField {
         return $d3;
     }
     function getValue() {
-        if (ereg("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", parent::getValue())) {
-            return parent::getValue();
+    	$v = parent::getValue();
+        if (ereg("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $v)) {
+            return $v;
         } else {
-            $date = getDate();
-            return $this->format($date);
+			return $this->now();
         }
     }
-        function format ($date) {
+    function now(){
+        return $this->format(getDate());
+    }
+    function format ($date) {
         return $this->dateFormat($date)." ".$this->timeFormat($date);
     }
     function timeformat ($date) {

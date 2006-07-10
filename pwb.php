@@ -38,23 +38,6 @@ foreach ($app as $dir) {
 	includemodule(basedir."/".$dir);
 }
 
-/*Session handling*/
-session_name(strtolower(app_class));
-if ($_REQUEST["restart"]=="yes") {
-  $sessionid = $_COOKIE[session_name()];
-  $orgpath = getcwd();
-  chdir(PHP_BINDIR);
-  chdir(session_save_path());
-  $path = realpath(getcwd()).'/';
-  if(file_exists($path.'sess_'.$sessionid)) {
-   unlink($path.'sess_'.$sessionid);
-  }
-  chdir($orgpath);
-  session_regenerate_id();
-}
-session_start();
-if ($_REQUEST["reset"]=="yes") {
-	unset($_SESSION[sitename][app_class]);
-}
+includemodule(pwbdir.'/Session');
 
 ?>
