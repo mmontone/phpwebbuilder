@@ -41,7 +41,7 @@ class Widget extends Component {
 	}
 	function setEnqueuedHooks(& $view) {
 		foreach (array_keys($this->enqueued_hooks) as $i) {
-			$this->enqueued_hooks[$i]->call(array('view' => &$view));
+			$this->enqueued_hooks[$i]->callWith(&$view);
 		}
 	}
 
