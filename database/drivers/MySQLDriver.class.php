@@ -17,7 +17,7 @@ class DB {
 	function batchExec($sqls) {
 		foreach($sqls as $sql) {
 			if (trim($sql)!="") { //User Might have included a "" at the end
-				$rec = $this->SQLExec($sql, FALSE, $this);
+				$rec = $this->query($sql);
 				$ret []= $this->fetchArray($rec);
 			}
 		}
@@ -60,7 +60,7 @@ class MySQLdb extends DB {
     	trace($sql. '<br/>');
 		$this->openDatabase();
 		$this->lastSQL = $sql;
-		$reg = mysql_query ($sql);
+        $reg = mysql_query ($sql);
         if (!$reg){
         	$this->lastError=mysql_error() . ': '.$sql;
         	return false;
