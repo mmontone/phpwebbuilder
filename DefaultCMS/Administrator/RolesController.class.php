@@ -15,65 +15,26 @@ class RolesController extends Component {
 		$col->addAll(array("Add", "Edit", "Show", "Delete", "List", "*", "Menu"));
 		return $col;
 	}
-	function specialPermissions ($form){
+	function specialPermissions (){
 		$cons = get_subclasses ('Component');
 		$arr = array();
-		foreach($cons as $c) {
-			$con = new $c;
-			$p = $con->permissionNeeded($form);
+		/*foreach($cons as $c) {
+			$con = new $c($v=&new ValueHolder(''));
+			$p = $con->permissionNeeded();
 			if (is_array($p)){
 				foreach($p as $perm)
 				$arr[$perm] = $perm;
 			} else {
 				$arr [$p]= $p;
 			}
-		}
+		}*/
 		return $arr;
 	}
-	function begin($form) {
-		$ret ="";
-		$ret .=$this->saveValues($form);
-		$ret .=$this->showOptions($form);
-		return $ret;
-	}
-	function saveValues($form) {
-		$db = new MySQLDB;
-		$sqls = array();
-		if (isset($form["execform"])){
-			$this->roleid=$form["roleidold"];
-			foreach(get_subclasses('PersistentObject') as $name) {
-				foreach($this->actions() as $act){
-					if ($form["$name=>$act"]=="Insert") {
-						$sqls[] = "INSERT INTO RolePermission (permission,role)VALUES ('$name=>$act', ".$this->roleid.")";
-					} else {
-						$sqls []= "DELETE FROM RolePermission WHERE permission='$name=>$act' AND role=".$this->roleid;
-					}
-				}
-			}
-			foreach($this->specialPermissions($form) as $perm){
-				if ($form[$perm]=="Insert") {
-					$sqls[] = "INSERT INTO RolePermission (permission,role)VALUES ('$perm', ".$this->roleid.")";
-				} else {
-					$sqls []= "DELETE FROM RolePermission WHERE permission='$perm' AND role=".$this->roleid;
-				}
-			}
-
-
-			$db->batchExec($sqls);
-			$this->roleid=$form["roleidnext"];
-		}
-
-		return "";
-	}
 	function initialize() {
-		$this->addComponent(new Label('aaa'),'status');
+		$this->addComponent(new Label(''),'status');
 		$s =& new Select(new ValueHolder($v2=0),new PersistentCollection(Role));
 		$s->addEventListener(array('change'=>'setRole'), $this);
 		$this->addComponent($s, 'roles');
-
-		foreach($this->actions() as $act){
-			$ret .="<td>$act</td>";
-		}
 		$this->setRole();
 	}
 	function addCheckBox($perm){
@@ -110,12 +71,9 @@ class RolesController extends Component {
 				 $acts->map(lambda('$act','$self->addCheckBox($name."=>".$act);',get_defined_vars()));
 			}
 		}
-/*		foreach($this->specialPermissions() as $perm){
-				$ret .="<td><input type=\"checkbox\" name=\"".$perm."\"";
-				if ($role->havePermission($perm)) $ret .=	"checked=\"checked\"";
-				$ret .=	" value=\"Insert\">$perm</td>";
+		foreach($this->specialPermissions() as $perm){
+			$this->addCheckBox($perm);
 		}
-		$ret .=		"<input name=\"execform\" type=\"submit\"></form>";*/
 	}
 }
 
