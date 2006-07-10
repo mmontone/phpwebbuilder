@@ -81,13 +81,10 @@
 					</tr>
 				</thead>
 				<tbody id="objs">
-					<template class="PersistentObjectViewer">
-						<tr>
-							<template class="FieldValueComponent">
-								<td>
+					<template class="PersistentObjectViewer"><tr>
+							<template class="FieldValueComponent"><td>
 									<container id="value" />
-								</td>
-							</template>
+							</td></template>
 							<!-- <td><a href="#" id="view"><img class="operation" title="View" src="$templatesdir/icons/stock_properties.png"/></a></td> -->
 							<td>
 								<a href="#" id="edit">
@@ -101,8 +98,7 @@
 										title="Delete" src="$templatesdir/icons/stock_delete.png" />
 								</a>
 							</td>
-						</tr>
-					</template>
+					</tr></template>
 				</tbody>
 			</table>
 			<a href="#" id="new">
