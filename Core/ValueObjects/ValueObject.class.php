@@ -1,6 +1,6 @@
 <?php
 
-class ValueObject {
+class ValueObject extends ValueModel{
 	var $value;
 
     function ValueObject($value) {

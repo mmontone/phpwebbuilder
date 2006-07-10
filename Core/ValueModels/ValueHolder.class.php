@@ -7,17 +7,19 @@ class ValueHolder extends ValueModel
     // Private!!
     var $__value;
 
-    function ValueHolder(&$value) {
+    function ValueHolder($value) {
     	parent::ValueModel();
     	$this->primitiveSetValue($value);
     }
 
-    function &getValue() {
+    function getValue() {
     	return $this->__value;
     }
-
-    function primitiveSetValue(&$value) {
-    	$this->__value =& $value;
+	function setValue($value) {
+		parent::setValue($value);
+	}
+    function primitiveSetValue($value) {
+	   	$this->__value = $value;
     }
 }
 ?>

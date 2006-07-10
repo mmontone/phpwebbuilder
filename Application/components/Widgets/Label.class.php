@@ -7,5 +7,9 @@ class Label extends Text
     function Label($string) {
     	parent::Text(new ValueHolder($string));
     }
+	function setValue($value) {
+		parent::setValue($value);
+	}
+
 }
 ?>
