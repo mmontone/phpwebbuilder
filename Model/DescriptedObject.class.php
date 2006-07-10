@@ -177,7 +177,7 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function & findIndexField() {
-		return $this->fieldsWithNames($this->indexFields);
+		return $this->allIndexFields();		
 	}
 	function & field($s) {
 		return $this-> $s;
