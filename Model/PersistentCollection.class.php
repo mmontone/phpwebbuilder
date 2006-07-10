@@ -91,11 +91,15 @@ class PersistentCollection extends Collection{
 
 	function size() {
 		$obj = & new $this->dataType;
-		$sql = 'SELECT COUNT('.$this->tableName().'.id) as \'collection_size\' FROM ' . $this->restrictions();
+		$sql = 'SELECT COUNT(*) as collection_size FROM ' . $this->restrictions();
 		$db = & DB::Instance();
-		$reg = $db->SQLExec($sql, FALSE, $this);
-		$data = $db->fetchrecord($reg);
-		return $data['collection_size'];
+		$reg = $db->query($sql);
+		if ($reg===false) {
+			return false;
+		} else {
+			$data = $db->fetchrecord($reg);
+			return $data['collection_size'];
+		}
 	}
 
 	function & getObj($id) {
