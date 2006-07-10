@@ -8,7 +8,7 @@ class PersistentCollection extends Collection{
 	var $limit = 10;
 	var $offset = 0;
 	var $size;
-	var $elements=null;
+	var $elements=array();
 	function PersistentCollection($dataType = "") {
 		$this->dataType = $dataType;
 		$this->conditions = array ();
@@ -64,7 +64,7 @@ class PersistentCollection extends Collection{
 		$this->elements = array();
 	}
 	function &elements() {
-		if (!$this->elements){
+		if (empty($this->elements)){
 			$obj = & new $this->dataType;
 			$sql = $this->selectsql();
 			$db =& DB::Instance();
