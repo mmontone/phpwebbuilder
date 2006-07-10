@@ -19,8 +19,6 @@ require_once 'Fields/WikiArea.class.php';
 require_once 'DescriptedObject.class.php';
 require_once 'PersistentCollection.class.php';
 require_once 'PersistentObject.class.php';
-require_once 'ObjectDescription.class.php';
-require_once 'FieldDescription.class.php';
 require_once 'Validation/PWBException.class.php';
 require_once 'Validation/Validation.class.php';
 require_once 'Validation/ValidationException.class.php';
