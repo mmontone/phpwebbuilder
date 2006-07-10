@@ -78,7 +78,6 @@ class InstallComponent extends Component {
 		foreach ($this->datas as $data => $name) {
 			$form[$data] = $this->$data->value->getValue();
 		}
-		copy(dirname(__FILE__) . "/../BaseDirExample/Configuration/ConfigReader.class.php", $form["basedir"] . "/Configuration/ConfigReader.class.php");
 		$_SESSION[$form["sitename"]] = $_SESSION[sitename];
 		$conf = new ConfigReader;
 		$conf->write($configfile, $form);
