@@ -12,7 +12,9 @@ class DefaultCMS extends Component{
  	function changeBody(&$menu,&$comp){
 		$this->addComponent($comp, 'body');
  		$comp->addEventListener(array('menuChanged'=>'updateMenu'),$this);
+ 		$comp->addEventListener(array('logged'=>'login'),$this);
  	}
+ 	function login(){}
  	function updateMenu(){
  		$this->menu->newmenu();
  	}

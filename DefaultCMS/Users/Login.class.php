@@ -23,6 +23,7 @@ class Login extends Component
 		$p = $this->password->getValue();
 		$success =& User::login($u, $p);
 		if ($success){
+			$this->triggerEvent('logged', $success);
 			$this->triggerEvent('menuChanged', $success);
 			$this->state->setValue($v = 'success');
 		} else {
