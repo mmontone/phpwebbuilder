@@ -25,7 +25,7 @@ class CollectionNavigator extends Component {
 		$this->addComponent(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
 		$this->addComponent(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
 		$this->addComponent(new ActionLink($this, 'filter', 'filter', $n = null), 'filter');
-		$this->addComponent(new ActionLink($this, 'getValue', 'refresh', $n = null), 'refresh');
+		$this->addComponent(new ActionLink($this, 'refresh', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 1);
 		$this->firstElement->onChangeSend('refresh', $this);
 		$this->addComponent(new Input($this->firstElement), 'firstElem');
