@@ -5,7 +5,7 @@ class PersistentCollection extends Collection{
 	var $order;
 	var $conditions;
 	var $dataType;
-	var $limit = 10;
+	var $limit = 0;
 	var $offset = 0;
 	var $size;
 	var $elements=array();
