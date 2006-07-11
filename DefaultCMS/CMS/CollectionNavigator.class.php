@@ -13,7 +13,7 @@ class CollectionNavigator extends Component {
 			$obj = & new $this->classN;
 			$this->fields = & $obj->allIndexFields();
 		} else {
-			$this->fields = $fields;
+			$this->fields =& $fields;
 		}
 
 		parent :: Component($callbacks);

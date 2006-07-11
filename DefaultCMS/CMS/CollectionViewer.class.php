@@ -14,7 +14,10 @@ class CollectionViewer extends CollectionNavigator {
 		parent::initialize();
 	}
 	/* Editing */
-	function editObject(&$obj, $msg=array()) {
+
+	function editObject($params) {
+		$obj =& $params['object'];
+
 		$ec =& new PersistentObjectEditor($obj);
     	$ec->registerCallback('cancel', new FunctionObject($this, 'cancel'));
     	$ec->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
@@ -24,6 +27,7 @@ class CollectionViewer extends CollectionNavigator {
     	}
     	$this->call($ec);
 	}
+
 
 	function viewObject(&$obj) {
 		$viewer =& new PersistentObjectViewer($obj);
@@ -54,7 +58,8 @@ class CollectionViewer extends CollectionNavigator {
 		$this->editObject($obj);
 	}
 
-	function deleteObject(&$fc) {
+	function deleteObject($params) {
+		$fc =& $params['object'];
 		$translator = translator;
 		if (!$translator)
 			$translator = 'EnglishTranslator';
@@ -88,11 +93,11 @@ class CollectionViewer extends CollectionNavigator {
 		$u =& User::logged();
 		//$fc->addComponent(new ActionLink2(array('action'=>new FunctionObject($this, 'viewObject'), 'text'=>'View')), 'view');
 		PermissionChecker::addComponent($fc,
-					new ActionLink($this, 'editObject', 'Edit', $obj),
+					new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))
 					,'edit');
 		PermissionChecker::addComponent($fc,
-					new ActionLink($this, 'deleteObject', 'Delete', $fc),
+					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $fc)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Delete', '*',$class.'=>*'))
 					,'delete');
 	}

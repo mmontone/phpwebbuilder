@@ -3,6 +3,7 @@
 class PersistentObjectEditor extends PersistentObjectPresenter {
     function initialize(){
     	$obj =& $this->obj;
+
     	$this->addComponent(new Label($this->classN), 'className');
     	$this->addComponent(new Label($obj->id->getValue()), 'idN');
     	$this->factory =& new EditorFactory;
@@ -12,7 +13,8 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 					new FunctionObject(User::logged(), 'hasPermissions', array(getClass($obj).'=>Delete', '*',getClass($obj).'=>*'))
 					,'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n), 'cancel');
-		parent::initialize();
+       	parent::initialize();
+
     }
 
     function cancel() {
