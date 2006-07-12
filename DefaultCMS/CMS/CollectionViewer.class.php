@@ -55,7 +55,7 @@ class CollectionViewer extends CollectionNavigator {
 			$obj->$f->setValue($cond[1]);
 
 		}
-		$this->editObject($obj);
+		$this->editObject(array('object' => &$obj));
 	}
 
 	function deleteObject($params) {
@@ -74,7 +74,9 @@ class CollectionViewer extends CollectionNavigator {
 		if (!$ok) {
 			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
 		}
-		$this->refresh();
+		else {
+			$this->refresh();
+		}
 	}
 
 	function warningAccepted() {

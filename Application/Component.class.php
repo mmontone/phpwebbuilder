@@ -134,7 +134,7 @@ class Component extends PWBObject
 		$callbackComponent->replaceView($this);
 		$callbackComponent->app->needsView($this);
 		$callbackComponent->holder->hold($this);
-        if ($callback != null || $callbackComponent->registered_callbacks[$callback] != null) {
+        if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
 	}
