@@ -17,6 +17,7 @@ require_once 'CMS/PresentersFactory/FieldPresenterFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/CollectionFieldEditorFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/EditorFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/IdFieldEditorFactory.class.php';
+require_once 'CMS/PresentersFactory/Editors/VersionFieldEditorFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/IndexFieldEditorFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/TextAreaEditorFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/BoolFieldEditorFactory.class.php';

@@ -13,10 +13,6 @@ class DescriptedObject extends PWBObject {
 
 	var $validation_errors = array();
 
-	function DescriptedObject() {
-    	parent::PWBObject();
-    }
-
 	function commitChanges() {
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
@@ -42,6 +38,7 @@ class DescriptedObject extends PWBObject {
 	}
 	function basicInitialize() {
 		$this->addField(new idField("id", FALSE));
+		$this->addField(new VersionField("PWBversion", FALSE));
 		if ($this->isNotTopClass($this)) {
 			$this->addField(new superField("super", FALSE));
 		}
@@ -177,7 +174,7 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function & findIndexField() {
-		return $this->allIndexFields();		
+		return $this->allIndexFields();
 	}
 	function & field($s) {
 		return $this-> $s;

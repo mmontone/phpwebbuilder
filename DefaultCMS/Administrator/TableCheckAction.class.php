@@ -171,6 +171,12 @@ class IdFieldTableCheckAction extends NumFieldTableCheckAction {
 	}
 }
 
+class VersionFieldTableCheckAction extends NumFieldTableCheckAction {
+	function type(){
+		return "int(11) unsigned NOT NULL DEFAULT 0";
+	}
+}
+
 class SuperFieldTableCheckAction extends NumFieldTableCheckAction {
 	function type(){
 		return "int(11) unsigned";

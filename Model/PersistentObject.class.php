@@ -124,6 +124,8 @@ class PersistentObject extends DescriptedObject {
 
 	function basicInsert() {
 		$values = '';
+		$this->PWBversion->setValue(0);
+		$this->PWBversion->commitChanges();
 		foreach ($this->allFieldsThisLevel() as $index => $field) {
 			$values .= $field->insertValue();
 		}
@@ -138,25 +140,24 @@ class PersistentObject extends DescriptedObject {
 
 	function updateString() {
 		$values = '';
+		$ver = $this->PWBversion->getValue();
+		$this->PWBversion->setValue($this->PWBversion->getValue()+1);
 		foreach ($this->allFieldsThisLevel() as $index => $field) {
 			$values .= $field->updateString();
 		}
 		$values = substr($values, 0, -2);
-		if (trim($values)==''){
-			return false;
-		} else {
-			return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID();
-		}
+		return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
 	}
 
 	function basicUpdate() {
 		$sql = $this->updateString();
-		if ($sql) {
-			$db =& DB::Instance();
-			$ok = $db->SQLExec($sql, FALSE, $this, &$rows);
-			return $ok !== FALSE;
-		} else {
+		$db =& DB::Instance();
+		$ok = $db->SQLExec($sql, FALSE, $this, &$rows);
+		if ($ok !== FALSE && $rows>0){
 			return true;
+		} else{
+			$this->PWBversion->flushChanges();
+			return false;
 		}
 	}
 

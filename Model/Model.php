@@ -11,6 +11,7 @@ require_once 'Fields/HtmlArea.class.php';
 require_once 'Fields/IdField.class.php';
 require_once 'Fields/IndexField.class.php';
 require_once 'Fields/NumField.class.php';
+require_once 'Fields/VersionField.class.php';
 require_once 'Fields/PasswordField.class.php';
 require_once 'Fields/SuperField.class.php';
 require_once 'Fields/TextField.class.php';

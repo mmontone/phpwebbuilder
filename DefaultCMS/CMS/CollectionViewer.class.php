@@ -17,7 +17,7 @@ class CollectionViewer extends CollectionNavigator {
 
 	function editObject($params) {
 		$obj =& $params['object'];
-
+		$msg =& $params['msg'];
 		$ec =& new PersistentObjectEditor($obj);
     	$ec->registerCallback('cancel', new FunctionObject($this, 'cancel'));
     	$ec->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
@@ -40,7 +40,7 @@ class CollectionViewer extends CollectionNavigator {
 		if ($ok){
 			$this->refresh();
 		} else {
-			$this->editObject($object, array('save'=>DB::lastError() . DB::lastSQL()));
+			$this->editObject(array('object'=> &$object, 'msg' =>array('version'=>new ValidationException(array('message'=>'This object has been modified by another user'))));
 		}
 	}
 
