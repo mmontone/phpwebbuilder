@@ -40,7 +40,7 @@ class CollectionViewer extends CollectionNavigator {
 		if ($ok){
 			$this->refresh();
 		} else {
-			$this->editObject(array('object'=> &$object, 'msg' =>array('version'=>new ValidationException(array('message'=>'This object has been modified by another user'))));
+			$this->editObject(array('object'=> &$object, 'msg' =>array('version'=>new ValidationException(array('message'=>'This object has been modified by another user')))));
 		}
 	}
 
