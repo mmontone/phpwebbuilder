@@ -78,6 +78,7 @@ class ViewCreator {
 			if ($view->parentNode != null && $view->parentNode->is($parentView)) return $view;
 		}
 		$id = $component->getSimpleId();
+		if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
 		$vid =& $parentView->childrenWithId($id);
 		if ($vid!=null){
 			if (!$vid->isContainer()){

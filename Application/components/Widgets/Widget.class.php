@@ -2,6 +2,7 @@
 class Widget extends Component {
 	var $value_model;
 	var $enqueued_hooks = array ();
+	var $disabled;
 
 	function Widget(& $value_model, $callback_actions = array ()) {
 		if ($value_model == null) {
@@ -163,6 +164,20 @@ class Widget extends Component {
 
 	function & printValue() {
 		return $this->getValue();
+	}
+
+	function disable() {
+		$this->disabled = true;
+	}
+
+	function enable() {
+		$this->disabled = false;
+	}
+
+	function prepareToRender() {
+		if ($this->disabled)
+			$this->view->setAttribute('disabled','disabled');
+
 	}
 }
 ?>

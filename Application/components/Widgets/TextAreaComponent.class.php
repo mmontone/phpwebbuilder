@@ -7,9 +7,6 @@ class TextAreaComponent extends Widget{
 		$v->setTagName('textarea');
 		return $v;
 	}
-	function prepareToRender(){
-		$this->view->appendChild(new XMLTextNode($this->printValue()));
-	}
 	function valueChanged(&$value_model, &$params) {
 		/*WARNING!!! If there's an error, look here first ;) */
 		$text = & $this->printValue();
@@ -18,6 +15,11 @@ class TextAreaComponent extends Widget{
 	}
 	function printValue(){
 		return toAjax($this->value_model->getValue());
+	}
+	function prepareToRender() {
+		$this->view->appendChild(new XMLTextNode($this->printValue()));
+		if ($this->disabled)
+			$this->view->setAttribute('readonly','true');
 	}
 }
 
