@@ -55,6 +55,7 @@ class CollectionViewer extends CollectionNavigator {
 			$obj->$f->setValue($cond[1]);
 
 		}
+		$obj->commitChanges();
 		$this->editObject(array('object' => &$obj));
 	}
 
