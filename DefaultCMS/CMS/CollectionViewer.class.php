@@ -94,18 +94,24 @@ class CollectionViewer extends CollectionNavigator {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$class = & $this->classN;
 		$u =& User::logged();
-		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))), 'viewer');
-		$this->objs->addComponent($fc);
+
 		/*
+		PermissionChecker::addComponent($fc,
+			new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),
+			new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Show', '*',$class.'=>*')),
+			'viewer');*/
+		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
+
 		PermissionChecker::addComponent($fc,
 					new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))
-					,'edit');
+					,'editor');
 		PermissionChecker::addComponent($fc,
 					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $fc)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Delete', '*',$class.'=>*'))
-					,'delete');
-		*/
+					,'deleter');
+		$this->objs->addComponent($fc);
+
 	}
 }
 

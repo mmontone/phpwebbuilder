@@ -50,7 +50,9 @@ class DescriptedObject extends PWBObject {
 
 		$this->initialize();
 	}
+
 	function initialize(){}
+
     function updateFields() {
     	$this->table = $this->table_field->getValue();
     	$this->displayString = $this->display_field->getValue();

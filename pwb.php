@@ -17,7 +17,6 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 require_once dirname(__FILE__) . "/lib/basiclib.php";
 
 
-
 if (!defined('modules')) {
 	define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS");
 }

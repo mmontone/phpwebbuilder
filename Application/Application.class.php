@@ -30,7 +30,7 @@ class Application extends ComponentHolder {
 	function pushCommand(&$command){
 		$this->commands->push($command);
 	}
-	function setRootComponent(){
+	function &setRootComponent(){
 		trigger_error("Subclass responsibility");
 		exit;
 	}

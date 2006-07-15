@@ -45,7 +45,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	}
 
 	function cancel() {
-		$this->callback();
+		$this->callback('refresh');
 	}
 }
 
