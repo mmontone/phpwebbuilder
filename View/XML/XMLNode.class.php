@@ -9,7 +9,9 @@ class XMLNode extends DOMXMLNode {
 	var $css_classes = array();
 
 	function XMLNode($tag_name = 'div', $attributes = array ()) {
-		return parent :: DOMXMLNode($tag_name, $attributes);
+		$c = 	$attributes['class'];
+		parent :: DOMXMLNode($tag_name, $attributes);
+		if ($c!='')	$this->addCSSClass($c);
 	}
 
 	function addCSSClass($class) {
