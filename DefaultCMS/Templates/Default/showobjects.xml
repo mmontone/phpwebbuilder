@@ -31,6 +31,25 @@
 		</a>
 	</template>
 
+	<template class="FieldEditor">
+		<tr>
+			<td>
+				<container id="fieldName" />
+			</td>
+			<td>
+				<container id="widget" />
+				<a href="#" id="save">
+					<img class="operation" title="Save changes"
+						src="$templatesdir/icons/stock_save.png" />
+				</a>
+				<a href="#" id="cancel">
+					<img class="operation" title="Cancel"
+						src="$templatesdir/icons/stock_cancel.png" />
+				</a>
+			</td>
+		</tr>
+	</template>
+
 	<template class="PersistentObjectViewer">
 		<translated>Object of class</translated>
 		<container id="className" />

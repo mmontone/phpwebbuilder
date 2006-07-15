@@ -12,6 +12,7 @@ require_once 'Files/ReadFile.class.php';
 require_once 'CMS/CollectionViewer.class.php';
 require_once 'CMS/PersistentObjectViewer.class.php';
 require_once 'CMS/PersistentObjectEditor.class.php';
+require_once 'CMS/FieldEditor.class.php';
 require_once 'CMS/ValidationErrorsDisplayer.class.php';
 require_once 'CMS/PresentersFactory/FieldPresenterFactory.class.php';
 require_once 'CMS/PresentersFactory/Editors/CollectionFieldEditorFactory.class.php';

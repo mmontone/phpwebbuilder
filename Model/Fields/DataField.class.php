@@ -7,6 +7,7 @@ class DataField extends PWBObject {
 	var $owner; // The object the field belongs to
 	var $displayString;
 	var $buffered_value = null;
+	var $modified = false;
 
 	function DataField($name, $isIndex = false) {
 		parent::PWBObject();
@@ -104,6 +105,7 @@ class DataField extends PWBObject {
 	}
 	function setValue($data) {
 		$this->buffered_value =& $data;
+		$this->modified = true;
 		$this->triggerEvent('changed', $no_params = null);
 	}
 
@@ -115,11 +117,17 @@ class DataField extends PWBObject {
 	}
 
 	function commitChanges() {
+		$this->modified = false;
 		$this->value =& $this->buffered_value;
 	}
 
 	function flushChanges() {
+		$this->modified = false;
 		$this->buffered_value =& $this->value;
+	}
+
+	function isModified() {
+		return $this->modified;
 	}
 
 	function loadFrom($reg) {

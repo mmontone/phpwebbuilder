@@ -20,8 +20,31 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 					new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))
 					,'edit');
-       	//$this->addComponent(new )
-		parent::initialize();
+
+    	parent::initialize();
+    }
+
+    function addField($name, &$field){
+		$fc =& new FieldValueComponent;
+		$this->fieldComponents[$name] = & $this->factory->createFor($field);
+		$fc->addComponent($this->fieldComponents[$name], 'value');
+		$user =& User::logged();
+		$class = getClass($this->obj);
+		if ($user->hasPermissions(array($class.'=>Edit'))) {
+            $fc->addComponent(new CommandLink(array('text' => $field->displayString, 'proceedFunction' => new FunctionObject($this, 'editField', array('field' => &$field, 'fvc' => &$fc)))), 'fieldName');
+        }
+        else {
+			$fc->addComponent(new Label($field->displayString), 'fieldName');
+        }
+
+		$this->addComponent($fc, $name);
+    }
+
+    function editField($params) {
+   	  	$field =& $params['field'];
+   	  	$fvc =& $params['fvc'];
+    	$field_editor =& new FieldEditor(array('field' => &$field));
+    	$fvc->call($field_editor);
     }
 
     function editObject($params) {

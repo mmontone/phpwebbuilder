@@ -23,6 +23,10 @@ class Input extends Widget {
 		return toAjax($this->value_model->getValue());
 	}
 
+	function setValue($value) {
+		parent::setValue($value);
+	}
+
 }
 
 ?>

@@ -76,8 +76,9 @@ class Widget extends Component {
 		$new_value = & $this->valueFromForm($params);
 		$value = & $this->getValue();
 
-		if ($new_value != $value)
+		if ($new_value != $value) {
 			$this->setValue($new_value);
+		}
 	}
 
 	function valueFromForm(& $params) {
