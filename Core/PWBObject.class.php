@@ -42,7 +42,6 @@ class PWBObject
 		return $ok && $ok2;
 	}
 	function retractInterestIn($event_selector, &$listener) {
-    	print_backtrace();
     	$listeners =& $this->event_listeners[$event_selector];
 
 		reset($listeners);
