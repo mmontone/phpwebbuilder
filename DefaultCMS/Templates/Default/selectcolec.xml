@@ -17,6 +17,10 @@
 						<td><container id="value"/></td>
 					</template>
 					<td><a href="#" id="select"><img class="operation" title="Select" src="$templatesdir/icons/stock_ok.png"/></a></td>
+					<td><a href="#" id="viewer">
+								<img class="operation" title="View"
+									src="$templatesdir/icons/stock_properties.png" />
+					</a></td>
 				</tr>
 			</template>
 		</tbody></table>

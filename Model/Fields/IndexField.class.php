@@ -52,8 +52,10 @@ class IndexField extends NumField {
 
 	function setValue($value) {
 		parent::setValue($value);
-		$this->buffered_target = null;
+		$n = null;
+		$this->buffered_target =& $n;
 	}
+
 	function getValue(){
 		$v = parent::getValue();
 		if ($v!=null){

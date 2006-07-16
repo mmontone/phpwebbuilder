@@ -2,10 +2,6 @@
 
 class CollectionElementChooser extends CollectionNavigator {
 
-	function CollectionElementChooser(&$col) {
-		parent::CollectionNavigator($col);
-	}
-
 	function initialize() {
 		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		parent::initialize();
@@ -27,7 +23,15 @@ class CollectionElementChooser extends CollectionNavigator {
 	function addLine(&$obj) {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$this->objs->addComponent($fc);
+		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
 		$fc->addComponent(new ActionLink($this, 'selectObject', 'Select', $obj), 'select');
+	}
+
+	function viewObject($params) {
+		$obj =& $params['object'];
+		$viewer =& new PersistentObjectViewer($obj);
+    	//$viewer->registerCallback('refresh', new FunctionObject($this, 'refresh'));
+    	$this->call($viewer);
 	}
 
 	function selectObject(&$obj){
