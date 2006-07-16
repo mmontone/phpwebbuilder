@@ -38,8 +38,9 @@ class Translator extends PersistentObject {
     }
 
     function refresh() {
-    	$this->dictionary = null;
-    	$_SESSION['translator'][$this->language->getValue()] = null;
+    	$n = null;
+    	$this->dictionary =& $n;
+    	$_SESSION['translator'][$this->language->getValue()] =& $n;
     }
 }
 ?>

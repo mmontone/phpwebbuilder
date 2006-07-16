@@ -1,12 +1,6 @@
 <?php
 
 class Input extends Widget {
-	/*
-	function initialize() {
-		parent::initialize();
-
-	}
-	*/
 	function initializeDefaultView(&$view){
 		$view->setTagName('input');
 		$view->setAttribute('type', 'text');
@@ -22,11 +16,6 @@ class Input extends Widget {
 	function printValue(){
 		return toAjax($this->value_model->getValue());
 	}
-
-	function setValue($value) {
-		parent::setValue($value);
-	}
-
 }
 
 ?>

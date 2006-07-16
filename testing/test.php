@@ -1,12 +1,27 @@
 <?php
 
-	$a = array();
-	$b = array();
-	class A{}
+	class A {
+    function A () {
+        $this->b =& new B($this);
+    }
+}
 
-	$aa =& new A;
-	$a[1] =& $aa;
-	echo count($a);
-	unset($a[1]);
-	echo count($a);
+class B {
+    function B ($parent = NULL) {
+        $this->parent =& $parent;
+    }
+}
+
+/*
+for ($i = 0 ; $i < 1000000 ; $i++) {
+    $a =& new A();
+}*/
+
+$x =& new A;
+$y =& $x;
+$z =& $x;
+$n = null;
+$z =null;
+var_dump($y);
+var_dump($z);
 	?>

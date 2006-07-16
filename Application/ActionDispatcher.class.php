@@ -35,10 +35,12 @@ class ActionDispatcher {
 	function updateViews(& $updates) {
 		$ks = array_keys($updates);
 		foreach ($ks as $k) {
+			//echo 'View updated: ' . getClass($updates[$k][0]) . $updates[$k][0]->getId() . ' update: ' . $updates[$k][1] . '</br>';
 			$updates[$k][0]->viewUpdated($updates[$k][1]);
 		}
 	}
 	function triggerEvent(& $event) {
+		//echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
 		$target = & $this->getComponent($event['target'], $event['app']);
 		if ($target!=null){
 			$target->triggerEvent($event['event'], $v = array ());

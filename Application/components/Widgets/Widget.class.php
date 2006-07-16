@@ -71,7 +71,7 @@ class Widget extends Component {
 		$view->addCSSClass('clickable');
 	}
 
-	function valueChanged() {}
+	//function valueChanged(&$value_model, &$params) {}
 
 	function viewUpdated($params) {
 		$new_value = & $this->valueFromForm($params);

@@ -44,8 +44,10 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
    	  	$field =& $params['field'];
    	  	$fvc =& $params['fvc'];
     	$field_editor =& new FieldEditor(array('field' => &$field));
+    	$field_editor->registerCallback('field_edited', new FunctionObject($this, 'fieldEdited'));
     	$fvc->call($field_editor);
     }
+
 
     function editObject($params) {
 		$obj =& $params['object'];
@@ -58,6 +60,10 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	}
     	$this->call($ec);
 	}
+
+    function fieldEdited(&$field) {
+    	$this->objectEdited($this->obj);
+    }
 
     function objectEdited(&$object) {
 		$ok = $object->save();

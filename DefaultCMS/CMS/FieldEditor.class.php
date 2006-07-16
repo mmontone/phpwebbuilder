@@ -12,14 +12,15 @@ class FieldEditor extends Component {
 
 	function initialize() {
 		$this->addComponent(new Label($this->field->displayString), 'fieldName');
-		$this->addComponent($this->factory->createFor($this->field), 'widget');
+		$widget =& $this->factory->createFor($this->field);
+		$this->addComponent($widget, 'widget');
 		$this->addComponent(new CommandLink(array('text' => 'Save', 'proceedFunction' => new FunctionObject($this, 'saveField'))), 'save');
 		$this->addComponent(new CommandLink(array('text' => 'Cancel', 'proceedFunction' => new FunctionObject($this, 'cancel'))), 'cancel');
 	}
 
 	function saveField() {
 		$this->field->commitChanges();
-		$this->callback('refresh');
+		$this->callback('field_edited', $this->field);
 	}
 
 	function cancel() {

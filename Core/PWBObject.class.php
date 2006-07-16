@@ -27,7 +27,8 @@ class PWBObject
 			$handle =& $this->event_handles[$h];
 			$this->releaseHandle($handle);
 		}
-		$this->event_handles = array();
+		$event_handles = array();
+		$this->event_handles =& $event_handles;
 	}
 
 	function equalTo(&$other_pwb_object) {
@@ -104,10 +105,6 @@ class PWBObject
     	if (!isset($this->event_listeners[$event])) {
 	        $this->event_listeners[$event] = array();
         }
-    	/*
-    	if (count($this->event_listeners[$event]) > 2) {
-    		echo 'Listeners: ' . count($this->event_listeners[$event]) . '</br>';
-    	}*/
     	$this->event_listeners[$event][$this->listener_handle] =& $function;
     	$handle = array('event' => $event, 'handle' => $this->listener_handle, 'target' => &$this);
        	$this->listener_handle++;

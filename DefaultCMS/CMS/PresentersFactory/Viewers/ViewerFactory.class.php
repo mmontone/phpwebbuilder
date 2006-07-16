@@ -6,7 +6,7 @@ class ViewerFactory extends FieldPresenterFactory {}
 
 class DataFieldViewerFactory extends ViewerFactory {
 	function &componentForField(&$field) {
-		return new Label($field);
+		return new Text($field);
 	}
 }
 
