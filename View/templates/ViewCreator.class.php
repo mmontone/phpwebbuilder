@@ -84,9 +84,11 @@ class ViewCreator {
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$component->setView($vid);
+				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element '.$vid->tagName,E_USER_NOTICE);
 				return $vid;
 			} else {
 				$pos =& $vid;
+				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' found container with id',E_USER_NOTICE);
 				$parentView =& $vid->parentNode;
 			}
 		} else {
@@ -95,9 +97,11 @@ class ViewCreator {
 				$parentView =& $ct->parentNode;
 				$pos =& $ct->createCopy();
 				$parentView->insertBefore($ct, $pos);
+				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' found container for class '.$ct->getAttribute('class'),E_USER_NOTICE);
 			} else {
 				$v =& new NullView;
 				$component->setView($v);
+				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' got NullView ',E_USER_NOTICE);
 				return $v;
 			}
 		}
@@ -105,6 +109,7 @@ class ViewCreator {
 			$tp0 =& $parentView->templateForClass($component);
 			if ($tp0!=null){
 				$tp =& $tp0->instantiateFor($component);
+				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
@@ -122,11 +127,14 @@ class ViewCreator {
 		$ts =& $this->templates->filter(lambda(
 				'&$t','return $t->isTemplateForClass($component);',get_defined_vars()));
 		if (!$ts->isEmpty()){
-			return $ts->first();
+			$t =& $ts->first();
+			trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Global Template for class '.$t->getAttribute('class'),E_USER_NOTICE);
+			return $t;
 		}
 		return $this->defaultTemplate($component);
 	}
 	function &defaultTemplate(&$component){
+		trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Default Template',E_USER_NOTICE);
 		return $component->createDefaultView();
 	}
 }

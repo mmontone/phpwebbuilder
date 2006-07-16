@@ -30,6 +30,8 @@ foreach ($modules as $dir) {
 	includemodule(pwbdir.'/'.trim($dir));
 }
 
+includemodule(pwbdir."/Logging");
+
 define('app', "MyInstances,MyComponents" );
 $app = explode(",", app);
 

@@ -14,6 +14,11 @@ class User extends PersistentObject {
 	$col->conditions["user"] = array("=", "'".$user."'");
 	$col->conditions["pass"] = array("=", "'".$pass."'");
 	$objs = $col->objects();
+	if ($objs===false) {
+		$u =& new User();
+		$u->user->setValue('guest');
+		return $u;
+	}
 	if (count($objs)>0) {
 		$objs[0]->getPermissions();
   		return $objs[0];

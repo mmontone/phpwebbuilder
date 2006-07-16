@@ -9,11 +9,15 @@ class XMLNode extends DOMXMLNode {
 	var $css_classes = array();
 
 	function XMLNode($tag_name = 'div', $attributes = array ()) {
-		$c = 	$attributes['class'];
 		parent :: DOMXMLNode($tag_name, $attributes);
-		if ($c!='')	$this->addCSSClass($c);
+		$this->addCSSClasses();
 	}
-
+	function addCSSClasses(){
+		$csss = explode(' ',$this->getAttribute('class'));
+		foreach($csss as $css){
+			$this->addCSSClass($css);
+		}
+	}
 	function addCSSClass($class) {
 		$this->css_classes[$class] = $class;
 		$this->setAttribute('class', implode(' ', $this->css_classes));

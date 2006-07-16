@@ -71,8 +71,8 @@ class Collection extends PWBObject{
 		return $this->foldr(new Collection, lambda('&$col,&$elem',
 			'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
 	}
-	function foldr($z, $f){
-		$acc = $z;
+	function &foldr(&$z, $f){
+		$acc =& $z;
 		$es =& $this->elements();
 		$ks = array_keys($es);
 		foreach($ks as $k){

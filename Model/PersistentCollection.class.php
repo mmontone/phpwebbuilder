@@ -69,6 +69,7 @@ class PersistentCollection extends Collection{
 			$sql = $this->selectsql();
 			$db =& DB::Instance();
 			$reg = $db->SQLExec($sql, FALSE, $this);
+			if ($reg===false) return false;
 			$col = array ();
 			while ($data = $db->fetchrecord($reg)) {
 				$col[] =& $obj->loadFromRec($data);
