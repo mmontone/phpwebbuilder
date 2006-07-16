@@ -27,6 +27,7 @@ require_once 'CMS/PresentersFactory/Searchers/TextFieldSearcherFactory.class.php
 require_once 'CMS/PresentersFactory/Viewers/IndexFieldViewerFactory.class.php';
 require_once 'CMS/PresentersFactory/Viewers/BoolFieldViewerFactory.class.php';
 require_once 'CMS/PresentersFactory/Viewers/TextAreaViewerFactory.class.php';
+require_once 'CMS/PresentersFactory/Viewers/CollectionFieldViewerFactory.class.php';
 require_once 'CMS/PresentersFactory/Viewers/ViewerFactory.class.php';
 require_once 'CMS/CollectionNavigator.class.php';
 require_once 'CMS/IndexFieldChooser.class.php';
