@@ -1,9 +1,5 @@
 <?php
 class ValueModel extends PWBObject {
-	function ValueModel() {
-		parent :: PWBObject();
-	}
-
 	function setValue(& $value) {
 		$old_value =& $this->getValue();
 		$this->primitiveSetValue($value);
@@ -17,10 +13,6 @@ class ValueModel extends PWBObject {
 		$this->addEventListener(array (
 			'changed' => $call_back_selector
 		), $listener);
-	}
-
-	function retractInterest(& $interested) {
-		$this->retractInterestIn('changed', $interested);
 	}
 }
 ?>

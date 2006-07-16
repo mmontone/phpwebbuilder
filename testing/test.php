@@ -1,16 +1,12 @@
 <?php
 
-	$gestor=opendir(dirname(__FILE__));
-	while (false !== ($f = readdir($gestor))) {
-		if (substr($f,-1)!='.' && $f!='test.php') {
-			$fs .= '<frame src="'.dirname($_SERVER["REQUEST_URI"]) .'/'. $f;
-			$fs .= '"/>';
-			$rs[]="1*";
-		}
-	}
-	$rows = implode(',', $rs);
+	$a = array();
+	$b = array();
+	class A{}
 
-?>
-<frameset border="1" ROWS="<?=$rows?>">
-<?=$fs?>
-</frameset>
+	$aa =& new A;
+	$a[1] =& $aa;
+	echo count($a);
+	unset($a[1]);
+	echo count($a);
+	?>

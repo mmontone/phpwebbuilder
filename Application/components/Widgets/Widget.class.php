@@ -17,6 +17,7 @@ class Widget extends Component {
 			'invalid' => 'fieldInvalid',
 			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
+
 		$this->enqueued_hooks = array ();
 		parent :: Component($callback_actions);
 	}

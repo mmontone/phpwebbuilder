@@ -4,10 +4,13 @@ class PWBObject
 {
     var $service_request_handlers;
     var $event_listeners;
+    var $listener_handle = 1;
     var $service_request_listeners;
     var $config;
     var $__instance_id;
 	var $creationParams;
+	var $event_handles = array();
+
 	/**
 	 * Special var, for get_subclass
 	 */
@@ -19,6 +22,14 @@ class PWBObject
 		$this->createInstance($params);
 	}
 	function createInstance(){}
+	function release() {
+		foreach(array_keys($this->event_handles) as $h) {
+			$handle =& $this->event_handles[$h];
+			$this->releaseHandle($handle);
+		}
+		$this->event_handles = array();
+	}
+
 	function equalTo(&$other_pwb_object) {
 		return $this->__instance_id == $other_pwb_object->__instance_id;
 	}
@@ -31,6 +42,7 @@ class PWBObject
 		return $ok && $ok2;
 	}
 	function retractInterestIn($event_selector, &$listener) {
+    	print_backtrace();
     	$listeners =& $this->event_listeners[$event_selector];
 
 		reset($listeners);
@@ -79,18 +91,42 @@ class PWBObject
 
     /* Events mechanism */
 
-    function addEventListener($event_specs, &$listener) {
+    function &addEventListener($event_specs, &$listener) {
+        $handles = array();
         foreach ($event_specs as $event_selector => $event_callback) {
   			$callback =& new FunctionObject($listener, $event_callback);
-  			$this->addInterestIn($event_selector, $callback);
+  			$handles[] =& $this->addInterestIn($event_selector, $callback);
         }
+
+        return $handles;
     }
 
-    function addInterestIn($event, &$function) {
+    function &addInterestIn($event, &$function) {
     	if (!isset($this->event_listeners[$event])) {
 	        $this->event_listeners[$event] = array();
         }
-    	$this->event_listeners[$event][] =& $function;
+    	/*
+    	if (count($this->event_listeners[$event]) > 2) {
+    		echo 'Listeners: ' . count($this->event_listeners[$event]) . '</br>';
+    	}*/
+    	$this->event_listeners[$event][$this->listener_handle] =& $function;
+    	$handle = array('event' => $event, 'handle' => $this->listener_handle, 'target' => &$this);
+       	$this->listener_handle++;
+    	$function->target->registerEventHandle($handle);
+       	return $handle;
+    }
+
+    function registerEventHandle(&$handle) {
+    	$this->event_handles[] =& $handle;
+    }
+
+    function retractInterest(&$handle) {
+    	unset($this->event_listeners[$handle['event']][$handle['handle']]);
+    }
+
+    function releaseHandle(&$handle) {
+    	$target =& $handle['target'];
+    	$target->retractInterest($handle);
     }
 
     function triggerEvent($event_selector, &$params) {

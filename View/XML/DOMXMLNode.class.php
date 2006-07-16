@@ -51,18 +51,15 @@ class DOMXMLNode extends PWBObject{
 	}
 	function replaceChild(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);
-		//$this->checkConsistency();
+/*
 		$n = null;
 		$old->parentNode = & $n;
-		$old->parentPosition = & $n;
+		$old->parentPosition = & $n;*/
 	}
 
 	function removeChild(& $old) {
 		$pos = $old->parentPosition;
-		/*$null = null;
-		$this->childNodes[$pos] =& $null;
-		$old->parentNode = & $null;
-		$old->parentPosition = & $null;*/
+
 		if (!isset($this->childNodes[$pos])) {
 			print_backtrace('Error removing child');
 			echo $this->printString();
@@ -70,7 +67,6 @@ class DOMXMLNode extends PWBObject{
 		}
 
 		unset($this->childNodes[$pos]);
-		//$this->checkConsistency();
 	}
 
 	function removeChilds(){
@@ -91,9 +87,9 @@ class DOMXMLNode extends PWBObject{
 			$this->insert_in($this->childNodes[$ks[$i-1]], $ks[$i]);
 		}
 		$this->insert_in($new, $pos);
-		//$this->checkConsistency();
 	}
 
+/*
 	function checkConsistency() {
 		foreach(array_keys($this->childNodes) as $i) {
 			if ($this->childNodes[$i]->parentPosition != $i) {
@@ -101,7 +97,7 @@ class DOMXMLNode extends PWBObject{
 				exit;
 			}
 		}
-	}
+	}*/
 
 	function setAttribute($name, $val) {
 		$this->attributes[$name] = $val;

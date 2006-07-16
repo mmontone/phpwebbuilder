@@ -14,6 +14,7 @@ class ComponentHolder
 	   $this->parent =& $parent;
 	   $this->hold($component);
 	}
+
 	function &view(){
 		return $this->parent->view;
 	}

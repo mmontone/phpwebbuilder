@@ -20,6 +20,24 @@ class Component extends PWBObject
 	}
 	function initialize(){}
 	function start() {}
+	function stop() {
+		$this->release();
+	}
+
+	function release() {
+		parent::release();
+		foreach(array_keys($this->__children) as $c) {
+			$child =& $this->__children[$c]->component;
+			$child->releaseAll();
+		}
+	}
+
+	function releaseAll() {
+		$this->release();
+		if ($this->listener != null)
+			$this->listener->releaseAll();
+	}
+
 	function linkToApp(&$app){
 		if (!isset($this->app)){
 			$this->app =& $app;
@@ -50,7 +68,7 @@ class Component extends PWBObject
     }
 
 	function &addComponent(&$component, $ind=null) {
-		if (($ind !=null) and (isset($this->__children[$ind])) and ($replace == false)) {
+		if (($ind !=null) and (isset($this->__children[$ind]))) {
 			$this->__children[$ind]->component->stopAndCall($component);
 		} else {
 			$keys = array();
@@ -60,6 +78,7 @@ class Component extends PWBObject
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$this->nextChildrenPosition++;
 			if (isset($this->app)) $component->linkToApp($this->app);
+			$component->start();
 		}
 		return $component;
 	}
@@ -89,6 +108,7 @@ class Component extends PWBObject
 		$pos =&  $h->__owner_index;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
+		$this->releaseAll();
 	}
 	function redraw(){
 		if ($this->view){
@@ -103,7 +123,10 @@ class Component extends PWBObject
 	function call(&$component) {
 		// Give control to $component
 		$component->listener =& $this;
-        $this->stopAndCall($component);
+        $this->replaceView($component);
+    	$this->holder->hold($component);
+		$component->linkToApp($this->app);
+        $component->start();
 	}
 
 	function setChild($index, &$component){
@@ -114,6 +137,7 @@ class Component extends PWBObject
     function stopAndCall(&$component) {
     	$this->replaceView($component);
     	$this->holder->hold($component);
+		$this->stop();
 		$component->linkToApp($this->app);
         $component->start();
     }
@@ -134,6 +158,7 @@ class Component extends PWBObject
 		$callbackComponent->replaceView($this);
 		$callbackComponent->app->needsView($this);
 		$callbackComponent->holder->hold($this);
+		$callbackComponent->stop();
         if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
