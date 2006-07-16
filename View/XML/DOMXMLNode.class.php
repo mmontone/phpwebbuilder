@@ -51,10 +51,9 @@ class DOMXMLNode extends PWBObject{
 	}
 	function replaceChild(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);
-/*
 		$n = null;
 		$old->parentNode = & $n;
-		$old->parentPosition = & $n;*/
+		$old->parentPosition = & $n;
 	}
 
 	function removeChild(& $old) {
