@@ -29,7 +29,7 @@ class XMLNode extends DOMXMLNode {
 			$this->removeAttribute('class');
 		}
 		else {
-			$this->view->setAttribute('class', implode(' ', $this->css_classes));
+			$this->setAttribute('class', implode(' ', $this->css_classes));
 		}
 	}
 
