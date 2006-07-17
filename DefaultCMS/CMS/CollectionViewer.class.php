@@ -90,7 +90,7 @@ class CollectionViewer extends CollectionNavigator {
 
 	}
 
-	function addLine(&$obj) {
+	function &addLine(&$obj) {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$class = & $this->classN;
 		$u =& User::logged();
@@ -110,8 +110,7 @@ class CollectionViewer extends CollectionNavigator {
 					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $fc)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Delete', '*',$class.'=>*'))
 					,'deleter');
-		$this->objs->addComponent($fc);
-
+		return $fc;
 	}
 }
 

@@ -4,7 +4,7 @@ class PersistentObjectPresenter extends Component {
 	var $obj;
 	var $classN;
 	var $fieldNames;
-	var $fieldComponents;
+
     function PersistentObjectPresenter(&$object, $fields=null) {
 		$this->obj =& $object;
 		$this->classN =& getClass($object);
@@ -26,16 +26,16 @@ class PersistentObjectPresenter extends Component {
 
 		$fields =& $obj->fieldsWithNames($this->fieldNames);
        	foreach(array_keys($fields) as $f2){
-    		$this->addField($f2, $fields[$f2]);
+    		$this->addComponent($this->addField($fields[$f2]), $f2);
        	}
     }
 
-    function addField($name, &$field){
+    function &addField(&$field){
 		$fc =& new FieldValueComponent;
-		$this->fieldComponents[$name] = & $this->factory->createFor($field);
-		$fc->addComponent($this->fieldComponents[$name], 'value');
+		$fieldComponent = & $this->factory->createFor($field);
+		$fc->addComponent($fieldComponent, 'value');
 		$fc->addComponent(new Label($field->displayString), 'fieldName');
-		$this->addComponent($fc, $name);
+		return $fc;
     }
 }
 

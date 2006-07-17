@@ -24,10 +24,10 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	parent::initialize();
     }
 
-    function addField($name, &$field){
+    function &addField(&$field){
 		$fc =& new FieldValueComponent;
-		$this->fieldComponents[$name] = & $this->factory->createFor($field);
-		$fc->addComponent($this->fieldComponents[$name], 'value');
+		$fieldComponent = & $this->factory->createFor($field);
+		$fc->addComponent($fieldComponent, 'value');
 		$user =& User::logged();
 		$class = getClass($this->obj);
 		if ($user->hasPermissions(array($class.'=>Edit'))) {
@@ -37,7 +37,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 			$fc->addComponent(new Label($field->displayString), 'fieldName');
         }
 
-		$this->addComponent($fc, $name);
+		return $fc;
     }
 
     function editField($params) {

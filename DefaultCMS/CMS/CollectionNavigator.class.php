@@ -59,7 +59,8 @@ class CollectionNavigator extends Component {
 		$elements = & $col->elements();
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {
-			$this->addLine($elements[$k]);
+			$fc =& $this->addLine($elements[$k]);
+			$this->objs->addComponent($fc);
 		}
 		$this->view->redraw();
 	}
