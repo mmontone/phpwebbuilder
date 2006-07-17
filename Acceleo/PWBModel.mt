@@ -10,7 +10,7 @@ class <%name%> extends PersistentObject{
 	function initialize(){
 	<%for (attribute){%>
 		<%if (type.name=="String") {%>
-		$this->addField(new <%type.name%>Field(<%name%>,TRUE));
+		$this->addField(new TextField(<%name%>,TRUE));
 		<%}else{%>
 		$this->addField(new IndexField(<%name%>,FALSE,<%type.name%>));
 		<%}%>

@@ -10,7 +10,7 @@ class User extends PersistentObject {
     }
 	function &loadUser($user,$pass){
 	$db = DB::Instance();
-	$col = new PersistentCollection(User);
+	$col = new PersistentCollection('User');
 	$col->conditions["user"] = array("=", "'".$user."'");
 	$col->conditions["pass"] = array("=", "'".$pass."'");
 	$objs = $col->objects();

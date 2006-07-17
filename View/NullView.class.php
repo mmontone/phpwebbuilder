@@ -4,6 +4,7 @@ require_once 'XML/XMLNodeModificationsTracker.class.php';
 
 class NullView extends XMLNodeModificationsTracker
 {
+	function redraw(){}
 	function render (){
 		return "";
 	}

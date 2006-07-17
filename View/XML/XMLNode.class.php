@@ -13,9 +13,12 @@ class XMLNode extends DOMXMLNode {
 		$this->addCSSClasses();
 	}
 	function addCSSClasses(){
-		$csss = explode(' ',$this->getAttribute('class'));
-		foreach($csss as $css){
-			$this->addCSSClass($css);
+		$c = $this->getAttribute('class');
+		if ($c!=''){
+			$csss = explode(' ',$c);
+			foreach($csss as $css){
+				$this->addCSSClass($css);
+			}
 		}
 	}
 	function addCSSClass($class) {

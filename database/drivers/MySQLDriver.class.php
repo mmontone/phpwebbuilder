@@ -36,7 +36,7 @@ class DB {
 		return $res[0];
 	}
 	function &Instance(){
-		if ($_SESSION[sitename]['DB']==null){
+		if (!isset($_SESSION[sitename]['DB'])){
 			$c = constant('DBObject');
 			$_SESSION[sitename]['DB'] =& new $c;
 		}
