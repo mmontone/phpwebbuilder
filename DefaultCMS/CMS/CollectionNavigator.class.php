@@ -64,20 +64,25 @@ class CollectionNavigator extends Component {
 		}
 		$this->view->redraw();
 	}
+	
 	function getValue(){}
+	
 	/* Navigation */
 	function filter(){
 		$fc =& new CollectionFilterer($this->col);
 		$fc->registerCallbacks(array('done'=>callback($this, 'refresh')));
 		$this->call($fc);
 	}
+	
 	function setStartValue($val){
 		$last = $this->col->size()-$this->pageSize->getValue()+1;
 		$this->firstElement->setValue($r = max(min($val,$last), 1));
 	}
+	
 	function prevPage(){
 		$this->setStartValue($this->firstElement->getValue()-$this->pageSize->getValue());
 	}
+	
 	function nextPage(){
 		$this->setStartValue($this->firstElement->getValue()+$this->pageSize->getValue());
 	}

@@ -114,5 +114,56 @@ class CollectionViewer extends CollectionNavigator {
 	}
 }
 
+class DeleterAspect {
+	function deleteObject(&$self, $params) {
+		$fc =& $params['object'];
+		$translator = translator;
+		if (!$translator)
+			$translator = 'EnglishTranslator';
+		$translator =& new $translator;
+		$msg = $translator->translate('Are you sure that you want to delete the object?');
+		$self->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($self, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($self, 'deleteRejected'))));
+	}
+
+	function deleteConfirmed(&$self, $params, $fcparams) {
+		$fc =& $fcparams['object'];
+		$ok = $fc->obj->delete();
+		if (!$ok) {
+			$self->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($self, 'warningAccepted')) , 'warning'));
+		}
+		else {
+			$self->refresh();
+		}
+	}
+}
+
+class EditorAspect {
+	function editObject(&$self, $params) {
+		$obj =& $params['object'];
+		$msg =& $params['msg'];
+		$ec =& new PersistentObjectEditor($obj);
+    	$ec->registerCallback('cancel', new FunctionObject($self, 'cancel'));
+    	$ec->registerCallback('object_edited', new FunctionObject($self, 'objectEdited'));
+    	$ec->registerCallback('refresh', new FunctionObject($self, 'refresh'));
+    	if (!empty($msg)){
+    		$ec->displayValidationErrors($msg);
+    	}
+    	$self->call($ec);
+	}
+
+	function objectEdited(&$self, &$object) {
+		$ok = $object->save();
+		if ($ok){
+			$self->refresh();
+		} else {
+			$self->editObject(array('object'=> &$object, 'msg' =>array('version'=>new ValidationException(array('message'=>'This object has been modified by another user')))));
+		}
+	}
+
+	function cancel(&$self) {
+		//$self->refresh();
+	}
+}
+
 //class CollectionElement extends Component {}
 ?>
