@@ -12,7 +12,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$class = getClass($obj);
 
 		PermissionChecker::addComponent($this,
-					new ActionLink($this, 'deleteObject', 'delete', $obj),
+					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array(getClass($obj).'=>Delete', '*',getClass($obj).'=>*'))
 					,'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n=null), 'cancel');
@@ -76,6 +76,33 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	function cancel() {
 		$this->callback('refresh');
 	}
+
+	function deleteObject($params) {
+		$fc =& $params['object'];
+		$translator = translator;
+		if (!$translator)
+			$translator = 'EnglishTranslator';
+		$translator =& new $translator;
+		$msg = $translator->translate('Are you sure that you want to delete the object?');
+		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
+	}
+
+	function deleteConfirmed($params, $fcparams) {
+		$fc =& $fcparams['object'];
+		$ok = $obj->delete();
+		if (!$ok) {
+			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
+		}
+		else {
+			$this->refresh();
+		}
+	}
+
+	function deleteRejected() {
+
+	}
+
+
 }
 
 ?>
