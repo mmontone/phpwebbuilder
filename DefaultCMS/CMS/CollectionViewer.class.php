@@ -94,7 +94,7 @@ class CollectionViewer extends CollectionNavigator {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$class = & $this->classN;
 		$u =& User::logged();
-
+		$this->objs->addComponent($fc);
 		/*
 		PermissionChecker::addComponent($fc,
 			new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),
