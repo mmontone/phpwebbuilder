@@ -16,7 +16,15 @@ class FunctionObject
       	$method_name = $this->method_name;
        	return $this->target->$method_name($this->params);
     }
-
+	function hasPermissions(){
+		$m = $this->method_name;
+		$msg = 'check'.ucfirst($m).'Permissions';
+		if (method_exists($this->target, $msg)){
+			return $this->target->$msg($this->params);
+		} else {
+			return true;
+		}
+	}
     function callWith(&$params) {
 		$method_name = $this->method_name;
         if (empty($this->params))

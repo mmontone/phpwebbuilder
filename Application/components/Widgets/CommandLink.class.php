@@ -10,6 +10,9 @@ class CommandLink extends Widget{
 		$this->textv =& $params['text'];
 		parent::Widget($vm = null);
     }
+    function checkAddingPermissions(){
+		return $this->proceed->hasPermissions();
+    }
     function initialize(){
 		$this->addComponent(new Label($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);

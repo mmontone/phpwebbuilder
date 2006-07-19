@@ -7,14 +7,14 @@ class CollectionViewer extends CollectionNavigator {
 		$class = & $this->classN;
 		$this->addComponent(new Label($class), 'className');
 		$u =& User::logged();
-		PermissionChecker::addComponent($this,
-					new ActionLink($this, 'newObject', 'New', $n = null),
-					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Add', '*',$class.'=>*'))
-					,'new');
+		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null),'new');
 		parent::initialize();
 	}
 	/* Editing */
-
+	function checkEditObjectPermissions($params){
+		$u =&User::logged();
+		return $u->hasPermissions(array(getClass($params['object']).'=>Edit', '*',getClass($params['object']).'=>*'));
+	}
 	function editObject($params) {
 		$obj =& $params['object'];
 		$msg =& $params['msg'];
@@ -27,7 +27,6 @@ class CollectionViewer extends CollectionNavigator {
     	}
     	$this->call($ec);
 	}
-
 
 	function viewObject($params) {
 		$obj =& $params['object'];
@@ -48,7 +47,10 @@ class CollectionViewer extends CollectionNavigator {
 	function cancel() {
 		//$this->refresh();
 	}
-
+	function checkNewObjectPermissions($params){
+		$u =&User::logged();
+		return $u->hasPermissions(array(getClass($params['object']).'=>Add', '*',getClass($params['object']).'=>*'));
+	}
 	function newObject(&$n) {
 		$obj = & new $this->classN;
 		$c =& $this->col->conditions;
@@ -59,7 +61,10 @@ class CollectionViewer extends CollectionNavigator {
 		$obj->commitChanges();
 		$this->editObject(array('object' => &$obj));
 	}
-
+	function checkDeleteObjectPermissions($params){
+		$u =&User::logged();
+		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
+	}
 	function deleteObject($params) {
 		$fc =& $params['object'];
 		$translator = translator;
@@ -69,7 +74,6 @@ class CollectionViewer extends CollectionNavigator {
 		$msg = $translator->translate('Are you sure that you want to delete the object?');
 		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
 	}
-
 	function deleteConfirmed($params, $fcparams) {
 		$fc =& $fcparams['object'];
 		$ok = $fc->obj->delete();
@@ -80,90 +84,15 @@ class CollectionViewer extends CollectionNavigator {
 			$this->refresh();
 		}
 	}
-
-	function warningAccepted() {
-
-	}
-
-
-	function deleteRejected() {
-
-	}
-
+	function warningAccepted() {}
+	function deleteRejected() {}
 	function &addLine(&$obj) {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
-		$class = & $this->classN;
-		$u =& User::logged();
 		$this->objs->addComponent($fc);
-		/*
-		PermissionChecker::addComponent($fc,
-			new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),
-			new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Show', '*',$class.'=>*')),
-			'viewer');*/
 		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
-
-		PermissionChecker::addComponent($fc,
-					new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),
-					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))
-					,'editor');
-		PermissionChecker::addComponent($fc,
-					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $fc)))),
-					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Delete', '*',$class.'=>*'))
-					,'deleter');
+		$fc->addComponent(new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),'editor');
+		$fc->addComponent(new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $fc)))),'deleter');
 		return $fc;
 	}
 }
-
-class DeleterAspect {
-	function deleteObject(&$self, $params) {
-		$fc =& $params['object'];
-		$translator = translator;
-		if (!$translator)
-			$translator = 'EnglishTranslator';
-		$translator =& new $translator;
-		$msg = $translator->translate('Are you sure that you want to delete the object?');
-		$self->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($self, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($self, 'deleteRejected'))));
-	}
-
-	function deleteConfirmed(&$self, $params, $fcparams) {
-		$fc =& $fcparams['object'];
-		$ok = $fc->obj->delete();
-		if (!$ok) {
-			$self->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($self, 'warningAccepted')) , 'warning'));
-		}
-		else {
-			$self->refresh();
-		}
-	}
-}
-
-class EditorAspect {
-	function editObject(&$self, $params) {
-		$obj =& $params['object'];
-		$msg =& $params['msg'];
-		$ec =& new PersistentObjectEditor($obj);
-    	$ec->registerCallback('cancel', new FunctionObject($self, 'cancel'));
-    	$ec->registerCallback('object_edited', new FunctionObject($self, 'objectEdited'));
-    	$ec->registerCallback('refresh', new FunctionObject($self, 'refresh'));
-    	if (!empty($msg)){
-    		$ec->displayValidationErrors($msg);
-    	}
-    	$self->call($ec);
-	}
-
-	function objectEdited(&$self, &$object) {
-		$ok = $object->save();
-		if ($ok){
-			$self->refresh();
-		} else {
-			$self->editObject(array('object'=> &$object, 'msg' =>array('version'=>new ValidationException(array('message'=>'This object has been modified by another user')))));
-		}
-	}
-
-	function cancel(&$self) {
-		//$self->refresh();
-	}
-}
-
-//class CollectionElement extends Component {}
 ?>

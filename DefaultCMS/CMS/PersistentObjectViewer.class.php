@@ -5,12 +5,8 @@ require_once 'PersistentObjectPresenter.class.php';
 class PersistentObjectViewer extends PersistentObjectPresenter {
     function initialize(){
     	$obj =& $this->obj;
-    	//$this->addComponent(new Label($this->classN), 'className');
-    	//$this->addComponent(new Label($obj->id->getValue()), 'idN');
     	$this->factory =& new ViewerFactory;
-
 		$class = getClass($obj);
-
 		PermissionChecker::addComponent($this,
 					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),
 					new FunctionObject(User::logged(), 'hasPermissions', array(getClass($obj).'=>Delete', '*',getClass($obj).'=>*'))
@@ -32,8 +28,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$class = getClass($this->obj);
 		if ($user->hasPermissions(array($class.'=>Edit'))) {
             $fc->addComponent(new CommandLink(array('text' => $field->displayString, 'proceedFunction' => new FunctionObject($this, 'editField', array('field' => &$field, 'fvc' => &$fc)))), 'fieldName');
-        }
-        else {
+        } else {
 			$fc->addComponent(new Label($field->displayString), 'fieldName');
         }
 
