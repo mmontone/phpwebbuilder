@@ -9,14 +9,12 @@ class Label extends Text
     }
 
     function valueChanged(&$value_model, &$params) {
-		echo 'Label value changed: ' . $params;
 		if ($this->view){
 			$this->view->setAttribute('value', $this->printValue());
 		}
 	}
 
 	function setValue($value) {
-		echo 'Setting label value';
 		parent::setValue($value);
 	}
 }
