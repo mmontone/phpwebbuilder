@@ -9,24 +9,32 @@ class DataField extends PWBObject {
 	var $buffered_value = null;
 	var $modified = false;
 
-	function DataField($name, $isIndex = false) {
-		parent::PWBObject();
-		$this->colName = $name;
-		if (is_array($isIndex)) {
-			if (isset($isIndex['is_index'])){
-				$this->isIndex = $isIndex['is_index'];
-			}
-			if (isset($isIndex['display'])){
-				$this->displayString = $isIndex['display'];
-			}
+	function DataField($name, $isIndex=null){
+		if (!is_array($name)){
+			$ps = array('fieldName'=>$name);
+		} else {
+			$ps = $name;
 		}
-		else {
-			$this->isIndex = $isIndex;
+		if (is_array($isIndex)){
+			$ps = $isIndex;
+			$ps['fieldName'] =$name;
+		} else if ($isIndex!==null){
+			$ps['is_index']= $isIndex;
 		}
-		if (!$this->displayString)
-			$this->displayString = ucfirst($name);
+		parent::PWBObject($ps);
 	}
-
+	function createInstance($params) {
+		$ps = array_merge($this->defaultValues($params),$params);
+		$this->colName = $ps['fieldName'];
+		$this->isIndex = $ps['is_index'];
+		$this->displayString = $ps['display'];
+	}
+	function defaultValues($params){
+		return array(
+				'is_index'=>false,
+				'display'=>ucfirst($params['fieldName'])
+			);
+	}
 	function renderAction($action) {
 		$this->owner->renderAction($action);
 	}

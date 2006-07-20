@@ -7,16 +7,9 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	$obj =& $this->obj;
     	$this->factory =& new ViewerFactory;
 		$class = getClass($obj);
-		PermissionChecker::addComponent($this,
-					new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),
-					new FunctionObject(User::logged(), 'hasPermissions', array(getClass($obj).'=>Delete', '*',getClass($obj).'=>*'))
-					,'delete');
+		$this->addComponent(new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),'delete');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n=null), 'cancel');
-       	PermissionChecker::addComponent($this,
-					new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),
-					new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Edit', '*',$class.'=>*'))
-					,'edit');
-
+       	$this->addComponent(new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),'edit');
     	parent::initialize();
     }
 
@@ -26,7 +19,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$fc->addComponent($fieldComponent, 'value');
 		$user =& User::logged();
 		$class = getClass($this->obj);
-		if ($user->hasPermissions(array($class.'=>Edit'))) {
+		if ($this->checkEditObjectPermissions(array('object'=> &$this->obj))) {
             $fc->addComponent(new CommandLink(array('text' => $field->displayString, 'proceedFunction' => new FunctionObject($this, 'editField', array('field' => &$field, 'fvc' => &$fc)))), 'fieldName');
         } else {
 			$fc->addComponent(new Label($field->displayString), 'fieldName');
@@ -43,7 +36,10 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	$fvc->call($field_editor);
     }
 
-
+	function checkEditObjectPermissions($params) {
+		$u =& User::logged();
+		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
+	}
     function editObject($params) {
 		$obj =& $params['object'];
 		$msg =& $params['msg'];
@@ -71,7 +67,10 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	function cancel() {
 		$this->callback('refresh');
 	}
-
+	function checkDeleteObjectPermissions($params) {
+		$u =& User::logged();
+		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
+	}
 	function deleteObject($params) {
 		$fc =& $params['object'];
 		$translator = translator;
