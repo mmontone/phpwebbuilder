@@ -21,14 +21,17 @@ class Component extends PWBObject
 	function initialize(){}
 	function start() {}
 	function stop() {
-		$this->release();
+		$n = null;
+		$this->holder =& $n;
+		$this->app =& $n;
+		$this->releaseAll();
 	}
 
 	function release() {
 		parent::release();
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;
-			$child->releaseAll();
+			$child->stop();
 		}
 	}
 	function checkAddingPermissions(){
@@ -37,7 +40,7 @@ class Component extends PWBObject
 	function releaseAll() {
 		$this->release();
 		if ($this->listener != null)
-			$this->listener->releaseAll();
+			$this->listener->stop();
 	}
 
 
@@ -129,7 +132,7 @@ class Component extends PWBObject
 		$component->listener =& $this;
         $this->replaceView($component);
     	$this->holder->hold($component);
-		$component->linkToApp($this->app);
+		if (isset($this->app))$component->linkToApp($this->app);
         $component->start();
 	}
 
@@ -141,8 +144,8 @@ class Component extends PWBObject
     function stopAndCall(&$component) {
     	$this->replaceView($component);
     	$this->holder->hold($component);
+		if (isset($this->app))$component->linkToApp($this->app);
 		$this->stop();
-		$component->linkToApp($this->app);
         $component->start();
     }
 
@@ -213,6 +216,8 @@ class Component extends PWBObject
 	}
 	function replaceView(&$other){
     	$this->createContainer();
+	    $n = null;
+	    $this->view =& $n;
 	}
 	function createContainer(){
     	$v =&$this->view;

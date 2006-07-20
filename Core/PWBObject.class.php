@@ -3,7 +3,7 @@
 class PWBObject
 {
     var $service_request_handlers;
-    var $event_listeners;
+    var $event_listeners = array();
     var $listener_handle = 1;
     var $service_request_listeners;
     var $config;
@@ -28,7 +28,9 @@ class PWBObject
 			$this->releaseHandle($handle);
 		}
 		$event_handles = array();
+		$event_listeners = array();
 		$this->event_handles =& $event_handles;
+		$this->event_listeners =& $event_listeners;
 	}
 
 	function equalTo(&$other_pwb_object) {
@@ -118,6 +120,9 @@ class PWBObject
 
     function retractInterest(&$handle) {
     	unset($this->event_listeners[$handle['event']][$handle['handle']]);
+    	if (count($this->event_listeners[$handle['event']])==0){
+    		unset($this->event_listeners[$handle['event']]);
+    	}
     }
 
     function releaseHandle(&$handle) {
