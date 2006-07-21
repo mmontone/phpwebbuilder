@@ -4,23 +4,27 @@ class Select extends Widget {
 	var $options;
 	var $displayF;
 	var $opts = array();
+
     function Select(&$value_model, &$collection, $displayF=null) {
     	parent::Widget($value_model);
     	$this->options =& $collection;
     	if ($displayF!=null){
     		$this->displayF=$displayF;
     	} else if (isPWBObject($collection->first())){
-    		$this->displayF =& lambda('&$e', 'return $e->indexValues();', array());
+    		$this->displayF =& lambda('&$e', 'return $e->indexValues();', $a = array());
     	} else {
-    		$this->displayF =& lambda('&$e', 'return $e;', array());
+    		$this->displayF =& lambda('&$e', 'return $e;', $a = array());
     	}
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
+    	print_backtrace();
     }
+
 	function viewUpdated($new_value) {
 		$value = & $this->getValueIndex();
 		if ($new_value != $value)
 			$this->setValueIndex($new_value);
 	}
+
 	function updateViewFromCollection(){
 		$v =& $this->view;
 		$cn =& $this->opts;
