@@ -1,7 +1,7 @@
 <?php
 
 class DateTimeField extends DataField {
-    function DateTimeField ($name, $isIndex) {
+    function DateTimeField ($name, $isIndex=false) {
         parent::Datafield($name, $isIndex);
     }
 
