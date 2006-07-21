@@ -22,9 +22,13 @@ class PersistentObjectPresenter extends Component {
     }
 
     function initialize(){
+    	$this->addFields();
+    }
+
+    function addFields() {
     	$obj =& $this->obj;
 
-		$fields =& $obj->fieldsWithNames($this->fieldNames);
+    	$fields =& $obj->fieldsWithNames($this->fieldNames);
        	foreach(array_keys($fields) as $f2){
     		$this->addComponent($this->addField($fields[$f2]), $f2);
        	}
