@@ -29,6 +29,7 @@ class Collection extends PWBObject{
 				return $k;
 			}
 		}
+		delete_lambda($f);
 		return -1;
 	}
 	function includes(&$elem){
@@ -64,12 +65,17 @@ class Collection extends PWBObject{
 		$this->add($elem);
 	}
 	function &map($func){
-		return $this->foldr(new Collection, lambda('&$col,&$elem',
+		$res =& $this->foldr(new Collection, $f = lambda('&$col,&$elem',
 			'$col->add($func($elem)); return $col;', get_defined_vars()));
+		delete_lambda($f);
+		return $res;
+
 	}
 	function &filter($pred){
-		return $this->foldr(new Collection, lambda('&$col,&$elem',
+		$res =& $this->foldr(new Collection, $f = lambda('&$col,&$elem',
 			'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
+		delete_lambda($f);
+		return $res;
 	}
 	function &foldr(&$z, $f){
 		$acc =& $z;
@@ -81,9 +87,11 @@ class Collection extends PWBObject{
 		return $acc;
 	}
 	function &collect($mess){
-		return $this->map(
-				lambda('&$e', 'return apply_messages($e,$mess);', get_defined_vars())
+		$res =& $this->map(
+				$f = lambda('&$e', 'return apply_messages($e,$mess);', get_defined_vars())
 			);
+		delete_lambda($f);
+		return $res;
 	}
 	function &toArray(){
 		return $this->elements();

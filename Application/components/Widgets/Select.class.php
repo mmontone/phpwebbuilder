@@ -10,9 +10,9 @@ class Select extends Widget {
     	if ($displayF!=null){
     		$this->displayF=$displayF;
     	} else if (isPWBObject($collection->first())){
-    		$this->displayF =& lambda('&$e', 'return $e->indexValues();', get_defined_vars());
+    		$this->displayF =& lambda('&$e', 'return $e->indexValues();', array());
     	} else {
-    		$this->displayF =& lambda('&$e', 'return $e;', get_defined_vars());
+    		$this->displayF =& lambda('&$e', 'return $e;', array());
     	}
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
     }
@@ -40,13 +40,14 @@ class Select extends Widget {
 		$i=0;
 		$self =& $this;
 		$this->options->map(
-			lambda('&$elem',
+			$f = lambda('&$elem',
 			'$option =& new XMLNodeModificationsTracker(\'option\');
 			$option->setAttribute(\'value\', $i);
 			$option->appendChild(new XMLTextNode($self->displayElement($elem)));
 			$self->opts[$i] =& $option;
 			$view->appendChild($option);
 			$i++;', get_defined_vars()));
+		delete_lambda($f);
 	}
 	function displayElement(&$e){
 		$f =& $this->displayF;

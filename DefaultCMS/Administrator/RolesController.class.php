@@ -68,8 +68,9 @@ class RolesController extends Component {
 			$self =& $this;
 			$this->addComponent(new Component, 'perms');
 			foreach(get_subclasses('PersistentObject') as $name) {
-				 $acts->map(lambda('$act','$self->addCheckBox($name."=>".$act);',get_defined_vars()));
+				 $acts->map($f = lambda('$act','$self->addCheckBox($name."=>".$act);',get_defined_vars()));
 			}
+			delete_lambda($f);
 		}
 		foreach($this->specialPermissions() as $perm){
 			$this->addCheckBox($perm);

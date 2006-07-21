@@ -24,6 +24,7 @@ class Component extends PWBObject
 		$n = null;
 		$this->holder =& $n;
 		$this->app =& $n;
+	    $this->view =& $n;
 		$this->releaseAll();
 	}
 
@@ -76,7 +77,7 @@ class Component extends PWBObject
 	function &addComponent(&$component, $ind=null) {
 		if (!$component->checkAddingPermissions()) return $f=false;
 		if (($ind !=null) and (isset($this->__children[$ind]))) {
-			$this->__children[$ind]->component->stopAndCall($component);
+			$this->$ind->stopAndCall($component);
 		} else {
 			$keys = array();
 			$index =& $keys[$ind];
@@ -115,7 +116,7 @@ class Component extends PWBObject
 		$pos =&  $h->__owner_index;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
-		$this->releaseAll();
+		$this->stop();
 	}
 	function redraw(){
 		if ($this->view){
@@ -126,26 +127,24 @@ class Component extends PWBObject
 		$holder =& $this->__children[$index];
 		return $holder->component;
 	}
-
-	function call(&$component) {
-		// Give control to $component
-		$component->listener =& $this;
-        $this->replaceView($component);
-    	$this->holder->hold($component);
-		if (isset($this->app))$component->linkToApp($this->app);
-        $component->start();
-	}
-
 	function setChild($index, &$component){
 		$this->__children[$index]->hold($component);
 		$this->$index=&$this->__children[$index]->component;
 	}
 
+	function call(&$component) {
+		// Give control to $component
+		$component->listener =& $this;
+    	$this->basicCall($component);
+	}
     function stopAndCall(&$component) {
+    	$this->basicCall($component);
+		$this->stop();
+    }
+    function basicCall(&$component) {
     	$this->replaceView($component);
     	$this->holder->hold($component);
 		if (isset($this->app))$component->linkToApp($this->app);
-		$this->stop();
         $component->start();
     }
 
@@ -157,15 +156,14 @@ class Component extends PWBObject
 		$this->callbackWith($callback,$a = array());
 	}
 
-	function callbackWith($callback=null, &$params) {
+	function callbackWith($callback, &$params) {
 		$this->listener->takeControlOf($this, $callback, $params);
 	}
 
-	function takeControlOf(&$callbackComponent, $callback=null, &$params) {
-		$callbackComponent->replaceView($this);
-		$callbackComponent->app->needsView($this);
-		$callbackComponent->holder->hold($this);
-		$callbackComponent->stop();
+	function takeControlOf(&$callbackComponent, $callback, &$params) {
+		$n=null;
+		$callbackComponent->listener =& $n;
+		$callbackComponent->stopAndCall($this);
         if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
@@ -216,8 +214,6 @@ class Component extends PWBObject
 	}
 	function replaceView(&$other){
     	$this->createContainer();
-	    $n = null;
-	    $this->view =& $n;
 	}
 	function createContainer(){
     	$v =&$this->view;
@@ -225,7 +221,7 @@ class Component extends PWBObject
     	if ($v!=null && $pv!=null) {
 	    	$cont=& $this->myContainer();
 	    	$pv->replaceChild($cont, $v);
-	    	$this->holder->parent->view->getTemplatesAndContainers();
+	    	$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array($cont->attributes['id']=>&$cont));
 	    }
 	}
 	function &myContainer(){

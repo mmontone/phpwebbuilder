@@ -23,14 +23,21 @@ class PWBObject
 	}
 	function createInstance(){}
 	function release() {
-		foreach(array_keys($this->event_handles) as $h) {
-			$handle =& $this->event_handles[$h];
-			$this->releaseHandle($handle);
+		foreach(array_keys($this->event_handles) as $t) {
+			$target =& $this->event_handles[$t];
+			foreach(array_keys($target) as $h) {
+				$handle =& $target[$h];
+				$this->releaseHandle($handle);
+			}
 		}
-		$event_handles = array();
-		$event_listeners = array();
-		$this->event_handles =& $event_handles;
-		$this->event_listeners =& $event_listeners;
+		foreach(array_keys($this->event_listeners) as $s) {
+			$selector =& $this->event_listeners[$s];
+			foreach(array_keys($selector) as $h) {
+				$function =& $selector[$h];
+		    	$handle = array('event' => $s, 'handle' => $h, 'target' => &$this);
+		    	$function->target->releaseHandle($handle);
+			}
+		}
 	}
 
 	function equalTo(&$other_pwb_object) {
@@ -115,7 +122,7 @@ class PWBObject
     }
 
     function registerEventHandle(&$handle) {
-    	$this->event_handles[] =& $handle;
+    	$this->event_handles[$handle['target']->__instance_id][$handle['event']] =& $handle;
     }
 
     function retractInterest(&$handle) {
@@ -127,6 +134,10 @@ class PWBObject
 
     function releaseHandle(&$handle) {
     	$target =& $handle['target'];
+		unset ($this->event_handles[$target->__instance_id][$handle['event']]);
+		if (count($this->event_handles[$target->__instance_id])==0){
+			unset($this->event_handles[$target->__instance_id]);
+		}
     	$target->retractInterest($handle);
     }
 

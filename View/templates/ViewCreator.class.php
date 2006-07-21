@@ -124,8 +124,9 @@ class ViewCreator {
 		return $tp->instantiateFor($component);
 	}
 	function &templateForClass(&$component){
-		$ts =& $this->templates->filter(lambda(
+		$ts =& $this->templates->filter($f = lambda(
 				'&$t','return $t->isTemplateForClass($component);',get_defined_vars()));
+		delete_lambda($f);
 		if (!$ts->isEmpty()){
 			$t =& $ts->first();
 			trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Global Template for class '.$t->getAttribute('class'),E_USER_NOTICE);

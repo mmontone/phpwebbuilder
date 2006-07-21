@@ -171,9 +171,9 @@ function toHTML($s) {
     $s = str_replace('í', '&iacute;', $s);
     $s = str_replace('ó', '&oacute;', $s);
     $s = str_replace('ú', '&uacute;', $s);
-    $s = str_replace('�?', '&Aacute;',$s);
+    $s = str_replace('�?', '&Aacute;',$s);
     $s = str_replace('É', '&Eacute;', $s);
-    $s = str_replace('�?', '&Iacute;', $s);
+    $s = str_replace('�?', '&Iacute;', $s);
     $s = str_replace('Ó', '&Ooacute;',$s);
     $s = str_replace('Ú', '&Uacute;', $s);
 
@@ -220,11 +220,17 @@ function toAjax($s){
 function lambda( $args, $code, &$env ) {
    static $n = 0;
    $functionName = sprintf('ref_lambda_%d',++$n);
-   $_SESSION[$functionName]['environment_vars'] =& $env;
-   $declaration = sprintf('function &%s(%s) {extract($_SESSION["'.$functionName.'"]["environment_vars"],EXTR_REFS); %s}',$functionName,$args,$code);
+   $_SESSION['lambdas'][$functionName]['environment_vars'] =& $env;
+   $declaration = sprintf('function &%s(%s) {extract($_SESSION["lambdas"]["'.$functionName.'"]["environment_vars"],EXTR_REFS); %s}',$functionName,$args,$code);
+   //$declaration = sprintf('function &%s(%s) {global $env;var_dump($env);extract($env,EXTR_REFS); %s}',$functionName,$args,$code);
    eval($declaration);
    return $functionName;
 }
+
+function delete_lambda($name){
+	unset($_SESSION['lambdas'][$name]);
+}
+
 
 function isPWBObject(&$e){
 	return is_object($e) && isset($e->isClassOfPWB);
