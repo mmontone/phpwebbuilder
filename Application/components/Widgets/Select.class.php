@@ -16,7 +16,6 @@ class Select extends Widget {
     		$this->displayF =& lambda('&$e', 'return $e;', $a = array());
     	}
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
-    	print_backtrace();
     }
 
 	function viewUpdated($new_value) {

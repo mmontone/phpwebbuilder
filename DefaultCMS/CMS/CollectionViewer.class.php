@@ -66,17 +66,17 @@ class CollectionViewer extends CollectionNavigator {
 		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
 	}
 	function deleteObject($params) {
-		$fc =& $params['object'];
+		$obj =& $params['object'];
 		$translator = translator;
 		if (!$translator)
 			$translator = 'EnglishTranslator';
 		$translator =& new $translator;
 		$msg = $translator->translate('Are you sure that you want to delete the object?');
-		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
+		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$obj)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
 	}
 	function deleteConfirmed($params, $fcparams) {
-		$fc =& $fcparams['object'];
-		$ok = $fc->obj->delete();
+		$obj =& $fcparams['object'];
+		$ok = $obj->delete();
 		if (!$ok) {
 			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
 		}
@@ -91,7 +91,7 @@ class CollectionViewer extends CollectionNavigator {
 		$this->objs->addComponent($fc);
 		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
 		$fc->addComponent(new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),'editor');
-		$fc->addComponent(new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $fc)))),'deleter');
+		$fc->addComponent(new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),'deleter');
 		return $fc;
 	}
 }

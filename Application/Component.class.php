@@ -22,7 +22,7 @@ class Component extends PWBObject
 	function start() {}
 	function stop() {
 		$n = null;
-		$this->holder =& $n;
+		//$this->holder =& $n;
 		$this->app =& $n;
 	    $this->view =& $n;
 		$this->releaseAll();
@@ -93,6 +93,7 @@ class Component extends PWBObject
 
 	function deleteComponentAt($index){
 		$c =& $this->componentAt($index);
+		if (!$c) print_backtrace($index);
 		$c->delete();
 	}
 
@@ -213,7 +214,12 @@ class Component extends PWBObject
 		return $this->app->viewCreator->createView($parentView, $this);
 	}
 	function replaceView(&$other){
-    	$this->createContainer();
+		if ($other->view){
+			$pv =& $this->view->parentNode;
+			$pv->replaceChild($other->view, $this->view);
+		} else {
+    		$this->createContainer();
+		}
 	}
 	function createContainer(){
     	$v =&$this->view;

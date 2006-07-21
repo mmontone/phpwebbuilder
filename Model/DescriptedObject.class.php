@@ -81,7 +81,8 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function isNotTopClass(& $class) {
-		return (strcasecmp(get_parent_class($class), 'PersistentObject') != 0 && strcasecmp(get_parent_class($class), 'DescriptedObject') != 0);
+		$cn = strtolower(get_parent_class($class));
+		return (strcmp($cn, 'persistentobject') != 0 && strcmp($cn, 'descriptedobject') != 0);
 	}
 
     function & allFieldsThisLevel() {

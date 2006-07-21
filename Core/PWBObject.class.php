@@ -16,8 +16,7 @@ class PWBObject
 	 */
 	var $isClassOfPWB = true;
     function PWBObject($params=array()) {
-		$id_assigner =& PWBInstanceIdAssigner::instance();
-		$id_assigner->assignIdTo($this);
+		PWBInstanceIdAssigner::assignIdTo($this);
 		$this->creationParams =& $params;
 		$this->createInstance($params);
 	}
@@ -32,10 +31,12 @@ class PWBObject
 		}
 		foreach(array_keys($this->event_listeners) as $s) {
 			$selector =& $this->event_listeners[$s];
-			foreach(array_keys($selector) as $h) {
-				$function =& $selector[$h];
-		    	$handle = array('event' => $s, 'handle' => $h, 'target' => &$this);
-		    	$function->target->releaseHandle($handle);
+			if(is_array($selector)){
+				foreach(array_keys($selector) as $h) {
+					$function =& $selector[$h];
+			    	$handle = array('event' => $s, 'handle' => $h, 'target' => &$this);
+			    	$function->target->releaseHandle($handle);
+				}
 			}
 		}
 	}
