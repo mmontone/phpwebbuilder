@@ -20,11 +20,11 @@ class CollectionElementChooser extends CollectionNavigator {
 		$this->refresh();
 	}
 
-	function addLine(&$obj) {
+	function &addLine(&$obj) {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
-		$this->objs->addComponent($fc);
 		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
 		$fc->addComponent(new ActionLink($this, 'selectObject', 'Select', $obj), 'select');
+		return $fc;
 	}
 
 	function viewObject($params) {
