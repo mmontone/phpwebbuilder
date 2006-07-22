@@ -5,7 +5,7 @@ require_once 'Fields/ColecField.class.php';
 require_once 'Fields/CollectionField.class.php';
 require_once 'Fields/DataField.class.php';
 require_once 'Fields/DateTimeField.class.php';
-require_once 'Fields/enumField.class.php';
+require_once 'Fields/EnumField.class.php';
 require_once 'Fields/FilenameField.class.php';
 require_once 'Fields/HtmlArea.class.php';
 require_once 'Fields/IdField.class.php';

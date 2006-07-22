@@ -22,7 +22,6 @@ class Component extends PWBObject
 	function start() {}
 	function stop() {
 		$n = null;
-		//$this->holder =& $n;
 		$this->app =& $n;
 	    $this->view =& $n;
 		$this->releaseAll();
@@ -77,12 +76,14 @@ class Component extends PWBObject
 	function &addComponent(&$component, $ind=null) {
 		if (!$component->checkAddingPermissions()) return $f=false;
 		if (($ind !=null) and (isset($this->__children[$ind]))) {
+			trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 			$this->$ind->stopAndCall($component);
 		} else {
 			$keys = array();
 			$index =& $keys[$ind];
 			$index = $ind;
 			if ($index===null){$index = $this->nextChildrenPosition;}
+			trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 			$this->nextChildrenPosition++;
 			if (isset($this->app)) $component->linkToApp($this->app);
@@ -93,8 +94,8 @@ class Component extends PWBObject
 
 	function deleteComponentAt($index){
 		$c =& $this->componentAt($index);
-		if (!$c) print_backtrace($index);
-		$c->delete();
+		trigger_error('Removing child '.$index.' from '.$this->getId().' (a '.getClass($c).')',E_USER_NOTICE);
+		if ($c !== null) $c->delete();
 	}
 
 	function deleteChildren(){
@@ -236,7 +237,11 @@ class Component extends PWBObject
     	return $cont;
 	}
 	function getId(){
-		return $this->holder->getRealId();
+		if ($this->holder){
+			return $this->holder->getRealId();
+		} else {
+			return '';
+		}
 	}
 	function &parentView(){
 		return $this->holder->view();
