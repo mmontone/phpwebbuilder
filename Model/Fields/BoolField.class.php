@@ -2,9 +2,6 @@
 require_once dirname(__FILE__) . '/DataField.class.php';
 
 class BoolField extends DataField {
-	function boolField($name, $isIndex) {
-		parent :: Datafield($name, $isIndex);
-	}
 	function SQLvalue() {
 		if ($this->getValue())
 			$sql_value = '1';

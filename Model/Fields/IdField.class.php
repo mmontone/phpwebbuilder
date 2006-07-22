@@ -11,6 +11,7 @@ class IdField extends NumField {
             return parent::fieldName ($operation);
         }
     }
+
 	function updateString() {
 		return '';
 	}

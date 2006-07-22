@@ -18,9 +18,10 @@ class PWBObject
     function PWBObject($params=array()) {
 		PWBInstanceIdAssigner::assignIdTo($this);
 		$this->creationParams =& $params;
-		$this->createInstance($params);
+		$this->createInstance(array_merge($this->defaultValues($params),$params));
 	}
-	function createInstance(){}
+	function createInstance($params){}
+	function defaultValues($params){return array();}
 	function release() {
 		foreach(array_keys($this->event_handles) as $t) {
 			$target =& $this->event_handles[$t];

@@ -6,9 +6,6 @@ class PasswordField extends TextField  {
 	function &visit(&$obj) {
 		return $obj->visitedPasswordField($this);
 	}
-      function passwordField ($name, $isIndex) {
-               parent::textField($name, $isIndex);
-      }
       function loadFrom($form){
 	  	$name = $this->colName;
 		if (isset($form[$name."1"])) {

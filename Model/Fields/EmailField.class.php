@@ -5,11 +5,6 @@ class EmailField extends TextField {
 
 		return $obj->visitedEmailField($this);
 	}
-
-	function emailField($name, $isIndex) {
-		parent :: textField($name, $isIndex);
-	}
-
 	function SQLvalue() {
 		return "'" . $this->getValue() . "'" . ", ";
 	}

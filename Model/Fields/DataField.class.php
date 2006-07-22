@@ -23,8 +23,7 @@ class DataField extends PWBObject {
 		}
 		parent::PWBObject($ps);
 	}
-	function createInstance($params) {
-		$ps = array_merge($this->defaultValues($params),$params);
+	function createInstance($ps) {
 		$this->colName = $ps['fieldName'];
 		$this->isIndex = $ps['is_index'];
 		$this->displayString = $ps['display'];

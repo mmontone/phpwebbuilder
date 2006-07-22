@@ -7,21 +7,27 @@ class CollectionField extends DataField {
 
 	function CollectionField($name, $dataType = array ()) {
 		if (is_array($dataType)) {
-			$type = $dataType['type'];
-			parent :: DataField($type . $name, $dataType);
-			$this->collection = & new PersistentCollection($type);
+			$dataType['reverseField'] = $name;
+			parent :: DataField($dataType);
+		} else if (is_array($name)){
+			parent :: DataField($name);
+		} else {
+			parent :: DataField(array('reverseField'=>$name, 'type'=>$dataType));
 		}
-		else {
-			parent :: DataField($dataType . $name, FALSE);
-			$this->collection = & new PersistentCollection($dataType);
-		}
-		$this->fieldname = $name;
+	}
+	function createInstance($params){
+		parent::createInstance($params);
+		$this->fieldname = $params['reverseField'];
+		$this->collection = & new PersistentCollection($params['type']);
 		$this->collection->conditions[$this->fieldname] = array (
 			"=",
 			"0"
 		);
 	}
-
+	function defaultValues($params){
+		return array_merge(array('fieldName'=>$params['type'].$params['reverseField'])
+				,parent::defaultValues($params));
+	}
 	function fieldName() {}
 	function & visit(& $obj) {
 		return $obj->visitedCollectionField($this);

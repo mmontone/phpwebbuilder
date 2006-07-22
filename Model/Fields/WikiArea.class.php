@@ -4,10 +4,6 @@ require_once dirname(__FILE__) . '/DataField.class.php';
 
 class WikiArea extends TextArea
 {
-      function WikiArea ($name, $isIndex) {
-               parent::TextArea($name, $isIndex);
-      }
-
       function &visit(&$obj) {
                return $obj->visitedWikiArea($this);
       }

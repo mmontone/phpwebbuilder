@@ -9,18 +9,21 @@ class IndexField extends NumField {
 	var $buffered_target = null;
 
 	function IndexField($name, $isIndex=true, $dataType='__NoType', $nullValue='') {
-		if (is_array($isIndex)) {
+		if (!is_array($isIndex)) {
+			$ps = array('null_value'=>$nullValue,
+						'type'=>$dataType,
+						'is_index'=>$isIndex,
+						'fieldName'=>$name);
+			parent :: NumField($ps);
+		} else {
 			parent :: NumField($name, $isIndex);
-			$this->collection = & new PersistentCollection($isIndex['type']);
-			$this->nullValue = & $isIndex['null_value'];
-		}
-		else {
-			parent :: NumField($name, $isIndex);
-			$this->collection = & new PersistentCollection($dataType);
-			$this->nullValue = & $nullValue;
 		}
 	}
-
+	function createInstance($params){
+		parent::createInstance($params);
+		$this->nullValue = & $params['null_value'];
+		$this->collection = & new PersistentCollection($params['type']);
+	}
 	function & visit(& $obj) {
 		return $obj->visitedIndexField($this);
 	}

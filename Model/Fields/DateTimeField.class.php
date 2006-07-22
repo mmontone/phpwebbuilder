@@ -1,10 +1,6 @@
 <?php
 
 class DateTimeField extends DataField {
-    function DateTimeField ($name, $isIndex=false) {
-        parent::Datafield($name, $isIndex);
-    }
-
     function SQLvalue() {
         return "'".$this->getValue()."'" . ", " ;
     }
@@ -65,10 +61,6 @@ class DateTimeField extends DataField {
 }
 
 class DateField extends DateTimeField {
-    function DateField ($name, $isIndex) {
-        parent::DateTimefield($name, $isIndex);
-    }
-
     function format ($date) {
         return $this->dateFormat($date);
     }
@@ -79,10 +71,6 @@ class DateField extends DateTimeField {
 }
 
 class TimeField extends DateTimeField{
-    function TimeField ($name, $isIndex) {
-        parent::DateTimefield($name, $isIndex);
-    }
-
     function format ($date) {
         return $this->timeFormat($date);
     }
