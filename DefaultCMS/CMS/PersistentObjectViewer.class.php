@@ -88,7 +88,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
 		}
 		else {
-			$this->refresh();
+			$this->delete();
 		}
 	}
 
