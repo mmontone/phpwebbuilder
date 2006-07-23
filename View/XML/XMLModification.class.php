@@ -20,8 +20,8 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		parent::XMLNodeModification(&$target);
 		$this->replacement = & $replacement;
 	}
-	function renderAjaxResponseCommand(&$target) {
-		$xml = '<repn id="' . $target->getId() . '">';
+	function renderAjaxResponseCommand() {
+		$xml = '<repn id="' . $this->target->getId() . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</repn>';
 		return $xml;

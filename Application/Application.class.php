@@ -79,6 +79,7 @@ class Application extends ComponentHolder {
 			$this->initializeStyleSheets();
 			$this->initializeScripts();
 			$this->page_renderer->setPage($this->wholeView);
+			$this->page_renderer->initialRender();
 		}
 	}
 	function setTitle($title){

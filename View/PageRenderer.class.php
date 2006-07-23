@@ -12,6 +12,7 @@ class PageRenderer // extends PWBObject
 		$initial_page_renderer->setPage($app->wholeView);
 		echo $initial_page_renderer->renderPage($app);
 	}
+	function initialRender(){}
 	function render(&$page){
 		return $this->renderPage($page);
 	}
@@ -104,7 +105,11 @@ class AjaxPageRenderer extends PageRenderer {
 		parent::setPage($page);
 		$page->setAttribute('onsubmit','postInAjax();');
 	}
-
+	function initialRender(){
+			$p =& $this->page;
+			$p->toFlush = & new ReplaceNodeXMLNodeModification($p, $p);
+			$p->modifications[] =& $p->toFlush;
+	}
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();
 	}
@@ -145,6 +150,9 @@ class AjaxPageRenderer extends PageRenderer {
 	function renderModification(& $mod) {
 		switch (getClass($mod)) {
 			case 'replacechildxmlnodemodification' :
+				$mod->replacement->flushModifications();
+				return $mod->renderAjaxResponseCommand();
+			case 'replacenodexmlnodemodification' :
 				$mod->replacement->flushModifications();
 				return $mod->renderAjaxResponseCommand();
 			case 'appendchildxmlnodemodification' :
