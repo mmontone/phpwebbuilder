@@ -9,6 +9,7 @@ require_once 'Menu.class.php';
 require_once 'DefaultCMSApplication.class.php';
 require_once 'Files/FileLoader.class.php';
 require_once 'Files/ReadFile.class.php';
+require_once 'CMS/CollectionNavigator.class.php';
 require_once 'CMS/CollectionViewer.class.php';
 require_once 'CMS/PersistentObjectViewer.class.php';
 require_once 'CMS/PersistentObjectEditor.class.php';
@@ -29,7 +30,7 @@ require_once 'CMS/PresentersFactory/Viewers/BoolFieldViewerFactory.class.php';
 require_once 'CMS/PresentersFactory/Viewers/TextAreaViewerFactory.class.php';
 require_once 'CMS/PresentersFactory/Viewers/CollectionFieldViewerFactory.class.php';
 require_once 'CMS/PresentersFactory/Viewers/ViewerFactory.class.php';
-require_once 'CMS/CollectionNavigator.class.php';
+
 require_once 'CMS/IndexFieldChooser.class.php';
 require_once 'CMS/CollectionElementChooser.class.php';
 require_once 'CMS/CollectionFilterer.class.php';
