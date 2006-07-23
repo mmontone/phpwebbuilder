@@ -73,11 +73,11 @@
 			<img class="operation" title="Exit viewer"
 				src="$templatesdir/icons/stock_undo.png" />
 		</a>
-		<a href="#" id="edit">
+		<a href="#" id="editor">
 			<img class="operation" title="Edit"
 				src="$templatesdir/icons/stock_edit.png" />
 		</a>
-		<a href="#" id="delete">
+		<a href="#" id="deleter">
 			<img class="operation" title="Delete"
 				src="$templatesdir/icons/stock_delete.png" />
 		</a>
