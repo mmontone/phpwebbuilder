@@ -8,7 +8,7 @@ class IndexField extends NumField {
 	var $target = null;
 	var $buffered_target = null;
 
-	function IndexField($name, $isIndex=true, $dataType='__NoType', $nullValue='') {
+	function IndexField($name, $isIndex=null, $dataType=null, $nullValue=null) {
 		if (!is_array($isIndex)) {
 			$ps = array('null_value'=>$nullValue,
 						'type'=>$dataType,
