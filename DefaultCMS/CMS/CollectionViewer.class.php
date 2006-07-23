@@ -19,7 +19,7 @@ class CollectionViewer extends CollectionNavigator {
 	}
 	function checkNewObjectPermissions($params){
 		$u =&User::logged();
-		return $u->hasPermissions(array(getClass($params['object']).'=>Add', '*',getClass($params['object']).'=>*'));
+		return $u->hasPermissions(array($this->col->getDataType().'=>Add', '*',$this->col->getDataType().'=>*'));
 	}
 	function newObject(&$n) {
 		$obj = & new $this->classN;
