@@ -22,7 +22,8 @@ class CollectionViewer extends CollectionNavigator {
 		return $u->hasPermissions(array($this->col->getDataType().'=>Add', '*',$this->col->getDataType().'=>*'));
 	}
 	function newObject(&$n) {
-		$obj = & new $this->col->getDataType();
+		$dt = $this->col->getDataType();
+		$obj = & new $dt;
 		$c =& $this->col->conditions;
 		foreach($c as $f=>$cond){
 			$obj->$f->setValue($cond[1]);
