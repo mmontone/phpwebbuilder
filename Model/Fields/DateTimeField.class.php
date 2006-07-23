@@ -24,21 +24,29 @@ class DateTimeField extends DataField {
 
     function getValue() {
     	$v = parent::getValue();
-        if (ereg("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $v)) {
+        if ($v!=null) {
             return $v;
         } else {
 			return $this->now();
         }
     }
 
-    function validate() {
-    	if (!ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $this->getValue())) {
+    function validateDate($d) {
+    	if (!ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $d)) {
     		return new ValidationException(array('message' => $this->displayString . ' is not a valid date or time', 'content' => &$this));
     	}
-
     	return false;
     }
-
+    function validate() {
+    	$v = $this->getValue();
+    	return $this->validateDate($v) && $this->validateTime($v);
+    }
+    function validateTime($t) {
+    	if (!ereg('([0-9]{2})(:([0-9]{1,2})){0-2}', $t)) {
+    		return new ValidationException(array('message' => $this->displayString . ' is not a valid date or time', 'content' => &$this));
+    	}
+    	return false;
+    }
     function now(){
         return $this->format(getDate());
     }
@@ -68,6 +76,10 @@ class DateField extends DateTimeField {
     function &visit(&$obj) {
         return $obj->visitedDateField($this);
     }
+    function validate() {
+    	$v = $this->getValue();
+    	return $this->validateDate($v);
+    }
 }
 
 class TimeField extends DateTimeField{
@@ -77,6 +89,10 @@ class TimeField extends DateTimeField{
 
     function &visit(&$obj) {
         return $obj->visitedTimeField($this);
+    }
+	function validate() {
+    	$v = $this->getValue();
+    	return $this->validateTime($v);
     }
 }
 
