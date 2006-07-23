@@ -7,9 +7,9 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	$obj =& $this->obj;
     	$this->factory =& new ViewerFactory;
 		$class = getClass($obj);
-		$this->addComponent(new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),'delete');
+		$this->addComponent(new CommandLink(array('text' => 'Delete', 'proceedFunction' => new FunctionObject($this, 'deleteObject', array('object' => & $obj)))),'deleter');
        	$this->addComponent(new ActionLink($this, 'cancel', 'cancel', $n=null), 'cancel');
-       	$this->addComponent(new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),'edit');
+       	$this->addComponent(new CommandLink(array('text' => 'Edit', 'proceedFunction' => new FunctionObject($this, 'editObject', array('object' => & $obj)))),'editor');
     	parent::initialize();
     }
 
@@ -17,8 +17,6 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$fc =& new FieldValueComponent;
 		$fieldComponent = & $this->factory->createFor($field);
 		$fc->addComponent($fieldComponent, 'value');
-		$user =& User::logged();
-		$class = getClass($this->obj);
 		if ($this->checkEditObjectPermissions(array('object'=> &$this->obj))) {
             $fc->addComponent(new CommandLink(array('text' => $field->displayString, 'proceedFunction' => new FunctionObject($this, 'editField', array('field' => &$field, 'fvc' => &$fc)))), 'fieldName');
         } else {
@@ -38,7 +36,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 
 	function checkEditObjectPermissions($params) {
 		$u =& User::logged();
-		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
+		return $u->hasPermissions(array(getClass($params['object']).'=>Edit', '*',getClass($params['object']).'=>*'));
 	}
     function editObject($params) {
 		$obj =& $params['object'];
@@ -72,22 +70,22 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
 	}
 	function deleteObject($params) {
-		$fc =& $params['object'];
+		$obj =& $params['object'];
 		$translator = translator;
 		if (!$translator)
 			$translator = 'EnglishTranslator';
 		$translator =& new $translator;
 		$msg = $translator->translate('Are you sure that you want to delete the object?');
-		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$fc)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
+		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$obj)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
 	}
 
-	function deleteConfirmed($params, $fcparams) {
-		$fc =& $fcparams['object'];
+	function deleteConfirmed($params, $objparams) {
+		$obj =& $objparams['object'];
 		$ok = $obj->delete();
 		if (!$ok) {
 			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
 		} else {
-			$this->delete();
+			$this->callback('object_deleted');
 		}
 	}
 

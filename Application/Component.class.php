@@ -31,7 +31,7 @@ class Component extends PWBObject
 		parent::release();
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;
-			$child->stop();
+			if ($child!=null)$child->stop();
 		}
 	}
 	function checkAddingPermissions(){

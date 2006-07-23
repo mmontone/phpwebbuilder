@@ -57,7 +57,6 @@ class CollectionNavigator extends Component {
 		// through the collection interface (the in-memory collection doesn't get notified)
 		$col->refresh();
 		$elements = & $col->elements();
-		if(!$elements) echo DB::lastError();
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {
 			$fc =& $this->addLine($elements[$k]);
