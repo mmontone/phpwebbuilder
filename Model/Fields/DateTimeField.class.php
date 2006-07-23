@@ -42,7 +42,7 @@ class DateTimeField extends DataField {
     	return $this->validateDate($v) && $this->validateTime($v);
     }
     function validateTime($t) {
-    	if (!ereg('([0-9]{2})(:([0-9]{1,2})){0-2}', $t)) {
+    	if (!ereg('([0-9]{2})((:([0-9]{1,2})){0,2})', $t)) {
     		return new ValidationException(array('message' => $this->displayString . ' is not a valid date or time', 'content' => &$this));
     	}
     	return false;
