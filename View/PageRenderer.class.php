@@ -30,6 +30,8 @@ class StandardPageRenderer extends PageRenderer {
 		$this->page->setAttribute('enctype', 'multipart/form-data');
 		$this->page->setAttribute('app', getClass($app));
 		$this->page->setAttribute('bookmark', $app->urlManager->actUrl);
+		$this->page->setAttribute('bsaedir', basedir);
+		$this->page->setAttribute('pwb_url', pwb_url);
 
 		/*
 		$ret = '<!DOCTYPE html
@@ -54,8 +56,6 @@ class StandardPageRenderer extends PageRenderer {
 
 
 		$ret .= '</head><body>';
-		$ret .= '<input type="hidden" name="basedir" id="basedir" value="'.basedir.'"/>';
-
 		foreach ($this->page->scripts as $s) {
 			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
 		}

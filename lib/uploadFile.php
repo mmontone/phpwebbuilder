@@ -1,4 +1,5 @@
 <?
+define('app_class',$_REQUEST["app"]);
 require_once $_REQUEST["basedir"]. '/Configuration/pwbapp.php';
 ?>
 <html>
@@ -28,9 +29,7 @@ movf.setAttribute('name', 'fileelem');
 window.onload=function (){document.getElementById('fm').submit();}
 </script>
 <? } else {
-	$path = explode("/", $_REQUEST["nodeid"]);
-	$appclass = $path[1];
-	$app = & Application :: getInstanceOf($appclass);
+	$app = & Application :: instance();
 	$ad =& new  ActionDispatcher;
 	$comp =& $ad->getComponent($_REQUEST["nodeid"], $app);
 	$comp->loadFile($_FILES["fileelem"]);
