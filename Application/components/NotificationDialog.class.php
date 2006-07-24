@@ -6,7 +6,8 @@ class NotificationDialog extends Component
 
 	function NotificationDialog($message, $callback_actions=array('on_accept' => 'notification_accepted')) {
 		$this->message = $message;
-		parent::Component($callback_actions);
+		parent::Component();
+		$this->registerCallbacks($callback_actions);
 	}
 
 	function initialize() {

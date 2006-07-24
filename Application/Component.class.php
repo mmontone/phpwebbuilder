@@ -12,9 +12,8 @@ class Component extends PWBObject
 	var $__children;
 	var $nextChildrenPosition =0;
 
-	function Component($registered_callbacks=array()) {
-		parent::PWBObject();
-		$this->registered_callbacks = $registered_callbacks;
+	function Component($params=array()) {
+		parent::PWBObject($params);
 		$this->__children = array();
 		$this->listener =& new ChildCallbackHandler();
 	}
@@ -74,22 +73,25 @@ class Component extends PWBObject
     }
 
 	function &addComponent(&$component, $ind=null) {
-		if (!$component->checkAddingPermissions()) return $f=false;
-		if (($ind !=null) and (isset($this->__children[$ind]))) {
-			trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
-			$this->$ind->stopAndCall($component);
+		if (!$component->checkAddingPermissions()){
+			return $f=false;
 		} else {
-			$keys = array();
-			$index =& $keys[$ind];
-			$index = $ind;
-			if ($index===null){$index = $this->nextChildrenPosition;}
-			trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
-			$this->__children[$index] =& new ComponentHolder($component,$index, $this);
-			$this->nextChildrenPosition++;
-			if (isset($this->app)) $component->linkToApp($this->app);
-			$component->start();
+			if (($ind !=null) and (isset($this->__children[$ind]))) {
+				trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
+				$this->$ind->stopAndCall($component);
+			} else {
+				$keys = array();
+				$index =& $keys[$ind];
+				$index = $ind;
+				if ($index===null){$index = $this->nextChildrenPosition;}
+				trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
+				$this->__children[$index] =& new ComponentHolder($component,$index, $this);
+				$this->nextChildrenPosition++;
+				if (isset($this->app)) $component->linkToApp($this->app);
+				$component->start();
+			}
+			return $component;
 		}
-		return $component;
 	}
 
 	function deleteComponentAt($index){

@@ -6,7 +6,8 @@ class QuestionDialog extends Component
 
 	function QuestionDialog($question, $callback_actions=array('on_yes'=>'question_accepted', 'on_no' => 'question_cancelled')) {
 		$this->question = $question;
-		parent::Component($callback_actions);
+		parent::Component();
+		$this->registerCallbacks($callback_actions);
 	}
 
 	function initialize(){

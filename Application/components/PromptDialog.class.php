@@ -7,7 +7,8 @@ class PromptDialog extends Component
 	var $message;
 
 	function PromptDialog($message, $callback_actions=array('on_accept' => 'text_filled_in')) {
-		parent::Component($callback_actions);
+		parent::Component();
+		$this->registerCallbacks($callback_actions);
 		$this->message = $message;
 	}
 

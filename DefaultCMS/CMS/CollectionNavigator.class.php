@@ -16,7 +16,8 @@ class CollectionNavigator extends Component {
 			$this->fields =& $fields;
 		}
 
-		parent :: Component($callbacks);
+		parent::Component();
+		$this->registerCallbacks($callbacks);
 	}
 
 	function initialize() {

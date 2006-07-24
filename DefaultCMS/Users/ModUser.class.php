@@ -4,7 +4,7 @@ class ModUser extends Component {
 	function hasPermission(){
 		return !User::is_guest();
 	}
-	function ModUser(){
+	function createInstance(){
 		$u =& User::logged();
 		$fs = $u->allFieldNames();
 		unset($fs['UserRoleuser']);

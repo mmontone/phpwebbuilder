@@ -4,12 +4,10 @@ class FieldEditor extends Component {
 	var $field;
 	var $factory;
 
-	function FieldEditor($params) {
+	function createInstance($params){
 		$this->field =& $params['field'];
 		$this->factory =& new EditorFactory;
-		parent::Component();
 	}
-
 	function initialize() {
 		$this->addComponent(new Label($this->field->displayString), 'fieldName');
 		$widget =& $this->factory->createFor($this->field);

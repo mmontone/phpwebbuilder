@@ -30,6 +30,7 @@ class ActionMenuItem extends Component {
 	function ActionMenuItem($label, &$action) {
 		$this->label =& $label;
 		$this->action =& $action;
+		parent::Component();
 	}
 
 	function initialize() {

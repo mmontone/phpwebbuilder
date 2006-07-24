@@ -19,7 +19,8 @@ class Widget extends Component {
 		), $this);
 
 		$this->enqueued_hooks = array ();
-		parent :: Component($callback_actions);
+		parent::Component();
+		$this->registerCallbacks($callback_actions);
 	}
 
 	function fieldValidated(&$field) {
