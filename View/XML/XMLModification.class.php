@@ -21,6 +21,7 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		$this->replacement = & $replacement;
 	}
 	function renderAjaxResponseCommand() {
+		$this->replacement->flushModifications();
 		$xml = '<repn id="' . $this->target->getId() . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</repn>';
@@ -51,6 +52,7 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 		$this->replacement = & $replacement;
 	}
 	function renderAjaxResponseCommand() {
+		$this->replacement->flushModifications();
 		$xml = '<repn id="' . $this->childId . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</repn>';
@@ -70,6 +72,7 @@ class InsertBeforeXMLNodeModification extends XMLNodeModification {
 		$this->new = & $new;
 	}
 	function renderAjaxResponseCommand() {
+		$this->new->flushModifications();
 		$xml = '<insert id="' . $this->old->getId() . '">';
 		$xml .= $this->new->render();
 		$xml .= '</insert>';
@@ -87,6 +90,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 		$this->child = & $child;
 	}
 	function renderAjaxResponseCommand() {
+		$this->child->flushModifications();
 		$xml = '<append id="' . $this->target->getId() . '">';
 		$xml .= $this->child->render();
 		$xml .= '</append>';

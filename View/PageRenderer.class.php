@@ -137,7 +137,7 @@ class AjaxPageRenderer extends PageRenderer {
 		$xml = '';
 
 		foreach (array_keys($node->modifications) as $i) {
-			$xml .= $this->renderModification($node->modifications[$i]);
+			$xml .= $node->modifications[$i]->renderAjaxResponseCommand();
 		}
 
 		foreach (array_keys($node->childNodes) as $i) {
@@ -145,38 +145,6 @@ class AjaxPageRenderer extends PageRenderer {
 		}
 
 		return $xml;
-	}
-
-	function renderModification(& $mod) {
-		switch (getClass($mod)) {
-			case 'replacechildxmlnodemodification' :
-				$mod->replacement->flushModifications();
-				return $mod->renderAjaxResponseCommand();
-			case 'replacenodexmlnodemodification' :
-				$mod->replacement->flushModifications();
-				return $mod->renderAjaxResponseCommand();
-			case 'appendchildxmlnodemodification' :
-				$mod->child->flushModifications();
-				return $mod->renderAjaxResponseCommand();
-			case 'removechildxmlnodemodification' :
-				return $mod->renderAjaxResponseCommand();
-			case 'setattributexmlnodemodification' :
-				return $mod->renderAjaxResponseCommand();
-			case 'removeattributexmlnodemodification' :
-				return $mod->renderAjaxResponseCommand();
-			case 'insertbeforexmlnodemodification' :
-				$mod->new->flushModifications();
-				return $mod->renderAjaxResponseCommand();
-			case '' :
-				trace('null object in modifications');
-				return '';
-			case 'bookmarkxmlnodemodification':
-				return $mod->renderAjaxResponseCommand();
-			default :
-				echo "Not match in AjaxPageRenderer>>renderModification" .
-						" for ".getClass($mod);
-				exit;
-		}
 	}
 }
 
