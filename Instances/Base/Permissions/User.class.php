@@ -15,6 +15,7 @@ class User extends PersistentObject {
 		$u = User::getWithIndex('User',array("user"=>"'$user'",
 								"pass"=>"'$pass'"));
 		if ($u!=null) {
+			$u->getPermissions();
 			return $u;
 		} else
 			return FALSE;
