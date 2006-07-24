@@ -137,7 +137,9 @@ class AjaxPageRenderer extends PageRenderer {
 		$xml = '';
 
 		foreach (array_keys($node->modifications) as $i) {
-			$xml .= $node->modifications[$i]->renderAjaxResponseCommand();
+			if (method_exists($node->modifications[$i],'renderAjaxResponseCommand')){
+				$xml .= $node->modifications[$i]->renderAjaxResponseCommand();
+			}
 		}
 
 		foreach (array_keys($node->childNodes) as $i) {

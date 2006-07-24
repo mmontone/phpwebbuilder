@@ -3,7 +3,7 @@ class User extends PersistentObject {
 	var $permissions = array ();
 	function initialize() {
 		$this->table = "users";
-		$this->addField(new TextField(array('fieldName'=>'user')));
+		$this->addField(new TextField(array('fieldName'=>'user', 'is_index'=>TRUE)));
 		$this->addField(new PasswordField(array('fieldName'=>'pass')));
 		$this->addField(new CollectionField(
 			array('reverseName'=>'user',
@@ -12,21 +12,10 @@ class User extends PersistentObject {
 		)));
 	}
 	function & loadUser($user, $pass) {
-		$db = DB :: Instance();
-		$col = new PersistentCollection('User');
-		$col->conditions["user"] = array (
-			"=",
-			"'" . $user . "'"
-		);
-		$col->conditions["pass"] = array (
-			"=",
-			"'" . $pass . "'"
-		);
-		$objs = $col->objects();
-
-		if (count($objs) > 0) {
-			$objs[0]->getPermissions();
-			return $objs[0];
+		$u = User::getWithIndex('User',array("user"=>"'$user'",
+								"pass"=>"'$pass'"));
+		if ($u!=null) {
+			return $u;
 		} else
 			return FALSE;
 	}

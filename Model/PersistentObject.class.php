@@ -276,6 +276,13 @@ class PersistentObject extends DescriptedObject {
 		$obj = & $obj->loadFromId($id);
 		return $obj;
 	}
+	function & getWithIndex($class, $indArray) {
+		$cs = & new PersistentCollection($class);
+		foreach($indArray as $i=>$v){
+			$cs->conditions[$i]=array('=',$v);
+		}
+		return $cs->first();
+	}
 	/**
 	 * Loads an object from an id, not worrying about inheritance (class)
 	 */

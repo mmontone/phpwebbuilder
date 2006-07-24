@@ -29,9 +29,6 @@ class TextField extends DataField {
 }
 
 class TextArea extends DataField {
-	function textArea($name, $isIndex) {
-		parent :: Datafield($name, $isIndex);
-	}
 	function & visit(& $obj) {
 		return $obj->visitedTextArea($this);
 	}
