@@ -3,11 +3,12 @@ class User extends PersistentObject {
 	var $permissions = array ();
 	function initialize() {
 		$this->table = "users";
-		$this->addField(new textField("user", TRUE));
-		$this->addField(new passwordField("pass", FALSE));
-		$this->addField(new CollectionField("user", array (
-			'type' => 'UserRole',
-			'display' => 'Roles'
+		$this->addField(new TextField(array('fieldName'=>'user')));
+		$this->addField(new PasswordField(array('fieldName'=>'pass')));
+		$this->addField(new CollectionField(
+			array('reverseName'=>'user',
+				'type' => 'UserRole',
+				'display' => 'Roles'
 		)));
 	}
 	function & loadUser($user, $pass) {

@@ -6,11 +6,11 @@ class CollectionField extends DataField {
 	var $fieldname;
 
 	function CollectionField($name, $dataType = array ()) {
-		if (is_array($dataType)) {
+		if (is_array($name)){
+			parent :: DataField($name);
+		} else if (is_array($dataType)) {
 			$dataType['reverseField'] = $name;
 			parent :: DataField($dataType);
-		} else if (is_array($name)){
-			parent :: DataField($name);
 		} else {
 			parent :: DataField(array('reverseField'=>$name, 'type'=>$dataType));
 		}
@@ -20,8 +20,8 @@ class CollectionField extends DataField {
 		$this->fieldname = $params['reverseField'];
 		$this->collection = & new PersistentCollection($params['type']);
 		$this->collection->conditions[$this->fieldname] = array (
-			"=",
-			"-1"
+			'=',
+			'-1'
 		);
 	}
 	function defaultValues($params){
