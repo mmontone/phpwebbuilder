@@ -12,7 +12,7 @@ if (isset($_REQUEST["filenamefield"])){
 <form id="fm" action="uploadFile.php" method="post" enctype="multipart/form-data">
 <input type="file" id="fileelem"/>
 <input type="hidden" name="nodeid" id="nodeid" value=""/>
-<input type="hidden" name="app" id="app" value="<?$_REQUEST['app']?>"/>
+<input type="hidden" name="app" id="app" value="<?=$_REQUEST['app']?>"/>
 <input type="hidden" name="basedir" id="basedir" value=""/>
 <input type="button"  />
 </form>
@@ -22,7 +22,7 @@ document.getElementById("nodeid").setAttribute('value','<?=$_REQUEST["filenamefi
 var doc = window.frameElement.ownerDocument;
 var parwin = doc.window;
 var movf = doc.getElementById('<?=$_REQUEST["filenamefield"]?>');
-document.getElementById("basedir").setAttribute('value', doc.getElementById("basedir").getAttribute('value'));
+document.getElementById("basedir").setAttribute('value', "<?=$_REQUEST["basedir"]?>");
 parwin.start_uploading('<?=$_REQUEST["filenamefield"]?>');
 remf.parentNode.replaceChild(movf, remf);
 movf.setAttribute('id', 'fileelem');
@@ -31,6 +31,7 @@ window.onload=function (){document.getElementById('fm').submit();}
 </script>
 <? } else {
 	$app = & Application :: instance();
+	var_dump(getClass($app));
 	$ad =& new  ActionDispatcher;
 	$comp =& $ad->getComponent($_REQUEST["nodeid"], $app);
 	$comp->loadFile($_FILES["fileelem"]);

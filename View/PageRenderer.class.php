@@ -30,7 +30,7 @@ class StandardPageRenderer extends PageRenderer {
 		$this->page->setAttribute('enctype', 'multipart/form-data');
 		$this->page->setAttribute('app', getClass($app));
 		$this->page->setAttribute('bookmark', $app->urlManager->actUrl);
-		$this->page->setAttribute('bsaedir', basedir);
+		$this->page->setAttribute('basedir', basedir);
 		$this->page->setAttribute('pwb_url', pwb_url);
 
 		/*
