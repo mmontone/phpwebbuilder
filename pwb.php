@@ -14,8 +14,6 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 //error_reporting(E_ERROR | E_PARSE);
 //error_reporting(E_ALL);
 
-if (function_exists('apd_set_pprof_trace'))apd_set_pprof_trace();
-
 require_once dirname(__FILE__) . "/lib/basiclib.php";
 
 
