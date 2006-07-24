@@ -12,6 +12,7 @@ if (isset($_REQUEST["filenamefield"])){
 <form id="fm" action="uploadFile.php" method="post" enctype="multipart/form-data">
 <input type="file" id="fileelem"/>
 <input type="hidden" name="nodeid" id="nodeid" value=""/>
+<input type="hidden" name="app" id="app" value="<?$_REQUEST['app']?>"/>
 <input type="hidden" name="basedir" id="basedir" value=""/>
 <input type="button"  />
 </form>
