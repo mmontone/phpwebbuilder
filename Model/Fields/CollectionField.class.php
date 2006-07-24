@@ -21,7 +21,7 @@ class CollectionField extends DataField {
 		$this->collection = & new PersistentCollection($params['type']);
 		$this->collection->conditions[$this->fieldname] = array (
 			"=",
-			"0"
+			"-1"
 		);
 	}
 	function defaultValues($params){

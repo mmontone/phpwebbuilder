@@ -88,6 +88,7 @@
 			<translated>Class</translated>
 			:
 			<container id="className" />
+			<container id="status"/>
 			<table>
 				<thead>
 					<tr>

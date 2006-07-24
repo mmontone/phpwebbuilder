@@ -57,12 +57,16 @@ class CollectionNavigator extends Component {
 		// through the collection interface (the in-memory collection doesn't get notified)
 		$col->refresh();
 		$elements = & $col->elements();
+		if ($elements===false) {
+			$this->addComponent(new Label(DB::lastError()),'status');
+		} else {
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {
 			$fc =& $this->addLine($elements[$k]);
 			$this->objs->addComponent($fc);
 		}
 		$this->view->redraw();
+		}
 	}
 
 	function getValue(){}
