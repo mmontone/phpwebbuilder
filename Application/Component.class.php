@@ -157,7 +157,7 @@ class Component extends PWBObject
 	}
 
 	function callback($callback=null) {
-		$this->callbackWith($callback,$a = array());
+		$this->callbackWith($callback, $a = array());
 	}
 
 	function callbackWith($callback, &$params) {

@@ -38,6 +38,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$u =& User::logged();
 		return $u->hasPermissions(array(getClass($params['object']).'=>Edit', '*',getClass($params['object']).'=>*'));
 	}
+
     function editObject($params) {
 		$obj =& $params['object'];
 		$msg =& $params['msg'];
@@ -65,10 +66,12 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	function cancel() {
 		$this->callback('refresh');
 	}
+
 	function checkDeleteObjectPermissions($params) {
 		$u =& User::logged();
 		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
 	}
+
 	function deleteObject($params) {
 		$obj =& $params['object'];
 		$translator = translator;
