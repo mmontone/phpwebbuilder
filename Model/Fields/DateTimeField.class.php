@@ -32,20 +32,19 @@ class DateTimeField extends DataField {
     }
 
     function validateDate($d) {
-    	if (!ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $d)) {
-    		return new ValidationException(array('message' => $this->displayString . ' is not a valid date or time', 'content' => &$this));
-    	}
-    	return false;
+    	return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $d);
     }
+
     function validate() {
     	$v = $this->getValue();
-    	return $this->validateDate($v) && $this->validateTime($v);
-    }
-    function validateTime($t) {
-    	if (!ereg('([0-9]{2})((:([0-9]{1,2})){0,2})', $t)) {
-    		return new ValidationException(array('message' => $this->displayString . ' is not a valid date or time', 'content' => &$this));
+    	if ((!$this->validateTime($v)) or (!$this->validateDate($v))) {
+    		return new ValidationException(array('message' => 'The time or date are invalid', 'content' => &$this));
     	}
     	return false;
+
+    }
+    function validateTime($t) {
+    	return ereg('([0-9]{2})((:([0-9]{1,2})){0,2})', $t);
     }
     function now(){
         return $this->format(getDate());
@@ -76,9 +75,13 @@ class DateField extends DateTimeField {
     function &visit(&$obj) {
         return $obj->visitedDateField($this);
     }
+
     function validate() {
     	$v = $this->getValue();
-    	return $this->validateDate($v);
+    	if (!$this->validateDate($v)) {
+    		return new ValidationException(array('message' => 'The date is invalid', 'content' => &$this));
+    	}
+    	return false;
     }
 }
 
@@ -90,9 +93,12 @@ class TimeField extends DateTimeField{
     function &visit(&$obj) {
         return $obj->visitedTimeField($this);
     }
-	function validate() {
+	function &validate() {
     	$v = $this->getValue();
-    	return $this->validateTime($v);
+    	if (!$this->validateTime($v)) {
+    		return new ValidationException(array('message' => 'The time is invalid', 'content' => &$this));
+    	}
+    	return false;
     }
 }
 

@@ -27,6 +27,7 @@ if (!defined('app_class')) {
 $modules = explode(",", modules);
 
 foreach ($modules as $dir) {
+	//echo 'Including ' . $dir;
 	includemodule(pwbdir.'/'.trim($dir));
 }
 
