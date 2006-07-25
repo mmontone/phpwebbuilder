@@ -1,6 +1,6 @@
 body, html, form {
 /*overflow:hidden;*/
-height:100%;
+height:99%;
 }
 
 form#app > div{
@@ -9,7 +9,7 @@ form#app > div{
 
 div.Body, div.Menu{
 overflow:auto;
-height:90%;
+height:95%;
 }
 
 table{

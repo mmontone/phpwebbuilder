@@ -6,49 +6,65 @@ class CollectionField extends DataField {
 	var $fieldname;
 
 	function CollectionField($name, $dataType = array ()) {
-		if (is_array($name)){
+		if (is_array($name)) {
 			parent :: DataField($name);
-		} else if (is_array($dataType)) {
-			$dataType['reverseField'] = $name;
-			parent :: DataField($dataType);
-		} else {
-			parent :: DataField(array('reverseField'=>$name, 'type'=>$dataType));
-		}
+		} else
+			if (is_array($dataType)) {
+				$dataType['reverseField'] = $name;
+				parent :: DataField($dataType);
+			} else {
+				parent :: DataField(array (
+					'reverseField' => $name,
+					'type' => $dataType
+				));
+			}
 	}
-	function createInstance($params){
-		parent::createInstance($params);
-		$this->fieldname = $params['reverseField'];
-		$this->collection = & new PersistentCollection($params['type']);
-		$this->collection->conditions[$this->fieldname] = array (
+	function createInstance($params) {
+		parent :: createInstance($params);
+		if (!$this->creationParams['reverseField']) {
+			$this->collection = & new JoinedPersistentCollection($params['type'], $params['joinTable'], $params['joinField']);
+			$this->creationParams['reverseField'] = $params['joinTable'].'.'.$params['joinFieldOwn'];
+		} else {
+			$this->collection = & new PersistentCollection($params['type']);
+		}
+		$this->collection->conditions[$this->creationParams['reverseField']] = array (
 			'=',
 			'-1'
 		);
 	}
-	function defaultValues($params){
-		return array_merge(array('fieldName'=>$params['type'].$params['reverseField'])
-				,parent::defaultValues($params));
+	function defaultValues($params) {
+		return array_merge(array (
+			'fieldName' => $params['type'] . $params['reverseField'],
+			'joinTable' => $params['type'],
+			'joinFieldOwn' => strtolower(getClass($this->owner)),
+			'joinField' => strtolower($params['type']),
+
+		), parent :: defaultValues($params));
 	}
-	function fieldName() {}
+	function fieldName() {
+	}
 	function & visit(& $obj) {
 		return $obj->visitedCollectionField($this);
 	}
 
 	function setID($id) {
 		$this->setValue($id);
-		$this->collection->conditions[$this->fieldname] = array (
-			"=",
+		$this->collection->conditions[$this->creationParams['reverseField']] = array (
+			'=',
 			$id
 		);
 	}
-	function SQLvalue() {}
-	function updateString() {}
-	function loadFrom(&$reg) {
+	function SQLvalue() {
+	}
+	function updateString() {
+	}
+	function loadFrom(& $reg) {
 		return true;
 	}
 	function & objects() {
 		return $this->elements();
 	}
-	function &elements() {
+	function & elements() {
 		return $this->collection->elements();
 	}
 

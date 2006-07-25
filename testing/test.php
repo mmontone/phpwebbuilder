@@ -1,27 +1,19 @@
 <?php
+require_once '/var/www/eurekagw/Configuration/pwbapp.php';
+$f = & new CollectionField(array (
+	'type' => 'Role',
+	'joinTable' => 'UserRole'
+));
 
-	class A {
-    function A () {
-        $this->b =& new B($this);
-    }
-}
-
-class B {
-    function B ($parent = NULL) {
-        $this->parent =& $parent;
-    }
-}
-
-/*
-for ($i = 0 ; $i < 1000000 ; $i++) {
-    $a =& new A();
-}*/
-
-$x =& new A;
-$y =& $x;
-$z =& $x;
-$n = null;
-$z =null;
-var_dump($y);
-var_dump($z);
-	?>
+$f->setID(1);
+$col =& $f->collection;
+$sql = $col->selectsql();
+print_r($sql);echo '<br/>';
+$db = & DB :: instance();
+$res = $db->query($sql);
+echo DB::lastError();echo '<br/>';
+print_r($db->fetchRecord($res));
+echo '<br/>';
+$f->collection->map(lambda('&$r','echo getClass($r).$r->getId();',$a=array()));
+echo '<br/>';
+?>

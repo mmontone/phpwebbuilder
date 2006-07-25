@@ -18,18 +18,15 @@ class Menu extends Component {
 		$this->objMenus();
 	}
 	function realMenus() {
-		$menus = & MenuSection :: availableMenus();
-		$ks = array_keys($menus);
-		foreach ($ks as $k) {
-			$this->realMenuSection($menus[$k]);
-		}
+		$ms = & new PersistentCollection('MenuSection');
+		$self =& $this;
+		$ms->map($f=lambda('&$m','$self->realMenuSection($m);',get_defined_vars()));
 	}
 	function realMenuSection(& $menu) {
 		$sect = & new MenuSectionComponent();
-		$this->menus->addComponent($sect);
 		$mv = $menu->name->getValue();
 		$sect->addComponent(new Text(new ValueHolder($mv)), 'secName');
-		$col = & $menu->itemsVisible();
+		$col = & $menu->items->collection->elements();
 		$ks2 =  array_keys($col);
 		$arr=array();
 		foreach ($ks2 as $k2) {
@@ -38,20 +35,17 @@ class Menu extends Component {
 				'Component' => $menu->controller->getValue()
 			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
 		}
+		$this->menus->addComponent($sect);
 	}
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
 		$sect = & new MenuSectionComponent();
-		$this->menus->addComponent($sect);
-		$sect->addComponent(new Text(new ValueHolder($t = 'Objects')), 'secName');
+		$sect->addComponent(new Label('Objects'), 'secName');
 		$u =& User::logged();
 		$temp = array();
 		foreach ($arr as $p=>$c) {
 			$class =& $arr[$p];
 			$obj =& new $class;
-			/*PermissionChecker::addComponent($sect,
-
-				new FunctionObject(User::logged(), 'hasPermissions', array($class.'=>Menu', '*')));*/
 			$sect->addComponent(new MenuItemComponent($this, $obj->displayString,
 					$temp[$p] = array ('bookmark'=>'CollectionViewer',
 					'class' => $class)));
@@ -60,9 +54,10 @@ class Menu extends Component {
 			'Component' => 'Logout'
 		);
 		$this->additem($log, 'Logout', $sect);
+		$this->menus->addComponent($sect);
 	}
 	function additem(& $comp, $text, & $sect) {
-		$sect->addComponent(new MenuItemComponent($this, $text, $comp));
+		$sect->addItem(new MenuItemComponent($this, $text, $comp));
 	}
 	function menuclick(& $comp) {
 		$c = & new $comp['Component'] ($comp['params']);
@@ -70,24 +65,31 @@ class Menu extends Component {
 	}
 }
 
-class MenuSectionComponent extends Component {}
+class MenuSectionComponent extends Component {
+	var $add = false;
+	/*function checkAddingPermissions(){
+		return $this->add;
+	}*/
+	function addItem(&$i){
+		$this->add = $this->addComponent($i);
+	}
+}
 
 class MenuItemComponent extends Component {
-	var $menu, $text, $item;
-	function MenuItemComponent(& $menu, $text, & $item) {
-		$this->menu = & $menu;
+	var $text, $items;
+	function MenuItemComponent(& $menu, $text, & $items) {
 		$this->text = $text;
-		$this->item = & $item;
+		$this->items =& $items;
 		parent :: Component();
+		$this->initialize2();
 	}
-	function declare_actions() {}
-
-	function initialize() {
-		$items = $this->item;
-		$bk =$items['bookmark'];
-
-		unset($items['bookmark']);
-		$this->addComponent(new NavigationLink($this->item['bookmark'], $this->text,$items), "link");
+	/*function chechAddingPermissions(){
+		return ($this->componentAt('link')!=null);
+	}*/
+	function initialize2(){
+		$bk =$this->items['bookmark'];
+		unset($this->items['bookmark']);
+		$this->addComponent(new NavigationLink($bk, $this->text,$this->items), "link");
 	}
 }
 
@@ -112,7 +114,6 @@ class CollectionViewerBookmark extends Bookmark{
 	}
 	function checkPermissions($params){
 		$u=& User::logged();
-
 		return $u->hasPermissions(array($params['class'].'=>Menu', '*'));
 	}
 }

@@ -17,8 +17,10 @@ class PWBObject
 	var $isClassOfPWB = true;
     function PWBObject($params=array()) {
 		PWBInstanceIdAssigner::assignIdTo($this);
-		$this->creationParams =& $params;
-		$this->createInstance(array_merge($this->defaultValues($params),$params));
+		$this->creationParams =& array_merge($this->defaultValues($params),$params);
+		if (!isset($params['dontCreateInstance'])){
+			$this->createInstance($this->creationParams);
+		}
 	}
 	function createInstance($params){}
 	function defaultValues($params){return array();}

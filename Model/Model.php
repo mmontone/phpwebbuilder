@@ -19,6 +19,7 @@ require_once 'Fields/EmailField.class.php';
 require_once 'Fields/WikiArea.class.php';
 require_once 'DescriptedObject.class.php';
 require_once 'PersistentCollection.class.php';
+require_once 'JoinedPersistentCollection.class.php';
 require_once 'PersistentObject.class.php';
 require_once 'Validation/PWBException.class.php';
 require_once 'Validation/Validation.class.php';
