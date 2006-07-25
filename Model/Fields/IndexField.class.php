@@ -39,7 +39,7 @@ class IndexField extends NumField {
 	}
 
 	function getTargetId() {
-		return $this->buffered_target->getId();
+		return $this->buffered_target->getIdOfClass($this->collection->dataType);
 	}
 
 	function & getTarget() {
@@ -66,7 +66,7 @@ class IndexField extends NumField {
 
 	function getValue() {
 		if ($this->buffered_target != null) {
-			$this->buffered_value =& $this->buffered_target->getId();
+			$this->buffered_value =& $this->getTargetId();
 		}
 
 		$v = parent::getValue();

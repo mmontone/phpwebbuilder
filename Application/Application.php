@@ -28,6 +28,7 @@ require_once 'components/Widgets/Label.class.php';
 require_once 'components/Widgets/TextAreaComponent.class.php';
 require_once 'components/Widgets/RadioButton.class.php';
 require_once 'components/Widgets/CheckBox.class.php';
+require_once 'components/Widgets/ErrorDialog.class.php';
 require_once 'components/NotificationDialog.class.php';
 require_once 'components/QuestionDialog.class.php';
 require_once 'components/PermissionsChecker.class.php';

@@ -3,20 +3,31 @@
  * Some basic functions.
  */
 
-function includefile(&$file) {
-	if (is_dir($file)) {
-			$gestor=opendir($file);
+function getfilesrec ($pred, $dir){
+	if (is_dir($dir)) {
+			$ret = array();
+			$gestor=opendir($dir);
 			while (false !== ($f = readdir($gestor))) {
 				if (substr($f,-1)!='.')
-					includefile(implode(array($file,'/',$f)));
+					$ret = array_merge(getfilesrec($pred, implode(array($dir,'/',$f))), $ret);
 			}
+		return $ret;
 	} else {
-		if (substr($file, -4)=='.php') {
-                  //echo "Including file: " . $file;
-                  require_once($file);
+		if ($pred($dir)){
+			return array($dir);
+		} else {
+			return array();
 		}
 	}
 }
+
+function includefile(&$file) {
+	foreach(getfilesrec($lam = lambda('$file','return substr($file, -4)==".php";', $a=array()), $file) as $f){
+        require_once($f);
+	}
+	delete_lambda($lam);
+}
+
 function includemodule ($module){
 	$modf = implode(array($module,'/',basename($module),'.php'));
 	if (file_exists($modf)){

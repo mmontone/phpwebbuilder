@@ -28,14 +28,8 @@ class ViewCreator {
 		$this->addTemplates($tps);
 	}
 	function loadTemplatesDir ($templatesdir){
-		if (!file_exists($templatesdir)) return;
- 		$gestor=opendir($templatesdir);
- 		$fs = array();
-		while (false !== ($f = readdir($gestor))) {
-			if (substr($f, -4)=='.xml'){
-				$fs []= $templatesdir."/".$f;
-			}
-		}
+		$fs = getfilesrec($lam = lambda('$file','return substr($file, -4)==".xml";', $a=array()), $templatesdir);
+		delete_lambda($lam);
 		$size = strlen(pwbdir);
 		if (pwbdir == substr ($templatesdir, 0, $size)){
 			$temp_url = pwb_url. substr ($templatesdir, $size);
