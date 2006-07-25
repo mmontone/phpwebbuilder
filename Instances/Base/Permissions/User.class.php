@@ -6,7 +6,7 @@ class User extends PersistentObject {
 		$this->addField(new TextField(array('fieldName'=>'user', 'is_index'=>TRUE)));
 		$this->addField(new PasswordField(array('fieldName'=>'pass')));
 		$this->addField(new CollectionField(
-			array('reverseName'=>'user',
+			array('reverseField'=>'user',
 				'type' => 'UserRole',
 				'display' => 'Roles'
 		)));

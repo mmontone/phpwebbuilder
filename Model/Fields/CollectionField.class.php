@@ -21,7 +21,7 @@ class CollectionField extends DataField {
 	}
 	function createInstance($params) {
 		parent :: createInstance($params);
-		if (!$this->creationParams['reverseField']) {
+		if ($params['reverseField']==null) {
 			$this->collection = & new JoinedPersistentCollection($params['type'], $params['joinTable'], $params['joinField']);
 			$this->creationParams['reverseField'] = $params['joinTable'].'.'.$params['joinFieldOwn'];
 		} else {
