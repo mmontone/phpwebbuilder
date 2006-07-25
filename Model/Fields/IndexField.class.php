@@ -84,7 +84,7 @@ class IndexField extends NumField {
 
 	function commitChanges() {
 		parent::commitChanges();
-		$this->target =& $this->getTarget();
+		$this->target =& $this->buffered_target;
 	}
 }
 
