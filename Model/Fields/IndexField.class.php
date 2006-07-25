@@ -33,8 +33,13 @@ class IndexField extends NumField {
 	}
 
 	function setTarget(& $target) {
-		$this->setValue($target->getIdOfClass($this->collection->dataType));
 		$this->buffered_target =& $target;
+		$n = null;
+		$this->buffered_value =& $n;
+	}
+
+	function getTargetId() {
+		return $this->buffered_target->getId();
 	}
 
 	function & getTarget() {
@@ -59,7 +64,11 @@ class IndexField extends NumField {
 		$this->buffered_target =& $n;
 	}
 
-	function getValue(){
+	function getValue() {
+		if ($this->buffered_target != null) {
+			$this->buffered_value =& $this->buffered_target->getId();
+		}
+
 		$v = parent::getValue();
 		if ($v!=null){
 			return $v;
@@ -67,6 +76,7 @@ class IndexField extends NumField {
 			return 0;
 		}
 	}
+
 	function flushChanges() {
 		parent::flushChanges();
 		$this->buffered_target =& $this->target;
