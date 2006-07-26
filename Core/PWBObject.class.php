@@ -22,6 +22,10 @@ class PWBObject
 			$this->createInstance($this->creationParams);
 		}
 	}
+	function isA($class) {
+		return getClass($this) == $class;
+	}
+
 	function createInstance($params){}
 	function defaultValues($params){return array();}
 	function release() {

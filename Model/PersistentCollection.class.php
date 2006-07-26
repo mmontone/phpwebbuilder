@@ -14,6 +14,16 @@ class PersistentCollection extends Collection{
 		$this->conditions = array ();
 		parent::Collection();
 	}
+
+	function findMatches(&$object) {
+		foreach($object->fieldNames() as $f) {
+			$field =& $object->fieldNamed($f);
+			if (!$field->isEmpty()) {
+				$this->setCondition($f, '=', $field->getValue());
+			}
+		}
+	}
+
 	function findById($id) {
 		return PersistentObject::getWithId($this->dataType, $id);
 	}
@@ -40,6 +50,14 @@ class PersistentCollection extends Collection{
 		}
 		$cond = ' WHERE ' . $cond;
 		return $cond;
+	}
+
+	function orderByFields($fields) {
+		$this->order = 'ORDER BY ' . implode(', ', $fields);
+	}
+
+	function orderBy($fieldname) {
+		$this->order = 'ORDER BY ' . $fieldname;
 	}
 
 	function visit($obj) {

@@ -1,6 +1,6 @@
 <?php
 
-class PWBException {
+class PWBException extends PWBObject {
 	var $message;
 	var $content;
 

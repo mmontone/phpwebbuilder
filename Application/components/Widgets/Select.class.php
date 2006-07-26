@@ -4,7 +4,7 @@ class Select extends Widget {
 	var $options;
 	var $displayF;
 	var $opts = array();
-	var $selected_index;
+	var $selected_index = -1;
 
     function Select(&$value_model, &$collection, $displayF=null) {
     	parent::Widget($value_model);
@@ -91,6 +91,7 @@ class Select extends Widget {
 	}
 
 	function prepareToRender(){
+		$this->view->setAttribute('value', 'none');
 		if (!empty($this->opts)) {
 			$this->opts[$this->getValueIndex()]->setAttribute('selected', 'selected');
 		}
