@@ -11,6 +11,7 @@ class User extends PersistentObject {
 				'display' => 'Roles'
 		)));
 	}
+
 	function & loadUser($user, $pass) {
 		$u = User::getWithIndex('User',array("user"=>"'$user'",
 								"pass"=>"'$pass'"));
@@ -20,9 +21,26 @@ class User extends PersistentObject {
 		} else
 			return FALSE;
 	}
+
+	function &loadUsers($user, $pass) {
+		$db = DB :: Instance();
+		$col = new PersistentCollection('User');
+		$col->conditions["user"] = array (
+			"=",
+			"'" . $user . "'"
+		);
+		$col->conditions["pass"] = array (
+			"=",
+			"'" . $pass . "'"
+		);
+		return $col->objects();
+	}
+
+
 	function getUserId() {
 		return $this->getIdOfClass('User');
 	}
+
 	function hasRole($uid, $roleid) {
 		$urc = new PersistentCollection(UserRole);
 		$urc->conditions["user"] = array (
@@ -45,6 +63,10 @@ class User extends PersistentObject {
 		}
 
 		return $usr;
+	}
+
+	function logout() {
+		unset($_SESSION[sitename]["User"]);
 	}
 
 	function & logged() {

@@ -11,6 +11,7 @@ class CommandLink extends Widget{
 		parent::Widget($vm = null);
     }
     function checkAddingPermissions(){
+		if (!$this->proceed) print_backtrace();
 		return $this->proceed->hasPermissions();
     }
     function initialize(){

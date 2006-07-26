@@ -3,11 +3,6 @@
 class PersistentObject extends DescriptedObject {
 	var $table;
 
-	function PersistentObject() {
-		parent::DescriptedObject();
-		$this->createInstance();
-	}
-
 	function setID($id) {
 		foreach ($this->allFieldNamesThisLevel() as $field) {
 			$this->$field->setID($id);
@@ -90,9 +85,11 @@ class PersistentObject extends DescriptedObject {
 	function idRelations(){
 		return $this->tableName().'.id=' . $this->getID();
 	}
+
 	function is(&$other){
 		return parent::is($other) || (get_class($other)==get_class($this) && $other->id->getValue() == $this->id->getValue());
 	}
+
 	function idRestrictions(){
 		$rcs = get_related_classes(getClass($this));
 		$rcs [] = getClass($this);

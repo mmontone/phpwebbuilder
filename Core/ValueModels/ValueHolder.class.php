@@ -15,11 +15,19 @@ class ValueHolder extends ValueModel
     function getValue() {
     	return $this->__value;
     }
-	function setValue($value) {
-		parent::setValue($value);
+
+	function setValue(& $value) {
+		$old_value =& $this->getValue();
+		$this->primitiveSetValue($value);
+		$params = array();
+		$params['value'] =& $this->getValue();
+		$params['old_value'] =& $old_value;
+		$this->triggerEvent('changed', $params);
 	}
+
     function primitiveSetValue($value) {
 	   	$this->__value = $value;
     }
 }
+
 ?>

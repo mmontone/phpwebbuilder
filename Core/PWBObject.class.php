@@ -125,6 +125,17 @@ class PWBObject
        	return $handle;
     }
 
+    function onChangeSend($call_back_selector, & $listener) {
+		$this->addEventListener(array (
+			'changed' => $call_back_selector
+		), $listener);
+	}
+
+	function changed() {
+		$this->triggerEvent('changed', $this);
+	}
+
+
     function registerEventHandle(&$handle) {
     	$this->event_handles[$handle['target']->__instance_id][$handle['event']] =& $handle;
     }

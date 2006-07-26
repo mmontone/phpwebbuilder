@@ -1,36 +1,31 @@
 <?php
 
-require_once dirname(__FILE__) . '/ValueModel.class.php';
-
-class AspectAdaptor extends ValueModel
+class AspectAdaptor extends ObjectHolder
 {
 	var $get_selector;
 	var $set_selector;
-	var $subject;
 
-    function AspectAdaptor(&$subject, $aspect) {
-    	parent::ValueModel();
-
-    	$this->subject =& $subject;
+    function AspectAdaptor(&$object, $aspect) {
+    	parent::ObjectHolder($object);
 
     	if (is_array($aspect)) {
     		$this->get_selector = $aspect['get'];
     		$this->set_selector = $aspect['set'];
     	}
     	else {
-			$this->get_selector = 'get' . $aspect;
-			$this->set_selector = 'set' . $aspect;
+			$this->get_selector = 'get' . ucfirst($aspect);
+			$this->set_selector = 'set' . ucfirst($aspect);
     	}
     }
 
     function primitiveSetValue(&$value) {
     	$set_selector = $this->set_selector;
-    	$this->subject->$set_selector($value);
+    	$this->__value->$set_selector($value);
     }
 
     function &getValue() {
     	$get_selector = $this->get_selector;
-    	return $this->subject->$get_selector();
+    	return $this->__value->$get_selector();
     }
 }
 ?>

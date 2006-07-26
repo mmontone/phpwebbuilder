@@ -124,15 +124,19 @@ class DataField extends PWBObject {
 	}
 
 	function commitChanges() {
-		$this->value =& $this->buffered_value;
-		$this->modified = false;
-		$this->triggerEvent('commited', $this);
+		if ($this->modified) {
+			$this->value =& $this->buffered_value;
+			$this->modified = false;
+			$this->triggerEvent('commited', $this);
+		}
 	}
 
 	function flushChanges() {
-		$this->setValue($this->value);
-		$this->modified = false;
-		$this->triggerEvent('flushed', $this);
+		if ($this->modified) {
+			$this->setValue($this->value);
+			$this->modified = false;
+			$this->triggerEvent('flushed', $this);
+		}
 	}
 
 	function isModified() {

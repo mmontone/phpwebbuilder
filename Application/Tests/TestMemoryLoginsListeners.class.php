@@ -1,13 +1,14 @@
 <?php
-define('app_class','DefaultCMSApplication');
-require_once '/var/www/eurekaweb/Configuration/pwbapp.php';
-class TestMemoryLoginsListeners extends UnitTestCase {
+
+class TestMemoryLoginsListeners extends MemoryTest {
 	function setUp(){
+		parent::setUp();
 		$c0 =& new Component;
 		$_SESSION=array();
 		$_SESSION['comp'] =& $c0;
 	}
 	function tearDown(){
+		parent::tearDown();
 		$_SESSION=array();
 	}
 	function testMemoryAddComponentDelete() {

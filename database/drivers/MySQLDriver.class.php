@@ -46,7 +46,7 @@ class DB {
 
 class MySQLdb extends DB {
 	var $conn;
-    function SQLExec ($sql, $getID, $obj, $rows=0) {
+    function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
        	trace($sql. '<br/>');
 		$this->openDatabase();
 		$this->lastSQL = $sql;

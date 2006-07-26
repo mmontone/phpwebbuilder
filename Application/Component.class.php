@@ -46,6 +46,8 @@ class Component extends PWBObject
 	function linkToApp(&$app){
 		if (!isset($this->app)){
 			$this->app =& $app;
+			//print_backtrace();
+
 			$app->needsView($this);
 			$this->initialize();
 			$ks = array_keys($this->__children);

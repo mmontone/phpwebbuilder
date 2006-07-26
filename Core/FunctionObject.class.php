@@ -14,8 +14,10 @@ class FunctionObject
 
     function call() {
       	$method_name = $this->method_name;
-       	return $this->target->$method_name($this->params);
+       	eval('$ret =& $this->target->' . $method_name . '($this->params);');
+       	return $ret;
     }
+
 	function hasPermissions(){
 		$m = $this->method_name;
 		$msg = 'check'.ucfirst($m).'Permissions';
@@ -25,21 +27,29 @@ class FunctionObject
 			return true;
 		}
 	}
+
     function callWith(&$params) {
 		$method_name = $this->method_name;
-        if (empty($this->params))
-        	return $this->target->$method_name($params);
-        else
-        	return $this->target->$method_name($params, $this->params);
-
+        if (empty($this->params)) {
+        	eval('$ret =& $this->target->' . $method_name . '($params);');
+        	return $ret;
+        }
+        else {
+        	eval('$ret =& $this->target->' . $method_name . '($params, $this->params);');
+        	return $ret;
+        }
     }
 
     function callWithWith(&$param1, &$param2) {
     	$method_name = $this->method_name;
-    	if (empty($this->params))
-        	return $this->target->$method_name($param1, $param2);
-        else
-        	return $this->target->$method_name($param1, $param2, $this->params);
+    	if (empty($this->params)) {
+        	eval('$ret =& $this->target->' . $method_name . '($param1, $param2);');
+        	return $ret;
+    	}
+        else {
+        	eval('$ret =& $this->target->' . $method_name . '($param1, $param2, $this->params);');
+        	return $ret;
+        }
     }
 
     /* We may want to use function objects as ValueHolders. Similar to Aspect adaptors */

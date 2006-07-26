@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/ValueModel.class.php';
-
 class PluggableAdaptor extends ValueModel
 {
 	var $get_function;

@@ -17,7 +17,7 @@ class Text extends Widget {
 		return $t;
 	}
 	function prepareToRender(){
-		$text = $this->value_model->getValue();
+		$text =& $this->value_model->getValue();
 		$this->view->removeChilds();
 		$this->view->appendChild(new XMLTextNode($text));
 	}

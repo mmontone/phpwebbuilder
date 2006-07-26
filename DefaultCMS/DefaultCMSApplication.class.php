@@ -5,6 +5,7 @@ class DefaultCMSApplication extends Application{
  	function &setRootComponent() {
  		return new DefaultCMS;
  	}
+
  	function loadTemplates (){
  		$this->viewCreator->loadTemplatesDir(pwbdir . "/DefaultCMS/Templates/".$this->templateName);
  		$this->viewCreator->loadTemplatesDir(basedir . "/MyTemplates/");

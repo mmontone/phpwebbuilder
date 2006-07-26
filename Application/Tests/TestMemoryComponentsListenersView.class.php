@@ -1,6 +1,5 @@
 <?php
-define('app_class','DefaultCMSApplication');
-require_once '/var/www/eurekaweb/Configuration/pwbapp.php';
+
 class TestMemoryComponentsListenersView extends UnitTestCase {
 	function setUp(){
 		$c0 =& new Component;

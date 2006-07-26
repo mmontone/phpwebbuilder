@@ -36,6 +36,7 @@ class IndexField extends NumField {
 		$this->buffered_target =& $target;
 		$n = null;
 		$this->buffered_value =& $n;
+		$this->triggerEvent('changed', $this);
 	}
 
 	function getTargetId() {

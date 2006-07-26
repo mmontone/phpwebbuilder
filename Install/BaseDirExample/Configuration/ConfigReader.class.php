@@ -30,7 +30,7 @@ class ConfigReader
         foreach ($conf as $key => $value) {
         	switch (substr($key,-3)){
         		case 'dir':
-	        		if (substr($value,0,1)=='/'){
+	        		if ((substr($value,0,1)=='/') or ereg('^[[:alpha:]]:', 'e:/')){
 	        			$v = $value;
 	        		} else {
 	        			$v = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$value;
