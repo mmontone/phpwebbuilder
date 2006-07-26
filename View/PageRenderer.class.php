@@ -5,7 +5,16 @@ class PageRenderer // extends PWBObject
 	var $csss = array ();
 
 	function setPage(&$view){
+		$app =& Application::instance();
 		$this->page=&$view;
+		$this->page->tagName = 'form';
+		$this->page->setAttribute('action', site_url . '/Action.php');
+		$this->page->setAttribute('method', 'post');
+		$this->page->setAttribute('enctype', 'multipart/form-data');
+		$this->page->setAttribute('app', getClass($app));
+		$this->page->setAttribute('bookmark', $app->urlManager->actUrl);
+		$this->page->setAttribute('basedir', basedir);
+		$this->page->setAttribute('pwb_url', pwb_url);
 	}
 	function initialPageRenderPage(&$app){
 		$initial_page_renderer = & new StandardPageRenderer();
@@ -24,15 +33,6 @@ class StandardPageRenderer extends PageRenderer {
 	}
 
 	function renderPage(&$app) {
-		$this->page->tagName = 'form';
-		$this->page->setAttribute('action', site_url . '/Action.php');
-		$this->page->setAttribute('method', 'post');
-		$this->page->setAttribute('enctype', 'multipart/form-data');
-		$this->page->setAttribute('app', getClass($app));
-		$this->page->setAttribute('bookmark', $app->urlManager->actUrl);
-		$this->page->setAttribute('basedir', basedir);
-		$this->page->setAttribute('pwb_url', pwb_url);
-
 		/*
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"

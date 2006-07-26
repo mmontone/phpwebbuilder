@@ -3,6 +3,7 @@ cp . -R tempdir
 cd tempdir
 rm -rf `find . -name *.svn*`
 VER=`cat phpwebbuilder-version`
+rm -rf simpletest
 F=phpwebbuilder-$VER-`date +%F`
 tar cvzf ../$F.tgz *
 zip -r ../$F.zip * 
