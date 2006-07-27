@@ -19,7 +19,7 @@ class Select extends Widget {
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
     }
 
-	function viewUpdated($new_value) {
+    function viewUpdated($new_value) {
 		$value = & $this->getValueIndex();
 		if ($new_value != $value)
 			$this->setValueIndex($new_value);
@@ -64,36 +64,25 @@ class Select extends Widget {
 
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
-			/*$this->opts[$params['old_value']]->removeAttribute('selected');
-			$this->opts[$params['value']]->setAttribute('selected', 'selected');*/
 			$this->opts[$this->selected_index]->removeAttribute('selected');
-			$this->opts[$value_model->getValue()]->setAttribute('selected', 'selected');
+			$this->opts[$this->getValueIndex()]->setAttribute('selected', 'selected');
 			$this->view->redraw();
 		}
 	}
 
-	function &getValue(){
-		return $this->options->at($this->getValueIndex());
+	function &getValueIndex() {
+		return $this->options->indexOf($this->getValue());
 	}
 
-	function getValueIndex(){
-		return parent::getValue();
-	}
-
-	function setValue(&$v){
-		$pos = $this->options->indexOf($v);
-		$this->setValueIndex($pos);
-	}
-
-	function setValueIndex(&$v){
-		$this->selected_index =& $v;
-		parent::setValue($v);
+	function setValueIndex(&$index){
+		$this->selected_index =& $index;
+		$this->setValue($this->options->at($index));
 	}
 
 	function prepareToRender(){
-		$this->view->setAttribute('value', 'none');
-		if (!empty($this->opts)) {
-			$this->opts[$this->getValueIndex()]->setAttribute('selected', 'selected');
+		$index =& $this->getValueIndex();
+		if ($this->opts[$index] != null) {
+			$this->opts[$index]->setAttribute('selected', 'selected');
 		}
 	}
 }

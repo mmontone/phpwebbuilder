@@ -3,7 +3,7 @@
 require_once 'EditorFactory.class.php';
 
 class BoolFieldEditorFactory extends EditorFactory {
-	function &componentForField(&$field){
+	function &createInstanceFor(&$field){
 		return new CheckBox($field);
 	}
 }

@@ -3,7 +3,7 @@
 require_once 'EditorFactory.class.php';
 
 class CollectionFieldEditorFactory extends EditorFactory {
-	function &componentForField(&$field){
+	function &createInstanceFor(&$field){
 		return new CollectionViewer(
 			$field->collection
 		);

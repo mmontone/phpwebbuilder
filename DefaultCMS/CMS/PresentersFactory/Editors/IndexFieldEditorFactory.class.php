@@ -1,7 +1,7 @@
 <?php
 
 class IndexFieldEditorFactory extends EditorFactory {
-	function &componentForField(&$field) {
+	function &createInstanceFor(&$field) {
 		return new IndexFieldChooser($field);
 	}
 }

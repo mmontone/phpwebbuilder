@@ -3,6 +3,7 @@ require_once 'PWBObject.class.php';
 require_once 'Collection.class.php';
 require_once 'FunctionObject.class.php';
 require_once 'PWBInstanceIdAssigner.class.php';
+require_once 'PWBFactory.class.php';
 require_once 'ValueModels/ValueModel.class.php';
 require_once 'ValueModels/ValueHolder.class.php';
 require_once 'ValueModels/ObjectHolder.class.php';

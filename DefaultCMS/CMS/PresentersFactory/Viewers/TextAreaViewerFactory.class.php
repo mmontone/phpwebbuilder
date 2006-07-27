@@ -4,7 +4,7 @@ require_once 'ViewerFactory.class.php';
 
 class TextAreaViewerFactory extends ViewerFactory {
 
-    function &componentForField(&$field) {
+    function &createInstanceFor(&$field) {
     	$ta =& new TextAreaComponent($field);
     	$ta->disable();
     	return $ta;

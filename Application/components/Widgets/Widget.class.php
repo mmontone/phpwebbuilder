@@ -173,14 +173,17 @@ class Widget extends Component {
 		$this->disabled = true;
 	}
 
-	function enable() {
-		$this->disabled = false;
+	function enable($value=true) {
+		$this->disabled = !$value;
 	}
 
 	function prepareToRender() {
-		if ($this->disabled)
+		if ($this->disabled) {
 			$this->view->setAttribute('disabled','disabled');
-
+		}
+		else {
+			$this->view->removeAttribute('disabled');
+		}
 	}
 }
 ?>

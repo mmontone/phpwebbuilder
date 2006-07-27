@@ -1,7 +1,7 @@
 <?php
 
 class CollectionFieldViewerFactory extends ViewerFactory {
-	function &componentForField(&$field){
+	function &createInstanceFor(&$field){
 		return new CollectionViewer(
 			$field->collection
 		);

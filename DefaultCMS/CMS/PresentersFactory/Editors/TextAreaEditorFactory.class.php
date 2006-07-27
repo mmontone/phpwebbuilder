@@ -1,7 +1,7 @@
 <?php
 
 class TextAreaEditorFactory extends EditorFactory {
-	function &componentForField(&$field){
+	function &createInstanceFor(&$field){
 		return new TextAreaComponent($field);
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 
 class VersionFieldEditorFactory extends EditorFactory {
-	function &componentForField(&$field){
+	function &createInstanceFor(&$field){
 		return new Text($field);
 	}
 }

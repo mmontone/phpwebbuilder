@@ -11,14 +11,6 @@ class CheckBox extends Widget {
 		$view->setAttribute('type', 'checkbox');
 	}
 
-	function disable() {
-		$this->disabled = true;
-	}
-
-	function enable() {
-		$this->disabled = false;
-	}
-
 	function valueChanged(& $value_model, & $params) {
 		if ($this->getValue())
 			$this->view->setAttribute('checked', 'checked');
@@ -27,9 +19,7 @@ class CheckBox extends Widget {
 	}
 
 	function prepareToRender() {
-		if ($this->disabled)
-			$this->view->setAttribute('disabled','disabled');
-
+		parent::prepareToRender();
 		if ($this->getValue())
 			$this->view->setAttribute('checked', 'checked');
 	}
