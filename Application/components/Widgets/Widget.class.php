@@ -2,7 +2,7 @@
 class Widget extends Component {
 	var $value_model;
 	var $enqueued_hooks = array ();
-	var $disabled;
+	var $disabled = false;
 
 	function Widget(& $value_model, $callback_actions = array ()) {
 		if ($value_model == null) {
@@ -56,7 +56,7 @@ class Widget extends Component {
 
 	function setOnChangeEvent(& $view) {
 		$class = getClass($this);
-		$view->setAttribute('onchange', "javascript:enqueueChange(getEventTarget(event),{$class}GetValue);componentChange(getEventTarget(event))");
+		$view->setAttribute('onchange', "javascript:enqueueChange(getEventTarget(event),{$class}GetValue); componentChange(getEventTarget(event))");
 	}
 
 	function setOnBlurEvent(& $view) {
@@ -148,7 +148,7 @@ class Widget extends Component {
 
 		foreach ($event_specs as $event_selector => $event_callback) {
 			switch ($event_selector) {
-				case 'change' :
+				case 'changed' :
 					$this->setHook(new FunctionObject($this, 'setOnChangeEvent'));
 					break;
 				case 'blur' :
@@ -170,20 +170,27 @@ class Widget extends Component {
 	}
 
 	function disable() {
-		$this->disabled = true;
+		$this->enable(false);
 	}
 
 	function enable($value=true) {
 		$this->disabled = !$value;
+		if ($this->view != null) {
+			$this->updateView();
+		}
 	}
 
-	function prepareToRender() {
+	function updateView() {
 		if ($this->disabled) {
 			$this->view->setAttribute('disabled','disabled');
 		}
 		else {
 			$this->view->removeAttribute('disabled');
 		}
+	}
+
+	function prepareToRender() {
+		$this->updateView();
 	}
 }
 ?>

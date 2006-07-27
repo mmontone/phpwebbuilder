@@ -17,6 +17,9 @@ class Select extends Widget {
     		$this->displayF =& lambda('&$e', 'return $e;', $a = array());
     	}
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
+    	if ($this->getValueIndex() == -1) {
+    		$this->setValueIndex($i = 0);
+    	}
     }
 
     function viewUpdated($new_value) {
@@ -80,6 +83,7 @@ class Select extends Widget {
 	}
 
 	function prepareToRender(){
+		parent::prepareToRender();
 		$index =& $this->getValueIndex();
 		if ($this->opts[$index] != null) {
 			$this->opts[$index]->setAttribute('selected', 'selected');
