@@ -100,7 +100,7 @@ class PersistentCollection extends Collection{
 	function add(&$element) {
 		$elements =& $this->elements();
 		$elements[] =& $element;
-		$this->triggerEvent('changed');
+		$this->triggerEvent('changed', $n=null);
 	}
 
 	/* Deprecated */

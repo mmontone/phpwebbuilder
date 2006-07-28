@@ -228,7 +228,7 @@ function toAjax($s){
 	return	toXML(toHTML($s));
 }
 
-function lambda( $args, $code, &$env ) {
+function lambda( $args, $code, $env=array() ) {
    static $n = 0;
    $functionName = sprintf('ref_lambda_%d',++$n);
    $_SESSION['lambdas'][$functionName]['environment_vars'] =& $env;

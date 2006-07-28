@@ -10,6 +10,15 @@ class User extends PersistentObject {
 				'type' => 'UserRole',
 				'display' => 'Roles'
 		)));
+		/*$this->addField(new CollectionField(
+			array(
+				'type' => 'Role',
+				'display' => 'Roles',
+				'joinTable' => 'UserRole',
+				'fieldName' => 'roles',
+				'joinFieldOwn'=>'user',
+				'joinField'=>'role'
+		)));*/
 	}
 
 	function & loadUser($user, $pass) {

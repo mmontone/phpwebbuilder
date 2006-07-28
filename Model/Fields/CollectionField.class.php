@@ -32,6 +32,30 @@ class CollectionField extends DataField {
 			'-1'
 		);
 	}
+	function add(&$elem){
+		$m =& $this->createElement();
+		$f1 = $this->creationParams['joinField'];
+		$m->$f1->setTarget($elem);
+		return $m->save();
+	}
+	function &createElement(){
+		$m =& new PersistentObject();
+		$params = $this->creationParams;
+		$f1 = $params['joinFieldOwn'];
+		$f2 = $params['joinField'];
+		$m->addField(new IndexField(array('fieldName'=>$f1,'type'=>getClass($this->owner))));
+		$m->addField(new IndexField(array('fieldName'=>$f2,'type'=>$params['type'])));
+		$m->table = $params['joinTable'];
+		$m->$f1->setTarget($this->owner);
+		return $m;
+	}
+	function remove(&$elem){
+		$m =& $this->createElement();
+		$params = $this->creationParams;
+		$sql = 'DELETE FROM '.$params['joinTable']. ' WHERE '. $params['joinField'].'=' .$elem->getIdOfClass($params['joinField']).' AND ' .$params['joinFieldOwn'] .'='.$this->owner->getId();
+		$db =& DB::instance();
+		return $db->query($sql);
+	}
 	function defaultValues($params) {
 		return array_merge(array (
 			'fieldName' => $params['type'] . $params['reverseField'],
