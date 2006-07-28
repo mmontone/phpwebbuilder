@@ -1,5 +1,5 @@
 <?php
-require_once '../simpletest/reporter.php';
+require_once simpletest_dir . '/reporter.php';
 
 class PWBHtmlTestsReporter extends HtmlReporter {
 	var $testlist = array();
@@ -14,8 +14,17 @@ class PWBHtmlTestsReporter extends HtmlReporter {
 		$css .= ".fail{color:red; font-weight:bold}";
 		return $css;
 	}
+
+	function paintPass($message) {
+		//parent :: paintPass($message);
+		$this->_passes++;
+		$this->paintContext();
+		print "$message ";
+		print "<span class=\"pass\">[ OK ]</span> \n <br />";
+	}
+
 	function paintFail($message) {
-		//parent :: paintFail($message);
+		$this->_fails++;
 		/*$breadcrumb = $this->getTestList();
 		array_shift($breadcrumb);
 		print implode("-&gt;", $breadcrumb);*/
@@ -36,13 +45,6 @@ class PWBHtmlTestsReporter extends HtmlReporter {
 			$this->testlist[2] = $testlist[2];
 			print '<h3>' . $this->testlist[2] . '</h3>';
 		}
-	}
-
-	function paintPass($message) {
-		//parent :: paintPass($message);
-		$this->paintContext();
-		print "$message ";
-		print "<span class=\"pass\">[ OK ]</span> \n <br />";
 	}
 }
 ?>

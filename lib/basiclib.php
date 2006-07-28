@@ -288,4 +288,19 @@ function try_catch($try_code, $catch_matches) {
 		}
 	}
 }
+
+function &newAnnonymous($class_name, $body) {
+	$annon_class_name = nextAnnonymousClassName();
+	eval("class $annon_class_name extends $class_name $body");
+	return new $annon_class_name;
+}
+
+function nextAnnonymousClassName() {
+	if (!isset($_SESSION['next_annonimous_class'])) {
+		$_SESSION['next_annonimous_class'] = 0;
+	} else {
+		$_SESSION['next_annonimous_class'] += 1;
+	}
+	return 'annon_class_' . $_SESSION['next_annonimous_class'];
+}
 ?>

@@ -52,6 +52,11 @@ class Collection extends PWBObject{
 		$this->triggerEvent('changed', $elem);
 		return $elem;
 	}
+
+	function &removeLast() {
+		return $this->pop();
+	}
+
 	function &shift(){
 		$es =& $this->elements();
 		$ks = array_keys($es);
@@ -61,9 +66,15 @@ class Collection extends PWBObject{
 		$this->triggerEvent('changed', $elem);
 		return $elem;
 	}
+
 	function push(&$elem){
 		$this->add($elem);
 	}
+
+	function addFirst(&$elem) {
+		$this->push(&$elem);
+	}
+
 	function &map($func){
 		$res =& $this->foldr(new Collection, $f = lambda('&$col,&$elem',
 			'$col->add($func($elem)); return $col;', get_defined_vars()));

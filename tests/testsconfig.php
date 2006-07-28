@@ -1,4 +1,5 @@
 <?php
+define('simpletest_dir', 'e:/wamp/simpletest');
 define('sitename', 'pwbtests');
 define('pwbdir', 'e:/wamp/www/pwb');
 define('serverhost', 'localhost');
