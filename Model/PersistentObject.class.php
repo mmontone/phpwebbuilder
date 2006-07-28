@@ -57,14 +57,14 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function tableNames(){
-		$tns[] = $this->tableName();
+		$tns[] = '`'.$this->tableName().'`';
 		$p0 = getClass($this);
 		$pcs = get_superclasses($p0);
 		$o0 =& $this;
 		foreach($pcs as $pc){
 			$o1 =& new $pc;
 			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o1->tableName().'.id = '.$o0->tableName().'.super';
+				$tns[] = 'LEFT OUTER JOIN `'.$o1->tableName().'` ON `'. $o1->tableName().'`.id = `'.$o0->tableName().'`.super';
 			}
 			$o0 =& $o1;
 			$p0 = $pc;
@@ -75,7 +75,7 @@ class PersistentObject extends DescriptedObject {
 			$pc = get_parent_class($sc);
 			$o2 =& new $pc;
 			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
+				$tns[] = 'LEFT OUTER JOIN `'.$o1->tableName().'` ON `'. $o2->tableName().'`.id = `'.$o1->tableName().'`.super';
 			}
 		}
 		$tn = implode(' ',$tns);
