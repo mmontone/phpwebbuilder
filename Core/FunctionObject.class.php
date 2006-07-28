@@ -14,8 +14,15 @@ class FunctionObject
 
     function call() {
       	$method_name = $this->method_name;
-       	eval('$ret =& $this->target->' . $method_name . '($this->params);');
+       	eval('$ret =& '. $this->callString($method_name) . '($this->params);');
        	return $ret;
+    }
+
+    function callString($method) {
+    	if ($this->target == null)
+    		return $method;
+    	else
+       		return '$this->target->' . $method;
     }
 
 	function hasPermissions(){
@@ -31,11 +38,11 @@ class FunctionObject
     function callWith(&$params) {
 		$method_name = $this->method_name;
         if (empty($this->params)) {
-        	eval('$ret =& $this->target->' . $method_name . '($params);');
+        	eval('$ret =& '. $this->callString($method_name) . '($params);');
         	return $ret;
         }
         else {
-        	eval('$ret =& $this->target->' . $method_name . '($params, $this->params);');
+        	eval('$ret =& '. $this->callString($method_name) . '($params, $this->params);');
         	return $ret;
         }
     }
@@ -43,11 +50,11 @@ class FunctionObject
     function callWithWith(&$param1, &$param2) {
     	$method_name = $this->method_name;
     	if (empty($this->params)) {
-        	eval('$ret =& $this->target->' . $method_name . '($param1, $param2);');
+        	eval('$ret =& '. $this->callString($method_name) . '($param1, $param2);');
         	return $ret;
     	}
         else {
-        	eval('$ret =& $this->target->' . $method_name . '($param1, $param2, $this->params);');
+        	eval('$ret =& '. $this->callString($method_name) . '($param1, $param2, $this->params);');
         	return $ret;
         }
     }

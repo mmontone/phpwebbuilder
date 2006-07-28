@@ -166,5 +166,9 @@ class Application extends ComponentHolder {
 		$this->resetUrl();
 	}
 
+	function &getRootComponent() {
+		return $this->getComponent();
+	}
+
 }
 ?>

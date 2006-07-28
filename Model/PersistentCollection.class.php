@@ -53,11 +53,11 @@ class PersistentCollection extends Collection{
 	}
 
 	function orderByFields($fields) {
-		$this->order = 'ORDER BY ' . implode(', ', $fields);
+		$this->order = ' ORDER BY ' . implode(', ', $fields);
 	}
 
 	function orderBy($fieldname) {
-		$this->order = 'ORDER BY ' . $fieldname;
+		$this->order = ' ORDER BY ' . $fieldname;
 	}
 
 	function visit($obj) {

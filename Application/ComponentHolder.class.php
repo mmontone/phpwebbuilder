@@ -44,5 +44,9 @@ class ComponentHolder
     	return $this->__owner_index;
     }
 
+    function &getComponent() {
+    	return $this->component;
+    }
+
 }
 ?>
