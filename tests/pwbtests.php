@@ -16,7 +16,7 @@ class PWBTests extends GroupTest {
 		$this->addTestCase(new WidgetsTests);
 		//$this->addTestCase(new DatabaseTests);
 		//$this->addTestCase(new ModelTests);
-		$this->addTestCase(new UsersAndPermissionsTests);
+		//$this->addTestCase(new UsersAndPermissionsTests);
 		//$this->addTestCase(new MemoryTests);
     }
 }

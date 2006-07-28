@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/ComponentHolder.class.php';
 
 class Application extends ComponentHolder {
 	var $wholeView;

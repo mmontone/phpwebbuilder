@@ -8,7 +8,7 @@ class DB {
 		if ($res===true) {
 			$arr[]="Query suceeded";
 		} else if ($res===false) {
-			$arr[]="Query failed";
+			$arr[]="Query failed " . mysql_error();
 		} else {
 			while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
 		}

@@ -43,7 +43,7 @@ class PersistentObjectTableCheckView {
 			if(mysql_num_rows($res)) {
 				trace("Tables with name $table are" . mysql_num_rows($res));
 				$ret ="";
-				$sql = "SHOW COLUMNS FROM " . $table;
+				$sql = "SHOW COLUMNS FROM `" . $table."`";
 				$db = new MySQLDB;
 				$res = $db->SQLexec($sql, FALSE, $this->obj);
 				$arr = $db->fetchArray($res);
@@ -60,11 +60,11 @@ class PersistentObjectTableCheckView {
 				foreach ($this->gotFields as $name=>$f) {
 					if (!isset($arr[$f["Field"]])) {
 						trace("Field not found:" . print_r($f, TRUE));
-						$temp .= "\n    DROP COLUMN $name, ";
+						$temp .= "\n    DROP COLUMN `$name`, ";
 					}
 				}
 				$actunique = array();
-				$res =& $db->SQLExec("SHOW INDEX FROM $table", FALSE,$this);
+				$res =& $db->SQLExec("SHOW INDEX FROM `$table`", FALSE,$this);
 				$indexes = $db->fetchArray($res);
 				foreach ($indexes as $f) {
 					if ($f["Key_name"]!="PRIMARY") {
@@ -85,7 +85,7 @@ class PersistentObjectTableCheckView {
 				}
 				if ($temp!="") {
 					//$ret .= "\n-- Object: ".getClass($this->obj);
-					$ret .= "\nALTER TABLE $table";
+					$ret .= "\nALTER TABLE `$table`";
 					$ret .= $temp;
 					$ret = substr($ret,0, -2);
 					$ret .= ";";
@@ -96,7 +96,7 @@ class PersistentObjectTableCheckView {
 			} else {
 			//Si no est�, crearla:
 				//$ret = "\n-- Object: ".getClass($this->obj);
-				$ret =	"\nCREATE TABLE IF NOT EXISTS $table (" ;
+				$ret =	"\nCREATE TABLE IF NOT EXISTS `$table` (" ;
 				$ret .= $this->fieldsForm($this, $this->obj->fieldNames, TRUE);
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
@@ -136,12 +136,12 @@ class PersistentObjectTableCheckView {
 		if (isset($fields[$name])) {
 			$f =& $fields[$name];
 			if (!$field->compareType($f["Type"])) {
-				$ret = "\n    MODIFY $name ".$field->type().", ";
+				$ret = "\n    MODIFY `$name` ".$field->type().", ";
 			} else $ret = "";
 			return $ret;
 		} else {
 			trace(print_r($field, TRUE));
-			$add = "\n    ADD COLUMN $name ". $field->type().", ";
+			$add = "\n    ADD COLUMN `$name` ". $field->type().", ";
 			return $add;
 		}
 	}
@@ -172,7 +172,7 @@ class TablesChecker {
 		}
 		$del ='';
 		foreach ($tables as $t2){
-			$del .= "\nDROP TABLE ".$t2.';';
+			$del .= "\nDROP TABLE `".$t2.'`;';
 
 		}
 		return $mod.$del;

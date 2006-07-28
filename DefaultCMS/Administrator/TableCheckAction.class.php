@@ -25,7 +25,7 @@ class TableCheckAction {
 		return $obj->showField($this);
 	}
 	function creation(&$obj) {
-		return "\n   ".$this->obj->colName ." ". $this->type().", ";
+		return "\n   `".$this->obj->colName ."` ". $this->type().", ";
 	}
 	function frmName(&$object) {
 		return $object->formName() . $this->field->colName;
