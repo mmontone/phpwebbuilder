@@ -17,7 +17,7 @@ class Select extends Widget {
     		$this->displayF =& lambda('&$e', 'return $e;', $a = array());
     	}
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
-    	if ($this->getValueIndex() == -1) {
+    	if (($this->getValueIndex() == -1) and (!$this->options->isEmpty())) {
     		$this->setValueIndex($i = 0);
     	}
     }

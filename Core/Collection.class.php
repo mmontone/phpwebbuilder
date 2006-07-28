@@ -44,6 +44,10 @@ class Collection extends PWBObject{
 	    $this->triggerEvent('changed', $elem);
 	}
 	function &pop(){
+		if ($this->isEmpty()) {
+			return null;
+		}
+
 		$es =& $this->elements();
 		$ks = array_keys($es);
 		$pos = $ks[count($ks)-1];

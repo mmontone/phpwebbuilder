@@ -23,6 +23,8 @@ class CollectionTests extends UnitTestCase {
     function testPushAndPop() {
 		$c =& new Collection;
 
+    	$this->assertNull($c->pop());
+
     	for ($i = 0; $i < 10; $i++) {
     		$c->push($i);
     	}
