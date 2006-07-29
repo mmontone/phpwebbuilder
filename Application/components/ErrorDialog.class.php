@@ -4,10 +4,9 @@ class ErrorDialog extends Component
 {
 	var $message;
 
-	function ErrorDialog($message, $callback_actions=array('on_accept' => 'notification_accepted')) {
+	function ErrorDialog($message) {
 		$this->message = $message;
 		parent::Component();
-		$this->registerCallbacks($callback_actions);
 	}
 
 	function initialize() {

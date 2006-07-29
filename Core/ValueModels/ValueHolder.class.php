@@ -16,7 +16,7 @@ class ValueHolder extends ValueModel
     	return $this->__value;
     }
 
-	function setValue(& $value) {
+	function setValue($value) {
 		$old_value =& $this->getValue();
 		$this->primitiveSetValue($value);
 		$params = array();

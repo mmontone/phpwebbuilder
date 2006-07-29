@@ -19,18 +19,20 @@ class Component extends PWBObject
 	}
 	function initialize(){}
 	function start() {}
-	function stop() {
-		$n = null;
-		$this->app =& $n;
-	    $this->view =& $n;
+	function stop() {}
+	function stopAndRelease() {
+		$this->stop();
 		$this->releaseAll();
 	}
 
 	function release() {
 		parent::release();
+		$n = null;
+		$this->app =& $n;
+	    $this->view =& $n;
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;
-			if ($child!=null)$child->stop();
+			if ($child!=null)$child->stopAndRelease();
 		}
 	}
 	function checkAddingPermissions(){
@@ -39,7 +41,7 @@ class Component extends PWBObject
 	function releaseAll() {
 		$this->release();
 		if ($this->listener != null)
-			$this->listener->stop();
+			$this->listener->stopAndRelease();
 	}
 
 
@@ -122,7 +124,7 @@ class Component extends PWBObject
 		$pos =&  $h->__owner_index;
 		unset($p->__children[$pos]);
 		unset($p->$pos);
-		$this->stop();
+		$this->stopAndRelease();
 	}
 	function redraw(){
 		if ($this->view){
@@ -144,14 +146,14 @@ class Component extends PWBObject
     	$this->basicCall($component);
 	}
     function stopAndCall(&$component) {
-    	$this->basicCall($component);
 		$this->stop();
+    	$this->basicCall($component);
+    	$this->releaseAll();
     }
     function basicCall(&$component) {
     	$this->replaceView($component);
     	$this->holder->hold($component);
 		if (isset($this->app))$component->linkToApp($this->app);
-        $component->start();
     }
 
 	function dettachView(){
