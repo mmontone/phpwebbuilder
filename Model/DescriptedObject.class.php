@@ -196,19 +196,23 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function checkNotEmpty($fields) {
-		$ret = true;
+		$ret = false;
 		$ex = array();
 		$i = 1;
 
 		foreach ($fields as $field) {
-			if ($this-> $field->isEmpty()) {
-				$this->$field->requiredButEmpty();
-				$ex[$i] =& new EmptyFieldException(array('message' => 'Fill in the ' . $this->$field->displayString . ', please', 'content' => & $this->$field));
-				$this->validation_errors[] =& $ex[$i++];
-				$ret = true;
-			}
+			$ret = $ret or $this->checkNotEmptyField($field, 'Fill in the ' . $this->$field->displayString . ', please');
 		}
 		return $ret;
+	}
+
+	function checkNotEmptyField($field, $message) {
+		if ($this->$field->isEmpty()) {
+			$this->$field->requiredButEmpty();
+			$this->validation_errors[] =& new EmptyFieldException(array('message' => $message, 'content' => & $this->$field));
+			return true;
+		}
+		return false;
 	}
 
 	/*@deprecated*/
@@ -234,13 +238,25 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function validateAll() {
-		$this->validation_errors = array();
-
+		$this->validateObject();
 		$this->validateFields();
 
-		$this->validate();
-
 		return !empty($this->validation_errors);
+	}
+
+	function validateObject() {
+		$this->beValid();
+		$this->validate();
+		return $this->isValid();
+	}
+
+	function isValid() {
+		return empty($this->validation_errors);
+	}
+
+	function beValid() {
+		$n = array();
+		$this->validation_errors =& $n;
 	}
 
 	function validateFields() {

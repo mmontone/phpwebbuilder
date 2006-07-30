@@ -9,13 +9,15 @@ class Select extends Widget {
     function Select(&$value_model, &$collection, $displayF=null) {
     	parent::Widget($value_model);
     	$this->options =& $collection;
+
     	if ($displayF!=null){
     		$this->displayF=$displayF;
-    	} else if (isPWBObject($collection->first())){
-    		$this->displayF =& lambda('&$e', 'return $e->indexValues();', $a = array());
+    	} else if (is_object($collection->first())){
+    		$this->displayF =& lambda('&$e', 'return $e->printString();', $a = array());
     	} else {
     		$this->displayF =& lambda('&$e', 'return $e;', $a = array());
     	}
+
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
     	if (($this->getValueIndex() == -1) and (!$this->options->isEmpty())) {
     		$this->setValueIndex($i = 0);
