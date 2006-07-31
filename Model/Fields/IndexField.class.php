@@ -87,6 +87,10 @@ class IndexField extends NumField {
 		parent::commitChanges();
 		$this->target =& $this->buffered_target;
 	}
+
+	function isEmpty() {
+		return $this->getTarget() == null;
+	}
 }
 
 ?>
