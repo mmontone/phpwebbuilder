@@ -6,16 +6,24 @@ class BufferedValueHolder extends ValueModel {
 
     function BufferedValueHolder(&$value_model) {
     	$this->value_model =& $value_model;
-    	$this->flush();
-    }
+    	$this->buffered_value =& $value_model->getValue();
+   }
 
-    function commit() {
+    function commitChanges() {
     	$this->value_model->setValue($this->buffered_value);
+    	$this->triggerEvent('changed', $this->getValue());
     }
 
-    function flush() {
+    function flushChanges() {
     	$this->buffered_value =& $this->value_model->getValue();
+    	$this->triggerEvent('changed', $this->getValue());
     }
+
+    function setValue(& $value) {
+		$old_value =& $this->getValue();
+		$this->primitiveSetValue($value);
+		$this->triggerEvent('changed', $this->getValue());
+	}
 
     function setPrimitiveValue(&$value) {
     	$this->buffered_value =& $value;
