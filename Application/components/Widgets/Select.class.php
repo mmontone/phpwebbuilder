@@ -69,8 +69,11 @@ class Select extends Widget {
 
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
-			$this->opts[$this->selected_index]->removeAttribute('selected');
+			if ($this->selected_index != -1) {
+				$this->opts[$this->selected_index]->removeAttribute('selected');
+			}
 			$this->opts[$this->getValueIndex()]->setAttribute('selected', 'selected');
+			$this->selected_index =& $this->getValueIndex();
 			$this->view->redraw();
 		}
 	}
@@ -80,7 +83,6 @@ class Select extends Widget {
 	}
 
 	function setValueIndex(&$index){
-		$this->selected_index =& $index;
 		$this->setValue($this->options->at($index));
 	}
 
