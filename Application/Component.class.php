@@ -165,6 +165,9 @@ class Component extends PWBObject
 	}
 
 	function callbackWith($callback, &$params) {
+		if (!$this->listener) {
+			print_backtrace('Component constructor not being called??');
+		}
 		$this->listener->takeControlOf($this, $callback, $params);
 	}
 
