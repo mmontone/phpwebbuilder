@@ -18,6 +18,7 @@ class Link extends Widget
 	function prepareToRender(){
 		parent::prepareToRender();
 		$this->view->setAttribute('href', toAjax($this->target));
+		$this->view->addCSSClass('clickable');
 	}
 }
 ?>
