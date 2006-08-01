@@ -16,7 +16,7 @@ require_once 'DBSessionHandler.class.php';
 
 SessionHandler::setHooks();
 session_name(strtolower(app_class));
-if ($_REQUEST["restart"]=="yes") {
+if (isset($_REQUEST["restart"])) {
   $sessionid = $_COOKIE[session_name()];
   $orgpath = getcwd();
   chdir(PHP_BINDIR);
@@ -32,7 +32,7 @@ if ($_REQUEST["restart"]=="yes") {
   session_regenerate_id();
 }
 session_start();
-if ($_REQUEST["reset"]=="yes" && isset($_SESSION[sitename]) && isset($_SESSION[sitename][app_class])) {
+if (isset($_REQUEST["reset"]) && isset($_SESSION[sitename]) && isset($_SESSION[sitename][app_class])) {
 	unset($_SESSION[sitename][app_class]);
 }
 
