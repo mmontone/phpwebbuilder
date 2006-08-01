@@ -105,7 +105,7 @@ class DataField extends PWBObject {
 		return $this->SQLvalue();
 	}
 	function updateString() {
-		return $this->colName . " = " . $this->SQLvalue();
+		return '`'.$this->colName . '` = ' . $this->SQLvalue();
 	}
 	function viewValue() {
 		return $this->getValue();
