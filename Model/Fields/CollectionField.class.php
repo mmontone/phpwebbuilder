@@ -57,13 +57,13 @@ class CollectionField extends DataField {
 		return $db->query($sql);
 	}
 	function defaultValues($params) {
-		return array_merge(array (
+		$v = array (
 			'fieldName' => $params['type'] . $params['reverseField'],
 			'joinTable' => $params['type'],
 			'joinFieldOwn' => strtolower(getClass($this->owner)),
-			'joinField' => strtolower($params['type']),
+			'joinField' => strtolower($params['type']));
 
-		), parent :: defaultValues($params));
+		return array_merge($v,parent :: defaultValues(array_merge($params,$v)));
 	}
 	function fieldName() {
 	}

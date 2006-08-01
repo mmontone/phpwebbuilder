@@ -22,7 +22,7 @@ function getfilesrec ($pred, $dir){
 }
 
 function includefile(&$file) {
-	foreach(getfilesrec($lam = lambda('$file','return substr($file, -4)==".php";', $a=array()), $file) as $f){
+	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -4)==".php";', $a=array()), $file) as $f){
         require_once($f);
 	}
 	delete_lambda($lam);
@@ -232,8 +232,7 @@ function lambda( $args, $code, $env=array() ) {
    static $n = 0;
    $functionName = sprintf('ref_lambda_%d',++$n);
    $_SESSION['lambdas'][$functionName]['environment_vars'] =& $env;
-   $declaration = sprintf('function &%s(%s) {extract($_SESSION["lambdas"]["'.$functionName.'"]["environment_vars"],EXTR_REFS); %s}',$functionName,$args,$code);
-   //$declaration = sprintf('function &%s(%s) {global $env;var_dump($env);extract($env,EXTR_REFS); %s}',$functionName,$args,$code);
+   $declaration = sprintf('function &%s(%s) {extract($_SESSION["lambdas"]["'.$functionName.'"]["environment_vars"],EXTR_REFS); ' /*.'trigger_error(backtrace_string(\''.str_replace('\'','\\\'',$code).'\'), E_USER_NOTICE);' */.'%s}',$functionName,$args,$code);
    eval($declaration);
    return $functionName;
 }

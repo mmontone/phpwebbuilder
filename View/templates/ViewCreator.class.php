@@ -28,7 +28,7 @@ class ViewCreator {
 		$this->addTemplates($tps);
 	}
 	function loadTemplatesDir ($templatesdir){
-		$fs = getfilesrec($lam = lambda('$file','return substr($file, -4)==".xml";', $a=array()), $templatesdir);
+		$fs = getfilesrec($lam = lambda('$file','$v=substr($file, -4)==".xml"; return $v;', $a=array()), $templatesdir);
 		delete_lambda($lam);
 		$size = strlen(pwbdir);
 		if (pwbdir == substr ($templatesdir, 0, $size)){
@@ -75,7 +75,7 @@ class ViewCreator {
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$component->setView($vid);
-				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element '.$vid->tagName,E_USER_NOTICE);
+				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element "'.$vid->tagName.'"',E_USER_NOTICE);
 				return $vid;
 			} else {
 				$pos =& $vid;
@@ -116,7 +116,7 @@ class ViewCreator {
 	}
 	function &templateForClass(&$component){
 		$ts =& $this->templates->filter($f = lambda(
-				'&$t','return $t->isTemplateForClass($component);',get_defined_vars()));
+				'&$t','$v=$t->isTemplateForClass($component);return $v;',get_defined_vars()));
 		delete_lambda($f);
 		if (!$ts->isEmpty()){
 			$t =& $ts->first();

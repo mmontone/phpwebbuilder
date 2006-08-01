@@ -7,6 +7,9 @@ class TextField extends DataField {
 		parent::createInstance($params);
 		$this->set = $params['set'];
 	}
+	function defaultValues($params){
+		return array_merge(array('set'=>null), parent::defaultValues($params));
+	}
 	function hasSet() {
 		return $this->set != null;
 	}

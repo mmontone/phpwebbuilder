@@ -32,7 +32,7 @@ if ($_REQUEST["restart"]=="yes") {
   session_regenerate_id();
 }
 session_start();
-if ($_REQUEST["reset"]=="yes") {
+if ($_REQUEST["reset"]=="yes" && isset($_SESSION[sitename]) && isset($_SESSION[sitename][app_class])) {
 	unset($_SESSION[sitename][app_class]);
 }
 
