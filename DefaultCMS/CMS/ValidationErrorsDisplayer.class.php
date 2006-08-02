@@ -3,7 +3,7 @@
 class ValidationErrorsDisplayer extends Component {
 	var  $errors;
 
-    function ValidationErrorsDisplayer(&$errors) {
+    function ValidationErrorsDisplayer($errors) {
     	$this->errors =& $errors;
     	parent::Component();
     }
