@@ -135,6 +135,9 @@ class Application extends ComponentHolder {
  		if (!defined('templatesdir')) {
  			$templatesdir= basedir . '/MyTemplates';
  		}
+ 		else {
+ 			$templatesdir = templatesdir;
+ 		}
 
  		$this->viewCreator->loadTemplatesDir($templatesdir);
  	}
