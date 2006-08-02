@@ -10,6 +10,7 @@ class Application extends ComponentHolder {
 	var $translators = array();
 	var $commands;
 	var $urlManager;
+
 	function Application() {
 		$_SESSION[sitename][getClass($this)] = & $this;
 		$this->commands =& new Collection();
@@ -125,9 +126,19 @@ class Application extends ComponentHolder {
 		return $this->wholeView;
 	}
 
-	function loadTemplates(){
-		$this->viewCreator->loadTemplatesDir(basedir.'/MyTemplates');
-	}
+	function loadTemplates () {
+ 		$templates=templates;
+ 		if ($templates != 'enabled') {
+ 			return;
+ 		}
+
+ 		if (!defined('templatesdir')) {
+ 			$templatesdir= basedir . '/MyTemplates';
+ 		}
+
+ 		$this->viewCreator->loadTemplatesDir($templatesdir);
+ 	}
+
 	function getId() {
 		return "app";
 	}
