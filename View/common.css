@@ -1,1 +1,7 @@
-.clickable{cursor:pointer;}
+.clickable{
+	cursor:pointer;
+}
+
+.debugging{
+	border: 1px solid red;
+}

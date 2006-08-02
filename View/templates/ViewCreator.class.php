@@ -90,10 +90,16 @@ class ViewCreator {
 				$parentView->insertBefore($ct, $pos);
 				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' found container for class '.$ct->getAttribute('class'),E_USER_NOTICE);
 			} else {
-				$v =& new NullView;
-				$component->setView($v);
-				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' got NullView ',E_USER_NOTICE);
-				return $v;
+				if (constant('debugview')=='1') {
+					$debugging = true;
+					$pos =& new HTMLContainer;
+					$parentView->appendChild($pos);
+				} else {
+					$v =& new NullView;
+					$component->setView($v);
+					trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' got NullView ',E_USER_NOTICE);
+					return $v;
+				}
 			}
 		}
 		if (!$hasView) {
@@ -106,6 +112,7 @@ class ViewCreator {
 			}
 			$view =& $tp;
 			$view->getTemplatesAndContainers();
+			if ($debugging) $view->addCSSClass('debugging');
 		}
 		$parentView->replaceChild($view,$pos);
 		return $view;
