@@ -63,11 +63,18 @@ class CollectionNavigator extends Component {
 		} else {
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {
-			$fc =& $this->addLine($elements[$k]);
-			$this->objs->addComponent($fc);
+			$element =& $elements[$k];
+			if ($this->checkAddingPermissionsFor($element)) {
+				$fc =& $this->addLine($elements[$k]);
+				$this->objs->addComponent($fc);
+			}
 		}
 		$this->view->redraw();
 		}
+	}
+
+	function checkAddingPermissionsFor(&$element) {
+		return true;
 	}
 
 	function getValue(){}

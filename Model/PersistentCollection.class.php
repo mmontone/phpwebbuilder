@@ -9,9 +9,12 @@ class PersistentCollection extends Collection{
 	var $offset = 0;
 	var $size;
 	var $elements=array();
+
 	function PersistentCollection($dataType = "") {
 		$this->dataType = $dataType;
 		$this->conditions = array ();
+		$this->order=array();
+
 		parent::Collection();
 	}
 
@@ -53,15 +56,28 @@ class PersistentCollection extends Collection{
 	}
 
 	function orderByFields($fields) {
-		$conds=array();
-		foreach($fields as $f=>$o){
-		 $conds [] = '`'.$f.'` '.$o;
+		foreach($fields as $field=>$order) {
+			$this->orderBy($field, $order);
 		}
-		$this->order = ' ORDER BY '.implode(', ',$conds);
 	}
 
-	function orderBy($fieldname, $dir='ASC') {
-		$this->orderByFields(array($fieldname=>$dir));
+	function orderBy($fieldname, $order='ASC') {
+		$this->order[$fieldname] = $order;
+	}
+
+	function unordered() {
+		$order = array();
+		$this->order =& $order;
+	}
+
+	function order() {
+		if (empty($this->order)) return '';
+
+		$orders = array();
+		foreach ($this->order as $f => $c) {
+			$orders[] = '`'. $f .'` '. $c;
+		}
+		return ' ORDER BY ' . implode(',', $orders);
 	}
 
 	function visit($obj) {
@@ -79,7 +95,7 @@ class PersistentCollection extends Collection{
 	}
 	function selectsql(){
 		$obj = & new $this->dataType;
-		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order . $this->limit();
+		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order() . $this->limit();
 	}
 
 	function refresh() {
