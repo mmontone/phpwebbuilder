@@ -261,18 +261,24 @@ class DescriptedObject extends PWBObject {
 
 	function validateFields() {
 		$ret = true;
-		$ex = array();
-		$i = 1;
 
 		foreach ($this->allFieldNames() as $f) {
-			$field =& $this->fieldNamed($f);
-			if ($ex[$i] =& $field->validate()) {
-				$this->validation_errors[] =& $ex[$i++];
+			if (!$this->validateField($f)) {
 				$ret = false;
 			}
 		}
 
 		return $ret;
+	}
+
+	function validateField($field_name) {
+		$field =& $this->fieldNamed($field_name);
+		if ($ex =& $field->validate()) {
+			$this->validation_errors[] =& $ex;
+			return false;
+		}
+
+		return true;
 	}
 
 	function validate() {
