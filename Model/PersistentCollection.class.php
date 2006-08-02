@@ -46,18 +46,18 @@ class PersistentCollection extends Collection{
 	function conditions() {
 		$cond = '1=1';//$this->idRestrictions();
 		foreach ($this->conditions as $f => $c) {
-			$cond .= ' AND '. $f .' '. $c[0] .' '. $c[1];
+			$cond .= ' AND `'. $f .'` '. $c[0] .' '. $c[1];
 		}
 		$cond = ' WHERE ' . $cond;
 		return $cond;
 	}
 
 	function orderByFields($fields) {
-		$this->order = ' ORDER BY ' . implode(', ', $fields);
+		$this->order = ' ORDER BY `' . implode('`, `', $fields).'`';
 	}
 
 	function orderBy($fieldname) {
-		$this->order = ' ORDER BY ' . $fieldname;
+		$this->orderByFields(array($fieldname));
 	}
 
 	function visit($obj) {
