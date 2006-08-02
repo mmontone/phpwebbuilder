@@ -2,6 +2,11 @@
 	cursor:pointer;
 }
 
+
+.template{
+	border: 1px solid black;
+}
+
 .debugging{
-	border: 1px solid red;
+	border: 2px solid red;
 }

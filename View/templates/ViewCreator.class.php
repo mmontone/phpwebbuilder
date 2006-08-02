@@ -107,8 +107,12 @@ class ViewCreator {
 			if ($tp0!=null){
 				$tp =& $tp0->instantiateFor($component);
 				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
+				$name = 'Local '.$tp0->getAttribute('class');
 			} else {
 				$tp =& $this->createTemplate($component);
+			}
+			if (constant('debugview')=='1') {
+				$tp->addCSSClass('template');
 			}
 			$view =& $tp;
 			$view->getTemplatesAndContainers();
@@ -134,7 +138,8 @@ class ViewCreator {
 	}
 	function &defaultTemplate(&$component){
 		trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Default Template',E_USER_NOTICE);
-		return $component->createDefaultView();
+		$t =& $component->createDefaultView();
+		return $t;
 	}
 }
 ?>
