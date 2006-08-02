@@ -174,7 +174,7 @@ class DescriptedObject extends PWBObject {
 
 	function fieldChanged(& $field) {
 		$this->modified = true;
-		//$this->triggerEvent('fieldChanged', $field);
+		$this->triggerEvent('changed', $this);
 	}
 
 	function & findIndexField() {
