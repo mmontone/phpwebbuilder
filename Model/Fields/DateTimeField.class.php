@@ -49,7 +49,9 @@ class DateTimeField extends DataField {
     function now(){
         return $this->format(getDate());
     }
-
+	function setNow(){
+		$this->setValue($this->now());
+	}
     function format ($date) {
         return $this->dateFormat($date)." ".$this->timeFormat($date);
     }
