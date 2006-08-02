@@ -7,7 +7,7 @@ class Application extends ComponentHolder {
 	var $needView = array ();
 	var $historylistener;
 	var $config;
-	var $translator;
+	var $translators = array();
 	var $commands;
 	var $urlManager;
 	function Application() {
@@ -142,7 +142,7 @@ class Application extends ComponentHolder {
 	}
 
 	function translate($msg) {
-		return $this->translator->translate($msg);
+		return Translator::TranslateWith(translator,$msg);
 	}
 	function launch() {
 		$ad =& new ActionDispatcher();
