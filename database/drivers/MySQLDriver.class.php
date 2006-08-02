@@ -63,6 +63,7 @@ class MySQLdb extends DB {
         $reg = mysql_query ($sql);
         if (!$reg){
         	$this->lastError=mysql_error() . ': '.$sql;
+        	echo $this->lastError;
         	return false;
         }
         return $reg;
@@ -71,6 +72,7 @@ class MySQLdb extends DB {
     function fetchrecord($res) {
     	return mysql_fetch_assoc($res);
     }
+
     function openDatabase() {
     	if (!$this->conn){
 	      $this->conn = mysql_connect(serverhost, baseuser, basepass);

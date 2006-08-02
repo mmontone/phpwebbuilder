@@ -22,7 +22,7 @@ class User extends PersistentObject {
 	}
 
 	function & loadUser($user, $pass) {
-		$u = User::getWithIndex('User',array("user"=>"'$user'",
+		$u =& User::getWithIndex('User',array("user"=>"'$user'",
 								"pass"=>"'$pass'"));
 		if ($u!=null) {
 			$u->getPermissions();
