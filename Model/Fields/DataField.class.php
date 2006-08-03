@@ -149,8 +149,12 @@ class DataField extends PWBObject {
 	}
 
 	function validate() {
-		$this->triggerEvent('validated', $this);
+		$this->validated();
 		return false;
+	}
+
+	function validated() {
+		$this->triggerEvent('validated', $this);
 	}
 
 	function requiredButEmpty() {

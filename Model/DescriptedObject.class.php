@@ -212,7 +212,9 @@ class DescriptedObject extends PWBObject {
 			$this->validation_errors[] =& new EmptyFieldException(array('message' => $message, 'content' => & $this->$field));
 			return true;
 		}
-		return false;
+		else {
+			return false;
+		}
 	}
 
 	/*@deprecated*/
@@ -257,6 +259,11 @@ class DescriptedObject extends PWBObject {
 	function beValid() {
 		$n = array();
 		$this->validation_errors =& $n;
+
+		foreach ($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			$field->validated();
+		}
 	}
 
 	function validateFields() {
@@ -277,8 +284,6 @@ class DescriptedObject extends PWBObject {
 			$this->validation_errors[] =& $ex;
 			return false;
 		}
-
-		return true;
 	}
 
 	function validate() {
