@@ -19,6 +19,7 @@ class DescriptedObject extends PWBObject {
 			$field->commitChanges();
 		}
 		$this->modified = false;
+		$this->triggerEvent('changes_commited', $this);
 	}
 
 	function flushChanges() {

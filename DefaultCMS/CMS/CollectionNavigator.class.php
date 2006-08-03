@@ -106,11 +106,11 @@ class CollectionNavigator extends Component {
 	}
 	function sort($fname){
 		if ($this->colorder == $fname){
-			$this->col->order = " ORDER BY ".$fname . " DESC ";
+			$this->col->orderBy($fname, "DESC");
 			$this->colorder = "";
 		} else {
 			$this->colorder = $fname;
-			$this->col->order = " ORDER BY ".$fname;
+			$this->col->orderBy($fname, 'ASC');
 		}
 		$this->refresh();
 	}
