@@ -143,7 +143,7 @@ class PersistentObject extends DescriptedObject {
 			$values .= $field->updateString();
 		}
 		$values = substr($values, 0, -2);
-		return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
+		return "UPDATE `" . $this->tableName() . "` SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
 	}
 
 	function basicUpdate() {
@@ -160,7 +160,7 @@ class PersistentObject extends DescriptedObject {
 
 	function basicDelete() {
 		if (!$this->existsObject) return true;
-		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
+		$sql = 'DELETE FROM `' . $this->tableName() . '` WHERE id=' . $this->getId();
 		$db =& DB::Instance();
 		$can = TRUE;
 		foreach ($this->allFieldsThisLevel() as $f) {
