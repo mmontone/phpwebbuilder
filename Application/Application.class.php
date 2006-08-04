@@ -75,6 +75,7 @@ class Application extends ComponentHolder {
 			$this->wholeView->controller = & $this;
 			//$this->wholeView->appendChild($this->component->myContainer());
 			$this->wholeView->getTemplatesAndContainers();
+			$this->wholeView->jsscripts = array();
 			$this->setTitle($this->getTitle());
 			$this->initializeStyleSheets();
 			$this->initializeScripts();

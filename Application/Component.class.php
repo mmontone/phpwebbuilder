@@ -21,8 +21,16 @@ class Component extends PWBObject
 	function start() {}
 	function stop() {}
 	function stopAndRelease() {
-		$this->stop();
+		$this->stopAll();
 		$this->releaseAll();
+	}
+
+	function stopAll() {
+		$this->stop();
+		foreach(array_keys($this->__children) as $c) {
+			$child =& $this->__children[$c]->component;
+			if ($child!=null)$child->stopAll();
+		}
 	}
 
 	function release() {
@@ -32,7 +40,7 @@ class Component extends PWBObject
 	    $this->view =& $n;
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;
-			if ($child!=null)$child->stopAndRelease();
+			if ($child!=null)$child->release();
 		}
 	}
 	function checkAddingPermissions(){
@@ -41,7 +49,7 @@ class Component extends PWBObject
 	function releaseAll() {
 		$this->release();
 		if ($this->listener != null)
-			$this->listener->stopAndRelease();
+			$this->listener->releaseAll();
 	}
 
 
@@ -146,7 +154,7 @@ class Component extends PWBObject
     	$this->basicCall($component);
 	}
     function stopAndCall(&$component) {
-		$this->stop();
+		$this->stopAll();
     	$this->basicCall($component);
     	$this->releaseAll();
     }
