@@ -143,11 +143,9 @@ class Widget extends Component {
 		), $target);
 	}
 
-	function addEventListener($event_specs, & $listener) {
-		parent :: addEventListener($event_specs, $listener);
-
-		foreach ($event_specs as $event_selector => $event_callback) {
-			switch ($event_selector) {
+	function addInterestIn($event, & $event_callback) {
+		parent :: addInterestIn($event, & $event_callback);
+			switch ($event) {
 				case 'changed' :
 					$this->setHook(new FunctionObject($this, 'setOnChangeEvent'));
 					break;
@@ -161,8 +159,6 @@ class Widget extends Component {
 					$this->setHook(new FunctionObject($this, 'setOnClickEvent'));
 					break;
 			}
-		}
-
 	}
 
 	function & printValue() {

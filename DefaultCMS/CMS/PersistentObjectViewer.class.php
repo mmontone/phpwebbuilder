@@ -22,7 +22,6 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
         } else {
 			$fc->addComponent(new Label($field->displayString), 'fieldName');
         }
-
 		return $fc;
     }
 
