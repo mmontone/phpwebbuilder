@@ -3,15 +3,19 @@ require_once dirname(__FILE__) . '/Input.class.php';
 
 class Filename extends Input {
 	var $file;
+	var $fileuploaded = false;
+
 	function initializeDefaultView(&$view) {
 		$view->setTagName('input');
 		$view->setAttribute('type', 'file');
 	}
-	function setEvents(&$view){
+
+	function setEvents(&$view) {
 		parent::setEvents(&$view);
 		$view->setAttribute('onchange', 'uploadFile(&#34;'.$this->getId().'&#34;)');
 	}
-	function loadFile($file_data){
+
+	function loadFile($file_data) {
 		$file =& new File;
 		if (!is_uploaded_file($file_data['tmp_name'])) {
 			return false;
@@ -24,9 +28,19 @@ class Filename extends Input {
 		$fields['filename']->setValue($file_data['name']);
 		$fields['filesize']->setValue($file_data['size']);
 		$fields['filetype']->setValue($file_data['type']);
+		$this->fileuploaded=true;
 		$this->file =& $file;
 	}
-	function viewUpdated($params){
+
+	function &getFile() {
+		return $this->file;
+	}
+
+	function isFileLoaded() {
+		return $this->fileuploaded;
+	}
+
+	function viewUpdated($params) {
 		$this->loadFile($params);
 	}
 }

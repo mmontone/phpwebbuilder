@@ -285,6 +285,8 @@ class DescriptedObject extends PWBObject {
 			$this->validation_errors[] =& $ex;
 			return false;
 		}
+
+		return true;
 	}
 
 	function validate() {
