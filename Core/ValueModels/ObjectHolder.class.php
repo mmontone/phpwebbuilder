@@ -28,6 +28,7 @@ class ObjectHolder extends ValueModel
 
     function setModelSendsUpdates($bool) {
     	$this->modelSendsUpdates =& $bool;
+
     	if ($bool) {
     		$this->__value->addInterestIn('changed', new FunctionObject($this, 'modelChanged'));
     	}
@@ -37,7 +38,7 @@ class ObjectHolder extends ValueModel
     }
 
     function modelChanged() {
-    	$this->triggerEvent('changed', $this->__value);
+    	$this->triggerEvent('changed', $this->getValue());
     }
 }
 

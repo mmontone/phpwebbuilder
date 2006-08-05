@@ -12,13 +12,13 @@ class BoolField extends DataField {
 
 	function loadFrom($form) {
 		$val = $form[$this->sqlName()];
-		if ($val === "false")
-			$val = 0;
-		if ($val === "true")
-			$val = 1;
-		if ($val == null)
-			$val = 0;
-		$this->setValue($val);
+		if ($val === "false" or $val == 0 or $val == '0') {
+			$this->setValue(false);
+		}
+		else {
+			$this->setValue(true);
+		}
+
 		return true;
 	}
 
