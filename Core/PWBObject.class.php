@@ -110,9 +110,13 @@ class PWBObject
 
     function &addEventListener($event_specs, &$listener) {
         $handles = array();
+        $callback = array();
+        $i = 1;
+
         foreach ($event_specs as $event_selector => $event_callback) {
-  			$callback =& new FunctionObject($listener, $event_callback);
-  			$handles[] =& $this->addInterestIn($event_selector, $callback);
+  			$callback[$i] =& new FunctionObject($listener, $event_callback);
+  			$handles[] =& $this->addInterestIn($event_selector, $callback[$i]);
+  			$i++;
         }
 
         return $handles;
@@ -166,9 +170,13 @@ class PWBObject
 
 		if ($listeners == null) return;
 
+        $listener = array();
+        $i = 1;
+
         foreach(array_keys($listeners) as $l) {
-        	$listener =& $listeners[$l];
-        	$listener->callWithWith($this, $params);
+        	$listener[$i] =& $listeners[$l];
+        	$listener[$i]->callWithWith($this, $params);
+        	$i++;
         }
     }
 

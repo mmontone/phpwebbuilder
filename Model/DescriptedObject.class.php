@@ -19,7 +19,7 @@ class DescriptedObject extends PWBObject {
 			$field->commitChanges();
 		}
 		$this->modified = false;
-		$this->triggerEvent('changes_commited', $this);
+		$this->triggerEvent('changes_committed', $this);
 	}
 
 	function flushChanges() {
@@ -168,9 +168,7 @@ class DescriptedObject extends PWBObject {
 		}
 		$field->owner = & $this;
 
-		$field->addEventListener($a = array (
-			'changed' => 'fieldChanged'
-		), $this);
+		$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
 	}
 
 	function fieldChanged(& $field) {

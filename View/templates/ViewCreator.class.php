@@ -69,7 +69,7 @@ class ViewCreator {
 		//Somewhere er're setting a value in view where the view is not initialized;
 		//if (strcasecmp(getClass($view),'StdClass')==0) print_backtrace(get_class($component));
 		$id = $component->getSimpleId();
-		if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
+		//if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
 		$vid =& $parentView->childrenWithId($id);
 		if ($vid!=null){
 			if (!$vid->isContainer()){

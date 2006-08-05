@@ -8,5 +8,9 @@ class ChildCallbackHandler {
 			}
 		}
 	}
+
+	function releaseAll() {
+
+	}
 }
 ?>

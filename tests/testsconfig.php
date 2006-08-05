@@ -1,5 +1,5 @@
 <?php
-/*//Marian home
+//Marian home
 define('simpletest_dir', 'e:/wamp/simpletest');
 define('sitename', 'pwbtests');
 define('pwbdir', 'e:/wamp/www/pwb');
@@ -12,11 +12,12 @@ define('pwb_url','http://localhost/pwb');
 define('DBObject', 'MySQLdb');
 define('page_renderer', 'StandardPageRenderer');
 define('translator','SpanishTranslator');
-define('modules', 'Core, Application, Model, View, database');
+define('modules', 'Core, Application, Model, View, database,Instances, DefaultCMS');
 define('app_class','DefaultCMSApplication');
 define('basedir', 'e:/wamp/www/eurekacozzuol/src');
-define('appdir', 'e:/wamp/www/eurekacozzuol/src/MyInstances');*/
-
+define('appdir', 'e:/wamp/www/eurekacozzuol/src/MyInstances');
+define('debugview', 'false');
+/*
 define('simpletest_dir', '/home/marian/workspace/simpletest');
 define('sitename', 'pwbtests');
 define('pwbdir', '/home/marian/workspace/pwb');
@@ -32,7 +33,7 @@ define('translator','SpanishTranslator');
 define('modules', 'Core, Application, Model, View, database, DefaultCMS, Instances');
 define('app_class','DefaultCMSApplication');
 define('basedir', '/home/marian/workspace/eurekacozzuol/src');
-define('appdir', '/home/marian/workspace/eurekacozzuol/src/MyInstances');
+define('appdir', '/home/marian/workspace/eurekacozzuol/src/MyInstances');*/
 
 
 ?>
