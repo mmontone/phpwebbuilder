@@ -48,7 +48,6 @@ class MySQLdb extends DB {
 	var $conn;
     function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
        	trace($sql. '<br/>');
-		$this->openDatabase();
 		$this->lastSQL = $sql;
         $reg = $this->query ($sql);
         if ($getID) { $obj->setID(mysql_insert_id());};
@@ -88,6 +87,7 @@ class MySQLdb extends DB {
 		$this->openDatabase();
 		$this->lastSQL = $sql;
         $reg = mysql_query ($sql);
+        $this->closeDatabase();
         if (!$reg){
         	$this->lastError=mysql_error() . ': '.$sql;
         	return false;
@@ -114,7 +114,8 @@ class MySQLdb extends DB {
     	return true;
     }
     function closeDatabase() {
-      mysql_close($this->conn);
+      //mysql_close($this->conn);
+      //unset($this->conn);
     }
     function escape($str) {
     	$ret = mysql_real_escape_string($str);
