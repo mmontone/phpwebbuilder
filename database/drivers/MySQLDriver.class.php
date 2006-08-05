@@ -56,6 +56,33 @@ class MySQLdb extends DB {
         return $reg;
     }
 
+    function beginTransaction() {
+    	$this->openDatabase();
+        /* If transactions are not supported, go on silently (logging is another option)*/
+        mysql_query ("START TRANSACTION;"); /* or
+            die (print_backtrace(mysql_error() . ": $sql"));*/
+        trigger_error("Starting transaction");
+        $this->closeDatabase();
+    }
+
+    function commit() {
+        $this->openDatabase();
+        /* If transactions are not supported, go on silently (logging is another option)*/
+        mysql_query ("COMMIT;"); /*or
+            die (print_backtrace(mysql_error() . ": $sql"));*/
+        trigger_error("Comitting transaction");
+        $this->closeDatabase();
+    }
+
+    function rollBack() {
+        $this->openDatabase();
+        /* If transactions are not supported, go on silently (logging is another option)*/
+        mysql_query ("ROLLBACK;"); /*or
+            die (print_backtrace(mysql_error() . ": $sql"));*/
+        trigger_error("Rolling back transaction");
+        $this->closeDatabase();
+    }
+
     function query($sql) {
     	trace($sql. '<br/>');
 		$this->openDatabase();
@@ -118,7 +145,7 @@ class PgSQLdb extends DB {
         return $reg;
     }
     function fetchrecord($res) {
-    	return pg_fetch_assoc($res); 
+    	return pg_fetch_assoc($res);
     }
     function openDatabase() {
     $str = " host=".serverhost." user=".baseuser." password=".basepass." dbname=".basename;

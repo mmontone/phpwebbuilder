@@ -208,8 +208,9 @@ class DescriptedObject extends PWBObject {
 	function checkNotEmptyField($field, $message) {
 		if ($this->$field->isEmpty()) {
 			$this->$field->requiredButEmpty();
-			$this->validation_errors[] =& new EmptyFieldException(array('message' => $message, 'content' => & $this->$field));
-			return true;
+			$error =& new EmptyFieldException(array('message' => $message, 'content' => & $this->$field));
+			$this->validation_errors[] =& $error;
+			return $error;
 		}
 		else {
 			return false;
