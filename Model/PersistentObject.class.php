@@ -273,6 +273,17 @@ class PersistentObject extends DescriptedObject {
 		$obj = & $obj->loadFromId($id);
 		return $obj;
 	}
+
+	function &reloaded() {
+		$class = getClass($this);
+		$obj =& new $class;
+		if ($this->existsObject) {
+			$obj->setID($this->getID());
+			$obj->loadFromId($this->getID());
+		}
+		return $obj;
+	}
+
 	function & getWithIndex($class, $indArray) {
 		$cs = & new PersistentCollection($class);
 		foreach($indArray as $i=>$v){
@@ -289,6 +300,7 @@ class PersistentObject extends DescriptedObject {
 		if (!$rec) return $f = false;
 		return $this->loadFromRec(&$rec);
 	}
+
 	function &loadFromRec(&$rec){
 		$obj =& $this->chooseSubclass($rec);
 		$obj->loadFrom($rec);

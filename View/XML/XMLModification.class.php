@@ -134,7 +134,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	function renderAjaxResponseCommand() {
 		$ret = '<setatt id="' . $this->target->getId() . '">';
 		$ret.= '<att>' . $this->attribute . '</att>';
-		$ret.= '<val> ' . $this->value . '</val>';
+		$ret.= '<val>' . $this->value . '</val>';
 		$ret.= '</setatt>';
 		return $ret;
 	}
