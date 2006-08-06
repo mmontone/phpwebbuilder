@@ -16,7 +16,9 @@ class CheckBox extends Widget {
 				$this->view->setAttribute('checked', 'checked');
 			}
 			else {
-				$this->view->removeAttribute('checked');
+				if ($this->view->getAttribute('checked') == 'checked') {
+					$this->view->removeAttribute('checked');
+				}
 			}
 	}
 
