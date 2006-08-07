@@ -16,16 +16,16 @@ class Login extends Component
 		$this->addComponent(new Text($this->state), 'status');
 	}
 
-	function login_do(){
+	function login_do() {
 		$u = $this->username->getValue();
 		$p = $this->password->getValue();
 		$success =& User::login($u, $p);
 		if ($success){
 			$this->triggerEvent('logged', $success);
 			$this->triggerEvent('menuChanged', $success);
-			$this->state->setValue($v = 'success');
+			$this->state->setValue((Translator::Translate('login successful')));
 		} else {
-			$this->state->setValue($v = 'failed');
+			$this->state->setValue((Translator::Translate('login failed')));
 			$this->password->setValue($p2 = '');
 		}
 	}
