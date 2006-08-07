@@ -249,6 +249,14 @@ class PWBObject
 
 		return $copy;
     }
+
+    function isAncestorOf(&$object) {
+    	return in_array(getClass($this), get_superclasses(getClass($object)));
+	}
+
+    function isDescendantOf(&$object) {
+		return $object->isAncestorOf($this);
+    }
 }
 
 

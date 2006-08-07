@@ -174,7 +174,7 @@ class XMLNode extends DOMXMLNode {
 		$this->addTemplatesAndContainers($v->templates, $v->containers, $v->childById);
 	}
 	function &templateForClass(& $component) {
-		$res = array ();
+		/*$res = array ();
 		$ks = array_keys($this->templates);
 		foreach ($ks as $k) {
 			$t = & $this->templates[$k];
@@ -183,8 +183,29 @@ class XMLNode extends DOMXMLNode {
 			}
 		}
 		$n = null;
-		return $n;
+		return $n;*/
+		$templates =& new Collection();
+		$templates->addAll($this->templates);
+		$ts =& $templates->filter($f = lambda('&$template', 'return $template->isTemplateForClass($component);', get_defined_vars()));
+		delete_lambda($f);
+		if (!$ts->isEmpty()) {
+			$t = $ts->first();
+			$es =& $ts->elements();
+			foreach(array_keys($es) as $k){
+				$tt =& $es[$k];
+				if (in_array($t->getClass(), get_superclasses($tt->getClass()))) {
+					$t =& $tt;
+				}
+			}
+
+			return $t;
+		}
+		else {
+			$n = null;
+			return $n;
+		}
 	}
+
 	function & containerForClass(& $component) {
 		$res = array ();
 		$ks = array_keys($this->containers);

@@ -129,13 +129,25 @@ class ViewCreator {
 		$ts =& $this->templates->filter($f = lambda(
 				'&$t','$v=$t->isTemplateForClass($component);return $v;',get_defined_vars()));
 		delete_lambda($f);
-		if (!$ts->isEmpty()){
-			$t =& $ts->first();
+
+		if (!$ts->isEmpty()) {
+			$t = $ts->first();
+			$es = $ts->elements();
+			foreach(array_keys($es) as $k){
+				$tt =& $es[$k];
+				if (in_array($t->getClass(), get_superclasses($tt->getClass()))) {
+					$t = $tt;
+				}
+			}
+
 			trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Global Template for class '.$t->getAttribute('class'),E_USER_NOTICE);
 			return $t;
 		}
-		return $this->defaultTemplate($component);
+		else {
+			return $this->defaultTemplate($component);
+		}
 	}
+
 	function &defaultTemplate(&$component){
 		trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Default Template',E_USER_NOTICE);
 		$t =& $component->createDefaultView();

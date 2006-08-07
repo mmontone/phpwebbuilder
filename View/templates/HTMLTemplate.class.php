@@ -67,5 +67,9 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	function isTemplate() {
 		return true;
 	}
+
+	function getClass() {
+		return strtolower($this->getAttribute('class'));
+	}
 }
 ?>
