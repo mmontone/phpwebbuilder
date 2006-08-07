@@ -62,6 +62,7 @@ class Component extends PWBObject
 			$this->initialize();
 			$ks = array_keys($this->__children);
 			foreach($ks as $k){
+				if (!is_a($this->__children[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($this->__children[$k]->component));
 				$this->__children[$k]->component->linkToApp($app);
 			}
 			$this->start();
@@ -109,7 +110,7 @@ class Component extends PWBObject
 	function deleteComponentAt($index){
 		$c =& $this->componentAt($index);
 		trigger_error('Removing child '.$index.' from '.$this->getId().' (a '.getClass($c).')',E_USER_NOTICE);
-		if ($c !== null) $c->delete();
+		if ($c != false) $c->delete();
 	}
 
 	function deleteChildren(){
@@ -140,8 +141,12 @@ class Component extends PWBObject
 		}
 	}
 	function &componentAt($index) {
-		$holder =& $this->__children[$index];
-		return $holder->component;
+		if(isset($this->__children[$index])){
+			$holder =& $this->__children[$index];
+			return $holder->component;
+		} else {
+			return false;
+		}
 	}
 	function setChild($index, &$component){
 		$this->__children[$index]->hold($component);
