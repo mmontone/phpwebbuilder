@@ -9,7 +9,7 @@ class DescriptedObject extends PWBObject {
 
 	var $displayString;
 
-	var $modified = false;
+	var $modified = true;
 
 	var $validation_errors = array();
 

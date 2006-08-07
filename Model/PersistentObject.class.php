@@ -17,6 +17,7 @@ class PersistentObject extends DescriptedObject {
 	    	if (strcasecmp(getClass($this), $class)==0) {
 	    		return $this->id->getValue();
 	    	} else {
+	    		if ($this->parent==null) print_backtrace(getClass($this).' doesn have parent '.$class);
 	    		return $this->parent->getIdOfClass($class);
 	    	}
     }
@@ -320,13 +321,24 @@ class PersistentObject extends DescriptedObject {
 	function canBeLoaded(&$rec){
 		return isset($rec[$this->id->sqlName()]);
 	}
-	function save() {
-		$this->commitChanges();
-		if ($this->existsObject) {
-			return $this->update();
+	function prepareToSave(){
+		$fs =& $this->allFields();
+		foreach(array_keys($fs) as $k){
+			$fs[$k]->prepareToSave();
 		}
-		else {
-			return $this->insert();
+	}
+	function save() {
+		if ($this->modified){
+			$this->prepareToSave();
+			$this->commitChanges();
+			if ($this->existsObject) {
+				return $this->update();
+			}
+			else {
+				return $this->insert();
+			}
+		} else {
+			return true;
 		}
 	}
 	function update() {

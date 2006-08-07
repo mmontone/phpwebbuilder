@@ -49,7 +49,11 @@ class IndexField extends NumField {
 		}
 		return $this->buffered_target;
 	}
-
+	/*function prepareToSave(){
+		if ($this->buffered_target!=null){
+			$this->buffered_target->save();
+		}
+	}*/
 	function viewValue() {
 		$obj = & $this->obj();
 		if ($obj){

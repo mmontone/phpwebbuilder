@@ -23,6 +23,7 @@ class DataField extends PWBObject {
 		}
 		parent::PWBObject($ps);
 	}
+	function prepareToSave(){}
 	function createInstance($ps) {
 		$this->colName = $ps['fieldName'];
 		$this->isIndex = $ps['is_index'];
