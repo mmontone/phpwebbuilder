@@ -18,9 +18,9 @@ class FileLoader extends Component{
 		$file->description->setValue($this->description->getValue());
 		$ok = $file->save();
 		if ($ok) {
-			$this->status->setValue('Upload Successful');
+			$this->status->setValue($v = 'Upload Successful');
 		} else {
-			$this->status->setValue('Upload Failed');
+			$this->status->setValue($v = 'Upload Failed');
 		}
     }
 }
