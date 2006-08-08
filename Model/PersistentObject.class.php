@@ -328,8 +328,6 @@ class PersistentObject extends DescriptedObject {
 		}
 	}
 	function save() {
-		if ($this->modified){
-			$this->prepareToSave();
 			$this->commitChanges();
 			if ($this->existsObject) {
 				return $this->update();
@@ -337,9 +335,6 @@ class PersistentObject extends DescriptedObject {
 			else {
 				return $this->insert();
 			}
-		} else {
-			return true;
-		}
 	}
 	function update() {
 		if ($this->isNotTopClass($this)) {
