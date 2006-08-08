@@ -6,16 +6,19 @@ class Filename extends Input {
 	var $fileuploaded = false;
 
 	function initializeDefaultView(&$view) {
-		$view->setTagName('input');
-		$view->setAttribute('type', 'file');
+		$view->setTagName('iframe');
+		$view->setAttribute('src', pwb_url.'/lib/uploadFile.php' .
+								'?basedir='.basedir.'&filenamefield='.$this->getId()
+								. '&app='.app_class);
 	}
 
 	function setEvents(&$view) {
 		parent::setEvents(&$view);
-		$view->setAttribute('onchange', 'uploadFile(&#34;'.$this->getId().'&#34;)');
+		$view->removeAttribute('onchange');
 	}
 
 	function loadFile($file_data) {
+		print_r($file_data);
 		$file =& new File;
 		if (!is_uploaded_file($file_data['tmp_name'])) {
 			return false;
@@ -30,6 +33,7 @@ class Filename extends Input {
 		$fields['filetype']->setValue($file_data['type']);
 		$this->fileuploaded=true;
 		$this->file =& $file;
+		return true;
 	}
 
 	function &getFile() {

@@ -9,40 +9,37 @@ require_once $_REQUEST["basedir"]. '/Configuration/pwbapp.php';
 <?
 if (isset($_REQUEST["filenamefield"])){
 ?>
-<form id="fm" action="uploadFile.php" method="post" enctype="multipart/form-data">
-<input type="file" id="fileelem"/>
-<input type="hidden" name="nodeid" id="nodeid" value=""/>
-<input type="hidden" name="app" id="app" value="<?=$_REQUEST['app']?>"/>
-<input type="hidden" name="basedir" id="basedir" value=""/>
-<input type="button"  />
-</form>
 <script type="text/javascript">
-var remf = document.getElementById("fileelem");
-document.getElementById("nodeid").setAttribute("value","<?=$_REQUEST["filenamefield"]?>");
-var doc = window.frameElement.ownerDocument;
-var parwin = doc.window;
-var movf = doc.getElementById("<?=$_REQUEST["filenamefield"]?>");
-document.getElementById("basedir").setAttribute("value", "<?=$_REQUEST["basedir"]?>");
-parwin.start_uploading("<?=$_REQUEST["filenamefield"]?>");
-remf.parentNode.replaceChild(movf, remf);
-movf.setAttribute("id", "fileelem");
-movf.setAttribute("name", "fileelem");
-window.onload=function (){document.getElementById("fm").submit();}
+function submitting(){
+var parwin = window.frameElement.ownerDocument.window;
+parwin.start_uploading("<?=$_REQUEST["filenamefield"]?>", document.getElementById('fileelem').value);
+document.getElementById('fm').submit();
+}
 </script>
+<form id="fm" action="uploadFile.php" method="post" enctype="multipart/form-data">
+<input type="file" id="fileelem" name="fileelem" onchange="submitting()"/>
+<input type="hidden" name="nodeid" id="nodeid" value="<?=$_REQUEST['filenamefield']?>"/>
+<input type="hidden" name="app" id="app" value="<?=$_REQUEST['app']?>"/>
+<input type="hidden" name="basedir" id="basedir" value="<?=$_REQUEST['basedir']?>"/>
+</form>
 <? } else {
 	$app = & Application :: instance();
 	$ad =& new  ActionDispatcher;
 	$comp =& $ad->getComponent($_REQUEST["nodeid"], $app);
-	$comp->loadFile($_FILES["fileelem"]);
+	print_r($_FILES);
+	if($comp->loadFile($_FILES["fileelem"])){
+
 ?>
 <script>
-var ifr = window.frameElement;
-var doc = ifr.ownerDocument;
-var parwin = doc.window;
+var parwin = window.frameElement.ownerDocument.window;
 parwin.end_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$_FILES["fileelem"]["name"]?>");
-ifr.parentNode.removeChild(ifr);
 </script>
-<?}?>
-
+<?} else {?>
+<script>
+var parwin = window.frameElement.ownerDocument.window;
+parwin.error_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$_FILES["fileelem"]["name"]?>");
+</script>
+<?}
+}?>
 </body>
 </html>
