@@ -75,12 +75,12 @@ class XMLNodeModificationsTracker extends XMLNode {
 	}
 
 	function setAttribute($attribute, $value) {
-		$this->modifications[] = & new SetAttributeXMLNodeModification($this, $attribute, $value);
+		$this->modifications[$attribute] = & new SetAttributeXMLNodeModification($this, $attribute, $value);
 		return parent :: setAttribute($attribute, $value);
 	}
 
 	function removeAttribute($attribute) {
-		$this->modifications[] =& new RemoveAttributeXMLNodeModification($this,$attribute);
+		$this->modifications[$attribute] =& new RemoveAttributeXMLNodeModification($this,$attribute);
 		return parent::removeAttribute($attribute);
 	}
 
