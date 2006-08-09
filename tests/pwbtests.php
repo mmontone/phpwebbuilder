@@ -12,8 +12,13 @@ require_once '../Application/components/Widgets/tests/tests.php';
 class PWBTests extends GroupTest {
 	function PWBTests() {
 	    $this->GroupTest('PWB Tests');
-		$this->addTestCase(new CoreTests);
-		$this->addTestCase(new WidgetsTests);
+		$tests = explode(',', tests);
+		foreach($tests as $test) {
+			$class = $test . 'Tests';
+			$this->addTestCase(new $class);
+		}
+		//$this->addTestCase(new CoreTests);
+		//$this->addTestCase(new WidgetsTests);
 		//$this->addTestCase(new DatabaseTests);
 		//$this->addTestCase(new ModelTests);
 		//$this->addTestCase(new UsersAndPermissionsTests);
