@@ -12,10 +12,17 @@ class Translator extends PWBObject
     }
 
     function trans($msg) {
-	        if (!array_key_exists($msg, $this->dictionary)) {
+	        $key = strtolower($msg);
+	        if (!array_key_exists($key, $this->dictionary)) {
 	            return $msg;
 	        } else {
-	        	return $this->dictionary[$msg];
+	        	$ret = $this->dictionary[$key];
+	        	if (preg_match('/^[A-Z](.)*$/', $msg)) {
+	        		return ucfirst($ret);
+	        	}
+	        	else {
+	        		return $ret;
+	        	}
 	        }
     }
 	function TranslateWith($dicclass,$word){

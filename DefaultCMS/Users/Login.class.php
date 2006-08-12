@@ -11,7 +11,8 @@ class Login extends Component
 		$this->password =& new ValueHolder($s2 = '');
 		$this->addComponent(new Input($this->username), 'comp_username');
 		$this->addComponent(new Password($this->password), 'comp_password');
-		$this->addComponent(new ActionLink($this, 'login_do', 'Login',$params=null), 'login');
+		//$this->addComponent(new ActionLink($this, 'login_do', 'Login',$params=null), 'login');
+		$this->addComponent(new CommandLink(array('text' => Translator::Translate('Login'),'proceedFunction'=> new FunctionObject($this, 'login_do'))), 'login');
 		$this->state =& new ValueHolder($s = '');
 		$this->addComponent(new Text($this->state), 'status');
 	}
@@ -23,9 +24,9 @@ class Login extends Component
 		if ($success){
 			$this->triggerEvent('logged', $success);
 			$this->triggerEvent('menuChanged', $success);
-			$this->state->setValue((Translator::Translate('login successful')));
+			$this->state->setValue((Translator::Translate('Login successful')));
 		} else {
-			$this->state->setValue((Translator::Translate('login failed')));
+			$this->state->setValue((Translator::Translate('Login failed')));
 			$this->password->setValue($p2 = '');
 		}
 	}

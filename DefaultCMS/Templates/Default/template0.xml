@@ -8,7 +8,7 @@
  	<template class="Menu">
  		<div class="Menu">
 		<container id="SiteName"/> CMS <br/>
-		User: <container id="username"/><br/>
+		<translated>User</translated>: <container id="username"/><br/>
 		<container id="refresh"/>
 		<ul id="menus" class="MenuList">
 			<template class="MenuSectionComponent">
@@ -25,11 +25,12 @@
 
 	<template class="Login">
  	<table><tbody>
-		<tr><td colspan="2">Ingrese su nombre de usuario y contraseña:</td></tr>
-		<tr><td>Nombre de Usuario: </td><td> <input type="text" id="comp_username" /></td></tr>
-		<tr><td>Contraseña: </td><td> <input type="password" id="comp_password" /></td></tr>
+		<tr><td colspan="2"><translated>Fill in the username and password</translated>:</td></tr>
+		<tr><td><translated>Username</translated>:</td><td> <input type="text" id="comp_username" /></td></tr>
+		<tr><td><translated>Password</translated>:</td><td> <input type="password" id="comp_password" /></td></tr>
 		<tr><td><container id="status"/></td></tr>
-		<tr><td></td><td><input type="button" id="login" value="Entrar"/></td></tr>
+		<!--  I don't know how to apply translation on the login button -->
+		<tr><td></td><td><input type="button" id="login" value="Login"/></td></tr>
 	</tbody></table>
 	</template>
 </templates>
