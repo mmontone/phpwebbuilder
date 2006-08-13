@@ -119,6 +119,9 @@ class TableCheckAction {
 		return "^".$this->type()."$";
 	}
 	function unique(){}
+	function createUnique($i){
+		return  "`".$i."`".$this->unique() . ", ";
+	}
 }
 
 class CollectionFieldTableCheckAction extends TableCheckAction {
@@ -128,6 +131,7 @@ class CollectionFieldTableCheckAction extends TableCheckAction {
 	function showMap ($object, $objFields=array()) {
 		return "";
 	}
+	function createUnique($i){return '';}
 }
 class TableCheckEnumFieldView extends TableCheckAction {
 	function type (){

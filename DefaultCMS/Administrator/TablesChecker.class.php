@@ -118,7 +118,7 @@ class PersistentObjectTableCheckView {
 			$f =& $ifs[$i];
 			$tc =& new TableCheckAction;
 			$df =& $tc->viewFor($f);
-			$uni .= "`".$i."`".$df->unique() . ", ";
+			$uni .= $df->createUnique($i);
 		}
 		$uni = substr($uni,0, -2);
 		if (trim($uni)!="") {
