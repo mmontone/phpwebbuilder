@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/DataField.class.php';
-
 class NumField extends DataField {
     var $range = null;
 	function createInstance($params){

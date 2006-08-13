@@ -33,13 +33,13 @@ class StandardPageRenderer extends PageRenderer {
 	}
 
 	function renderPage(&$app) {
-		/*
+
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-		*/
 
-		$ret = '';
+
+	//	$ret = '';
 		$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
 		$ret .= $app->commonCSS();
 		$ret .= $app->renderExtraHeaderContent();
@@ -126,7 +126,6 @@ class AjaxPageRenderer extends PageRenderer {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
-		//$this->page->updateFullPath();
 		$xml .= $this->renderAjaxResponseCommands($this->page);
 		$xml .= "</ajax>";
 

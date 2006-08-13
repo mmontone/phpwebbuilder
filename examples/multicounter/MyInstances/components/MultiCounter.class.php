@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/Counter.class.php';
-
 class MultiCounter extends Component
 {
 	var $count;

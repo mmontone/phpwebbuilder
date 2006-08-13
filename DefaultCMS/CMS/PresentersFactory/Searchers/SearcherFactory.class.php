@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__).'/../FieldPresenterFactory.class.php';
-
 class SearcherFactory extends FieldPresenterFactory {}
 
 class DataFieldSearcherFactory extends SearcherFactory {

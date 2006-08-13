@@ -1,6 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/DataField.class.php';
-
 class CollectionField extends DataField {
 	var $collection;
 	var $fieldname;

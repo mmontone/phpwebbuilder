@@ -1,8 +1,5 @@
 <?php
 
-require_once dirname(__FILE__).'/../FieldPresenterFactory.class.php';
-require_once 'SearcherFactory.class.php';
-
 class TextFieldSearcherFactory extends SearcherFactory {
 	function &createInstanceFor(&$field){
 		return new TextFieldSearcher();

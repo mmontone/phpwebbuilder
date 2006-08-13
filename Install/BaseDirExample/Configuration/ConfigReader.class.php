@@ -40,7 +40,7 @@ class ConfigReader
 					if (substr($value,0,7)=='http://'){
 	        			$v = $value;
 	        		} else {
-	        			$v = dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']).'/'.$value;
+	        			$v = dirname($_SERVER['PHP_SELF']).'/'.$value;
 	        		}break;
         		default:
         			$v = $value;

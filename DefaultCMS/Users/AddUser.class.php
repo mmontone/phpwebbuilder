@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__).'/../CMS/PersistentObjectEditor.class.php';
-
 class AddUser extends Component {
 	function initialize(){
 		$this->addComponent(new Input(new ValueHolder($u="")),'username');

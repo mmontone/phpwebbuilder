@@ -1,13 +1,16 @@
 <?php
-require_once 'NullView.class.php';
-require_once 'PageRenderer.class.php';
-require_once 'templates/HTMLContainer.class.php';
-require_once 'templates/HTMLTemplate.class.php';
-require_once 'templates/ViewCreator.class.php';
-require_once 'templates/XMLParser.class.php';
-require_once 'XML/DOMXMLNode.class.php';
-require_once 'XML/XMLModification.class.php';
-require_once 'XML/XMLNode.class.php';
-require_once 'XML/XMLNodeModificationsTracker.class.php';
-require_once 'XML/XMLTextNode.class.php';
+
+$d = dirname(__FILE__);
+
+require_once $d.'/PageRenderer.class.php';
+require_once $d.'/templates/ViewCreator.class.php';
+require_once $d.'/templates/XMLParser.class.php';
+require_once $d.'/XML/DOMXMLNode.class.php';
+require_once $d.'/XML/XMLModification.class.php';
+require_once $d.'/XML/XMLNode.class.php';
+require_once $d.'/XML/XMLNodeModificationsTracker.class.php';
+require_once $d.'/templates/HTMLContainer.class.php';
+require_once $d.'/templates/HTMLTemplate.class.php';
+require_once $d.'/NullView.class.php';
+require_once $d.'/XML/XMLTextNode.class.php';
 ?>

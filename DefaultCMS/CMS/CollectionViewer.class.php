@@ -1,7 +1,5 @@
 <?php
 
-require_once 'CollectionNavigator.class.php';
-
 class CollectionViewer extends CollectionNavigator {
 	function initialize() {
 		$class = & $this->classN;

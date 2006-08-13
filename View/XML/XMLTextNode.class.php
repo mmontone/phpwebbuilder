@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/XMLNodeModificationsTracker.class.php';
 
 class XMLTextNode extends XMLNodeModificationsTracker
 {

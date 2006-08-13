@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/DataField.class.php';
 
 class BoolField extends DataField {
 	function SQLvalue() {

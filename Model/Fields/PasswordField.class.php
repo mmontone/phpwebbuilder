@@ -1,7 +1,5 @@
 <?
 
-require_once dirname(__FILE__) . '/TextField.class.php';
-
 class PasswordField extends TextField  {
 	function &visit(&$obj) {
 		return $obj->visitedPasswordField($this);

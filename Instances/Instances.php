@@ -1,14 +1,17 @@
 <?php
-require_once 'Base/Menu/MenuSection.class.php';
-require_once 'Base/Menu/MenuItem.class.php';
-require_once 'Base/Permissions/RolePermission.class.php';
-require_once 'Base/Permissions/User.class.php';
-require_once 'Base/Permissions/UserRole.class.php';
-require_once 'Base/Permissions/Role.class.php';
-require_once 'File.class.php';
+
+$d = dirname(__FILE__);
+
+require_once $d.'/Base/Menu/MenuSection.class.php';
+require_once $d.'/Base/Menu/MenuItem.class.php';
+require_once $d.'/Base/Permissions/RolePermission.class.php';
+require_once $d.'/Base/Permissions/User.class.php';
+require_once $d.'/Base/Permissions/UserRole.class.php';
+require_once $d.'/Base/Permissions/Role.class.php';
+require_once $d.'/File.class.php';
 /*
-require_once 'Translator.class.php';
-require_once 'Message.class.php';
-require_once 'MessageTranslation.class.php';
+require_once $d.'/Translator.class.php';
+require_once $d.'/Message.class.php';
+require_once $d.'/MessageTranslation.class.php';
 */
 ?>

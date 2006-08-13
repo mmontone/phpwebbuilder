@@ -1,7 +1,5 @@
 <?php
 
-require_once 'PersistentObjectPresenter.class.php';
-
 class PersistentObjectViewer extends PersistentObjectPresenter {
     function initialize(){
     	$obj =& $this->obj;

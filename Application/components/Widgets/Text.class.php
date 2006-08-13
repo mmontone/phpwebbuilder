@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/Widget.class.php';
 
 class Text extends Widget {
 	function valueChanged(& $value_model, &$params) {

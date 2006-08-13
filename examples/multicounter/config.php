@@ -4,6 +4,8 @@ sitename=Multicounter Application
 page_renderer=AjaxPageRenderer
 translator=EnglishTranslator
 app_class=MulticounterApplication
+debugview=false
+templates=enabled
 [server]
 serverhost=localhost
 basename=

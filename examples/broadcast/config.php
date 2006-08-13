@@ -4,6 +4,8 @@ sitename=Broadcast Application
 page_renderer=AjaxPageRenderer
 translator=EnglishTranslator
 app_class=BroadcastApplication
+debugview=false
+templates=enabled
 [server]
 serverhost=localhost
 basename=

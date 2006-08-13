@@ -1,5 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/DOMXMLNode.class.php';
 
 class XMLNode extends DOMXMLNode {
 	var $controller;

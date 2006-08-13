@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/Component.class.php';
-
 /* Should ComponentHolder be a Component decorator ? */
 class ComponentHolder
 {

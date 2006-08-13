@@ -1,18 +1,13 @@
 <?php
-/*
- * Created on 09/07/2006
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 /*Session handling*/
 
 includemodule(pwbdir.'/Model');
 
-require_once 'SessionHandler.class.php';
-require_once 'Session.class.php';
-require_once 'DBSessionHandler.class.php';
+$d = dirname(__FILE__);
+require_once $d.'/SessionHandler.class.php';
+require_once $d.'/Session.class.php';
+require_once $d.'/DBSessionHandler.class.php';
 
 SessionHandler::setHooks();
 session_name(strtolower(app_class));

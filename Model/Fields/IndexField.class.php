@@ -1,6 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/NumField.class.php';
-require_once dirname(__FILE__) . '/../PersistentCollection.class.php';
 
 class IndexField extends NumField {
 	var $collection;

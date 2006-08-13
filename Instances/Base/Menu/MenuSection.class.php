@@ -1,7 +1,5 @@
 <?
 
-require_once pwbdir.'/Model/PersistentObject.class.php';
-
 class MenuSection extends PersistentObject {
     function initialize () {
          $this->table = "MenuSection";
