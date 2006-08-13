@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<templates>
+ 	<template class="FileLoader">
+		<h1>Upload a File:</h1>
+		<container id="status"/><br/>
+		Filename: <container id="filename"/><br/>
+		Label: <input type="text" id="label"/><br/>
+		Description: <textarea rows="10" cols="50" id="description">&nbsp;</textarea><br/>
+		<input type="button" value="Save" id="save"/>
+		<input type="button" value="Cancel" id="cancel"/>
+	</template>
+</templates>
