@@ -2,11 +2,15 @@
 	cursor:pointer; cursor:hand;
 }
 
-
 .template{
 	border: 1px solid black;
 }
 
 .debugging{
 	border: 2px solid red;
+}
+
+.uploadfile {
+	border: none;
+	height:4em;
 }

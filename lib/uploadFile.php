@@ -16,6 +16,13 @@ parwin.start_uploading("<?=$_REQUEST["filenamefield"]?>", document.getElementByI
 document.getElementById('fm').submit();
 }
 </script>
+<style type="text/css">
+* {
+padding:0;
+margin:0;
+}
+</style>
+
 <form id="fm" action="uploadFile.php" method="post" enctype="multipart/form-data">
 <input type="file" id="fileelem" name="fileelem" onchange="submitting()"/>
 <input type="hidden" name="nodeid" id="nodeid" value="<?=$_REQUEST['filenamefield']?>"/>
@@ -37,8 +44,6 @@ parwin.end_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$_FILES["fileelem"]["name"]
 <script>
 var parwin = window.frameElement.ownerDocument.window;
 parwin.error_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$_FILES["fileelem"]["name"]?>");
-</script>
-<?}
-}?>
-</body>
+</script><?}
+}?></body>
 </html>
