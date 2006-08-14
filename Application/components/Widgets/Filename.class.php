@@ -9,6 +9,7 @@ class Filename extends Input {
 		$view->setAttribute('src', pwb_url.'/lib/uploadFile.php' .
 								'?basedir='.basedir.'&filenamefield='.$this->getId()
 								. '&app='.app_class);
+		$view->setAttribute('height', '50');
 	}
 
 	function setEvents(&$view) {
@@ -17,7 +18,6 @@ class Filename extends Input {
 	}
 
 	function loadFile($file_data) {
-		print_r($file_data);
 		$file =& new File;
 		if (!is_uploaded_file($file_data['tmp_name'])) {
 			return false;

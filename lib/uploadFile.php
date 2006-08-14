@@ -26,7 +26,6 @@ document.getElementById('fm').submit();
 	$app = & Application :: instance();
 	$ad =& new  ActionDispatcher;
 	$comp =& $ad->getComponent($_REQUEST["nodeid"], $app);
-	print_r($_FILES);
 	if($comp->loadFile($_FILES["fileelem"])){
 
 ?>
