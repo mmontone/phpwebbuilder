@@ -5,8 +5,6 @@ class PersistentCollection extends Collection{
 	var $order;
 	var $conditions;
 	var $dataType;
-	var $limit = 0;
-	var $offset = 0;
 	var $size;
 	var $elements=array();
 
@@ -60,7 +58,10 @@ class PersistentCollection extends Collection{
 			$this->orderBy($field, $order);
 		}
 	}
-
+	function allFields(){
+		$obj = new $this->dataType;
+		return $obj->allIndexFields();
+	}
 	function orderBy($fieldname, $order='ASC') {
 		$this->order[$fieldname] = $order;
 	}

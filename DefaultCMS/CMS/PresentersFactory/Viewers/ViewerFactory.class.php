@@ -8,4 +8,10 @@ class DataFieldViewerFactory extends ViewerFactory {
 	}
 }
 
+class ValueModelViewerFactory extends ViewerFactory {
+	function &createInstanceFor(&$field) {
+		return new Text($field);
+	}
+}
+
 ?>

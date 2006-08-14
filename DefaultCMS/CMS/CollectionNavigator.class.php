@@ -10,8 +10,7 @@ class CollectionNavigator extends Component {
 		$this->classN = $col->getDataType();
 
 		if ($fields==null){
-			$obj = & new $this->classN;
-			$this->fields = & $obj->allIndexFields();
+			$this->fields = & $col->allFields();
 		} else {
 			$this->fields =& $fields;
 		}
@@ -41,8 +40,13 @@ class CollectionNavigator extends Component {
 		//$this->pSize->addEventListener(array('change'=>'refresh'), $this);
 		foreach ($this->fields as $f) {
 			$fc = & new CompositeWidget;
-			$this->addComponent($fc, $f->colName);
-			$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
+			if (is_string($f)) {
+				$this->addComponent($fc, $f);
+				$fc->addComponent(new ActionLink($this, 'sort', $f, $f));
+			} else {
+				$this->addComponent($fc, $f->colName);
+				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
+			}
 		}
 		$this->refresh();
 	}

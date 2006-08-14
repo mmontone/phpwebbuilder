@@ -2,8 +2,14 @@
 
 class Collection extends PWBObject{
 	var $elements=array();
+	var $fields=array();
+	var $limit = 0;
+	var $offset = 0;
 	function size(){
 		return count($this->elements);
+	}
+	function allFields(){
+		return $this->fields;
 	}
 	function isEmpty(){
 		return $this->size()==0;
@@ -36,7 +42,12 @@ class Collection extends PWBObject{
 		return $this->indexOf($elem) != -1;
 	}
 	function &elements(){
-		return $this->elements;
+		if ($this->limit!=0){
+			$e = $this->elements;
+			return array_splice($e, $this->offset, $this->limit);
+		} else {
+			return $this->elements;
+		}
 	}
 	function add(&$elem){
 		$es =& $this->elements();
