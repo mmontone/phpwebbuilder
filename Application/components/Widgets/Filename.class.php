@@ -9,7 +9,7 @@ class Filename extends Input {
 		$view->setAttribute('src', pwb_url.'/lib/uploadFile.php' .
 								'?basedir='.basedir.'&filenamefield='.$this->getId()
 								. '&app='.app_class);
-		$view->setAttribute('height', '50');
+		$view->addCSSClass('uploadfile');
 	}
 
 	function setEvents(&$view) {
