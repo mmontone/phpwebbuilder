@@ -33,81 +33,6 @@ class TableCheckAction {
 	function type(){
 		trace ("Error: ".print_r($this,TRUE));
 	}
-	function visitedTextField($field) {
-		$view = new TableCheckTextFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedEmailField($field) {
-		$view = new TableCheckEmailFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedPasswordField($field) {
-		$view = new TableCheckPasswordFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedDateTimeField($field) {
-		$view = new TableCheckDateTimeFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedDateField($field) {
-		$view = new TableCheckDateFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedTimeField($field) {
-		$view = new TableCheckTimeFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedCollectionField($field) {
-		$view = new TableCheckCollectionFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedTextArea($field) {
-		$view = new TableCheckTextAreaView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedBoolField($field) {
-		$view = new TableCheckBoolFieldView	;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedNumField($field) {
-		$view = new TableCheckNumFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedEnumField($field) {
-		$view = new TableCheckEnumFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedIdField($field) {
-		$view = new TableCheckIdFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedIndexField($field) {
-		$view = new TableCheckIndexFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedUserField($field) {
-		$view = new TableCheckUserFieldView;
-		$view->field = $field;
-		return $view;
-	}
-	function visitedEmbedField($field) {
-		$view = new TableCheckEmbedFieldView;
-		$view->field = $field;
-		return $view;
-	}
 	function compareType ($t) {
 		$b = eregi($this->typeEreg(), $t);
 		trace("en ". $this->field->colName." ".	$t.
@@ -148,10 +73,20 @@ class PasswordFieldTableCheckAction extends TextFieldTableCheckAction {
 
 class NumFieldTableCheckAction extends TableCheckAction {
 	function type (){
-		return "int(11)";
+		$nt = $this->obj->creationParams['numtype'];
+		if ($nt != '' && $nt != 'int') {
+			return "float";
+		} else {
+			return "int(11)";
+		}
 	}
 	function typeEreg(){
-		return "^int\([0-9]*\)";
+		$nt = $this->obj->creationParams['numtype'];
+		if ($nt != '' && $nt != 'int') {
+			return "float";
+		} else {
+			return "^int\([0-9]*\)";
+		}
 	}
 }
 

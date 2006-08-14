@@ -7,7 +7,7 @@ class NumField extends DataField {
 		$this->range = $params['range'];
 	}
 	function defaultValues($params){
-		return array_merge(array('range'=>null), parent::defaultValues($params));
+		return array_merge(array('range'=>null, 'numtype'=>'int'), parent::defaultValues($params));
 	}
 	function isRanged() {
 		return $this->range != null;
