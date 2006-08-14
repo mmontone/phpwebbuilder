@@ -16,3 +16,4 @@ password=contraseña
 user=usuario
 login successful=usted ha entrado al sistema
 login failed=el usuario o contraseña son incorrectos
+correct the following errors=Corrija los siguientes errores

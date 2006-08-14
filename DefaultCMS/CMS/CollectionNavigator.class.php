@@ -47,8 +47,11 @@ class CollectionNavigator extends Component {
 		$this->refresh();
 	}
 
+	function setPageSize($size) {
+		$this->pageSize->setValue($size);
+	}
 
-	function refresh (){
+	function refresh () {
 		$col =&$this->col;
 		$col->limit = $this->pageSize->getValue();
 		$col->offset = $this->firstElement->getValue()-1;
