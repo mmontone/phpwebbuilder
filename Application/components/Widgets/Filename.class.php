@@ -6,9 +6,9 @@ class Filename extends Input {
 
 	function initializeDefaultView(&$view) {
 		$view->setTagName('iframe');
-		$view->setAttribute('src', pwb_url.'/lib/uploadFile.php' .
+		$view->setAttribute('src', toAjax(pwb_url.'/lib/uploadFile.php' .
 								'?basedir='.basedir.'&filenamefield='.$this->getId()
-								. '&app='.app_class);
+								. '&app='.app_class));
 		$view->addCSSClass('uploadfile');
 	}
 
