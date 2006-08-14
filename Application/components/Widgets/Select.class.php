@@ -5,6 +5,7 @@ class Select extends Widget {
 	var $displayF;
 	var $opts = array();
 	var $selected_index = -1;
+	var $size = 1;
 
     function Select(&$value_model, &$collection, $displayF=null) {
     	parent::Widget($value_model);
@@ -42,6 +43,15 @@ class Select extends Widget {
 
     function initializeDefaultView(&$view){
 		$view->setTagName('select');
+		$view->setAttribute('size', (string) $this->getSize());
+	}
+
+	function setSize($size) {
+		$this->size = $size;
+	}
+
+	function getSize() {
+		return $this->size;
 	}
 
 	function initializeView(&$v){
