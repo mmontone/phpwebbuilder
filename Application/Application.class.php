@@ -62,6 +62,7 @@ class Application extends ComponentHolder {
 	function render() {
 		$this->viewCreator->createAllViews();
 		echo $this->page_renderer->render($this);
+		session_write_close();
 	}
 
 	function createView() {

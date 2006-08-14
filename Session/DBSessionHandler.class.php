@@ -24,7 +24,7 @@ class DBSessionHandler extends SessionHandler{
 	}
 	function write($sess_id, $data){
 		$i =& $this->instance;
-		$i->session_data->setValue(str_replace('\'','\\\'',$data));
+		$i->session_data->setValue(addslashes($data));
 		$i->session_id->setValue($sess_id);
 		$i->last_updated->setValue($i->last_updated->now());
 		$ok = $i->save();

@@ -26,7 +26,7 @@ class InstallComponent extends Component {
 		$c =& new CompositeWidget();
 		$c->addComponent(new Label("Config.php file's location"),'name');
 		$c->addComponent(new Input(new ValueHolder($configfile = dirname(dirname(dirname($_SERVER["DOCUMENT_ROOT"] . $_SERVER["PHP_SELF"]))) . "/config.php")), 'value');
-		$c->value->addEventListener(array('change'=>'readConfigFile'), $this);
+		$c->value->addEventListener(array('changed'=>'readConfigFile'), $this);
 		$this->addComponent($c,'configfile');
 		$default["nivelcount"] = "0";
 		$default["serverhost"] = "localhost";
@@ -46,7 +46,8 @@ class InstallComponent extends Component {
 			$this->addPrompt("$name:",$data, $default[$data]);
 		}
 		$this->addComp("Erase data from previous installation:", 'execEliminar',new CheckBox(new ValueHolder($vh='')));
-		$this->addComponent(new ActionLink($this, 'do_install', 'Install', $n=null), 'install');
+		$this->addComponent(new ActionLink($this, 'do_install_config', 'Create config file', $n=null), 'install');
+		$this->addComponent(new ActionLink($this, 'do_install_database', 'Update Database', $n=null), 'installdatabase');
 		$this->readConfigFile();
 	}
 	function addPrompt($label,$name, $defvalue){
@@ -72,7 +73,7 @@ class InstallComponent extends Component {
 			$this->status->setValue($t = "Creating new configuration, $configfile doesn't exist");
 		}
 	}
-	function do_install() {
+	function do_install_config() {
 		$this->status->setValue($t="installing...");
 		$configfile = $this->configfile->value->getValue();
 		foreach ($this->datas as $data => $name) {
@@ -93,6 +94,17 @@ class InstallComponent extends Component {
 			if ($d!=""){
 				includemodule($form["basedir"]."/".$d);
 			}
+		}
+	}
+	function do_install_database(){
+		$pwbdir = $this->pwbdir->value->getValue();
+		includemodule($pwbdir."/database");
+		includemodule($pwbdir."/Model");
+		includemodule($pwbdir."/DefaultCMS");
+		includemodule($pwbdir."/Instances");
+		foreach (array('DBObject',"serverhost","basename", "baseuser", "basepass", "baseprefix")
+		 	as $d){
+			define($d, $this->$d->value->getValue());
 		}
 		if ($this->execEliminar->value->getValue()) {
 			$sql = "";

@@ -22,7 +22,7 @@ class DBController extends Component {
 	}
 	function exec_sql() {
 		$db = new MySQLDB;
-		$sqlstr = $this->sql->getValue();
+		$sqlstr = stripslashes($this->sql->getValue());
 		$sqls = explode(";",$sqlstr);
 		$ress = $db->batchExec($sqls);
 		$this->sql_result->setValue(print_r($ress, TRUE));
