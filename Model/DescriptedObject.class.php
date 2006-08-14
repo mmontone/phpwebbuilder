@@ -21,7 +21,9 @@ class DescriptedObject extends PWBObject {
 		$this->modified = false;
 		$this->triggerEvent('changes_committed', $this);
 	}
-
+	function printString(){
+		return $this->indexValues();
+	}
 	function flushChanges() {
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
