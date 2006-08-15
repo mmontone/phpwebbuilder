@@ -70,9 +70,14 @@ class XMLNode extends DOMXMLNode {
 		return $s;
 	}
 	function renderEcho() {
-		$this->getRealId();
+		$id = $this->getId();
 		if ($this->getAttribute('id')!='' && !$this->controller) {
-			return;
+			if (constant('debugview')=='1') {
+				$this->addCSSclass('hiddencontainer');
+				$this->appendChild(new XMLTextNode($id));
+			} else {
+				return;
+			}
 		}
 		$cn =& $this->childNodes;
 		echo implode('',array('<',$this->tagName));

@@ -10,6 +10,11 @@
 	border: 2px solid red;
 }
 
+.hiddencontainer{
+	border: 2px dashed blue;
+}
+
+
 .uploadfile {
 	border: none;
 	height:4em;

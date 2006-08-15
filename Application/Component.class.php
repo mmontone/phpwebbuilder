@@ -237,7 +237,7 @@ class Component extends PWBObject
 		return $this->app->viewCreator->createView($parentView, $this);
 	}
 	function replaceView(&$other){
-		if ($other->view){
+		if (isset($other->view)){
 			$pv =& $this->view->parentNode;
 			$pv->replaceChild($other->view, $this->view);
 		} else {
@@ -250,7 +250,7 @@ class Component extends PWBObject
     	if ($v!=null && $pv!=null) {
 	    	$cont=& $this->myContainer();
 	    	$pv->replaceChild($cont, $v);
-	    	$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array($cont->attributes['id']=>&$cont));
+	    	$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array($this->getSimpleID()=>&$cont));
 	    }
 	}
 	function &myContainer(){
