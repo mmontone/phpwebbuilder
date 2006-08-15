@@ -1,0 +1,17 @@
+<templates>
+<template class="ExampleBlog">
+       <h1>Hello! Welcome to my blog.</h1>
+       <h3>Here are the posts:</h3>
+       <template class="Component">
+          <h2><container id="title"/></h2>
+          <p><container id="body"/></p>
+          <hr/>
+       </template>
+       <div id="addPost">
+           New Post<br/>
+           Title: <input type="text" width="15" id="title"/><br/>
+           <textarea id="body" cols="60" rows="20"></textarea><br/>
+           <input type="button" id="post" value="send"/>
+       </div>
+    </template>
+</templates>
