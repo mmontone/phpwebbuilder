@@ -1,0 +1,22 @@
+<?/*
+[global]
+sitename=Blog Application
+page_renderer=AjaxPageRenderer
+translator=EnglishTranslator
+app_class=ExampleBlogApplication
+debugview=false
+templates=enabled
+[server]
+serverhost=localhost
+basename=
+baseuser=
+basepass=
+basedir=
+appdir=MyInstances
+pwbdir=../../
+site_url=
+pwb_url=../../
+DBObject=MySQLdb
+baseprefix=
+peardir=
+*/?>
