@@ -7,18 +7,25 @@ class PageRenderer // extends PWBObject
 	function setPage(&$view){
 		$app =& Application::instance();
 		$this->page=&$view;
-		$this->page->tagName = 'form';
-		$this->page->setAttribute('action', site_url . '/Action.php');
-		$this->page->setAttribute('method', 'post');
-		$this->page->setAttribute('enctype', 'multipart/form-data');
-		$this->page->setAttribute('app', getClass($app));
-		$this->page->setAttribute('bookmark', $app->urlManager->actUrl);
-		$this->page->setAttribute('basedir', basedir);
-		$this->page->setAttribute('pwb_url', pwb_url);
+		$view->tagName = 'form';
+		$view->setAttribute('action', site_url . '/Action.php');
+		$view->setAttribute('method', 'post');
+		$view->setAttribute('enctype', 'multipart/form-data');
+		$this->addVariable('app_class', getClass($app));
+		$this->addVariable('bookmark', $app->urlManager->actUrl);
+		$this->addVariable('basedir', basedir);
+		$this->addVariable('pwb_url', pwb_url);
+	}
+	function addVariable($name, $val){
+		$n =& new XMLVariable('input', $a=array());
+		$n->setAttribute('type', 'hidden');
+		$n->setAttribute('id', $name);
+		$n->setAttribute('value', $val);
+		$this->page->appendChild($n);
 	}
 	function initialPageRenderPage(&$app){
 		$initial_page_renderer = & new StandardPageRenderer();
-		$initial_page_renderer->setPage($app->wholeView);
+		$initial_page_renderer->page=&$app->wholeView;
 		echo $initial_page_renderer->renderPage($app);
 	}
 	function initialRender(){}
@@ -41,7 +48,6 @@ class StandardPageRenderer extends PageRenderer {
 
 	//	$ret = '';
 		$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
-		$ret .= $app->commonCSS();
 		$ret .= $app->renderExtraHeaderContent();
 
 		foreach ($this->page->style_sheets as $c) {

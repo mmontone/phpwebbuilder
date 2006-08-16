@@ -23,10 +23,6 @@ class Application extends ComponentHolder {
 		$rc->linkToApp($this);
 	}
 
-	function commonCSS() {
-		return '<style type="text/css"> .clickable{cursor:pointer;} </style>';
-	}
-
 	function pushCommand(&$command){
 		$this->commands->push($command);
 	}
@@ -74,7 +70,6 @@ class Application extends ComponentHolder {
 			$tc->setAttribute('class','Component');
 			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;
-			//$this->wholeView->appendChild($this->component->myContainer());
 			$this->wholeView->getTemplatesAndContainers();
 			$this->wholeView->jsscripts = array();
 			$this->setTitle($this->getTitle());
@@ -149,7 +144,7 @@ class Application extends ComponentHolder {
 	}
 
 	function getRealId() {
-		return "app/" . getClass($this) . "/main";
+		return "app".CHILD_SEPARATOR . getClass($this) . CHILD_SEPARATOR."main";
 	}
 
 	function needsView(& $comp) {

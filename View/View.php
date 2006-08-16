@@ -3,6 +3,7 @@
 $d = dirname(__FILE__);
 
 require_once $d.'/PageRenderer.class.php';
+require_once $d.'/XULPageRenderer.class.php';
 require_once $d.'/templates/ViewCreator.class.php';
 require_once $d.'/templates/XMLParser.class.php';
 require_once $d.'/XML/DOMXMLNode.class.php';

@@ -9,7 +9,7 @@ class Link extends Widget
 		$this->target = $target;
 		$this->addComponent(new Label($text), "linkName");
 	}
-
+	function setEvents(& $view) {}
 	function initializeDefaultView(&$view){
 		$view->setTagName('a');
 	}

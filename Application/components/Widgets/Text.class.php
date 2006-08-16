@@ -10,10 +10,15 @@ class Text extends Widget {
 			$this->view->redraw();
 		}
 	}
+	function setEvents(& $view) {}
 
 	function & createDefaultView() {
 		$t =& new XMLNodeModificationsTracker('span');
 		return $t;
+	}
+	function initializeView(&$view){
+		parent::initializeView($view);
+		$view->removeAttribute('name');
 	}
 	function prepareToRender(){
 		$text =& $this->value_model->getValue();

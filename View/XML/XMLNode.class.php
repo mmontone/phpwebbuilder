@@ -52,7 +52,6 @@ class XMLNode extends DOMXMLNode {
 		if (($this->controller != null)) {
 			$id = $this->controller->getId();
 			$this->attributes['id'] =  $id;
-			$this->attributes['name'] = $id;
 			return $id;
 		} else {
 			return $this->parentNode->getRealId();

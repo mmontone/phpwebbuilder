@@ -14,6 +14,7 @@ class CommandLink extends Widget{
 		if (!$this->proceed) print_backtrace();
 		return $this->proceed->hasPermissions();
     }
+	function setEvents(& $view) {}
     function initialize(){
 		$this->addComponent(new Label($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);

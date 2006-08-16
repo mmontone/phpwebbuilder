@@ -35,7 +35,7 @@ class ComponentHolder
     }
     function getRealId(){
     	if (!$this->realId)
-	   		$this->realId = implode(array($this->parent->getId(),"/",$this->__owner_index));
+	   		$this->realId = implode(array($this->parent->getId(),CHILD_SEPARATOR,$this->__owner_index));
     	return $this->realId;
     }
     function getSimpleId(){

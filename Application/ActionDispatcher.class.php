@@ -29,7 +29,7 @@ class ActionDispatcher {
 		}
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
-		if (isset($form['bookmark']))$app->goToUrl($form['bookmark']);
+		if (isset($form['bookmarkchange']))$app->goToUrl($form['bookmarkchange']);
 		return $app;
 	}
 	function updateViews(& $updates) {
@@ -47,7 +47,7 @@ class ActionDispatcher {
 		}
 	}
 	function & getComponent($path, & $app) {
-		$path = explode("/", $path);
+		$path = explode(CHILD_SEPARATOR, $path);
 		if ($path[0] == "app") { // Maybe the parameter wasn't for us'
 			$comp = & $app->component;
 			array_shift($path);

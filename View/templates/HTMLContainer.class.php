@@ -13,7 +13,7 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	function getRealId(){
 		$this->parentNode->getRealId();
 		$id = $this->parentNode->getAttribute('id');
-		$id.= '/'.$this->getAttribute('class');
+		$id.= CHILD_SEPARATOR.$this->getAttribute('class');
 		$this->attributes['fakeid'] =$id;
 	}
 	function getId(){
@@ -30,6 +30,13 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 		$c = new HTMLContainer;
 		return $c;
 	}
+}
+
+class XMLVariable extends XMLNodeModificationsTracker {
+	function getRealId(){
+		return $this->attribute['id'];
+	}
+
 }
 
 ?>

@@ -39,6 +39,7 @@ class Widget extends Component {
 		parent :: setView($view);
 		$this->setEvents($this->view);
 		$this->setEnqueuedHooks($view);
+		$view->setAttribute('name',$this->getId());
 		$this->initializeView($view);
 		$this->prepareToRender();
 	}

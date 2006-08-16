@@ -11,7 +11,6 @@ class Label extends Text
 			$this->view->setAttribute('value', $this->printValue());
 		}
 	}
-
 	function setValue($value) {
 		parent::setValue($value);
 	}

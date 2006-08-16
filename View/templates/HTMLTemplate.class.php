@@ -23,8 +23,8 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	function getRealId(){
 		$this->parentNode->getRealId();
 		$id = $this->parentNode->getAttribute('id');
-		$id.= '/'.$this->getAttribute('id');
-		$id.= '/'.$this->getAttribute('class');
+		$id.= CHILD_SEPARATOR.$this->getAttribute('id');
+		$id.= CHILD_SEPARATOR.$this->getAttribute('class');
 		$this->attributes['fakeid'] =$id;
 	}
 	function getId(){
