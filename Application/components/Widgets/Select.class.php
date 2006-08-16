@@ -14,9 +14,11 @@ class Select extends Widget {
     	if ($displayF!=null){
     		$this->displayF=$displayF;
     	} else if (is_object($collection->first())){
-    		$this->displayF =& lambda('&$e', 'return $e->printString();', $a = array());
+    		/*$this->displayF =& lambda('&$e', 'return $e->printString();', $a = array());*/
+    		$this->displayF =& new FunctionObject($this, 'printObject');
     	} else {
-    		$this->displayF =& lambda('&$e', 'return $e;', $a = array());
+    		/*$this->displayF =& lambda('&$e', 'return $e;', $a = array());*/
+    		$this->displayF =& new FunctionObject($this, 'printPrimitive');
     	}
 
     	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
@@ -24,6 +26,20 @@ class Select extends Widget {
     		$this->setValueIndex($i = 0);
     	}
     }
+
+    function displayElement(&$e){
+		$f =& $this->displayF;
+		//return $f($e);
+		return $f->callWith($e);
+	}
+
+	function &printObject(&$object) {
+		return $object->printString();
+	}
+
+	function &printPrimitive(&$primitive) {
+		return $primitive;
+	}
 
     function viewUpdated($new_value) {
 		$value = & $this->getValueIndex();
@@ -44,6 +60,7 @@ class Select extends Widget {
     function initializeDefaultView(&$view){
 		$view->setTagName('select');
 		$view->setAttribute('size', (string) $this->getSize());
+		$view->setAttribute('style', 'overflow:4;');
 	}
 
 	function setSize($size) {
@@ -70,11 +87,6 @@ class Select extends Widget {
 			$view->appendChild($option);
 			$i++;', get_defined_vars()));
 		delete_lambda($f);
-	}
-
-	function displayElement(&$e){
-		$f =& $this->displayF;
-		return $f($e);
 	}
 
 	function valueChanged(&$value_model, &$params) {
