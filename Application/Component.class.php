@@ -250,7 +250,8 @@ class Component extends PWBObject
     	if ($v!=null && $pv!=null) {
 	    	$cont=& $this->myContainer();
 	    	$pv->replaceChild($cont, $v);
-	    	$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array($this->getSimpleID()=>&$cont));
+	    	$this->holder->parent->view->getTemplatesAndContainers();
+	    	//$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array(strtolower($cont->attributes['id'])=>&$cont));
 	    }
 	}
 	function &myContainer(){
