@@ -6,20 +6,19 @@ class XULPageRenderer extends PageRenderer {
 	}
 
 	function renderPage(&$app) {
-
+		header("Content-type: text/xml");
 		$ret = '<?xml version="1.0"?>
 		<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 		<window
     id="findfile-window"
     title="Hello worls"
     orient="horizontal"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">';
 
-//xmlns:html="http://www.w3.org/1999/xhtml"
 
-		/*$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
-		$ret .= $app->commonCSS();
+		$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
 		$ret .= $app->renderExtraHeaderContent();
 
 		foreach ($this->page->style_sheets as $c) {
@@ -42,8 +41,8 @@ class XULPageRenderer extends PageRenderer {
 
 		$page = $this->page->render();
 		$ret .= $page;
-		/*$ret .= '</body></html>';*/
-		$ret .= '<button
+		$ret .= '</body></html>';
+		/*$ret .= '<button
     id="identifier"
     class="dialog"
     label="OK"
@@ -60,7 +59,7 @@ class XULPageRenderer extends PageRenderer {
   <listitem label="Raspberry Ripple"/>
   <listitem label="Squash Swirl"/>
 </listbox>
-';
+';*/
 		$ret .= '</window>';
 		$this->page->flushModifications();
 

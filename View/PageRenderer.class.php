@@ -21,6 +21,7 @@ class PageRenderer // extends PWBObject
 		$n->setAttribute('type', 'hidden');
 		$n->setAttribute('id', $name);
 		$n->setAttribute('value', $val);
+		$n->controller = 1;
 		$this->page->appendChild($n);
 	}
 	function initialPageRenderPage(&$app){
