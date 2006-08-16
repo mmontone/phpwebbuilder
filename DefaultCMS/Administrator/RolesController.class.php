@@ -33,14 +33,14 @@ class RolesController extends Component {
 	function initialize() {
 		$this->addComponent(new Label(''),'status');
 		$s =& new Select(new ValueHolder($v2=0),new PersistentCollection(Role));
-		$s->addEventListener(array('change'=>'setRole'), $this);
+		$s->addEventListener(array('changed'=>'setRole'), $this);
 		$this->addComponent($s, 'roles');
 		$this->setRole();
 	}
 	function addCheckBox($perm){
 		$fc =& new Component;
 		$cb =& new CheckBox(new ValueHolder($this->role->havePermission($perm)));
-		$cb->addEventListener(array('change'=>'changePermission'),$this);
+		$cb->addEventListener(array('changed'=>'changePermission'),$this);
 		$fc->addComponent(new Label($perm), 'name');
 		$fc->addComponent($cb, 'val');
 		$this->perms->addComponent($fc);
