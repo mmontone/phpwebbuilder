@@ -1,0 +1,12 @@
+<templates>
+	<template class="Component">
+		<div id="?getId()">
+			<container id="Component" />
+		</div>
+	</template>
+	<template class="Text">
+		<span id="?getId()">
+			?value_model->getValue()
+		</span>
+	</template>
+</templates>

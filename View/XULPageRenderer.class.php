@@ -42,24 +42,24 @@ class XULPageRenderer extends PageRenderer {
 		$page = $this->page->render();
 		$ret .= $page;
 		$ret .= '</body></html>';
-		/*$ret .= '<button
+		$ret .= '<xul:button
     id="identifier"
     class="dialog"
     label="OK"
     image="images/image.jpg"
     disabled="false"
     accesskey="t"/>
-<label control="some-text" value="Enter some text"/>
-<textbox id="some-text"/>
-<label control="some-password" value="Enter a password"/>
-<textbox id="some-password" type="password" maxlength="8"/>
-<listbox>
-  <listitem label="Butter Pecan"/>
-  <listitem label="Chocolate Chip"/>
-  <listitem label="Raspberry Ripple"/>
-  <listitem label="Squash Swirl"/>
-</listbox>
-';*/
+<xul:label control="some-text" value="Enter some text"/>
+<xul:textbox id="some-text"/>
+<xul:label control="some-password" value="Enter a password"/>
+<xul:textbox id="some-password" type="password" maxlength="8"/>
+<xul:listbox>
+  <xul:listitem label="Butter Pecan"/>
+  <xul:listitem label="Chocolate Chip"/>
+  <xul:listitem label="Raspberry Ripple"/>
+  <xul:listitem label="Squash Swirl"/>
+</xul:listbox>
+';
 		$ret .= '</window>';
 		$this->page->flushModifications();
 
