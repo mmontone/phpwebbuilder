@@ -28,7 +28,7 @@ class ViewCreator {
 		$this->addTemplates($tps);
 	}
 	function loadTemplatesDir ($templatesdir){
-		$fs = getfilesrec($lam = lambda('$file','$v=substr($file, -4)==".xml"; return $v;', $a=array()), $templatesdir);
+		$fs = getfilesrec($lam = lambda('$file','$v=substr($file, -4)=="'.$this->app->page_renderer->templateExtension().'"; return $v;', $a=array()), $templatesdir);
 		delete_lambda($lam);
 		$size = strlen(pwbdir);
 		if (pwbdir == substr ($templatesdir, 0, $size)){
@@ -150,7 +150,7 @@ class ViewCreator {
 
 	function &defaultTemplate(&$component){
 		trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Default Template',E_USER_NOTICE);
-		$t =& $component->createDefaultView();
+		$t =& $this->app->page_renderer->defaultViewFactory->createFor($component);
 		return $t;
 	}
 }

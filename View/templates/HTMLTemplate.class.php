@@ -2,7 +2,8 @@
 class HTMLTemplate extends XMLNodeModificationsTracker {
 	function & instantiateFor(& $component) {
 		if (count($this->childNodes) != 1) {
-			$tv = & new XMLNodeModificationsTracker;
+			$app =& Application::instance();
+			$tv = & new XMLNodeModificationsTracker($app->page_renderer->defaultTag());
 			foreach ($this->childNodes as $h) {
 				$t = & $this->xml2template($h);
 				$tv->insert_in($t,$tv->nextNode++);

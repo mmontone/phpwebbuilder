@@ -3,7 +3,13 @@ class PageRenderer // extends PWBObject
 {
 	var $page;
 	var $csss = array ();
-
+	var $defaultViewFactory;
+	function PageRenderer(){
+		$this->setDefaultViewFactory();
+	}
+	function setDefaultViewFactory(){
+		$this->defaultViewFactory =& new HTMLDefaultView;
+	}
 	function setPage(&$view){
 		$app =& Application::instance();
 		$this->page=&$view;
@@ -31,7 +37,22 @@ class PageRenderer // extends PWBObject
 	}
 	function initialRender(){}
 	function render(&$page){
-		return $this->renderPage($page);
+		if ($_REQUEST['ajax']=='true'){
+			return $this->ajaxRenderPage(&$page);
+		} else {
+			return $this->renderPage(&$page);
+		}
+	}
+	function ajaxRenderPage($app){
+		$initial_page_renderer = & new AjaxPageRenderer();
+		$initial_page_renderer->page=&$app->wholeView;
+		echo $initial_page_renderer->ajaxRenderPage($app);
+	}
+	function templateExtension(){
+		return '.xml';
+	}
+	function defaultTag(){
+		return 'div';
 	}
 }
 
@@ -122,14 +143,10 @@ class AjaxPageRenderer extends PageRenderer {
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();
 	}
-	function render(&$page){
-		if ($_REQUEST['ajax']=='true'){
-			return $this->renderPage(&$page);
-		} else {
-			return $this->initialPageRenderPage(&$page);
-		}
-	}
 	function renderPage(&$page) {
+		$this->initialPageRenderPage($page);
+	}
+	function ajaxRenderPage(&$page) {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
