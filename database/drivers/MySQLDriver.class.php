@@ -18,7 +18,7 @@ class DB {
 		foreach($sqls as $sql) {
 			if (trim($sql)!="") { //User Might have included a "" at the end
 				$rec = $this->query($sql);
-				$ret []= $this->fetchArray($rec);
+				$ret []= array($sql, $this->fetchArray($rec));
 			}
 		}
 		return $ret;

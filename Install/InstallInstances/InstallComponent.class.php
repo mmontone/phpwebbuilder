@@ -98,10 +98,12 @@ class InstallComponent extends Component {
 	}
 	function do_install_database(){
 		$pwbdir = $this->pwbdir->value->getValue();
+		$basedir = $this->basedir->value->getValue();
 		includemodule($pwbdir."/database");
 		includemodule($pwbdir."/Model");
 		includemodule($pwbdir."/DefaultCMS");
 		includemodule($pwbdir."/Instances");
+		includemodule($basedir."/MyInstances");
 		foreach (array('DBObject',"serverhost","basename", "baseuser", "basepass", "baseprefix")
 		 	as $d){
 			define($d, $this->$d->value->getValue());
@@ -125,7 +127,7 @@ class InstallComponent extends Component {
 		$sql .= $basesql;
 		$sqls = explode(";", $sql);
 		$db = DB::Instance();
-		$db->batchExec($sqls);
+		print_r($db->batchExec($sqls));
 		$this->status->setValue($t="Installation Successful");
 	}
 }
