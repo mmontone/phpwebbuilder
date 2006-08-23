@@ -16,9 +16,7 @@
 				<container id="secName" />
 				<menupop>
 				<template class="MenuItemComponent"><menuitem>
-						<template class="CommandLink">
-						    <description><container id="linkName" /></description>
-						 </template>
+						<description id="link"><container id="linkName" /></description>
 				</menuitem></template>
 				</menupop></menu>
 			</template>

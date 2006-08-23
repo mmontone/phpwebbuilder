@@ -81,12 +81,11 @@ class MenuItemComponent extends Component {
 		$this->text = $text;
 		$this->items =& $items;
 		parent :: Component();
-		$this->initialize2();
 	}
 	/*function chechAddingPermissions(){
 		return ($this->componentAt('link')!=null);
 	}*/
-	function initialize2(){
+	function initialize(){
 		$bk =$this->items['bookmark'];
 		unset($this->items['bookmark']);
 		$this->addComponent(new NavigationLink($bk, $this->text,$this->items), "link");

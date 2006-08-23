@@ -1,17 +1,12 @@
 <?
-$DBObject = DBObject;
-
-class PersistentCollection extends Collection{
+class PersistentCollection extends Report{
 	var $order;
-	var $conditions;
 	var $dataType;
 	var $size;
 	var $elements=array();
 
 	function PersistentCollection($dataType = "") {
 		$this->dataType = $dataType;
-		$this->conditions = array ();
-		$this->order=array();
 
 		parent::Collection();
 	}
@@ -40,82 +35,13 @@ class PersistentCollection extends Collection{
 		$obj = new $this->dataType;
 		return $obj->idRestrictions();
 	}
-	function setCondition($field, $comparator, $value){
-		$this->conditions[$field]=array($comparator,$value);
-		$this->elements=null;
-	}
-	function conditions() {
-		$cond = '1=1';//$this->idRestrictions();
-		foreach ($this->conditions as $f => $c) {
-			$cond .= ' AND `'. $f .'` '. $c[0] .' '. $c[1];
-		}
-		$cond = ' WHERE ' . $cond;
-		return $cond;
-	}
-
-	function orderByFields($fields) {
-		foreach($fields as $field=>$order) {
-			$this->orderBy($field, $order);
-		}
-	}
 	function allFields(){
 		$obj = new $this->dataType;
 		return $obj->allIndexFields();
 	}
-	function orderBy($fieldname, $order='ASC') {
-		$this->order[$fieldname] = $order;
-	}
-
-	function unordered() {
-		$order = array();
-		$this->order =& $order;
-	}
-
-	function order() {
-		if (empty($this->order)) return '';
-
-		$orders = array();
-		foreach ($this->order as $f => $c) {
-			$orders[] = '`'. $f .'` '. $c;
-		}
-		return ' ORDER BY ' . implode(',', $orders);
-	}
-
-	function visit($obj) {
-		return $obj->visitedPersistentCollection($this);
-	}
-	function limit() {
-		if ($this->limit != 0)
-			return ' LIMIT ' . $this->limit . $this->offset();
-	}
-	function offset() {
-		return ' OFFSET ' . $this->offset;
-	}
-	function restrictions() {
-		return $this->tableNames() . $this->conditions();
-	}
-	function selectsql(){
+	function fieldNames(){
 		$obj = & new $this->dataType;
-		return 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->restrictions() . $this->order() . $this->limit();
-	}
-
-	function refresh() {
-		$this->elements = array();
-	}
-	function &elements() {
-		if (empty($this->elements)){
-			$obj = & new $this->dataType;
-			$sql = $this->selectsql();
-			$db =& DB::Instance();
-			$reg = $db->SQLExec($sql, FALSE, $this);
-			if ($reg===false) return false;
-			$col = array ();
-			while ($data = $db->fetchrecord($reg)) {
-				$col[] =& $obj->loadFromRec($data);
-			}
-			$this->elements =& $col;
-		}
-		return $this->elements;
+		return $obj->fieldNames('SELECT');
 	}
 
 	function add(&$element) {
@@ -199,6 +125,12 @@ class PersistentCollection extends Collection{
 	}
 	function getDataType(){
 		return $this->dataType;
+	}
+
+	function &makeElement($data){
+		$dt = $this->getDataType();
+		$obj =& new $dt;
+		return $obj->loadFromRec($data);
 	}
 }
 

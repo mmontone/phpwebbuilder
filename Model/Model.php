@@ -21,6 +21,7 @@ require_once $d.'/Fields/EnumField.class.php';
 require_once $d.'/Fields/EmailField.class.php';
 require_once $d.'/Fields/WikiArea.class.php';
 require_once $d.'/DescriptedObject.class.php';
+require_once $d.'/Report.class.php';
 require_once $d.'/PersistentCollection.class.php';
 require_once $d.'/JoinedPersistentCollection.class.php';
 require_once $d.'/PersistentObject.class.php';

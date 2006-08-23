@@ -31,20 +31,6 @@ class User extends PersistentObject {
 			return FALSE;
 	}
 
-	function &loadUsers($user, $pass) {
-		$db = DB :: Instance();
-		$col = new PersistentCollection('User');
-		$col->conditions["user"] = array (
-			"=",
-			"'" . $user . "'"
-		);
-		$col->conditions["pass"] = array (
-			"=",
-			"'" . $pass . "'"
-		);
-		return $col->objects();
-	}
-
 
 	function getUserId() {
 		return $this->getIdOfClass('User');
@@ -105,7 +91,7 @@ class User extends PersistentObject {
 			' WHERE user =',
 		$this->getUserId(), ' AND u.role=p.role'));
 		$ps = $db->queryDB($sql);
-		foreach ($ps as $p) {
+		foreach ($ps[1] as $p) {
 			$this->permissions[] = strtolower($p['permission']);
 		}
 	}

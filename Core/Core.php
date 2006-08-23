@@ -7,7 +7,6 @@ require_once $d.'/Collection.class.php';
 require_once $d.'/FunctionObject.class.php';
 require_once $d.'/PWBInstanceIdAssigner.class.php';
 require_once $d.'/PWBFactory.class.php';
-require_once $d.'/Report.class.php';
 require_once $d.'/ValueModels/ValueModel.class.php';
 require_once $d.'/ValueModels/ValueHolder.class.php';
 require_once $d.'/ValueModels/ObjectHolder.class.php';

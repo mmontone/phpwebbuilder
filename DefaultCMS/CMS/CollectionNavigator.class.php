@@ -38,11 +38,11 @@ class CollectionNavigator extends Component {
 		$this->pageSize->onChangeSend('refresh', $this);
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		//$this->pSize->addEventListener(array('change'=>'refresh'), $this);
-		foreach ($this->fields as $f) {
+		foreach ($this->fields as $n=>$f) {
 			$fc = & new CompositeWidget;
 			if (is_string($f)) {
 				$this->addComponent($fc, $f);
-				$fc->addComponent(new ActionLink($this, 'sort', $f, $f));
+				$fc->addComponent(new ActionLink($this, 'sort', $f, $n));
 			} else {
 				$this->addComponent($fc, $f->colName);
 				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
