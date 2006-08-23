@@ -1,6 +1,6 @@
 <?
 
-class DataField extends PWBObject {
+class DataField extends ValueModel {
 	var $colName; // el nombre del campo
 	var $value; // el valor almacenado en el campo
 	var $isIndex; // Si se utiliza para identificarlo (por el usuario)

@@ -373,5 +373,14 @@ class DescriptedObject extends PWBObject {
 
 		return $copy;
 	}
+    function fieldNames($operation) {
+        $fieldnames = "";
+        foreach ($this->allFieldsThisLevel() as $name=>$field) {
+                $fieldnames .= $field->fieldName($operation);
+        }
+        $fieldnames = substr($fieldnames, 0, -2);
+        return $fieldnames;
+    }
+
 }
 ?>

@@ -1,7 +1,6 @@
 <?
 class PersistentCollection extends Report{
 	var $order;
-	var $dataType;
 	var $size;
 	var $elements=array();
 
@@ -110,10 +109,6 @@ class PersistentCollection extends Report{
 		$data = $db->fetchrecord($reg);
 		return $data['collection_size'];
 	}
-	function getDataType(){
-		return $this->dataType;
-	}
-
 	function &makeElement($data){
 		$dt = $this->getDataType();
 		$obj =& new $dt;

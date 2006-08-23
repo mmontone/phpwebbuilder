@@ -11,12 +11,20 @@ class Report extends Collection{
 	 var $fields = array();
 	 var $conditions = array ();
 	 var $order=array();
+	 var $dataType = 'DescriptedObject';
 	function setCondition($field, $comparator, $value){
 		$this->conditions[$this->parseField($field)]=array($comparator,$value);
 		$this->elements=null;
 	}
 	function size() {
-		$sql = 'SELECT COUNT(*) as collection_size FROM ' . $this->restrictions();
+		$sql = 'SELECT COUNT(';
+		$g = $this->group();
+		if ($g!=''){
+			$sql .= 'DISTINCT '.substr($g, 10);
+		}else{
+			$sql .= '*';
+		}
+		$sql .=') as collection_size FROM ' . $this->restrictions();
 		$db = & DB::Instance();
 		$reg = $db->query($sql);
 		if ($reg===false) {
@@ -26,8 +34,17 @@ class Report extends Collection{
 			return $data['collection_size'];
 		}
 	}
+	function allFields(){
+		$obj =& $this->getObject();
+		$arr = array_merge($obj->allIndexFieldNames(), $this->fields);
+		return $arr;
+	}
 	function parseField($f){
 		return str_replace('.','`.`',$f);
+	}
+	function &getObject(){
+		$dt = $this->getDataType();
+		return new $dt;
 	}
 	function fieldNames(){
 		foreach($this->fields as $f=>$n){
@@ -37,13 +54,15 @@ class Report extends Collection{
 				$ret []= '`'. $this->parseField($n).'`';
 			}
 		}
-		return implode(',',$ret);
+		$obj =& $this->getObject();
+		$ret []= $obj->fieldNames('SELECT');
+		return  implode(',',$ret);
 	}
 	function tableNames(){
 		return implode(',',$this->tables);
 	}
 	function conditions() {
-		$cond = '1=1';//$this->idRestrictions();
+		$cond = '1=1';
 		foreach ($this->conditions as $f => $c) {
 			$cond .= ' AND `'. $f .'` '. $c[0] .' '. $c[1];
 		}
@@ -122,13 +141,16 @@ class Report extends Collection{
 		return $this->elements;
 	}
 	function getDataType(){
-		return 'DescriptedObject';
+		return $this->dataType;
 	}
 	function &makeElement($data){
-		$dt = $this->getDataType();
-		$o =& new $dt;
+		$obj =& $this->getObject();
+		$ret []= $obj->fieldNames('SELECT');
+		$o =& $obj->loadFromRec($data);
 	 	foreach($data as $n=>$m){
-	 		$o->$n =& new ValueHolder($m);
+	 		if (!isset($ret[$n])){
+	 			$o->$n =& new ValueHolder($m);
+	 		}
 	 	}
 	 	return $o;
 	}
