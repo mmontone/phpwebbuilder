@@ -15,6 +15,17 @@ class Report extends Collection{
 		$this->conditions[$this->parseField($field)]=array($comparator,$value);
 		$this->elements=null;
 	}
+	function size() {
+		$sql = 'SELECT COUNT(*) as collection_size FROM ' . $this->restrictions();
+		$db = & DB::Instance();
+		$reg = $db->query($sql);
+		if ($reg===false) {
+			return false;
+		} else {
+			$data = $db->fetchrecord($reg);
+			return $data['collection_size'];
+		}
+	}
 	function parseField($f){
 		return str_replace('.','`.`',$f);
 	}
@@ -89,14 +100,14 @@ class Report extends Collection{
 		return ' OFFSET ' . $this->offset;
 	}
 	function selectsql(){
-		return 'SELECT ' . $this->fieldNames() . ' FROM ' . $this->restrictions() . $this->order() . $this->limit();
+		return 'SELECT ' . $this->fieldNames() . ' FROM ' . $this->restrictions()  .$this->group(). $this->order() . $this->limit();
 	}
 
 	function refresh() {
 		$this->elements = array();
 	}
 	function restrictions() {
-		return $this->tableNames() . $this->conditions() . $this->group();
+		return $this->tableNames() . $this->conditions();
 	}
 	function &elements() {
 		if (empty($this->elements)){

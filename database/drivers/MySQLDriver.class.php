@@ -33,7 +33,7 @@ class DB {
 	}
 	function queryDB($query){
 		$res = $this->batchExec(array($query));
-		return $res[0];
+		return $res[0][1];
 	}
 	function &Instance(){
 		if (!isset($_SESSION[sitename]['DB'])){

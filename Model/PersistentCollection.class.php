@@ -55,19 +55,6 @@ class PersistentCollection extends Report{
 		return $this->elements();
 	}
 
-	function size() {
-		$obj = & new $this->dataType;
-		$sql = 'SELECT COUNT(*) as collection_size FROM ' . $this->restrictions();
-		$db = & DB::Instance();
-		$reg = $db->query($sql);
-		if ($reg===false) {
-			return false;
-		} else {
-			$data = $db->fetchrecord($reg);
-			return $data['collection_size'];
-		}
-	}
-
 	function & getObj($id) {
 		return PersistentObject::getWithId($this->dataType, $id);
 	}

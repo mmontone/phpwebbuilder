@@ -91,7 +91,7 @@ class User extends PersistentObject {
 			' WHERE user =',
 		$this->getUserId(), ' AND u.role=p.role'));
 		$ps = $db->queryDB($sql);
-		foreach ($ps[1] as $p) {
+		foreach ($ps as $p) {
 			$this->permissions[] = strtolower($p['permission']);
 		}
 	}
