@@ -106,7 +106,7 @@ class EmailFieldTableCheckAction extends TextFieldTableCheckAction {}
 
 class IdFieldTableCheckAction extends NumFieldTableCheckAction {
 	function type(){
-		return "int(11) unsigned NOT NULL auto_increment";
+		return "int(11) unsigned NOT NULL AUTO_INCREMENT";
 	}
 }
 

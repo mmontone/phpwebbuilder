@@ -127,8 +127,7 @@ class Application extends ComponentHolder {
 	}
 
 	function loadTemplates () {
- 		$templates=templates;
- 		if ($templates != 'enabled') {
+ 		if (defined('templates') and constant('templates') == 'disabled') {
  			return;
  		}
 

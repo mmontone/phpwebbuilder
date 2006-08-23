@@ -1,51 +1,9 @@
 <?
 
-class DB {
-	var $lastError = 'No Error';
-	var $lastSQL = '';
-	function fetchArray($res) {
-		$arr = array();
-		if ($res===true) {
-			$arr[]="Query suceeded";
-		} else if ($res===false) {
-			$arr[]="Query failed " . mysql_error();
-		} else {
-			while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
-		}
-		return $arr;
-	}
-	function batchExec($sqls) {
-		foreach($sqls as $sql) {
-			if (trim($sql)!="") { //User Might have included a "" at the end
-				$rec = $this->query($sql);
-				$ret []= array($sql, $this->fetchArray($rec));
-			}
-		}
-		return $ret;
-	}
-	function lastError(){
-		$db =& DB::instance();
-		return $db->lastError;
-	}
-	function lastSQL(){
-		$db =& DB::instance();
-		return $db->lastSQL;
-	}
-	function queryDB($query){
-		$res = $this->batchExec(array($query));
-		return $res[0][1];
-	}
-	function &Instance(){
-		if (!isset($_SESSION[sitename]['DB'])){
-			$c = constant('DBObject');
-			$_SESSION[sitename]['DB'] =& new $c;
-		}
-		return $_SESSION[sitename]['DB'];
-	}
-}
-
 class MySQLdb extends DB {
 	var $conn;
+	var $tables_type = 'MyISAM';
+
     function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
        	trace($sql. '<br/>');
 		$this->lastSQL = $sql;
@@ -53,6 +11,12 @@ class MySQLdb extends DB {
         if ($getID) { $obj->setID(mysql_insert_id());};
         $rows = mysql_affected_rows();
         return $reg;
+    }
+
+    function initialize() {
+		if (defined('tables_type')) {
+			$this->setTablesType(tables_type);
+		}
     }
 
     function beginTransaction() {
@@ -125,37 +89,59 @@ class MySQLdb extends DB {
     	$ret = ereg_replace("\\\'","\'",$str);
     	return $ret;
     }
-}
 
-class PgSQLdb extends DB {
-    var $conn;
-    function SQLExec ($sql, $getID, $obj) {
-        if ($getID) {
-		$tempsql = "SELECT nextval('". $obj->tablename() . "_id_seq') as id";
-		$thisclass = getClass($this);
-		$db = new $thisclass;
-		$resID = $db->SQLExec($tempsql, FALSE, $obj);
-		$resID2 = $db->fetchrecord($resID);
-		$obj->id=$resID2["id"];
-		$sqlnew = ereg_replace("INSERT INTO ([[:alnum:]]*)\\(","INSERT INTO \\1 (id, ", $sql);
-		$sql = str_replace("VALUES (","VALUES(". $obj->id.", ", $sqlnew);
+    // SQL
+
+	function showColumnsFromTableSQL($table) {
+		return "SHOW COLUMNS FROM `" . $table."`";
 	}
-	$this->openDatabase();
-	$reg = pg_query($sql);
-	$this->closeDatabase();
-        return $reg;
-    }
-    function fetchrecord($res) {
-    	return pg_fetch_assoc($res);
-    }
-    function openDatabase() {
-    $str = " host=".serverhost." user=".baseuser." password=".basepass." dbname=".basename;
-      $this->conn = pg_pconnect($str);
-    }
-    function closeDatabase() {
-      pg_close($this->conn);
-    }
-}
 
+	function dropColumnSQL($column) {
+		 return "DROP COLUMN `$column`";
+	}
+
+	function tablePropertiesSQL() {
+		return 'TYPE = ' . $this->getTablesType();
+		/*
+		switch($this->getMySQLVersionPrimaryNumber()) {
+			case 4: return 'TYPE=' . $this->getTablesType();
+			case 5: return 'ENGINE=' . $this->getTablesType();
+			default: return '';
+		}*/
+	}
+
+	function setTablesType($type) {
+		$this->tables_type =& $type;
+	}
+
+	function getTablesType() {
+		return $this->tables_type;
+	}
+
+	function setMyISAM() {
+		$this->tables_type = 'MyISAM';
+	}
+
+	function setInnoDB() {
+		$this->tables_type = 'InnoDB';
+	}
+
+	function getMySQLVersionkPrimaryNumber() {
+		$version = $this->getMySQLVersion();
+		return $version['primary'];
+	}
+
+	function getMySQLVersion() {
+		$this->openDatabase();
+		$res = $this->query('SELECT VERSION();');
+		$ver = mysql_result($res, 0);
+		$this->closeDatabase();
+		preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)/',$ver, $matches);
+		$version = array();
+		$version['primary'] = (integer) $matches[1];
+		$version['sub'] = (integer) $matches[2];
+		$version['subsub'] = (integer) $matches[3];
+	}
+}
 
 ?>

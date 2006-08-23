@@ -128,7 +128,7 @@ class PersistentObject extends DescriptedObject {
 			$values .= $field->insertValue();
 		}
 		$values = substr($values, 0, -2);
-		$sql = 'INSERT IGNORE INTO `' . $this->tableName() . '` (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
+		$sql = 'INSERT INTO `' . $this->tableName() . '` (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DB::Instance();
 		$db->SQLExec($sql, TRUE, & $this, & $rows);
 		$ok = $rows > 0;
