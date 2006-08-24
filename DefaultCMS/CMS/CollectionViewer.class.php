@@ -24,7 +24,9 @@ class CollectionViewer extends CollectionNavigator {
 		$obj = & new $dt;
 		$c =& $this->col->conditions;
 		foreach($c as $f=>$cond){
-			$obj->$f->setValue($cond[1]);
+			if ($cond[0] == '='){
+				$obj->$f->setValue($cond[1]);
+			}
 		}
 		$obj->commitChanges();
 		$this->viewObject(array('object' => &$obj));
