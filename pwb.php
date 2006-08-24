@@ -12,9 +12,9 @@ ini_set('display_errors', true);
 
 define('CHILD_SEPARATOR', ':');
 
-//error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 //error_reporting(E_ERROR | E_PARSE);
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 
 require_once dirname(__FILE__) . "/lib/basiclib.php";
 

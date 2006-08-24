@@ -45,8 +45,8 @@ class PersistentObjectTableCheckView {
 				$ret ="";
 				//$sql = "SHOW COLUMNS FROM `" . $table."`";
 				$sql = $db->showColumnsFromTableSQL($table);
-				$db = new MySQLDB;
-				$res = $db->SQLexec($sql, FALSE, $this->obj);
+				$db =& DB::instance();
+				$res = $db->query($sql);
 				$arr = $db->fetchArray($res);
 				foreach ($arr as $f) {
 					$arr2 [$f["Field"]]=$f;

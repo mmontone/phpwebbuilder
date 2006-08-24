@@ -14,11 +14,11 @@ function includefile(&$file) {
 	} else {
 		if (substr($file, -4)=='.php') {
                   //echo "Including file: " . $file;
-                  echo "require_once '".substr($file, $n)."';<br/>";
+                  echo "require_once \$d.'/".substr($file, $n)."';<br/>";
 		}
 	}
 }
-
+echo '$d = dirname(__FILE__);';
 includefile($d);
 
 ?>
