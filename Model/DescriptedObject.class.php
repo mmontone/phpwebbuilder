@@ -221,7 +221,7 @@ class DescriptedObject extends PWBObject {
 
 	/*@deprecated*/
 	function check_not_null($fields, & $error_msgs) {
-		return $this->checkNotEmpty($fields, $error_msgs);
+		return $this->checkNotEmpty($fields);
 	}
 
 	function checkOneOf($field_names, $error_msg) {
