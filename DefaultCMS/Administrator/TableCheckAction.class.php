@@ -45,7 +45,7 @@ class TableCheckAction {
 	}
 	function unique(){}
 	function createUnique($i){
-		return  "`".$i."`".$this->unique() . ", ";
+		return  "`".$i."`".$this->unique();
 	}
 }
 

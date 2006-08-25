@@ -83,7 +83,10 @@ class PersistentObjectTableCheckView {
 					if ($ex){
 						$temp .= "\n   DROP KEY index$table, ";
 					}
-					$temp .= "\n   ADD ".$this->uniques().", ";
+					$us = $this->uniques();
+					if ($us!=''){
+						$temp .= "\n   ADD ".$us.", ";
+					}
 				}
 				if ($temp!="") {
 					//$ret .= "\n-- Object: ".getClass($this->obj);
@@ -120,9 +123,9 @@ class PersistentObjectTableCheckView {
 			$f =& $ifs[$i];
 			$tc =& new TableCheckAction;
 			$df =& $tc->viewFor($f);
-			$uni .= $df->createUnique($i);
+			$unis []= $df->createUnique($i);
 		}
-		$uni = substr($uni,0, -2);
+		$uni = implode(', ',$unis);
 		if (trim($uni)!="") {
 			return  " UNIQUE index$table(".$uni.")";
 		} else{
