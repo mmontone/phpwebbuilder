@@ -14,13 +14,13 @@ session_name(strtolower(app_class));
 if (isset($_REQUEST["restart"])) {
   $sessionid = $_COOKIE[session_name()];
   $orgpath = getcwd();
-  chdir(PHP_BINDIR);
-  chdir(session_save_path());
+  @chdir(PHP_BINDIR);
+  @chdir(session_save_path());
   $path = realpath(getcwd()).'/';
   if(file_exists($path.'sess_'.$sessionid)) {
-   unlink($path.'sess_'.$sessionid);
+   @unlink($path.'sess_'.$sessionid);
   }
-  chdir($orgpath);
+  @chdir($orgpath);
   session_start();
   session_destroy();
   SessionHandler::setHooks();

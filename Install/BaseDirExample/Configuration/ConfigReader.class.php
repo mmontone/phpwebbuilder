@@ -45,7 +45,7 @@ class ConfigReader
         		default:
         			$v = $value;
         	}
-        	define($key, $v);
+        	if (!defined($key)) define($key, $v);
         }
     }
     function write($file_name, $configuration) {
