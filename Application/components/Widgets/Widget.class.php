@@ -189,5 +189,9 @@ class Widget extends Component {
 	function prepareToRender() {
 		$this->updateView();
 	}
+	function getWidgets(&$ws){
+		$ws[$this->getId()]=&$this;
+		parent::getWidgets($ws);
+	}
 }
 ?>

@@ -2,6 +2,9 @@
 class ActionDispatcher {
 	function & dispatch() {
 		$form = array_merge($_REQUEST, $_FILES);
+		return $this->dispatchData($form);
+	}
+	function &dispatchData($form){
 		$event = array ();
 		$view_updates = array ();
 		$de = 0;

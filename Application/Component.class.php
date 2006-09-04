@@ -287,6 +287,13 @@ class Component extends PWBObject
 	function translate($msg) {
 		return $this->app->translate($msg);
 	}
+	function getWidgets(&$ws){
+		$ks = array_keys($this->__children);
+		foreach ($ks as $key){
+			$comp =& $this->componentAt($key);
+			$comp->getWidgets(&$ws);
+		}
+	}
 }
 
 

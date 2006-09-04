@@ -48,6 +48,9 @@ class Application extends ComponentHolder {
 		}
 		return $_SESSION[sitename][$class];
 	}
+	function restart(){
+		unset($_SESSION[sitename]);
+	}
 	function &instance(){
 		return Application::getInstanceOf(app_class);
 	}
@@ -132,7 +135,7 @@ class Application extends ComponentHolder {
  		}
 
  		if (!defined('templatesdir')) {
- 			$templatesdir= basedir . '/MyTemplates';
+ 			$templatesdir= basedir . 'MyTemplates';
  		}
  		else {
  			$templatesdir = templatesdir;
@@ -161,6 +164,11 @@ class Application extends ComponentHolder {
 		$ad =& new ActionDispatcher();
 		$app =& $ad->dispatch();
 		$app->render();
+	}
+	function &getWidgets(){
+		$ws=array();
+		$this->component->getWidgets($ws);
+		return $ws;
 	}
 	function setLinkTarget($bookmark, $params){
 		return $this->urlManager->setLinkTarget($bookmark, $params);
