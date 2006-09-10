@@ -112,7 +112,7 @@ class DataField extends ValueModel {
 		return $this->getValue();
 	}
 	function setValue($data) {
-		if ($data != $this->buffered_value) {
+		if ($data !== $this->buffered_value) {
 			$this->buffered_value =& $data;
 			$this->modified = true;
 			$this->triggerEvent('changed', $no_params = null);
