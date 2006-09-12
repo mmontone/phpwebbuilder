@@ -302,4 +302,65 @@ function nextAnnonymousClassName() {
 	}
 	return 'annon_class_' . $_SESSION['next_annonimous_class'];
 }
+
+// Call with multiple dispatch
+
+function &mdcall($function) {
+	$c = array();
+	$n = func_num_args() - 1;
+	for ($i = 1; $i <= $n ; $i++) {
+		$argi =& func_get_arg($i);
+		if (is_object($argi)) {
+			$c[$i] = get_class($argi);
+		}
+		else {
+			$c[$i] = gettype($argi);
+		}
+	}
+
+	$fname = _mdcall($function, $c, 1);
+
+	if ($fname != null) {
+		$args =& func_get_args();
+		$params = array();
+		for($i = 1; $i <= $n; $i++) {
+			$params[$i] = '$args[' . $i . ']';
+		}
+
+		//echo 'Evaluating: ' . '$res =& ' . $fname . '(' . implode(',', $params) . ');';
+		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
+		return $res;
+	} else {
+		print_backtrace('Dispatch failed');
+	}
+}
+
+function _mdcall($function, $arg_types, $i) {
+	$n = count($arg_types);
+	if ($i > $n) {
+		$fname = $function;
+		for ($j = 1; $j <= $n; $j++) {
+			$fname .= '_' . $arg_types[$j];
+		}
+
+		//echo 'Checking for ' . $fname . '</br>';
+		if (function_exists($fname)) {
+			return $fname;
+		}
+		else {
+			return null;
+		}
+	}
+	else {
+		$fname = _mdcall($function, $arg_types, $i + 1);
+		$parent = get_parent_class($arg_types[$i]);
+		while (($fname == null) and $parent) {
+			$arg_types[$i] = $parent;
+			$fname = _mdcall($function, $arg_types, $i + 1);
+			$parent = get_parent_class($arg_types[$i]);
+		}
+
+		return $fname;
+	}
+}
 ?>

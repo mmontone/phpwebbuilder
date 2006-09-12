@@ -1,6 +1,7 @@
 <?php
 require_once simpletest_dir . '/simpletest.php';
 require_once simpletest_dir . '/unit_tester.php';
+require_once '../lib/tests/tests.php';
 require_once '../Core/tests/tests.php';
 require_once '../database/tests/tests.php';
 require_once '../Model/Tests/tests.php';
