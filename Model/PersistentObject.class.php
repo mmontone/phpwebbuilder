@@ -2,7 +2,7 @@
 
 class PersistentObject extends DescriptedObject {
 	var $table;
-
+	var $existsObject;
 	function setID($id) {
 		foreach ($this->allFieldNamesThisLevel() as $field) {
 			$this->$field->setID($id);
