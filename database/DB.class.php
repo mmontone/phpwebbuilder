@@ -16,6 +16,7 @@ class DB {
 			$arr[]="Query suceeded";
 		} else if ($res===false) {
 			$arr[]="Query failed " . mysql_error();
+			trigger_error(E_USER_NOTICE, mysql_error());
 		} else {
 			while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
 		}
