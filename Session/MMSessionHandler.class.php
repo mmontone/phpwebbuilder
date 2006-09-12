@@ -3,7 +3,11 @@
 define('MAX_SIZE',32000000);
 define('MAX_SIZE_B',strlen(MAX_SIZE));
 
-class MMSessionHandler extends SessionHandler{
+if (!class_exists('SessionHandler')) {
+	class SessionHandler {}
+}
+
+class MMSessionHandler extends SessionHandler {
 	var $key, $id, $name, $path;
 	function open($path, $name){
 		$this->name =$name;
