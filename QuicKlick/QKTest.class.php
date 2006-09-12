@@ -18,6 +18,13 @@ class QKTest extends PersistentObject{
     	$c->limit = $l;
     	return $p;
     }
+    function runAgain(){
+    	new QuicKlickReprise($this);
+    }
+    function deleteTest(){
+		$this->passes->collection->collect('delete()');
+		$this->delete();
+    }
 }
 
 class QKPass extends PersistentObject{

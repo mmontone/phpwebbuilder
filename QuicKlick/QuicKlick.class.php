@@ -29,12 +29,15 @@ class QuicKlick {
 			echo "<hr/>";
 		}
 		echo "<script>window.title='Finished - $errors errors';</script>";
-
 	}
 	function check(){
-		$this->checkApp($this->name, $this->app, $this->iters);
+		$this->checkApp($this->name, $this->iters);
 	}
-	function checkApp($name,&$app, $iters){
+	function getSendable(){
+			$ws =& $this->app->getWidgets();
+			return array_merge($this->createDispatch($ws), $this->createEvent($ws));
+	}
+	function checkApp($name, $iters){
 		$ad =& new ActionDispatcher();
 		$t =& new QKTest();
 		$t->name->setValue($name);
@@ -44,13 +47,11 @@ class QuicKlick {
 		$_SESSION['QKtest'] =& $t;
 		for($i=0; $i<$iters; $i++){
 		$app->component->view->flushModifications();
-			echo "|";
-			$ws =& $app->getWidgets();
-			$data = array_merge($this->createDispatch($ws), $this->createEvent($ws));
+			$data = $this->getSendable($i);
 			$p =& new QKPass();
 			$p->number->setValue($i);
 			$p->test->setTarget($t);
-			$p->parameters->setValue(print_r($data, TRUE));
+			$p->parameters->setValue(serialize($data));
 			$p->save();
 			ob_start();
 			$ad->dispatchData($data);
@@ -87,7 +88,37 @@ class QuicKlick {
 	}
 }
 
-
+class QuicKlickReprise extends QuicKlick{
+	function QuicKlickReprise(&$test){
+		$_SESSION['QuicKlick']=&$this;
+		$this->iters = 1;
+		$this->name = $test->name->getValue();
+		$this->test =& $test;
+		$loc =pwb_url.'/QuicKlick/runqk.php' .
+				'?app_class='. app_class.
+				'&basedir='.basedir .
+				'&sid='.session_id();
+		$funOb = $test->function->getTarget();
+		$fun = eval($funOb->code->getValue());
+		$this->app=&$fun();
+		session_write_close();
+		$res =  file_get_contents($loc);
+		session_start();
+		$t =& $_SESSION['QKtest'];
+		if ($t===null) return;
+		if (!$t->passed->getValue()){
+			$p =& $t->lastPass();
+			$p->output->setValue(addslashes($res));
+			$p->save();
+		}
+	}
+	function getSendable($i){
+		$col =& $this->test->passes->collection;
+		$col->setCondition('number','=',$i);
+		$p =& $col->first();
+		return unserialize($p->parameters->getValue());
+	}
+}
 
 class InputGenerator extends PWBFactory{
 	function createInstanceFor(&$widget){

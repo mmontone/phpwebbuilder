@@ -9,13 +9,14 @@ class DataFieldSearcherFactory extends SearcherFactory {
 }
 
 class DataFieldSearcher extends Component{
+	var $comp, $val;
 	function initialize(){
-		$this->addComponent(new Input(new ValueHolder($c0="")), 'comparator');
-		$this->addComponent(new Input(new ValueHolder($c1="")), 'value');
+		$this->addComponent(new Input(new ValueHolder($this->comp)), 'comparator');
+		$this->addComponent(new Input(new ValueHolder($this->val)), 'value');
 	}
 	function setSearchValue(&$conds, $fname){
-		$this->comparator->setValue($conds[$fname][0]);
-		$this->value->setValue($conds[$fname][1]);
+		$this->comp = $conds[$fname][0];
+		$this->val = $conds[$fname][1];
 	}
 	function getSearchValue(&$col, $fname){
 		if ($this->comparator->getValue()!="" ||

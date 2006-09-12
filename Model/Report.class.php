@@ -61,6 +61,9 @@ class Report extends Collection{
 	function tableNames(){
 		return implode(',',$this->tables);
 	}
+	function discardConditions(){
+		$this->conditions = array();
+	}
 	function conditions() {
 		$cond = '1=1';
 		foreach ($this->conditions as $f => $c) {
