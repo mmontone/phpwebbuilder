@@ -94,7 +94,7 @@ class MenuItemComponent extends Component {
 
 class MenuItemBookmark extends Bookmark{
 	function launchIn(&$app, $params){
-		$con =& new $params['Component']($params['class']);
+		$con =& new $params['Component']();
 		$app->component->changeBody($this,$con);
 	}
 	function checkPermissions($params){
