@@ -20,7 +20,7 @@ require_once dirname(__FILE__) . "/lib/basiclib.php";
 
 
 if (!defined('modules')) {
-	define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS");
+	define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick");
 }
 if (!defined('app_class')) {
 	define('app_class', "DefaultCMSApplication");

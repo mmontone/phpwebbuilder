@@ -11,6 +11,7 @@ require_once $d.'/Menu.class.php';
 require_once $d.'/DefaultCMSApplication.class.php';
 require_once $d.'/Files/FileLoader.class.php';
 require_once $d.'/Files/ReadFile.class.php';
+require_once $d.'/QuicKlick/QuicKlickComponent.class.php';
 require_once $d.'/CMS/CollectionNavigator.class.php';
 require_once $d.'/CMS/CollectionViewer.class.php';
 require_once $d.'/CMS/PersistentObjectPresenter.class.php';
