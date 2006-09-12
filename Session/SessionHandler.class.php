@@ -14,6 +14,4 @@ class SessionHandler{
 }
 class PHPSessionHandler extends SessionHandler{}
 
-class MMSessionHandler extends SessionHandler{}
-
 ?>

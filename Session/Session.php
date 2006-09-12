@@ -8,6 +8,7 @@ $d = dirname(__FILE__);
 require_once $d.'/SessionHandler.class.php';
 require_once $d.'/Session.class.php';
 require_once $d.'/DBSessionHandler.class.php';
+require_once $d.'/MMSessionHandler.class.php';
 
 SessionHandler::setHooks();
 session_name(strtolower(app_class));
