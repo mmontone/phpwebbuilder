@@ -95,6 +95,7 @@ class Component extends PWBObject
 				trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->$ind->stopAndCall($component);
 			} else {
+				if (isset($this->$ind)) trigger_error('Replacing variable with component',E_USER_ERROR);
 				$keys = array();
 				$index =& $keys[$ind];
 				$index = $ind;
