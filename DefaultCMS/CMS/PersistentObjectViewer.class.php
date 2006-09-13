@@ -68,7 +68,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$u =& User::logged();
 		return $u->hasPermissions(array(getClass($params['object']).'=>Delete', '*',getClass($params['object']).'=>*'));
 	}
-
+	function warningAccepted(){}
 	function deleteObject($params) {
 		$obj =& $params['object'];
 		$translator = translator;
