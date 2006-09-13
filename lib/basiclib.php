@@ -93,6 +93,12 @@ function get_superclasses($str){
 	return $ret;
 }
 
+function is_kind_of(&$object, $class) {
+	$c = getClass($object);
+
+	return in_array($c, get_superclasses($c));
+}
+
 function get_related_classes($str){
 	return array_merge(get_superclasses($str), get_subclasses($str));
 }
@@ -305,41 +311,40 @@ function nextAnnonymousClassName() {
 
 // Call with multiple dispatch
 
-function &mdcall($function) {
+function &mdcall($function, $args) {
 	$c = array();
-	$n = func_num_args() - 1;
-	for ($i = 1; $i <= $n ; $i++) {
-		$argi =& func_get_arg($i);
+	$n = count($args);
+	for ($i = 0; $i < $n ; $i++) {
+		$argi =& $args[$i];
 		if (is_object($argi)) {
-			$c[$i] = get_class($argi);
+			$c[$i] = strtoupper(get_class($argi));
 		}
 		else {
-			$c[$i] = gettype($argi);
+			$c[$i] = strtoupper(gettype($argi));
 		}
 	}
 
-	$fname = _mdcall($function, $c, 1);
+
+	$fname = _mdcall($function, $c, 0);
 
 	if ($fname != null) {
-		$args =& func_get_args();
 		$params = array();
-		for($i = 1; $i <= $n; $i++) {
+		for($i = 0; $i < $n; $i++) {
 			$params[$i] = '$args[' . $i . ']';
 		}
 
-		//echo 'Evaluating: ' . '$res =& ' . $fname . '(' . implode(',', $params) . ');';
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
 	} else {
-		print_backtrace('Dispatch failed');
+		print_backtrace('Dispatch failed: ' . $function . '(' . print_r($c, true) . ');');
 	}
 }
 
 function _mdcall($function, $arg_types, $i) {
 	$n = count($arg_types);
-	if ($i > $n) {
+	if ($i == $n) {
 		$fname = $function;
-		for ($j = 1; $j <= $n; $j++) {
+		for ($j = 0; $j < $n; $j++) {
 			$fname .= '_' . $arg_types[$j];
 		}
 
@@ -355,7 +360,7 @@ function _mdcall($function, $arg_types, $i) {
 		$fname = _mdcall($function, $arg_types, $i + 1);
 		$parent = get_parent_class($arg_types[$i]);
 		while (($fname == null) and $parent) {
-			$arg_types[$i] = $parent;
+			$arg_types[$i] = strtoupper($parent);
 			$fname = _mdcall($function, $arg_types, $i + 1);
 			$parent = get_parent_class($arg_types[$i]);
 		}

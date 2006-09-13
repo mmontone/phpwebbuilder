@@ -16,6 +16,11 @@ class C {
 
 class B1 extends B {}
 
+class PruebaDispatch {}
+
+function test1_PRUEBADISPATCH() {
+	return true;
+}
 
 function test1_A_B(&$a, &$b) {
 	return 'AB';
@@ -34,7 +39,6 @@ function test2_A_B1_C() {
 function mem_test_A_B(&$a, &$b) {
 	$x = 2;
 	$a->x =& $x;
-
 }
 
 class MultipleDispatchTests extends UnitTestCase {
@@ -52,21 +56,22 @@ class MultipleDispatchTests extends UnitTestCase {
 		$y = 2;
 		$b->x =& $y;
 
-		mdcall('mem_test', $a, $b);
+		mdcall('mem_test', array(&$a, &$b));
 		$this->assertEqual($a->x, 2);
 	}
 
 	function test1() {
-		$this->assertEqual(mdcall('test1', new A1, new B1), 'AB1');
-		$this->assertEqual(mdcall('test1', new A, new B), 'AB');
-		$this->assertEqual(mdcall('test1', new A1, new B), 'AB');
-		$this->assertFalse(mdcall('test1', 'hola', 'chau'));
+		$this->assertEqual(mdcall('test1', array(new A1, new B1)), 'AB1');
+		$this->assertEqual(mdcall('test1', array(new A, new B)), 'AB');
+		$this->assertEqual(mdcall('test1', array(new A1, new B)), 'AB');
+		$this->assertFalse(mdcall('test1', array('hola', 'chau')));
+		$this->assertTrue(mdcall('test1', array(new PruebaDispatch)));
 	}
 
 	function test2() {
-		$this->assertEqual(mdcall('test2', new A1, new B1, new C), 'ABC');
-		$this->assertFalse(mdcall('test2', new A1, new B, new C));
-		$this->assertFalse(mdcall('test2', new A1, new B1));
+		$this->assertEqual(mdcall('test2', array(new A1, new B1, new C)), 'ABC');
+		$this->assertFalse(mdcall('test2', array(new A1, new B, new C)));
+		$this->assertFalse(mdcall('test2', array(new A1, new B1)));
 	}
 }
 
