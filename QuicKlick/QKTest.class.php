@@ -8,14 +8,12 @@ class QKTest extends PersistentObject{
     	$this->addField(new NumField(array('fieldName'=>'totalPasses')));
     	$this->addField(new BoolField(array('fieldName'=>'passed', 'is_index'=> TRUE)));
     	$this->addField(new CollectionField(array('fieldName'=>'passes', 'type'=>'QKPass', 'reverseField'=>'test')));
+    	$this->addField(new IndexField(array('fieldName'=>'function', 'type'=>'QKFunction')));
     }
     function &lastPass(){
     	$c =& $this->passes->collection;
     	$c->orderBy('number', 'DESC');
-    	$l = $c->limit;
-    	$c->limit = 1;
     	$p =& $c->first();
-    	$c->limit = $l;
     	return $p;
     }
     function runAgain(){
@@ -26,6 +24,16 @@ class QKTest extends PersistentObject{
 		$this->delete();
     }
 }
+
+class QKFunction extends PersistentObject{
+    function initialize() {
+    	$this->addField(new TextField(array('fieldName'=>'code')));
+    }
+    function getFun(){
+    	return lambda('', $this->code->getValue());
+    }
+}
+
 
 class QKPass extends PersistentObject{
     function initialize() {

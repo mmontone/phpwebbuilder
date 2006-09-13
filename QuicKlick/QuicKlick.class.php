@@ -1,7 +1,7 @@
 <?php
 
 class QuicKlick {
-	function QuicKlick($name, $fun, $iters, $clicks){
+	function QuicKlick($name, $funCode, $iters, $clicks){
 		$this->name = $name;
 		$this->iters = $clicks;
 		$dateFormat = 'Y-m-d H:i:s';
@@ -12,9 +12,12 @@ class QuicKlick {
 				'&sid='.session_id();
 		echo "<h1>$name starting at ".date($dateFormat)."</h1>";
 		$errors=0;
+		$this->funCode = $funCode;
+		$fun = lambda('',$funCode);
 		for($i=0; $i<$iters; $i++){
 			$this->app=&$fun();
 			session_write_close();
+			SessionHandler::setHooks();
 			$res =  file_get_contents($loc);
 			session_start();
 			$t =& $_SESSION['QKtest'];
@@ -43,10 +46,14 @@ class QuicKlick {
 		$t->name->setValue($name);
 		$t->totalPasses->setValue($iters);
 		$t->passed->setValue(false);
+		$fun =& new QKFunction;
+		$fun->code->setValue($this->funCode);
+		$fun->save();
+		$t->function->setTarget($fun);
 		if (!$t->save()) {echo DB::lastError();}
 		$_SESSION['QKtest'] =& $t;
 		for($i=0; $i<$iters; $i++){
-		$app->component->view->flushModifications();
+			$this->app->component->view->flushModifications();
 			$data = $this->getSendable($i);
 			$p =& new QKPass();
 			$p->number->setValue($i);
@@ -91,23 +98,25 @@ class QuicKlick {
 class QuicKlickReprise extends QuicKlick{
 	function QuicKlickReprise(&$test){
 		$_SESSION['QuicKlick']=&$this;
-		$this->iters = 1;
+		$this->iters = $test->passes->collection->size();
 		$this->name = $test->name->getValue();
 		$this->test =& $test;
 		$loc =pwb_url.'/QuicKlick/runqk.php' .
 				'?app_class='. app_class.
 				'&basedir='.basedir .
 				'&sid='.session_id();
-		$funOb = $test->function->getTarget();
-		$fun = eval($funOb->code->getValue());
+		$funOb =& $test->function->getTarget();
+		$fun =& $funOb->getFun();
 		$this->app=&$fun();
 		session_write_close();
+		SessionHandler::setHooks();
 		$res =  file_get_contents($loc);
 		session_start();
 		$t =& $_SESSION['QKtest'];
 		if ($t===null) return;
 		if (!$t->passed->getValue()){
 			$p =& $t->lastPass();
+			if($p===null )echo DB::lastSQL();
 			$p->output->setValue(addslashes($res));
 			$p->save();
 		}
@@ -116,6 +125,7 @@ class QuicKlickReprise extends QuicKlick{
 		$col =& $this->test->passes->collection;
 		$col->setCondition('number','=',$i);
 		$p =& $col->first();
+		$col->removeCondition('number');
 		return unserialize($p->parameters->getValue());
 	}
 }

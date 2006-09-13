@@ -10,6 +10,7 @@ define('pwbdir', dirname(dirname(__FILE__)));
 define('page_renderer', 'StandardPageRenderer');
 define('DBObject', 'MySQLdb');
 define('basedir', pwbdir.'/Install/BaseDirExample');
+define('pwb_url','http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])));
 require_once pwbdir.'/pwb.php';
 require_once 'QuicKlick.php';
 
@@ -26,7 +27,8 @@ function &create_logged_app(){
 	return $app;
 }
 
-$qc =& new QuicKlick('Start','create_app', 1, 5);
-$qc =& new QuicKlick('Logged','create_logged_app',2, 10);
+$qc =& new QuicKlick('Start','Application::restart();
+	return Application::getInstanceOf("DefaultCMSApplication");', 1, 5);
+//$qc =& new QuicKlick('Logged','create_logged_app',2, 10);
 
 ?>

@@ -8,23 +8,32 @@ class QuicKlickComponent extends Component {
 		$tl->dataType = 'QKtest';
 		$tl->fields = array('qkpass.number'=>'number','qkpass.output'=>'output');
 		$tl->tables = array('qktest INNER JOIN qkpass ON qkpass.test=qktest.id');
-		$tl->setCondition('qkpass.number','>=',' ALL (SELECT number FROM qkpass q WHERE q.test = qkpass.test)');
 		$tl->orderBy('timeStarted', 'DESC');
-		$tl->setCondition('passed','=', '0');
 		$cv = & new TestCollectionViewer($tl);
-		$this->addComponent($cv);
+		$this->addComponent($cv, 'tests');
 		$cv->pageSize->setValue(3);
 		$this->addComponent(new CommandLink(array (
 			'text' => 'Delete All tests',
 			'proceedFunction' => new FunctionObject($this,'deleteTests')
 		)));
+		$this->addComponent(new Label('Hide Succeded'));
+		$this->addComponent($cb=&new CheckBox(new ValueHolder($v=true)), 'hideSucceded');
+		$cb->addInterestIn('changed', new FunctionObject($this,'updateSelection'));
+		$this->updateSelection();
+	}
+	function updateSelection(){
+		if ($this->hideSucceded->getValue()){
+			$this->tests->col->setCondition('passed','=',  '0');
+		} else {
+			$this->tests->col->discardConditions();
+		}
+		$this->tests->col->setCondition('qkpass.number','>=',' ALL (SELECT number FROM qkpass q WHERE q.test = qkpass.test)');
+		$this->tests->refresh();
 	}
 	function deleteTests() {
-		$pl = & new PersistentCollection('QKpass');
 		$tl = & new PersistentCollection('QKtest');
-		$pl->map(lambda('&$t', '$t->delete()'));
-		$tl->map(lambda('&$t', '$t->delete()'));
-		$this->deleteTests();
+		$tl->collect('deleteTest()');
+		$this->tests->refresh();
 	}
 }
 
