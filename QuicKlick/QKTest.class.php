@@ -27,7 +27,8 @@ class QKTest extends PersistentObject{
 
 class QKFunction extends PersistentObject{
     function initialize() {
-    	$this->addField(new TextField(array('fieldName'=>'code')));
+    	$this->addField(new TextField(array('fieldName'=>'name', 'is_index'=>TRUE)));
+    	$this->addField(new TextArea(array('fieldName'=>'code')));
     }
     function getFun(){
     	return lambda('', $this->code->getValue());

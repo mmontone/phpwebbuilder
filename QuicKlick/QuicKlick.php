@@ -6,6 +6,7 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 require_once 'QuicKlick.class.php';
+require_once 'InputCreator.class.php';
 require_once 'QKTest.class.php';
 
 ?>

@@ -12,16 +12,29 @@ class QuicKlick {
 				'&sid='.session_id();
 		echo "<h1>$name starting at ".date($dateFormat)."</h1>";
 		$errors=0;
-		$this->funCode = $funCode;
-		$fun = lambda('',$funCode);
+		$fun =& QKFunction::getWithIndex('QKFunction',array('name'=>$name));
+		if ($fun==false){
+			$fun =& new QKFunction;
+			$fun->code->setValue($funCode);
+			$fun->name->setValue($name);
+			$fun->save();
+		}
+		$f = $fun->getFun();
+
 		for($i=0; $i<$iters; $i++){
-			$this->app=&$fun();
+			$this->app=&$f();
+			if (!is_a($this->app, 'Application')) {
+				echo getClass($this->app)." Cannot be tested";
+				exit;
+			}
 			session_write_close();
 			SessionHandler::setHooks();
 			$res =  file_get_contents($loc);
 			session_start();
 			$t =& $_SESSION['QKtest'];
-			if ($t===null || !$t->passed->getValue()){
+			$t->function->setTarget($fun);
+			$t->save();
+			if (!$t->passed->getValue()){
 				echo "error ".$res;
 				$p =& $t->lastPass();
 				$p->output->setValue(addslashes($res));
@@ -31,7 +44,7 @@ class QuicKlick {
 			echo "test $i ended at ".date($dateFormat);
 			echo "<hr/>";
 		}
-		echo "<script>window.title='Finished - $errors errors';</script>";
+		echo "<script>document.title='Finished - $errors errors';</script>";
 	}
 	function check(){
 		$this->checkApp($this->name, $this->iters);
@@ -46,10 +59,6 @@ class QuicKlick {
 		$t->name->setValue($name);
 		$t->totalPasses->setValue($iters);
 		$t->passed->setValue(false);
-		$fun =& new QKFunction;
-		$fun->code->setValue($this->funCode);
-		$fun->save();
-		$t->function->setTarget($fun);
 		if (!$t->save()) {echo DB::lastError();}
 		$_SESSION['QKtest'] =& $t;
 		for($i=0; $i<$iters; $i++){
@@ -116,10 +125,11 @@ class QuicKlickReprise extends QuicKlick{
 		if ($t===null) return;
 		if (!$t->passed->getValue()){
 			$p =& $t->lastPass();
-			if($p===null )echo DB::lastSQL();
 			$p->output->setValue(addslashes($res));
 			$p->save();
 		}
+		$t->function->setTarget($funOb);
+		$t->save();
 	}
 	function getSendable($i){
 		$col =& $this->test->passes->collection;
@@ -130,24 +140,6 @@ class QuicKlickReprise extends QuicKlick{
 	}
 }
 
-class InputGenerator extends PWBFactory{
-	function createInstanceFor(&$widget){
-		//return "";
-		return null;
-	}
-}
-
-class InputInputGenerator extends PWBFactory{
-	function createInstanceFor(&$widget){
-		return "admin";
-	}
-}
-
-class PasswordInputGenerator extends PWBFactory{
-	function createInstanceFor(&$widget){
-		return "PWB-Admin";
-	}
-}
 
 
 ?>
