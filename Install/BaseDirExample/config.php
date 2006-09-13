@@ -7,5 +7,6 @@ serverhost=localhost
 pwbdir=../
 baseprefix=
 debugview=false
+pwb_url=
 [global]
 */?>

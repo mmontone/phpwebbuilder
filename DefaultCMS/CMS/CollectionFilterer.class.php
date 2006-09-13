@@ -25,8 +25,8 @@ class CollectionFilterer extends PersistentObjectPresenter {
 		$cs =& $this->col;
 		$ks = array_keys($fs);
 		foreach($ks as $k){
-			$sc =& $this->fieldComponents[$k];
-			$sc->getSearchValue($cs, $k);
+			$sc =& $this->$k;
+			$sc->value->getSearchValue($cs, $k);
 		}
 		$this->callback('done');
 	}

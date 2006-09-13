@@ -16,6 +16,10 @@ class Report extends Collection{
 		$this->conditions[$this->parseField($field)]=array($comparator,$value);
 		$this->elements=null;
 	}
+	function removeCondition($field){
+		unset($this->conditions[$this->parseField($field)]);
+		$this->elements=null;
+	}
 	function size() {
 		$sql = 'SELECT COUNT(';
 		$g = $this->group();

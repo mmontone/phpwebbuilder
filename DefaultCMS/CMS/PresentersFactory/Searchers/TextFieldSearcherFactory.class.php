@@ -8,9 +8,9 @@ class TextFieldSearcherFactory extends SearcherFactory {
 
 class TextFieldSearcher extends DataFieldSearcher{
 	function setSearchValue(&$conds, $fname){
-		$this->comparator->setValue($conds[$fname][0]);
+		$this->comp = $conds[$fname][0];
 		$s = substr(substr($conds[$fname][1], 0, -1), 1);
-		$this->value->setValue($s);
+		$this->val = $s;
 	}
 	function getSearchValue(&$col, $fname){
 		if ($this->comparator->getValue()!="" ||
