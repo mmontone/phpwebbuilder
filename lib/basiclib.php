@@ -324,7 +324,7 @@ function &mdcall($function, $args) {
 		}
 	}
 
-
+	//echo 'Multiple dispatch: ' . $function . '(' . print_r($c, true) . ')<br/>';
 	$fname = _mdcall($function, $c, 0);
 
 	if ($fname != null) {
@@ -333,6 +333,7 @@ function &mdcall($function, $args) {
 			$params[$i] = '$args[' . $i . ']';
 		}
 
+		//echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
 	} else {
@@ -348,7 +349,7 @@ function _mdcall($function, $arg_types, $i) {
 			$fname .= '_' . strtoupper($arg_types[$j]);
 		}
 
-		echo 'Checking for ' . $fname . '</br>';
+		//echo 'Checking for ' . $fname . '</br>';
 		if (function_exists($fname)) {
 			return $fname;
 		}
