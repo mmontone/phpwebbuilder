@@ -16,9 +16,10 @@ class C {
 
 class B1 extends B {}
 
-class PruebaDispatch {}
+class PadreDispatch {}
+class PruebaDispatch extends PadreDispatch {}
 
-function test1_PRUEBADISPATCH() {
+function test1_PADREDISPATCH() {
 	return true;
 }
 

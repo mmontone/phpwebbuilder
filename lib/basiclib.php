@@ -317,10 +317,10 @@ function &mdcall($function, $args) {
 	for ($i = 0; $i < $n ; $i++) {
 		$argi =& $args[$i];
 		if (is_object($argi)) {
-			$c[$i] = strtoupper(get_class($argi));
+			$c[$i] = get_class($argi);
 		}
 		else {
-			$c[$i] = strtoupper(gettype($argi));
+			$c[$i] = gettype($argi);
 		}
 	}
 
@@ -345,10 +345,10 @@ function _mdcall($function, $arg_types, $i) {
 	if ($i == $n) {
 		$fname = $function;
 		for ($j = 0; $j < $n; $j++) {
-			$fname .= '_' . $arg_types[$j];
+			$fname .= '_' . strtoupper($arg_types[$j]);
 		}
 
-		//echo 'Checking for ' . $fname . '</br>';
+		echo 'Checking for ' . $fname . '</br>';
 		if (function_exists($fname)) {
 			return $fname;
 		}
@@ -360,7 +360,7 @@ function _mdcall($function, $arg_types, $i) {
 		$fname = _mdcall($function, $arg_types, $i + 1);
 		$parent = get_parent_class($arg_types[$i]);
 		while (($fname == null) and $parent) {
-			$arg_types[$i] = strtoupper($parent);
+			$arg_types[$i] = $parent;
 			$fname = _mdcall($function, $arg_types, $i + 1);
 			$parent = get_parent_class($arg_types[$i]);
 		}
