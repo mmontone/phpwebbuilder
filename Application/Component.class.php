@@ -31,6 +31,8 @@ class Component extends PWBObject
 			$child =& $this->__children[$c]->component;
 			if ($child!=null)$child->stopAll();
 		}
+		if ($this->listener != null)
+			$this->listener->releaseAll();
 	}
 
 	function release() {
