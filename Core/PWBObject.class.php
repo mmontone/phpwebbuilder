@@ -18,7 +18,6 @@ class PWBObject
 	 */
     function PWBObject($params=array()) {
 		PWBInstanceIdAssigner::assignIdTo($this);
-		//if (!is_array($params)) print_backtrace();
 		$this->creationParams = array_merge($this->defaultValues($params),$params);
 		if (!isset($params['dontCreateInstance'])){
 			$this->createInstance($this->creationParams);
@@ -27,12 +26,21 @@ class PWBObject
 	/**
 	 * Comparing
 	 */
+	 /**
+	 *  Returns if the object has the specified class
+	 */
 	function isA($class) {
 		return getClass($this) == $class;
 	}
+	/**
+	 *  Returns if the object is the same as the parameter, or a copy
+	 */
 	function equalTo(&$other_pwb_object) {
 		return $this->__instance_id == $other_pwb_object->__instance_id;
 	}
+	/**
+	 *  Returns if the object is the same as the parameter
+	 */
 	function is(&$other_pwb_object){
 		$ok = $this->equalTo($other_pwb_object);
 		$realid = $this->__instance_id;
@@ -41,10 +49,20 @@ class PWBObject
 		$this->__instance_id = $realid;
 		return $ok && $ok2;
 	}
+	/**
+	 * Performs the needed actions to create a consistent instance
+	 */
 	function createInstance($params){}
+	/**
+	 * Returns the default initialization values of the object
+	 */
 	function defaultValues($params){return array();}
 
     /* Events mechanism */
+	/**
+	 * Adds a listener for each of the selector=>callback elements of the array,
+	 * for the specified listener
+	 */
 
     function &addEventListener($event_specs, &$listener) {
         $handles = array();
@@ -59,6 +77,9 @@ class PWBObject
 
         return $handles;
     }
+	/**
+	 * Adds a listener for the event, with the specified callback function
+	 */
 
     function &addInterestIn($event, &$function) {
     	if (!isset($this->event_listeners[$event])) {
@@ -70,21 +91,32 @@ class PWBObject
     	$function->target->registerEventHandle($handle);
        	return $handle;
     }
+	/**
+	 * Registers a callback for the changed event
+	 */
 
     function onChangeSend($call_back_selector, & $listener) {
 		$this->addEventListener(array (
 			'changed' => $call_back_selector
 		), $listener);
 	}
+	/**
+	 * Triggers a changed event
+	 */
 
 	function changed() {
 		$this->triggerEvent('changed', $this);
 	}
-
+	/**
+	 * Registers a handle for the event
+	 */
 
     function registerEventHandle(&$handle) {
     	$this->event_handles[$handle['target']->__instance_id][$handle['event']] =& $handle;
     }
+	/**
+	 * Removes the listener associated with the handle.
+	 */
 
     function retractInterest(&$handle) {
     	unset($this->event_listeners[$handle['event']][$handle['handle']]);
@@ -92,6 +124,9 @@ class PWBObject
     		unset($this->event_listeners[$handle['event']]);
     	}
     }
+	/**
+	 * Releases the handle, and removes the interest
+	 */
 
     function releaseHandle(&$handle) {
     	$target =& $handle['target'];
@@ -101,6 +136,9 @@ class PWBObject
 		}
     	$target->retractInterest($handle);
     }
+	/**
+	 * Triggers the event, notifying all listeners of the selector
+	 */
 
     function triggerEvent($event_selector, &$params) {
         trigger_error('Triggering event: ' . $event_selector);
@@ -120,6 +158,10 @@ class PWBObject
 	/**
 	 * Event Handlres
 	 */
+	/**
+	 * Removes all the listeners and the handles of the object
+	 */
+
 	function release() {
 		foreach(array_keys($this->event_handles) as $t) {
 			$target =& $this->event_handles[$t];
@@ -139,6 +181,9 @@ class PWBObject
 			}
 		}
 	}
+	/**
+	 * Removes the hadler associated with the listener and selector
+	 */
 
 	function retractInterestIn($event_selector, &$listener) {
     	$listeners =& $this->event_listeners[$event_selector];
@@ -168,7 +213,7 @@ class PWBObject
     }
 
         /* Useful methods */
-
+	/** Returns a copy of the object */
     function &copy() {
 		$class = getClass($this);
 		$copy =& new $class;
@@ -181,28 +226,32 @@ class PWBObject
 
 		return $copy;
     }
-
+	/** Returns if the receiver is an Ancestor of the parameter */
     function isAncestorOf(&$object) {
     	return in_array(getClass($this), get_superclasses(getClass($object)));
 	}
-
+	/** Returns if the receiver is a descendant of the parameter */
     function isDescendantOf(&$object) {
 		return $object->isAncestorOf($this);
     }
 
-
+	/** Visitor */
     function visit(&$obj) {
         $method_name = 'visited' . $this->getClass();
         $obj->$method_name($this);
     }
-
+	/**
+	 * Helper method for template methods
+	 */
     function subclassResponsibility($method_name) {
         trigger_error('Subclass responsibility');
         //debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
         print_backtrace('Subclass responsibility: ' . $method_name);
         exit;
     }
-
+	/**
+	 * Overloading
+	 */
     function _call($message, $arguments) {
         trigger_error('Message not understood: ' . $message);
         debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
