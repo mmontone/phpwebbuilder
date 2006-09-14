@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Encapsulates a method from an object
+ */
 class FunctionObject
 {
     var $target;
@@ -14,6 +16,7 @@ class FunctionObject
 
     function call() {
       	$method_name = $this->method_name;
+      	$ret = '';
        	eval('$ret =& '. $this->callString($method_name) . '($this->params);');
        	return $ret;
     }
@@ -24,7 +27,9 @@ class FunctionObject
     	else
        		return '$this->target->' . $method;
     }
-
+	/**
+	 *  Permission checking
+	 */
 	function hasPermissions(){
 		$m = $this->method_name;
 		$msg = 'check'.ucfirst($m).'Permissions';
@@ -37,6 +42,7 @@ class FunctionObject
 
     function callWith(&$params) {
 		$method_name = $this->method_name;
+		$ret ='';
         if (empty($this->params)) {
         	eval('$ret =& '. $this->callString($method_name) . '($params);');
         	return $ret;
@@ -49,6 +55,7 @@ class FunctionObject
 
     function callWithWith(&$param1, &$param2) {
     	$method_name = $this->method_name;
+    	$ret ='';
     	if (empty($this->params)) {
         	eval('$ret =& '. $this->callString($method_name) . '($param1, $param2);');
         	return $ret;

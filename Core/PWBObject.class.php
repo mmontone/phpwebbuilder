@@ -2,10 +2,8 @@
 
 class PWBObject
 {
-    var $service_request_handlers;
     var $event_listeners = array();
     var $listener_handle = 1;
-    var $service_request_listeners;
     var $config;
     var $__instance_id;
 	var $creationParams;
@@ -15,6 +13,9 @@ class PWBObject
 	 * Special var, for get_subclass
 	 */
 	var $isClassOfPWB = true;
+	/**
+	 * Creation
+	 */
     function PWBObject($params=array()) {
 		PWBInstanceIdAssigner::assignIdTo($this);
 		//if (!is_array($params)) print_backtrace();
@@ -23,32 +24,12 @@ class PWBObject
 			$this->createInstance($this->creationParams);
 		}
 	}
+	/**
+	 * Comparing
+	 */
 	function isA($class) {
 		return getClass($this) == $class;
 	}
-
-	function createInstance($params){}
-	function defaultValues($params){return array();}
-	function release() {
-		foreach(array_keys($this->event_handles) as $t) {
-			$target =& $this->event_handles[$t];
-			foreach(array_keys($target) as $h) {
-				$handle =& $target[$h];
-				$this->releaseHandle($handle);
-			}
-		}
-		foreach(array_keys($this->event_listeners) as $s) {
-			$selector =& $this->event_listeners[$s];
-			if(is_array($selector)){
-				foreach(array_keys($selector) as $h) {
-					$function =& $selector[$h];
-			    	$handle = array('event' => $s, 'handle' => $h, 'target' => &$this);
-			    	$function->target->releaseHandle($handle);
-				}
-			}
-		}
-	}
-
 	function equalTo(&$other_pwb_object) {
 		return $this->__instance_id == $other_pwb_object->__instance_id;
 	}
@@ -60,52 +41,8 @@ class PWBObject
 		$this->__instance_id = $realid;
 		return $ok && $ok2;
 	}
-	function retractInterestIn($event_selector, &$listener) {
-    	$listeners =& $this->event_listeners[$event_selector];
-
-		reset($listeners);
-		$match = false;
-
-		while (!$match && (list($key, $array_obj) = each($listeners))) {
-		 	$match = $array_obj['listener']->equalTo($listener);
-		 	next($listeners);
-		}
-
-
-		if (!$match) {
-			print_backtrace('Fatal error removing listener');
-			print_r($listeners);
-			exit;
-		}
-
-		while (list($next_key, $array_obj) = each($listeners)) {
-			$listeners[$key] =& $listeners[$next_key];
-			$key = $next_key;
-			next($listeners);
-		}
-
-		unset($listeners[$key]);
-    }
-
-    /* Useful methods */
-
-    function visit(&$obj) {
-        $method_name = 'visited' . $this->getClass();
-        $obj->$method_name($this);
-    }
-
-    function subclassResponsibility($method_name) {
-        trigger_error('Subclass responsibility');
-        //debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
-        print_backtrace('Subclass responsibility: ' . $method_name);
-        exit;
-    }
-
-    function _call($message, $arguments) {
-        trigger_error('Message not understood: ' . $message);
-        debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
-        exit;
-    }
+	function createInstance($params){}
+	function defaultValues($params){return array();}
 
     /* Events mechanism */
 
@@ -180,63 +117,57 @@ class PWBObject
         	$i++;
         }
     }
+	/**
+	 * Event Handlres
+	 */
+	function release() {
+		foreach(array_keys($this->event_handles) as $t) {
+			$target =& $this->event_handles[$t];
+			foreach(array_keys($target) as $h) {
+				$handle =& $target[$h];
+				$this->releaseHandle($handle);
+			}
+		}
+		foreach(array_keys($this->event_listeners) as $s) {
+			$selector =& $this->event_listeners[$s];
+			if(is_array($selector)){
+				foreach(array_keys($selector) as $h) {
+					$function =& $selector[$h];
+			    	$handle = array('event' => $s, 'handle' => $h, 'target' => &$this);
+			    	$function->target->releaseHandle($handle);
+				}
+			}
+		}
+	}
 
-    /* Services mechanism */
+	function retractInterestIn($event_selector, &$listener) {
+    	$listeners =& $this->event_listeners[$event_selector];
 
-    function addServiceRequestHandler($service_name, $handler_function) {
-        $this->service_request_handlers[$service_name] = $handler_function;
+		reset($listeners);
+		$match = false;
+
+		while (!$match && (list($key, $array_obj) = each($listeners))) {
+		 	$match = $array_obj['listener']->equalTo($listener);
+		 	next($listeners);
+		}
+
+
+		if (!$match) {
+			print_backtrace('Fatal error removing listener');
+			print_r($listeners);
+			exit;
+		}
+
+		while (list($next_key, $array_obj) = each($listeners)) {
+			$listeners[$key] =& $listeners[$next_key];
+			$key = $next_key;
+			next($listeners);
+		}
+
+		unset($listeners[$key]);
     }
 
-    function addServiceRequestListener(&$listener) {
-    	array_push($this->service_request_listeners, $listener);
-    }
-
-
-    function triggerServiceRequest(&$service_request, &$result) {
-        reset($this->service_request_listeners);
-        $service_request_handled = false;
-        while($listener = next($this->service_request_listeners) && !$service_request_handled) {
-            $service_request_handled = $listener->handleServiceRequest($service_request, $result);
-        }
-
-        if (!$service_request_handled) {
-            trigger_error('Error: ' . $service_request->id . ' couldn\'t be handled');
-        }
-        else {
-            return true;
-        }
-    }
-
-    function handleServiceRequest(&$service_request, &$result) {
-        if (array_key_exists($service_request->id, array_keys($this->service_request_handlers))) {
-            $handler = $this->handled_services($service_request->id);
-            $result =& $this->$handler($service_request);
-            return true;
-        }
-        else {
-            return $this->triggerServiceRequest($service_request, $result);
-        }
-    }
-
-
-    /* Parameters management */
-
-    function readParam($key, &$params) {
-        if (!array_key_exists($key, $params)) {
-           trigger_error("$key parameter not passed");
-           debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
-           exit;
-        }
-
-        return $params[$key];
-    }
-
-    function &defaultParamValue(&$param, $value) {
-        if ($param == null)
-            return $value;
-        else
-            return $param;
-    }
+        /* Useful methods */
 
     function &copy() {
 		$class = getClass($this);
@@ -258,6 +189,27 @@ class PWBObject
     function isDescendantOf(&$object) {
 		return $object->isAncestorOf($this);
     }
+
+
+    function visit(&$obj) {
+        $method_name = 'visited' . $this->getClass();
+        $obj->$method_name($this);
+    }
+
+    function subclassResponsibility($method_name) {
+        trigger_error('Subclass responsibility');
+        //debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
+        print_backtrace('Subclass responsibility: ' . $method_name);
+        exit;
+    }
+
+    function _call($message, $arguments) {
+        trigger_error('Message not understood: ' . $message);
+        debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
+        exit;
+    }
+
+
 }
 
 

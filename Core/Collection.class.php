@@ -2,9 +2,17 @@
 
 class Collection extends PWBObject{
 	var $elements=array();
+	/**
+	 * Fields from the objects contained
+	 */
 	var $fields=array();
+	/** element count for pagination */
 	var $limit = 0;
+	/** starting pointfor pagination */
 	var $offset = 0;
+	/**
+	 * Returns the size of the collection
+	 */
 	function size(){
 		return count($this->elements);
 	}
@@ -14,13 +22,22 @@ class Collection extends PWBObject{
 	function isEmpty(){
 		return $this->size()==0;
 	}
+	/**
+	 *  Returns the first element of the collection, or null if it's empty
+	 */
 	function &first(){
 		return $this->at(0);
 	}
+	/**
+	 *  Returns the element of the collection at specified position, or null
+	 */
 	function &at($pos){
 		$es =& $this->elements();
 	    return $es[$pos];
 	}
+	/**
+	 *  Returns the index of the first element equal to the parameter
+	 */
 	function indexOf(&$elem){
 		$es =& $this->elements();
 		$ks = array_keys($es);
@@ -38,9 +55,15 @@ class Collection extends PWBObject{
 		delete_lambda($f);
 		return -1;
 	}
+	/**
+	 *  Is the element in the collection?
+	 */
 	function includes(&$elem){
 		return $this->indexOf($elem) != -1;
 	}
+	/**
+	 *  Returns an array of object, taking into account the offset and limit
+	 */
 	function &elements(){
 		if ($this->limit!=0){
 			$e = $this->elements;
@@ -49,11 +72,17 @@ class Collection extends PWBObject{
 			return $this->elements;
 		}
 	}
+	/**
+	 *  Adds an element to the end of the collection
+	 */
 	function add(&$elem){
 		$es =& $this->elements();
 	    $es[]=&$elem;
 	    $this->triggerEvent('changed', $elem);
 	}
+	/**
+	 *  Returns the last element of the collection and removes it
+	 */
 	function &pop(){
 		if ($this->isEmpty()) {
 			return null;
@@ -67,43 +96,59 @@ class Collection extends PWBObject{
 		$this->triggerEvent('changed', $elem);
 		return $elem;
 	}
-
+	/**
+	 *  Returns the last element of the collection and removes it
+	 */
 	function &removeLast() {
 		return $this->pop();
 	}
-
+	/**
+	 *  Returns the first element of the collection and removes it
+	 */
 	function &shift(){
 		$es =& $this->elements();
 		$ks = array_keys($es);
 		$pos = $ks[0];
 		$elem =& $es[$pos];
-		unset($es[$this->size()-1]);
+		unset($es[$pos]);
 		$this->triggerEvent('changed', $elem);
 		return $elem;
 	}
-
+	/**
+	 *  Adds an element to the end of the collection
+	 */
 	function push(&$elem){
 		$this->add($elem);
 	}
-
-	function addFirst(&$elem) {
+	/**
+	 *  Adds an element to the end of the collection
+	 */
+	/*function addFirst(&$elem) {
 		$this->push(&$elem);
-	}
-
+	}*/
+    /**
+	 *  Returns a collection with the result of applying the function to
+	 * each element
+	 */
 	function &map($func){
-		$res =& $this->foldr(new Collection, $f = lambda('&$col,&$elem',
+		$res =& $this->foldl(new Collection, $f = lambda('&$col,&$elem',
 			'$col->add($func($elem)); return $col;', get_defined_vars()));
 		delete_lambda($f);
 		return $res;
-
 	}
+	/**
+	 *  Returns a collection of the elements that satisfy the predicate
+	 */
 	function &filter($pred){
-		$res =& $this->foldr(new Collection, $f = lambda('&$col,&$elem',
+		$res =& $this->foldl(new Collection, $f = lambda('&$col,&$elem',
 			'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
 		delete_lambda($f);
 		return $res;
 	}
-	function &foldr(&$z, $f){
+	/**
+	 *  If you dont' know foldl, then don't use it
+	 */
+	function &foldl(&$z, $f){
 		$acc =& $z;
 		$es =& $this->elements();
 		$ks = array_keys($es);
@@ -112,6 +157,26 @@ class Collection extends PWBObject{
 		}
 		return $acc;
 	}
+	/**
+	 *  If you dont' know foldr, then don't use it
+	 */
+	function &foldr(&$z, $f){
+		$col =&$this->reverse();
+		return $col->foldl($z, $f);
+	}
+	/**
+	 *  Returns a collection with the elements in the reverse order
+	 */
+	function &reverse(){
+		$es =& $this->elements();
+		$c =& new Collection();
+		$c->elements = array_reverse($es);
+		return $c;
+	}
+	/**
+	 *  Returns a collection of applying the messages to the object.
+	 *  See lib/basiclib.php/apply_messages() for further reference.
+	 */
 	function &collect($mess){
 		$res =& $this->map(
 				$f = lambda('&$e', 'return apply_messages($e,$mess);', get_defined_vars())
@@ -119,21 +184,36 @@ class Collection extends PWBObject{
 		delete_lambda($f);
 		return $res;
 	}
+	/**
+	 *  Returns an array representation of the collection
+	 */
 	function &toArray(){
 		return $this->elements();
 	}
+	/**
+	 *  Adds all of the elements of the array to the collection
+	 */
 	function addAll($arr){
 		$ks = array_keys($arr);
 		foreach($ks as $k){
 			$this->add($arr[$k]);
 		}
 	}
+	/**
+	 *  Adds all of the elements of the collection to this collection
+	 */
 	function concat(&$col){
 		$this->addAll($col->elements());
 	}
+	/**
+	 *  Returns the Type of the elements of the collection
+	 */
 	function getDataType(){
 		return '';
 	}
+	/**
+	 *  Reloads the colelction from it's source
+	 */
 	function refresh(){}
 }
 ?>
