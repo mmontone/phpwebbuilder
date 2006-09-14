@@ -118,7 +118,7 @@ class PersistentObjectTableCheckView {
 	}
 	function uniques() {
 		$table = $this->obj->tablename();
-		$ifs =& $this->obj->findIndexField();
+		$ifs =& $this->obj->allIndexFields();
 		$unis=array();
 		foreach ($this->obj->indexFields as $i){
 			$f =& $ifs[$i];

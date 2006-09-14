@@ -21,7 +21,7 @@ class MenuSection extends PersistentObject {
 		if (!isset($this->itemsVisible)){
 		    $col =& $this->items->collection;
 		    $col->limit=0;
-		    $menus0 =& $col->objects();
+		    $menus0 =& $col->elements();
 		    unset($col);
 		    $menus = array();
 		    $ks = array_keys($menus0);
@@ -41,7 +41,7 @@ class MenuSection extends PersistentObject {
 	function &availableMenus(){
 		$col =& new PersistentCollection('MenuSection');
 	    $col->limit=0;
-		$col2 =& $col->objects();
+		$col2 =& $col->elements();
 		unset($col);
 		$menus = array();
 		for($i=0; $i<count($col2); $i++){

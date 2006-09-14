@@ -211,21 +211,6 @@ class PWBObject
 
 		unset($listeners[$key]);
     }
-
-        /* Useful methods */
-	/** Returns a copy of the object */
-    function &copy() {
-		$class = getClass($this);
-		$copy =& new $class;
-
-		// If this fails then it means that the PWBObject constructor is not being called
-		assert($copy->__instance_id != $this->__instance_id);
-
-		// Don't share the listeners
-		$copy->event_listeners = array();
-
-		return $copy;
-    }
 	/** Returns if the receiver is an Ancestor of the parameter */
     function isAncestorOf(&$object) {
     	return in_array(getClass($this), get_superclasses(getClass($object)));

@@ -83,9 +83,6 @@ class CollectionField extends DataField {
 	function loadFrom(& $reg) {
 		return true;
 	}
-	function & objects() {
-		return $this->elements();
-	}
 	function & elements() {
 		return $this->collection->elements();
 	}

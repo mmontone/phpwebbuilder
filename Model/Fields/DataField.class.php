@@ -175,19 +175,6 @@ class DataField extends ValueModel {
 	function isEmpty() {
 		return $this->getValue() == '';
 	}
-
-	function &copy() {
-		/* Be aware that we don't copy the owner */
-		$copy =& parent::copy();
-
-		$copy->colName = $this->colName;
-		$copy->value = $this->value;
-		$copy->buffered_value = $this->buffered_value;
-		$copy->isIndex = $this->isIndex;
-		$copy->displayString = $this->displayString;
-
-		return $copy;
-	}
 }
 
 ?>

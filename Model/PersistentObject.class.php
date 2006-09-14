@@ -182,7 +182,7 @@ class PersistentObject extends DescriptedObject {
 
 	function indexValues() {
 		$ret = "";
-		$idFields = $this->findIndexField();
+		$idFields = $this->allIndexFields();
 		foreach ($idFields as $index => $field) {
 			$ret .= $field->viewValue() . ", ";
 		}
@@ -200,7 +200,7 @@ class PersistentObject extends DescriptedObject {
 				"=",
 				$id
 			);
-			$objs = & $col->objects();
+			$objs = & $col->elements();
 			$cant = count($objs);
 			if ($cant > 0)
 				break;
@@ -216,7 +216,8 @@ class PersistentObject extends DescriptedObject {
 	}
 	function & createInstance() {
 		if ($this->isNotTopClass($this)) {
-			$this->setParent($this->create(get_parent_class(getClass($this))));
+			$c = get_parent_class(getClass($this));
+			$this->setParent(new $c);
 		}
 		$this->basicInitialize();
 		return $this;

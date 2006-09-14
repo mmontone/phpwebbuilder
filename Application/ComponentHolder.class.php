@@ -27,12 +27,6 @@ class ComponentHolder
 		$this->component =& $component;
 	}
 
-    function &copy_for_backtracking() {
-        /* PHP4 */
-        $my_copy = $this;
-        $my_copy->component = $this->component->copy_for_backtracking();
-        return $my_copy;
-    }
     function getRealId(){
     	if (!$this->realId)
 	   		$this->realId = implode(array($this->parent->getId(),CHILD_SEPARATOR,$this->__owner_index));

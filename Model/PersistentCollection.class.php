@@ -49,57 +49,9 @@ class PersistentCollection extends Report{
 		$this->triggerEvent('changed', $n=null);
 	}
 
-	/* Deprecated */
-	function &objects() {
-		return $this->elements();
-	}
-
 	function & getObj($id) {
 		return PersistentObject::getWithId($this->dataType, $id);
 	}
-
-	function toArray() {
-		$objs = $this->objects();
-		$arr = array ();
-		foreach ($objs as $obj) {
-			$arr[] = $obj->toArray();
-		}
-		return $arr;
-	}
-
-	function toPlainArray() {
-		$arr = array (
-			"offset" => $this->offset,
-			"limit" => $this->limit,
-			"dataType" => $this->dataType,
-			"order" => $this->order,
-			"conditions" => ereg_replace("\"",
-			"%22",
-			ereg_replace("\'",
-			"%27",
-			ereg_replace("%",
-			"%25",
-			serialize($this->conditions
-		)))), "ObjType" => getClass($this));
-		return $arr;
-	}
-
-	/*------------- new ----------------*/
-
-/*
-	function fetchElements($offset, $limit, $order, $conditions='1=1') {
-		$obj = & new $this->dataType;
-		$sql = 'SELECT ' . $obj->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE ' . $conditions .
-				$order . ' LIMIT ' . $limit . $offset;
-		$db =& DB::Instance();
-		$reg = $db->SQLExec($sql, FALSE, $this);
-		$col = array ();
-		while ($data = $db->fetchrecord($reg)) {
-			$obj = & PersistentObject :: getWithId($this->dataType, $data['id']);
-			$col[] = & $obj;
-		}
-		return $col;
-	}*/
 
 	function getSize($conditions='1=1') {
 		$obj = & new $this->dataType;

@@ -1,18 +1,34 @@
 <?php
 
 class DescriptedObject extends PWBObject {
+	/**
+	 * Parent of the object (inheritance-wise)
+	 */
 	var $parent = NULL;
-
+	/**
+	 * Names of the fields of the object
+	 */
     var $fieldNames = array ();
-
+	/**
+	 * Names of the index fields of the object
+	 */
 	var $indexFields = array ();
-
+	/**
+	 * Nice looking name for the object's class
+	 */
 	var $displayString;
-
+	/**
+	 * If the object was modified. Defaults to true
+	 * (the object was modified, as it was created)
+	 */
 	var $modified = true;
-
+	/**
+	 * Validation errors for the object
+	 */
 	var $validation_errors = array();
-
+	/**
+	 * Commits the changes to each field.
+	 */
 	function commitChanges() {
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
@@ -21,9 +37,16 @@ class DescriptedObject extends PWBObject {
 		$this->modified = false;
 		$this->triggerEvent('changes_committed', $this);
 	}
+	/**
+	 * Prints a visual representation of the object (the values of
+	 * it's index fields)
+	 */
 	function printString(){
 		return $this->indexValues();
 	}
+	/**
+	 * Removes all changes made to the object
+	 */
 	function flushChanges() {
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
@@ -31,14 +54,15 @@ class DescriptedObject extends PWBObject {
 		}
 		$this->modified = false;
 	}
-
+	/**
+	 * Returns if the object was modified
+	 */
 	function isModified() {
 		return $this->modified;
 	}
-
-	function & create($class) {
-		return new $class;
-	}
+	/**
+	 * Initializes the default fields for the object
+	 */
 	function basicInitialize() {
 		$this->addField(new idField("id", FALSE));
 		$this->addField(new VersionField("PWBversion", FALSE));
@@ -53,14 +77,14 @@ class DescriptedObject extends PWBObject {
 
 		$this->initialize();
 	}
-
+	/**
+	 * Initializes the fields for the object
+	 */
 	function initialize(){}
 
-    function updateFields() {
-    	$this->table = $this->table_field->getValue();
-    	$this->displayString = $this->display_field->getValue();
-    }
-
+	/**
+	 * Loads the object's values from an associative array
+	 */
     function loadFrom(&$reg) {
 		if ($this->isNotTopClass($this)){
 			$this->parent->loadFrom($reg);
@@ -82,20 +106,28 @@ class DescriptedObject extends PWBObject {
 			return true;
 		}
 	}
-
+	/**
+	 * Returns if the object is not a top class (that is, it's direct superclass is not persistent or descripted object)
+	 */
 	function isNotTopClass(& $class) {
 		$cn = strtolower(get_parent_class($class));
 		return (strcmp($cn, 'persistentobject') != 0 && strcmp($cn, 'descriptedobject') != 0);
 	}
-
+	/**
+	 * Returns this level's field (inheritance-wise)
+	 */
     function & allFieldsThisLevel() {
 		return $this->fieldsWithNames($this->allFieldNamesThisLevel());
 	}
-
+	/**
+	 * Returns all the fields
+	 */
 	function & allFields() {
 		return $this->fieldsWithNames($this->allFieldNames());
 	}
-
+	/**
+	 * Returns the fields with specified names
+	 */
 	function & fieldsWithNames($names) {
 		$arr = array ();
 		foreach ($names as $name) {
@@ -108,7 +140,9 @@ class DescriptedObject extends PWBObject {
 		}
 		return $arr;
 	}
-
+	/**
+	 * Returns all the field names
+	 */
 	function allFieldNames() {
 		if ($this->isNotTopClass(getClass($this))) {
 			if ($this->parent == null)
@@ -120,7 +154,9 @@ class DescriptedObject extends PWBObject {
 			return $this->allFieldNamesThisLevel();
 		}
 	}
-
+	/**
+	 * Returns all the index field's names
+	 */
 	function allIndexFieldNames() {
 		if ($this->isNotTopClass(getClass($this))) {
 			if ($this->parent == null)
@@ -131,36 +167,44 @@ class DescriptedObject extends PWBObject {
 			return $this->indexFields;
 		}
 	}
-
+	/**
+	 * Returns all the index field's
+	 */
 	function & allIndexFields() {
 		return $this->fieldsWithNames($this->allIndexFieldNames());
 	}
-
+	/**
+	 * Returns this level's field names (inheritance-wise)
+	 */
 	function allFieldNamesThisLevel() {
 		return $this->fieldNames;
 	}
-
+	/**
+	 * sets the field with the name
+	 */
+	function setField($name, & $field) {
+		$this-> $name = & $field;
+	}
+	/**
+	 * Returns the field with specified name
+	 */
 	function & fieldNamed($name) {
 		$f = & $this-> $name;
 		return $f;
 	}
-
-	function setField($name, & $field) {
-		$this-> $name = & $field;
-	}
-
-	function & getField($f) {
-		return $this-> $f;
-	}
-
+	/**
+	 * Returns the fields with specified names
+	 */
 	function & getFields($fs) {
 		$arr = array ();
 		foreach ($fs as $f) {
-			$arr[] = & $this->getField($f);
+			$arr[] = & $this->fieldNamed($f);
 		}
 		return $arr;
 	}
-
+	/**
+	 * Adds a field to the object
+	 */
 	function addField(& $field) {
 		$name = $field->colName;
 		$this-> $name = & $field;
@@ -172,30 +216,34 @@ class DescriptedObject extends PWBObject {
 
 		$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
 	}
-
+	/**
+	 * Registers that the field was changed
+	 */
 	function fieldChanged(& $field) {
 		$this->modified = true;
 		$this->triggerEvent('changed', $this);
 	}
-
-	function & findIndexField() {
-		return $this->allIndexFields();
-	}
-	function & field($s) {
-		return $this-> $s;
-	}
+	/**
+	 * Returns the id of the field
+	 */
 	function fieldID($s) {
 		return $s;
 	}
-
+	/**
+	 * Visitor
+	 */
 	function & visit(& $visitor) {
 		return $this->accept($visitor);
 	}
-
+	/**
+	 * Visitor
+	 */
 	function accept(&$visitor) {
 		return $visitor->visitedPersistentObject($this);
 	}
-
+	/**
+	 * Checks if the fields with the specified names are not empty
+	 */
 	function checkNotEmpty($fields) {
 		$ret = false;
 		$ex = array();
@@ -206,7 +254,11 @@ class DescriptedObject extends PWBObject {
 		}
 		return $ret;
 	}
-
+	/**
+	 * Checks if the field with the specified name is not
+	 * empty, and returns a validationException with the message
+	 * otherwise
+	 */
 	function checkNotEmptyField($field, $message) {
 		if ($this->$field->isEmpty()) {
 			$this->$field->requiredButEmpty();
@@ -223,7 +275,9 @@ class DescriptedObject extends PWBObject {
 	function check_not_null($fields, & $error_msgs) {
 		return $this->checkNotEmpty($fields);
 	}
-
+	/**
+	 * Checks if at least one of the fields with these names is not empty
+	 */
 	function checkOneOf($field_names, $error_msg) {
 		$ret = false;
 
@@ -240,24 +294,32 @@ class DescriptedObject extends PWBObject {
 
 		return false;
 	}
-
+	/**
+	 * Validates each fields, and validates the object's specific restrictions
+	 */
 	function validateAll() {
 		$this->validateObject();
 		$this->validateFields();
 
 		return !empty($this->validation_errors);
 	}
-
+	/**
+	 * validates the object, and return if it's valid
+	 */
 	function validateObject() {
 		$this->beValid();
 		$this->validate();
 		return $this->isValid();
 	}
-
+	/**
+	 * Checks if there are any validation errors
+	 */
 	function isValid() {
 		return empty($this->validation_errors);
 	}
-
+	/**
+	 * Removes all validation errors
+	 */
 	function beValid() {
 		$n = array();
 		$this->validation_errors =& $n;
@@ -267,7 +329,9 @@ class DescriptedObject extends PWBObject {
 			$field->validated();
 		}
 	}
-
+	/**
+	 * Validates each field
+	 */
 	function validateFields() {
 		$ret = true;
 
@@ -279,7 +343,9 @@ class DescriptedObject extends PWBObject {
 
 		return $ret;
 	}
-
+	/**
+	 * Validates the field. Returns if it's valid
+	 */
 	function validateField($field_name) {
 		$field =& $this->fieldNamed($field_name);
 		if ($ex =& $field->validate()) {
@@ -289,90 +355,15 @@ class DescriptedObject extends PWBObject {
 
 		return true;
 	}
-
+	/**
+	 * Returns an exception, or false if there was no error
+	 */
 	function validate() {
 		return false;
 	}
-
-	/* Population */
-	function populate($form, & $error_msgs) {
-		$success = true;
-		foreach ($this->allFieldNames() as $index) {
-			// Populate the object "allFields()"
-			$field = & $this-> $index;
-			$success = $success && $this->populateField($field, $form, $error_msgs);
-		}
-		// Check object
-		$success = $success && $this->obj->validate(& $error_msgs);
-		//if (!$success) trace(print_r($error_msgs, TRUE));
-		return $success;
-	}
-
-	function populateField(& $field, & $form, & $error_msgs) {
-		// Checks the field data
-		if (!$field->populate($form)) {
-			$error_msgs[$field->colName] = "The " . $field->colName . " is invalid";
-			return false;
-		}
-		return true;
-	}
-
-	function toArray() {
-		$arr = array ();
-		foreach ($this->allFields() as $index => $field) {
-			$arr[$index] = $field->toArrayValue();
-		}
-		return $arr;
-	}
-
-	/* Helper methods for fields addition */
-
-	function addTextField($name, $params = array ()) {
-		$this->addField(new TextField($name, $params));
-	}
-
-	function addPasswordField($name, $params = array ()) {
-		$this->addField(new PasswordField($name, $params));
-	}
-
-	function addTextArea($name, $params = array ()) {
-		$this->addField(new TextArea($name, $params));
-	}
-
-	function addIndexField($name, $params = array ()) {
-		$params['is_index'] = true;
-		$this->addField(new IndexField($name, $params));
-	}
-
-	function addCollectionField($name, $params = array ()) {
-		$this->addField(new CollectionField($name, $params));
-	}
-
-	function addNumField($name, $params = array ()) {
-		$this->addField(new NumField($name, $params));
-	}
-
-	function addBoolField($name, $params = array ()) {
-		$this->addField(new BoolField($name, $params));
-	}
-
-	function &copy() {
-		$copy =& parent::copy();
-
-		$copy->table = $this->table;
-
-		// Not sure about copying children and parent
-		if ($this->parent != null)
-			$copy->parent =& $this->parent->copy();
-
-		foreach($this->allFieldsThisLevel() as $field) {
-			$copy->addField($field->copy());
-		}
-
-		$copy->displayString = $this->displayString;
-
-		return $copy;
-	}
+    /**
+	 * Returns a SQL string for accesing the fields for the specified operation
+	 */
     function fieldNames($operation) {
         $fieldnames = "";
         foreach ($this->allFieldsThisLevel() as $name=>$field) {

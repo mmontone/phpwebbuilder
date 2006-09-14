@@ -46,7 +46,7 @@ class User extends PersistentObject {
 			"=",
 			$roleid
 		);
-		return count($urc->objects()) > 0;
+		return count($urc->elements()) > 0;
 	}
 	function & login($user, $pass) {
 		$usr = & User :: loadUser($user, $pass);
