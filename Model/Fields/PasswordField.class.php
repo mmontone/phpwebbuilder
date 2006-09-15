@@ -11,8 +11,7 @@ class PasswordField extends TextField  {
 				if ($form[$name."1"] == "") {
 					$this->setValue("");
 				} else {
-					$val = $this->trim($form[$name."1"]);
-					$this->setValue($val);
+					$this->setValue($form[$name."1"]);
 				}
 	  		}
 		}

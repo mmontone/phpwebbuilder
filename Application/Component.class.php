@@ -82,11 +82,6 @@ class Component extends PWBObject
     function registerCallback($selector, &$callback) {
     	$this->registered_callbacks[$selector] =& $callback;
     }
-
-	function renderAction($action) {
-    	$this->render_action_link($action);
-    }
-
 	function &addComponent(&$component, $ind=null) {
 		if (!$component->checkAddingPermissions()){
 			return $f=false;

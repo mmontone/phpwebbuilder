@@ -1,12 +1,33 @@
 <?
 
 class DataField extends ValueModel {
-	var $colName; // el nombre del campo
-	var $value; // el valor almacenado en el campo
-	var $isIndex; // Si se utiliza para identificarlo (por el usuario)
-	var $owner; // The object the field belongs to
+	/**
+	 * The field name
+	 */
+	var $colName;
+	/**
+	 * The Value
+	 */
+	var $value;
+	/**
+	 * If the field is an index field
+	 */
+	var $isIndex;
+	/**
+	 * The object the field belongs to
+	 */
+	var $owner;
+	/**
+	 * A nice name for the string
+	 */
 	var $displayString;
+	/**
+	 * The buffered value, if the data was modified
+	 */
 	var $buffered_value = null;
+	/**
+	 * if the data was modified
+	 */
 	var $modified = false;
 
 	function DataField($name, $isIndex=null){
@@ -23,73 +44,43 @@ class DataField extends ValueModel {
 		}
 		parent::PWBObject($ps);
 	}
+	/**
+	 * Returns if the field is an index field
+	 */
+	function isIndex() {
+		return $this->isIndex;
+	}
+	/**
+	 * Prepares the object to be saved (for cascading and inheritance-by-relation)
+	 */
 	function prepareToSave(){}
+	/**
+	 * Performs the needed actions to create a consistent instance
+	 */
 	function createInstance($ps) {
 		$this->colName = $ps['fieldName'];
 		$this->isIndex = $ps['is_index'];
 		$this->displayString = $ps['display'];
 	}
+	/**
+	 * Returns the default initialization values of the object
+	 */
 	function defaultValues($params){
 		return array(
 				'is_index'=>false,
 				'display'=>ucfirst($params['fieldName'])
 			);
 	}
-	function renderAction($action) {
-		$this->owner->renderAction($action);
-	}
-
-	/*function ConvHTML($s) {
-	    return mb_convert_encoding($s,"HTML-ENTITIES","auto");
-	}*/
-
-	function ConvHTML2($s) {
-		$s = str_replace("ï¿½", "&aacute;", $s);
-		$s = str_replace("ï¿½", "&eacute;", $s);
-		$s = str_replace("ï¿½", "&iacute;", $s);
-		$s = str_replace("ï¿½", "&oacute;", $s);
-		$s = str_replace("ï¿½", "&uacute;", $s);
-		$s = str_replace("ï¿½", "&Aacute;", $s);
-		$s = str_replace("ï¿½", "&Eacute;", $s);
-		$s = str_replace("ï¿½", "&Iacute;", $s);
-		$s = str_replace("ï¿½", "&Oacute;", $s);
-		$s = str_replace("ï¿½", "&Uacute;", $s);
-		/*  $s = str_replace ("\"", "\\\"", $s);*/
-		$s = str_replace(chr(13) . chr(10) . chr(13) . chr(10), "<p>", $s);
-		$s = str_replace(chr(09), "&nbsp;&nbsp;&nbsp;&nbsp;", $s);
-		$s = str_replace("    ", "&nbsp;&nbsp;&nbsp;&nbsp;", $s);
-		//  $s = str_replace (" ", "&nbsp;", $s);
-		/*  $s = ereg_replace("(\n| )*$", "", $s);*/
-		return $s;
-	}
-	function trim($s) {
-		/*$s = ereg_replace("(\\n| )*$", " ", $s);*/
-		return $s;
-	}
-
-	function convFromHTML($s) {
-		$s = str_replace("ï¿½", "&aacute;", $s);
-		$s = str_replace("&eacute;", "ï¿½", $s);
-		$s = str_replace("&iacute;", "ï¿½", $s);
-		$s = str_replace("&oacute;", "ï¿½", $s);
-		$s = str_replace("&uacute;", "ï¿½", $s);
-		$s = str_replace("&Aacute;", "ï¿½", $s);
-		$s = str_replace("&Eacute;", "ï¿½", $s);
-		$s = str_replace("&Iacute;", "ï¿½", $s);
-		$s = str_replace("&Oacute;", "ï¿½", $s);
-		$s = str_replace("&Uacute;", "ï¿½", $s);
-		$s = str_replace("\\\"", "\"", $s);
-		$s = str_replace("\\'", "'", $s);
-		$s = ereg_replace("(<br>| )*$", "", $s);
-		$s = str_replace("<br>", chr(13) . chr(13), $s);
-		$s = str_replace("<p>", chr(13) . chr(10) . chr(13) . chr(10), $s);
-		$s = str_replace("&nbsp;&nbsp;&nbsp;&nbsp;", "    ", $s);
-		return $s;
-	}
 	function & visit(& $obj) {
 		return $obj->visitedDataField($this);
 	}
+	/**
+	 * Receives the notification of id of the owner
+	 */
 	function setID($id) {}
+	/**
+	 * Returns name of the field for the specified operation
+	 */
 	function fieldName($operation) {
 		if ($operation=='SELECT'){
 			return '`'.$this->owner->tableName().'`.`'.$this->colName
@@ -98,19 +89,37 @@ class DataField extends ValueModel {
 			return '`'.$this->colName .	'`, ';
 		}
 	}
+	/**
+	 * Returns the sql name of the field
+	 */
 	function sqlName(){
 		return $this->owner->tableName().'_'.$this->colName;
 	}
+	/**
+	 * Returns the sql value of the field
+	 */
 	function SQLvalue() {}
+	/**
+	 * Returns the sql insertion value of the field
+	 */
 	function insertValue() {
 		return $this->SQLvalue();
 	}
+	/**
+	 * Returns the sql update string
+	 */
 	function updateString() {
 		return '`'.$this->colName . '` = ' . $this->SQLvalue();
 	}
+	/**
+	 * Returns the value of the field
+	 */
 	function viewValue() {
 		return $this->getValue();
 	}
+	/**
+	 * Sets (buffers) the value of the field
+	 */
 	function setValue($data) {
 		if ($data !== $this->buffered_value) {
 			$this->buffered_value =& $data;
@@ -118,14 +127,18 @@ class DataField extends ValueModel {
 			$this->triggerEvent('changed', $no_params = null);
 		}
 	}
-
+	/**
+	 * Returns the value of the field
+	 */
 	function getValue() {
 		if ($this->buffered_value !== null)
 			return $this->buffered_value;
 		else
 			return $this->value;
 	}
-
+	/**
+	 * Commits the changes on the field
+	 */
 	function commitChanges() {
 		if ($this->modified) {
 			$this->value =& $this->buffered_value;
@@ -133,7 +146,9 @@ class DataField extends ValueModel {
 			$this->triggerEvent('commited', $this);
 		}
 	}
-
+	/**
+	 * Reverts the changes
+	 */
 	function flushChanges() {
 		if ($this->modified) {
 			$this->setValue($this->value);
@@ -141,37 +156,47 @@ class DataField extends ValueModel {
 			$this->triggerEvent('flushed', $this);
 		}
 	}
-
+	/**
+	 * Returns if the field was modified
+	 */
 	function isModified() {
 		return $this->modified;
 	}
-
+	/**
+	 * Loads the value from the record
+	 */
 	function loadFrom($reg) {
 		$val = $reg[$this->sqlName()];
 		$this->setValue($val);
 	}
-
+	/**
+	 * Validates, and returns false
+	 */
 	function validate() {
 		$this->validated();
 		return false;
 	}
-
+	/**
+	 * Triggers a validated event
+	 */
 	function validated() {
 		$this->triggerEvent('validated', $this);
 	}
-
+	/**
+	 * Triggers a required_but_empty event
+	 */
 	function requiredButEmpty() {
 		$this->triggerEvent('required_but_empty', $this);
 	}
-
+	/**
+	 * Returns if the field can be deleted
+	 */
 	function canDelete() {
 		return true;
 	}
-
-	function toArrayValue() {
-		return $this->getValue();
-	}
-
+	/**
+	 * Checks if the field is empty
+	 */
 	function isEmpty() {
 		return $this->getValue() == '';
 	}

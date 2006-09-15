@@ -5,7 +5,9 @@ require_once 'md.php';
 /**
  * Some basic functions.
  */
-
+/**
+ * Gets all the files in a directory tree that matches the condition
+ */
 function getfilesrec ($pred, $dir){
 	if (is_dir($dir)) {
 			$ret = array();
@@ -23,14 +25,18 @@ function getfilesrec ($pred, $dir){
 		}
 	}
 }
-
+/**
+ * Includes all php files from a directory tree
+ */
 function includefile(&$file) {
 	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -4)==".php";', $a=array()), $file) as $f){
         require_once($f);
 	}
 	delete_lambda($lam);
 }
-
+/**
+ * Includes a PWB Module
+ */
 function includemodule ($module){
 	$modf = implode(array($module,'/',basename($module),'.php'));
 	if (file_exists($modf)){
@@ -56,12 +62,14 @@ function trace_params(){
 			trace($name ."=". $value."<BR>");
 }
 
+
+/**
+ * The array containing all classes and their subclasses
+ */
+$PWBclasses = array();
 /**
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
-
-$PWBclasses = array();
-
 function find_subclasses(){
 	global $PWBclasses;
 	$arr = get_declared_classes();
@@ -78,13 +86,17 @@ function find_subclasses(){
 		}
 	}
 }
-
+/**
+ * Returns the subclasses of the specified class, in higher-to-lower order
+ */
 function get_subclasses($str){
 	global $PWBclasses;
 	if (count($PWBclasses)==0) find_subclasses();
 	return $PWBclasses[strtolower($str)];
 }
-
+/**
+ * Returns the subclasses of the specified class, in lower-to-higher order
+ */
 function get_superclasses($str){
 	global $PWBclasses;
 	$ret = array();
@@ -96,12 +108,9 @@ function get_superclasses($str){
 	return $ret;
 }
 
-function is_kind_of(&$object, $class) {
-	$c = getClass($object);
-
-	return in_array($c, get_superclasses($c));
-}
-
+/**
+ * Returns all the classes that are related to the parameter (inheritance-wise)
+ */
 function get_related_classes($str){
 	return array_merge(get_superclasses($str), get_subclasses($str));
 }
@@ -130,11 +139,15 @@ function fHasAnyPermission($id, $obj, $act){
 function backtrace(){
 	print_r(debug_backtrace());
 }
-
+/**
+ * prints the backtrace.
+ */
 function print_backtrace($error) {
   echo backtrace_string($error);
 }
-
+/**
+ * Creates a text representation of the backtrace
+ */
 function backtrace_string($error) {
     $back_trace = debug_backtrace();
     $ret = "<h1>$error</h1>";
@@ -154,7 +167,9 @@ assert_options(ASSERT_ACTIVE, 1);
 assert_options(ASSERT_WARNING, 0);
 assert_options(ASSERT_QUIET_EVAL, 1);
 
-// Create a handler function
+/**
+ * Assert handler function
+ */
 function my_assert_handler($file, $line, $code)
 {
    echo "<hr>Assertion Failed:
@@ -168,18 +183,9 @@ function my_assert_handler($file, $line, $code)
 // Set up the callback
 assert_options(ASSERT_CALLBACK, 'my_assert_handler');
 
-
-/* Useful functions */
-function &array_current(&$array) {
-	if (!current($array)) return null; // Out of limit
-	return $array[key($array)];
-}
-
-function &array_next(&$array) {
-	$current =& array_current($array);
-	next($array);
-	return $current;
-}
+/**
+ * encodes the string to valid XHTML
+ */
 
 function toHTML($s) {
 	$s = str_replace('&', '&amp;', $s);
@@ -201,6 +207,12 @@ function toHTML($s) {
     return $s;
    //return mb_convert_encoding($s,"HTML-ENTITIES","auto");
 }
+
+/**
+ * Encodes the string in valid XML
+ */
+
+
 function toXML($s) {
     $s = str_replace('&', '&amp;', $s);
     $s = ereg_replace('&(amp;|&amp;)+(([A-Za-z0-9#]+);)','&\\2', $s);
@@ -232,11 +244,18 @@ function toXML($s) {
 	$s = ereg_replace('&([A-Za-z0-9]+);','&#38;\\1;', $s);
     return $s;
 }
+/**
+ * Encodes the string una ajax suitable manner
+ */
 
 function toAjax($s){
 	return	toXML(toHTML($s));
 }
-
+/**
+ * Receives the definition of the parameters, the definition of the body,
+ * and a context (an array of name=>variable to be used) and creates an
+ * anonymous function. The context can be obtained with get_defined_vars()
+ */
 function lambda( $args, $code, $env=array() ) {
    static $n = 0;
    $functionName = sprintf('ref_lambda_%d',++$n);
@@ -245,16 +264,25 @@ function lambda( $args, $code, $env=array() ) {
    eval($declaration);
    return $functionName;
 }
-
+/**
+ * Frees the space used for the variable's context
+ */
 function delete_lambda($name){
 	unset($_SESSION['lambdas'][$name]);
 }
 
-
+/**
+ * Checks if the variable references a PWB object
+ */
 function isPWBObject(&$e){
 	return is_object($e) && isset($e->isClassOfPWB);
 }
 
+/**
+ * Applies a sequence of messages and accessors
+ * to the parameter. See apply_message
+ * Example: apply_messages(User::logged(), 'name->getValue()'){
+ */
 function &apply_messages(&$u, $mess){
 	$temp =& $u;
 	$ms = explode('->',$mess);
@@ -264,6 +292,10 @@ function &apply_messages(&$u, $mess){
 	return $temp;
 }
 
+/**
+ * Applies a message or accessor
+ * to the parameter, depending on parenthesis use.
+ */
 function &apply_message(&$u, $mess){
 	if (substr($mess,-2)=='()'){
 		$m = substr($mess,0,-2);
@@ -273,43 +305,22 @@ function &apply_message(&$u, $mess){
 	}
 }
 
+/**
+ * Returns the class name in a PHP4 and 5 compatible way
+ */
 function getClass(&$o){
 	return strtolower(get_class($o));
 }
 
+/**
+ * Clone function for php4/5 compatibility
+ */
 if (version_compare(phpversion(), '5.0') < 0) {
     eval('
     function clone($object) {
       return $object;
     }
     ');
-}
-
-function try_catch($try_code, $catch_matches) {
-	$maybe_exception = $try_code();
-	if (!is_exception($maybe_exception))
-		return $maybe_exception;
-
-	foreach ($catch_matches as $catch_exception => $catch_code) {
-		if (matches_exception($maybe_exception, $catch_exception)) {
-			return $catch_code($maybe_exception);
-		}
-	}
-}
-
-function &newAnnonymous($class_name, $body) {
-	$annon_class_name = nextAnnonymousClassName();
-	eval("class $annon_class_name extends $class_name $body");
-	return new $annon_class_name;
-}
-
-function nextAnnonymousClassName() {
-	if (!isset($_SESSION['next_annonimous_class'])) {
-		$_SESSION['next_annonimous_class'] = 0;
-	} else {
-		$_SESSION['next_annonimous_class'] += 1;
-	}
-	return 'annon_class_' . $_SESSION['next_annonimous_class'];
 }
 
 ?>

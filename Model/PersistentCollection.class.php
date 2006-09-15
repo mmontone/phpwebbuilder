@@ -1,66 +1,44 @@
 <?
 class PersistentCollection extends Report{
-	var $order;
-	var $size;
-	var $elements=array();
-
+	/**
+	 * A collection of persisted objects (of the same class)
+	 */
 	function PersistentCollection($dataType = "") {
 		$this->dataType = $dataType;
-
 		parent::Collection();
 	}
-
-	function findMatches(&$object) {
-		foreach($object->fieldNames() as $f) {
-			$field =& $object->fieldNamed($f);
-			if (!$field->isEmpty()) {
-				$this->setCondition($f, '=', $field->getValue());
-			}
-		}
+	/**
+	 * finds all similar objects (objects with same atributes set in same values)
+	 * Returns a PersistentCollection
+	 */
+	function &findMatches(&$object) {
+		$col =& $object->findMatches();
+		$this->conditions = $col->conditions;
+		return $this;
 	}
-
-	function findById($id) {
-		return PersistentObject::getWithId($this->dataType, $id);
-	}
+	/**
+	  * Returns the tables to be used
+	  */
 	function tableNames() {
 		$obj = new $this->dataType;
 		return $obj->tableNames();
 	}
+	/**
+	  * Returns the tables of the base class of the elements of the collection
+	  */
 	function tableName() {
 		$obj = new $this->dataType;
 		return $obj->tableName();
 	}
-	function idRestrictions(){
-		$obj = new $this->dataType;
-		return $obj->idRestrictions();
-	}
-	function allFields(){
-		$obj = new $this->dataType;
-		return $obj->allIndexFields();
-	}
-	function fieldNames(){
-		$obj = & new $this->dataType;
-		return $obj->fieldNames('SELECT');
-	}
-
-	function add(&$element) {
-		$elements =& $this->elements();
-		$elements[] =& $element;
-		$this->triggerEvent('changed', $n=null);
-	}
-
+	/**
+	  * Returns the object of the collection with the id
+	  */
 	function & getObj($id) {
 		return PersistentObject::getWithId($this->dataType, $id);
 	}
-
-	function getSize($conditions='1=1') {
-		$obj = & new $this->dataType;
-		$sql = 'SELECT COUNT(id) as \'collection_size\' FROM ' . $this->tableName() . ' WHERE ' . $conditions;
-		$db = & DB::Instance();
-		$reg = $db->SQLExec($sql, FALSE, $this);
-		$data = $db->fetchrecord($reg);
-		return $data['collection_size'];
-	}
+	/**
+	  * Creates an element, and fills it from the record
+	  */
 	function &makeElement($data){
 		$dt = $this->getDataType();
 		$obj =& new $dt;

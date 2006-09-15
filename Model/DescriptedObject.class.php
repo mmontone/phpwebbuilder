@@ -209,7 +209,7 @@ class DescriptedObject extends PWBObject {
 		$name = $field->colName;
 		$this-> $name = & $field;
 		$this->fieldNames[$name] = $name;
-		if ($field->isIndex) {
+		if ($field->isIndex()) {
 			$this->indexFields[$name] = $name;
 		}
 		$field->owner = & $this;
@@ -364,14 +364,20 @@ class DescriptedObject extends PWBObject {
     /**
 	 * Returns a SQL string for accesing the fields for the specified operation
 	 */
-    function fieldNames($operation) {
-        $fieldnames = "";
-        foreach ($this->allFieldsThisLevel() as $name=>$field) {
-                $fieldnames .= $field->fieldName($operation);
-        }
-        $fieldnames = substr($fieldnames, 0, -2);
-        return $fieldnames;
-    }
+
+	function fieldNames($operation) {
+		$fieldnames = '';
+		if ($operation=='SELECT'){
+			$fs =& $this->allFieldsAllLevels();
+		} else {
+			$fs =& $this->allFieldsThisLevel();
+		}
+		foreach ($fs as $name => $field) {
+			$fieldnames .= $field->fieldName($operation);
+		}
+		$fieldnames = substr($fieldnames, 0, -2);
+		return $fieldnames;
+	}
 
 }
 ?>
