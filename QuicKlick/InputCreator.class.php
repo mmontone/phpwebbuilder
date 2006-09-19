@@ -5,7 +5,7 @@ class InputGenerator extends PWBFactory{
 	}
 }
 
-class InputInputGenerator extends PWBFactory{
+class InputInputGenerator extends InputGenerator{
 	function createInstanceFor(&$widget){
 		$pos = array('lala', '', '123');
 		return $pos[array_rand($pos)];

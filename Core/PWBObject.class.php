@@ -160,6 +160,11 @@ class PWBObject
 	 */
 	/**
 	 * Removes all the listeners and the handles of the object
+	 *
+	 * Call when an object is no longer used, and needs to be freed.
+	 * PHP has a garbage collectior, but listeners keep track of
+	 * listened objects, and listened objects keep track of listeners,
+	 * so memory leaking will occurr.
 	 */
 
 	function release() {

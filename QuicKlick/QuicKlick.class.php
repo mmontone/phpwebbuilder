@@ -117,10 +117,7 @@ class QuicKlickReprise extends QuicKlick{
 		$funOb =& $test->function->getTarget();
 		$fun =& $funOb->getFun();
 		$this->app=&$fun();
-		session_write_close();
-		SessionHandler::setHooks();
-		$res =  file_get_contents($loc);
-		session_start();
+		$this->check();
 		$t =& $_SESSION['QKtest'];
 		if ($t===null) return;
 		if (!$t->passed->getValue()){
