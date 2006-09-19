@@ -292,6 +292,9 @@ class Component extends PWBObject
 			$comp->getWidgets(&$ws);
 		}
 	}
+	function &getParent() {
+		return $this->holder->parent;
+	}
 }
 
 

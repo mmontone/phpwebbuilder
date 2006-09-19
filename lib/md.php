@@ -1,6 +1,7 @@
 <?php
 
 require_once 'spyc-0.2.3/spyc.php';
+
 // Call with multiple dispatch
 
 function &mdcall($function, $args) {

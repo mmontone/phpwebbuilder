@@ -1,22 +1,14 @@
 test_func:
-  comprule:
-    context:
-      - C2
-      - C1
-    params:
+  - in: [ C2, C1 ]
+    with:
     do : |
       return 'C2C1';
-  rule:
-    params: {&$c1 : C1, &$c2 : C2}
+  - with: {&$c1 : C1, &$c2 : C2}
     do : |
       return 'C1';
 
 test_comp_func:
-  comprule:
-    context:
-      - C3
-      - C2
-      - C1
-    params:
+  - in: [ C3, C2, C1]
+    with:
     do : |
       return 'OK';

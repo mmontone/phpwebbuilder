@@ -1,6 +1,7 @@
 <?php
 
 require_once 'md.php';
+//require_once 'md2.php';
 
 /**
  * Some basic functions.
