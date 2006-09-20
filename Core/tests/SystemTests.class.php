@@ -14,6 +14,7 @@ class SystemTests extends UnitTestCase {
     	$this->UnitTestCase('System tests');
     }
 
+    /*
     function testIsMetaClass() {
 		$this->assertTrue(PWBObject::IsMetaClass('PWBObject'));
 		$this->assertTrue(PWBObject::IsMetaClass('DescriptedObject'));
@@ -26,6 +27,6 @@ class SystemTests extends UnitTestCase {
 		$this->assertTrue(PWBObject::IsTopClass('DescriptedObject'));
 		$this->assertTrue(PWBObject::IsTopClass('MyTopClass'));
 		$this->assertTrue(PWBObject::IsTopClass('MyParentlessClass'));
-    }
+    }*/
 }
 ?>

@@ -13,7 +13,7 @@ class ViewCreator {
 		foreach($files as $f){
 			$x = file_get_contents($f);
 			$x2 = str_replace('$templatesdir', $templatesdir, $x);
-			$xml =& $p->parse($x2);
+			$xml =& $p->parse($x2,$f);
 			$cm =& $xml->childNodes;
 			$ks = array_keys($cm);
 			foreach($ks as $k){
@@ -70,6 +70,7 @@ class ViewCreator {
 		//if (strcasecmp(getClass($view),'StdClass')==0) print_backtrace(get_class($component));
 		$id = $component->getSimpleId();
 		//if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
+		if ($parentView == null) print_backtrace();
 		$vid =& $parentView->childrenWithId($id);
 		if ($vid!=null){
 			if (!$vid->isContainer()){
@@ -90,7 +91,7 @@ class ViewCreator {
 				$parentView->insertBefore($ct, $pos);
 				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' found container for class '.$ct->getAttribute('class'),E_USER_NOTICE);
 			} else {
-				if (constant('debugview')=='1') {
+				if (defined('debugview') and constant('debugview')=='1') {
 					$debugging = true;
 					$pos =& new HTMLContainer;
 					$parentView->appendChild($pos);

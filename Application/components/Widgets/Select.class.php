@@ -14,10 +14,8 @@ class Select extends Widget {
     	if ($displayF!=null){
     		$this->displayF=$displayF;
     	} else if (is_object($collection->first())){
-    		/*$this->displayF =& lambda('&$e', 'return $e->printString();', $a = array());*/
     		$this->displayF =& new FunctionObject($this, 'printObject');
     	} else {
-    		/*$this->displayF =& lambda('&$e', 'return $e;', $a = array());*/
     		$this->displayF =& new FunctionObject($this, 'printPrimitive');
     	}
 
@@ -116,4 +114,5 @@ class Select extends Widget {
 		}
 	}
 }
+
 ?>

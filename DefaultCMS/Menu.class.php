@@ -38,7 +38,8 @@ class Menu extends Component {
 		$this->menus->addComponent($sect);
 	}
 	function objMenus() {
-		$arr = get_subclasses('PersistentObject');
+		//$arr = get_subclasses('PersistentObject');
+		$arr = Application::GetPersistentClasses();
 		$sect = & new MenuSectionComponent();
 		$sect->addComponent(new Label('Objects'), 'secName');
 		$u =& User::logged();

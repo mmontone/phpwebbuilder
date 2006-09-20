@@ -57,6 +57,7 @@ class DOMXMLNode extends PWBObject {
 		$this->childNodes[$position] = & $xml;
 		$xml->parentNode = & $this;
 		$xml->parentPosition = $position;
+		$this->checkConsistency();
 	}
 
 	function appendChild(& $xml) {
@@ -78,6 +79,7 @@ class DOMXMLNode extends PWBObject {
 
 		unset ($this->childNodes[$pos]);
 		$old->release();
+		$this->checkConsistency();
 	}
 
 	function removeChilds() {
@@ -88,6 +90,7 @@ class DOMXMLNode extends PWBObject {
 
 		$temp = array ();
 		$this->childNodes = & $temp;
+		$this->checkConsistency();
 	}
 
 	function insertBefore(& $old, & $new) {
@@ -105,15 +108,14 @@ class DOMXMLNode extends PWBObject {
 		$this->insert_in($new, $pos);
 	}
 
-	/*
-		function checkConsistency() {
-			foreach(array_keys($this->childNodes) as $i) {
-				if ($this->childNodes[$i]->parentPosition != $i) {
-					print_backtrace('Children inconsitency');
-					exit;
-				}
+	function checkConsistency() {
+		foreach(array_keys($this->childNodes) as $i) {
+			if (!is_object($this->childNodes[$i]) /*or $this->childNodes[$i]->parentPosition != $i*/) {
+				print_backtrace('Children inconsitency: ' . getClass($this->childNodes[$i]));
+				exit;
 			}
-		}*/
+		}
+	}
 
 	function setAttribute($name, $val) {
 		$this->attributes[$name] = $val;

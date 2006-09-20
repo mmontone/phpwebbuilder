@@ -1,24 +1,24 @@
 <?php
 
-class SelectTest extends UnitTestCase {
+class OptionalSelectTest extends UnitTestCase {
 
-    function SelectTest() {
-    	$this->UnitTestCase('Select widget tests');
+    function OptionalSelectTest() {
+    	$this->UnitTestCase('OptionalSelect widget tests');
     }
 
-	function testInitialize() {
+    function testInitialize() {
 		$c =& new Collection;
 		$v =& new ObjectHolder($o = null);
-		//$s =& new Select($v, $c, lambda('&$c', 'return $c;', $a = array()));
-		$s =& new Select($v, $c);
-		$this->assertEqual($s->getValueIndex(), -1);
+		$s =& new OptionalSelect($v, $c);
+		$s->initialize();
+		$this->assertTrue($s->nooption);
 
 		$c =& new Collection;
 		$o =& new PWBObject;
 		$o->s = 'Hello';
 		$c->add($o);
-		$v =& new ObjectHolder($o = null);
-		$s =& new Select($v, $c, lambda('&$c', 'return $c;', $a = array()));
+		$v =& new ObjectHolder($n = null);
+		$s =& new Select($v, $c);
 		$this->assertEqual($s->getValueIndex(), 0);
 
 		$c =& new Collection;
@@ -29,7 +29,7 @@ class SelectTest extends UnitTestCase {
 		$c->add($o1);
 		$c->add($o2);
 		$v =& new ObjectHolder($o2);
-		$s =& new Select($v, $c, lambda('&$c', 'return $c;', $a = array()));
+		$s =& new Select($v, $c);
 		$this->assertEqual($s->getValueIndex(), 1);
 	}
 

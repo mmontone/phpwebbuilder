@@ -5,7 +5,7 @@
 class XMLParser {
    var $parser;
    var $xmls;
-   function &parse($data)
+   function &parse($data,$f)
    {
        $parser = xml_parser_create('ISO-8859-1');
 
@@ -18,10 +18,10 @@ class XMLParser {
        $err = xml_parse($parser, $data);
        $x =& $this->xmls[0];
  	   if (!$x->childNodes) {
-          die(sprintf("XML error: %s at line %d, column %d",
+          die(sprintf("XML error: %s at line %d, column %d, %s",
                    xml_error_string(xml_get_error_code($parser)),
                    xml_get_current_line_number($parser),
-                   xml_get_current_column_number ($parser)+1));
+                   xml_get_current_column_number ($parser)+1,$f));
    	   }
        xml_parser_free($parser);
        return $x;

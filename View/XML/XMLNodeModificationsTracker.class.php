@@ -14,11 +14,16 @@ class XMLNodeModificationsTracker extends XMLNode {
 	}
 
 	function flushModifications() {
-		$this->modifications = array();
 		$n = null;
+		$a = array();
+		$this->modifications =& $a;
 		$this->toFlush =& $n;
 		$cn =& $this->childNodes;
 		foreach (array_keys($cn) as $key) {
+			if (!is_object($cn[$key])) {
+				print_backtrace($cn[$key]);
+				//var_dump($cn[$key]);
+			}
 			$cn[$key]->flushModifications();
 		}
 	}

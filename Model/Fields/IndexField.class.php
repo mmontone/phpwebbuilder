@@ -5,6 +5,7 @@ class IndexField extends NumField {
 	var $nullValue;
 	var $target = null;
 	var $buffered_target = null;
+	var $datatype;
 
 	function IndexField($name, $isIndex=null, $dataType=null, $nullValue=null) {
 		if (!is_array($isIndex) && !is_array($name)) {
@@ -20,7 +21,8 @@ class IndexField extends NumField {
 	function createInstance($params){
 		parent::createInstance($params);
 		$this->nullValue = & $params['null_value'];
-		$this->collection = & new PersistentCollection($params['type']);
+		//$this->collection = & new PersistentCollection($params['type']);
+		$this->datatype =& $params['type'];
 	}
 	function & visit(& $obj) {
 		return $obj->visitedIndexField($this);
@@ -38,15 +40,23 @@ class IndexField extends NumField {
 	}
 
 	function getTargetId() {
-		return $this->buffered_target->getIdOfClass($this->collection->dataType);
+		//return $this->buffered_target->getIdOfClass($this->collection->dataType);
+		return $this->buffered_target->getIdOfClass($this->datatype);
 	}
 
 	function & getTarget() {
 		if (!$this->buffered_target) {
-			$this->buffered_target =& $this->collection->getObj($this->getValue());
+			$this->buffered_target =& $this->loadTarget();
 		}
 		return $this->buffered_target;
 	}
+
+	function &loadTarget() {
+		//return $this->collection->getObj($this->getValue());
+		$o =& PersistentObject::getWithId($this->datatype, $this->getValue());
+		return $o;
+	}
+
 	/*function prepareToSave(){
 		if ($this->buffered_target!=null){
 			$this->buffered_target->save();

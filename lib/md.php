@@ -1,8 +1,58 @@
 <?php
 
+// Multiple dispatch library
+
 require_once 'spyc-0.2.3/spyc.php';
 
-// Call with multiple dispatch
+// Configuration
+$md_dir = basedir . '/md';
+if (defined('md_dir')) {
+	$md_dir = constant('md_dir');
+}
+
+if (defined('md') and constant('md')=='compiled') {
+	load_compiled_md_files($md_dir);
+}
+else {
+	load_md_files($md_dir);
+}
+
+function load_md_files($dir) {
+	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -3)==".md";', $a=array()), $dir) as $f){
+        load_md_file($f);
+ 	}
+	delete_lambda($lam);
+}
+
+
+function load_compiled_md_files($dir) {
+	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -4)==".mdc";', $a=array()), $dir) as $f){
+        require_once $f;
+ 	}
+	delete_lambda($lam);
+}
+
+function compile_md_file($file, $output_dir) {
+	echo 'Compiling ' . $file;
+	$compiled_src = compile_md_src(Spyc::YAMLLoad($file));
+	$output_file = $output_dir . '/' . substr($file, 0, strlen($file) - 3) . 'mdc';
+	file_put_contents($output_file, $compiled_src);
+}
+
+function compile_md_src($src) {
+	$s = '';
+	foreach($src as $f => $rules) {
+		$s .= compile_md_function($f, $rules);
+		$s .= "\n";
+	}
+
+	return $s;
+}
+
+function load_md_file($file) {
+	$compiled_src = compile_md_src(Spyc::YAMLLoad($file));
+	eval($compiled_src);
+}
 
 function &mdcall($function, $args) {
 	$c = array();
@@ -103,7 +153,7 @@ function _mdcompcall($function, $count_layers, $arg_types, $i) {
 }
 
 
-function &mdcompcall($function, $args, $max_nesting=3) {
+function &mdcompcall($function, $args) {
 	$c = array();
 	$n = count($args);
 	for ($i = 1; $i < $n ; $i++) {
@@ -117,7 +167,7 @@ function &mdcompcall($function, $args, $max_nesting=3) {
 	}
 
 	$comp =& $args[0];
-	$flayers = md_get_layers($comp, $max_nesting);
+	$flayers = md_get_layers($comp);
 	$layers = $flayers;
 	$fname = null;
 
@@ -154,12 +204,12 @@ function &mdcompcall($function, $args, $max_nesting=3) {
 	}
 }
 
-function md_get_layers(&$comp, $max_nesting = 3) {
+function md_get_layers(&$comp) {
 	$layers = array(strtoupper(get_class($comp)));
 	$c =& $comp->getParent();
 
 	$i = 0;
-	while(($c !== null) and (getClass($c) != 'stdclass') and ($i < $max_nesting)) {
+	while(($c !== null) and (getClass($c) != 'stdclass')) {
 		array_push($layers, strtoupper(get_class($c)));
 
 		$c =& $c->getParent();
@@ -169,30 +219,22 @@ function md_get_layers(&$comp, $max_nesting = 3) {
 	return $layers;
 }
 
-function load_md_functions($file) {
-	$functions = Spyc::YAMLLoad($file);
-	if (empty($functions)) {
-		print_backtrace('There are no definitions in ' . $file);
-	}
-	else {
-		foreach($functions as $f => $rules) {
-			def_md_function($f, $rules);
-		}
-	}
-}
+function compile_md_function($f, $rules) {
+	$s = '';
 
-function def_md_function($f, $rules) {
 	foreach($rules as $rule_def) {
 		if (is_array($rule_def['in'])) {
-			$s = def_md_comprule_rule($f, $rule_def);
+			$s .= def_md_comprule_rule($f, $rule_def);
 		}
 		else {
-			$s = def_md_rule_rule($f, $rule_def);
+			$s .= def_md_rule_rule($f, $rule_def);
 		}
+		$s .= "\n";
 
 		//echo 'Defining: ' . $s . '<br/><br/>';
-		eval($s);
 	}
+
+	return $s;
 }
 
 function def_md_rule_rule($f, $ruledef) {
