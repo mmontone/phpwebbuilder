@@ -21,7 +21,7 @@ class IndexField extends NumField {
 	function createInstance($params){
 		parent::createInstance($params);
 		$this->nullValue = & $params['null_value'];
-		//$this->collection = & new PersistentCollection($params['type']);
+		$this->collection = & new PersistentCollection($params['type']);
 		$this->datatype =& $params['type'];
 	}
 	function & visit(& $obj) {
