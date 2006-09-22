@@ -83,6 +83,10 @@ class Component extends PWBObject
     	$this->registered_callbacks[$selector] =& $callback;
     }
 	function &addComponent(&$component, $ind=null) {
+		if (!is_a($component, 'Component')) {
+			print_backtrace('Type error adding component: ' . getClass($component));
+			exit;
+		}
 		if (!$component->checkAddingPermissions()){
 			return $f=false;
 		} else {
