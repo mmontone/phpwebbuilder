@@ -1,0 +1,39 @@
+<templates>
+	<template class="CodeAnalizer">
+		<h1>PWB Code Analizer</h1>
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						Directories:<br />
+						(Separate with commas)
+					</td>
+					<td>
+						<container id="directories_input" />
+					</td>
+					<td>
+						Search recursively:
+					</td>
+					<td>
+						<container id="recursive_checkbox" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Analisys cases: <br />
+						(CTRL + Left-click to select several)
+				 	</td>
+					<td>
+						<container id="cases_select" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div>
+			<input type="button" id="analize_button" value="Analize" />
+		</div>
+		<div>
+			<container id="output_textarea" />
+		</div>
+	</template>
+</templates>

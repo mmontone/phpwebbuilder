@@ -12,15 +12,21 @@ ini_set('display_errors', true);
 
 define('CHILD_SEPARATOR', ':');
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
-//error_reporting(E_ERROR | E_PARSE);
-//error_reporting(E_ALL);
+// Configure the error reporting level in config.php
+// Example:
+// error_reporting=E_ERROR | E_WARNING | E_PARSE
+// ;error_reporting=E_ERROR | E_PARSE
+// ;error_reporting=E_ALL
+
+if (defined('error_reporting')) {
+	error_reporting(constant('error_reporting'));
+}
 
 require_once dirname(__FILE__) . "/lib/basiclib.php";
 
 
 if (!defined('modules')) {
-	define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick");
+	define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick, CodeAnalizer");
 }
 if (!defined('app_class')) {
 	define('app_class', "DefaultCMSApplication");

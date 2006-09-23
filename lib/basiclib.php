@@ -26,6 +26,25 @@ function getfilesrec ($pred, $dir){
 		}
 	}
 }
+
+function getfiles ($pred, $dir){
+	if (is_dir($dir)) {
+			$ret = array();
+			$gestor=opendir($dir);
+			while (false !== ($f = readdir($gestor))) {
+				if ((!is_dir($dir . '/' . $f)) and (substr($f,-1)!='.')) {
+					array_push($ret, $dir . '/' . $f);
+				}
+			}
+		return $ret;
+	} else {
+		if ($pred($dir)){
+			return array($dir);
+		} else {
+			return array();
+		}
+	}
+}
 /**
  * Includes all php files from a directory tree
  */
