@@ -1,5 +1,5 @@
 <?php
-define('app_class',"CodeAnalizerApplication");
+define('app_class',"CodeAnalyzerApplication");
 
 $_REQUEST["reset"]="yes";
 

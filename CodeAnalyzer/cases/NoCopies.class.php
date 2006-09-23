@@ -1,7 +1,7 @@
 <?php
 class NoCopies extends AnalisysCase {
 
-	function analize($file) {
+	function analyze($file) {
 		$src = file_get_contents($file);
 		$out = 'Found copies in: ' . $file . "\n";
 		//$out .= token_get_all($src);

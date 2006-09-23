@@ -1,6 +1,6 @@
 <?php
 
-class CodeAnalizer extends Component {
+class CodeAnalyzer extends Component {
 	var $directories;
 	var $output;
 	var $cases;
@@ -21,10 +21,10 @@ class CodeAnalizer extends Component {
 		$output_ta =& new TextAreaComponent($this->output);
 		$this->addComponent($output_ta, 'output_textarea');
 		$output_ta->view->addCSSClass('output');
-		$this->addComponent(new CommandLink(array('text' => 'Analize', 'proceedFunction' => new FunctionObject($this, 'analize'))), 'analize_button');
+		$this->addComponent(new CommandLink(array('text' => 'Analyze', 'proceedFunction' => new FunctionObject($this, 'analyze'))), 'analyze_button');
 	}
 
-	function analize() {
+	function analyze() {
 		$c =& $this->cases->getValue();
 		$cases =& $c->elements();
 		//print_r($cases);
@@ -47,9 +47,11 @@ class CodeAnalizer extends Component {
 		foreach($cases as $case) {
 			$analisys_case =& new $case;
 			foreach($files as $file) {
-				$output .= $analisys_case->analize($file);
+				$output .= $analisys_case->analyze($file);
 			}
-			$output .= "\n\n";
+			if ($output != '') {
+				$output .= "\n\n";
+			}
 		}
 
 		$this->output->setValue($output);

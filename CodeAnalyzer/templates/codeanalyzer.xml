@@ -1,6 +1,6 @@
 <templates>
-	<template class="CodeAnalizer">
-		<h1>PWB Code Analizer</h1>
+	<template class="CodeAnalyzer">
+		<h1>PWB Code Analyzer</h1>
 		<table>
 			<tbody>
 				<tr>
@@ -20,7 +20,7 @@
 				</tr>
 				<tr>
 					<td>
-						Analisys cases: <br />
+						Analyze: <br />
 						(CTRL + Left-click to select several)
 				 	</td>
 					<td>
@@ -30,7 +30,7 @@
 			</tbody>
 		</table>
 		<div>
-			<input type="button" id="analize_button" value="Analize" />
+			<input type="button" id="analyze_button" value="Analyze" />
 		</div>
 		<div>
 			<container id="output_textarea" />

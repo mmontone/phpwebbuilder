@@ -1,7 +1,7 @@
 <?php
 
 class NoDoubleQuotes extends AnalisysCase {
-	function analize($file) {
+	function analyze($file) {
 		$src = file_get_contents($file);
 		$out = 'Found double quotes in: ' . $file ."\n";
 		//$out .= token_get_all($src);
