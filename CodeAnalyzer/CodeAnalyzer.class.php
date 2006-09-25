@@ -44,8 +44,10 @@ class CodeAnalyzer extends Component {
 		}
 
 		$output = '';
-		foreach($cases as $case) {
-			$analisys_case =& new $case;
+
+		foreach(array_keys($cases) as $case) {
+			$analisys_case =& $cases[$case];
+
 			foreach($files as $file) {
 				$output .= $analisys_case->analyze($file);
 			}

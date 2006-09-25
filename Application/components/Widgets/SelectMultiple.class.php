@@ -76,6 +76,7 @@ class SelectMultiple extends Widget {
 	}
 
 	function viewUpdated($new_value) {
+		echo 'New value: ' . $new_value;
 		if ($new_value == '') {
 			$this->setValue(new Collection);
 		}
@@ -84,8 +85,7 @@ class SelectMultiple extends Widget {
 			$newitems =& new Collection;
 
 			foreach ($selected as $selected) {
-				$selected = (int) $selected;
-				$newitems->add($this->options->at($selected));
+				$newitems->add($this->options->at((int) $selected));
 			}
 
 			$this->setValue($newitems);
