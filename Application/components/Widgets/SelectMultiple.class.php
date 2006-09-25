@@ -41,7 +41,7 @@ class SelectMultiple extends Widget {
 	}
 
     function updateViewFromCollection() {
-		print_backtrace('Options changed');
+		//print_backtrace('Options changed');
 		$v =& $this->view;
 		$cn =& $this->opts;
 		$ks = array_keys($cn);
@@ -94,7 +94,7 @@ class SelectMultiple extends Widget {
 	}
 
 	function valueChanged(&$value_model, &$params) {
-		print_backtrace('value changed');
+		//print_backtrace('value changed');
 
 		$elements =& $params->elements();
 
