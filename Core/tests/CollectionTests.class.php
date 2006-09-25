@@ -1,9 +1,40 @@
 <?php
 
+class ColTestA extends PWBObject {}
+
 class CollectionTests extends UnitTestCase {
 
     function CollectionTests() {
     	$this->UnitTestCase('Collection tests');
+    }
+
+    function testFirst() {
+    	$c =& new Collection;
+    	$f =& $c->first();
+    	$this->assertEqual($f, null);
+    	$this->assertTrue($c->size() == 0);
+
+    	$e =& new ColTestA;
+    	$c->add($e);
+    	$this->assertTrue($e->is($c->first()));
+    }
+
+    function testRemove() {
+		$c =& new Collection();
+		$e =& new ColTestA;
+		$this->assertEqual($c->remove($e), null);
+		$c->add($e);
+		$this->assertTrue($e->is($c->remove($e)));
+		$this->assertEqual($c->size(), 0);
+		$this->assertEqual($c->remove($e), null);
+    }
+
+    function testRemoveAll() {
+		$c =& new Collection();
+		$e =& new ColTestA;
+		$c->add($e);
+		$c->removeAll(array(&$e));
+		$this->assertEqual($c->size(), 0);
     }
 
     function testAdd() {

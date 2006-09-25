@@ -8,9 +8,8 @@ class CoreTests extends GroupTest {
 	function CoreTests() {
 		$this->GroupTest('Core tests');
 		$this->addTestCase(new SystemTests);
+		$this->addTestCase(new CollectionTests);
 		//$this->addTestCase(new EventsTests);
-		//$this->addTestCase(new CollectionTests);
-
 	}
 }
 ?>

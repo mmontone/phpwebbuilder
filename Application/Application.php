@@ -24,6 +24,7 @@ require_once $d.'/components/Widgets/JSCommandLink.class.php';
 require_once $d.'/components/Widgets/ActionLink.class.php';
 require_once $d.'/components/Widgets/Select.class.php';
 require_once $d.'/components/Widgets/SelectMultiple.class.php';
+require_once $d.'/components/Widgets/SubdomainSelect.class.php';
 require_once $d.'/components/Widgets/OptionalSelect.class.php';
 require_once $d.'/components/Widgets/NavigationLink.class.php';
 require_once $d.'/components/Widgets/GoBackLink.class.php';

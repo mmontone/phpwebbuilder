@@ -18,7 +18,8 @@ class SelectMultiple extends Widget {
     		$this->displayF =& new FunctionObject($this, 'printPrimitive');
     	}
 
-    	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
+    	$collection->addInterestIn('changed', new FunctionObject($this, 'updateViewFromCollection'));
+
     	/*
     	if ($this->options->isEmpty()) {
     		$this->setValueIndex($i = 0);
@@ -40,6 +41,7 @@ class SelectMultiple extends Widget {
 	}
 
     function updateViewFromCollection() {
+		print_backtrace('Options changed');
 		$v =& $this->view;
 		$cn =& $this->opts;
 		$ks = array_keys($cn);
@@ -92,6 +94,8 @@ class SelectMultiple extends Widget {
 	}
 
 	function valueChanged(&$value_model, &$params) {
+		print_backtrace('value changed');
+
 		$elements =& $params->elements();
 
 		foreach (array_keys($this->opts) as $opt) {
