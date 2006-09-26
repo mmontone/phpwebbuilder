@@ -1,0 +1,58 @@
+format 25
+
+classcanvas 128103 class_ref 128999 // PersistentObject
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 238 336 2000
+classcanvas 128231 class_ref 129127 // DescriptedObject
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 230 247 2000
+classcanvas 128359 class_ref 129255 // DataField
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 463 245 2000
+classcanvas 128743 class_ref 129383 // TextField
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 429 331 2000
+classcanvas 128871 class_ref 129511 // BoolField
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 503 331 2000
+classcanvas 129383 class_ref 129639 // PWBObject
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 317 159 2005
+classcanvas 129639 class_ref 129767 // ValueModel
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 442 188 2005
+relationcanvas 128487 relation_ref 128999 // <association>
+  from ref 128231 z 1999 to ref 128359
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 128615 relation_ref 129127 // <generalisation>
+  from ref 128103 z 1999 to ref 128231
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 128999 relation_ref 129255 // <generalisation>
+  from ref 128743 z 1999 to ref 128359
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129255 relation_ref 129383 // <generalisation>
+  from ref 128871 z 1999 to ref 128359
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129511 relation_ref 129511 // <generalisation>
+  from ref 128231 z 1999 to ref 129383
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129767 relation_ref 129639 // <generalisation>
+  from ref 128359 z 1999 to ref 129639
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129895 relation_ref 129767 // <generalisation>
+  from ref 129639 z 2004 to ref 129383
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 130023 relation_ref 129895 // listeners
+  from ref 129383 z 2004 label "listeners" italic xyz 396 155 2004 to point 430 165
+  line 130151 z 2004 to point 430 195
+  line 130279 z 2004 to ref 129383
+  role_a_pos 417 174 3000 role_b_pos 417 151 3000
+  multiplicity_a_pos 417 203 3000 multiplicity_b_pos 417 180 3000
+end

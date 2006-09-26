@@ -1,0 +1,65 @@
+format 25
+
+classcanvas 128103 class_ref 128103 // Component
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 324 126 2000
+classcanvas 128231 class_ref 128231 // Application
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 150 233 2000
+classcanvas 128359 class_ref 128359 // ComponentHolder
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 130 125 2005
+classcanvas 128999 class_ref 128487 // Widget
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 338 229 2000
+classcanvas 129127 class_ref 128615 // Select
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 343 301 2000
+classcanvas 129255 class_ref 128743 // Input
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 399 302 2000
+classcanvas 129383 class_ref 128871 // CheckBox
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 268 301 2000
+classcanvas 130023 class_ref 129639 // PWBObject
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  xyz 242 26 2000
+relationcanvas 128064 relation_ref 128064 // <generalisation>
+  from ref 128359 z 1999 to ref 130023
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 128192 relation_ref 128192 // <generalisation>
+  from ref 128103 z 1999 to ref 130023
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 128743 relation_ref 128231 // <generalisation>
+  from ref 128231 z 1999 to ref 128359
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 128871 relation_ref 128359 // <association>
+  from ref 128359 z 1999 to ref 128103
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129511 relation_ref 128487 // <generalisation>
+  from ref 128999 z 1999 to ref 128103
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129639 relation_ref 128615 // <generalisation>
+  from ref 129383 z 1999 to ref 128999
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129767 relation_ref 128743 // <generalisation>
+  from ref 129127 z 1999 to ref 128999
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 129895 relation_ref 128871 // <generalisation>
+  from ref 129255 z 1999 to ref 128999
+  no_role_a no_role_b
+  no_multiplicity_a no_multiplicity_b
+relationcanvas 130151 relation_ref 129895 // listeners
+  from ref 130023 z 1999 label "listeners" italic xyz 321 21 1999 to point 355 32
+  line 130279 z 1999 to point 355 62
+  line 130407 z 1999 to ref 130023
+  role_a_pos 342 41 3000 role_b_pos 342 18 3000
+  multiplicity_a_pos 342 70 3000 multiplicity_b_pos 342 47 3000
+end
