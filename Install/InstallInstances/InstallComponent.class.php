@@ -97,13 +97,15 @@ class InstallComponent extends Component {
 		}
 	}
 	function do_install_database(){
-		$conf = new ConfigReader;
+		$conf =& new ConfigReader;
 		$configfile = $this->configfile->value->getValue();
 		$c = $conf->load($configfile);
 		$m = $c['modules']!=''?$c['modules']:"Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,CodeAnalyzer";
 		$a = $c['app']!=''?$c['app']:"MyInstances,MyComponents";
 		includeAllModules(pwbdir, $m);
-		includeAllModules($conf->loadDir($c['basedir']), $a);
+		$bdir = $conf->loadDir($c['basedir'],$configfile);
+		echo $bdir;
+		includeAllModules($bdir, $a);
 		$db =& DB::instance();
 		$db->beginTransaction();
 		if ($this->execEliminar->value->getValue()) {
@@ -115,11 +117,8 @@ class InstallComponent extends Component {
 				$sql .= "DROP TABLE IF EXISTS `" . $c->tableName() . "`;";
 			}
 			$sqls = explode(";", $sql);
-			$db = DB::Instance();
 			print_r($db->batchExec($sqls));
 		}
-		$db->commit();
-		$db->beginTransaction();
 		$dbc = new DBController();
 		$sql = $dbc->modsNeeded();
 		// crear las tablas

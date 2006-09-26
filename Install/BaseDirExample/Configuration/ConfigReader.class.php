@@ -25,11 +25,11 @@ class ConfigReader
     function readAct($file_name){
     	return array_merge($this->read($file_name,"global"),$this->read($file_name));
     }
-    function loadDir($value){
+    function loadDir($value,$file_name){
     	if ((substr($value,0,1)=='/') or ereg('^[[:alpha:]]:', $value)){
 			return $value;
 		} else {
-			return dirname($_SERVER['SCRIPT_FILENAME']).'/'.$value;
+			return dirname($file_name).'/'.$value;
 		}
     }
     function load($file_name){
@@ -37,7 +37,7 @@ class ConfigReader
         foreach ($conf as $key => $value) {
         	switch (substr($key,-3)){
         		case 'dir':
-	        		$v = $this->loadDir($value);
+	        		$v = $this->loadDir($value,$file_name);
 	        		break;
 	        	case 'url':
 					if (substr($value,0,7)=='http://'){
