@@ -23,32 +23,5 @@ if (defined('error_reporting')) {
 }
 
 require_once dirname(__FILE__) . "/lib/basiclib.php";
-
-
-if (!defined('modules')) {
-	define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick, CodeAnalyzer");
-}
-if (!defined('app_class')) {
-	define('app_class', "DefaultCMSApplication");
-}
-
-$modules = explode(",", modules);
-
-foreach ($modules as $dir) {
-	//echo 'Including ' . pwbdir.'/'.trim($dir);
-	includemodule(pwbdir.'/'.trim($dir));
-}
-
-includemodule(pwbdir."/Logging");
-
-define('app', "MyInstances,MyComponents" );
-$app = explode(",", app);
-
-foreach ($app as $dir) {
-	//echo 'Including ' . basedir.'/'.trim($dir);
-	includemodule(basedir."/".$dir);
-}
-
-includemodule(pwbdir.'/Session');
-
+includeAll();
 ?>

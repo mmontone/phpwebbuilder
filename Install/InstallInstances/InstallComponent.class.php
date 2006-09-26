@@ -97,17 +97,15 @@ class InstallComponent extends Component {
 		}
 	}
 	function do_install_database(){
-		$pwbdir = $this->pwbdir->value->getValue();
-		$basedir = $this->basedir->value->getValue();
-		includemodule($pwbdir."/database");
-		includemodule($pwbdir."/Model");
-		includemodule($pwbdir."/DefaultCMS");
-		includemodule($pwbdir."/Instances");
-		includemodule($basedir."/MyInstances");
-		foreach (array('DBObject',"serverhost","basename", "baseuser", "basepass", "baseprefix")
-		 	as $d){
-			define($d, $this->$d->value->getValue());
-		}
+		$conf = new ConfigReader;
+		$configfile = $this->configfile->value->getValue();
+		$c = $conf->load($configfile);
+		$m = $c['modules']!=''?$c['modules']:"Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,CodeAnalyzer";
+		$a = $c['app']!=''?$c['app']:"MyInstances,MyComponents";
+		includeAllModules(pwbdir, $m);
+		includeAllModules($conf->loadDir($c['basedir']), $a);
+		$db =& DB::instance();
+		$db->beginTransaction();
 		if ($this->execEliminar->value->getValue()) {
 			$sql = "";
 			foreach (get_subclasses('PersistentObject') as $c) {
@@ -118,16 +116,18 @@ class InstallComponent extends Component {
 			}
 			$sqls = explode(";", $sql);
 			$db = DB::Instance();
-			$db->batchExec($sqls);
+			print_r($db->batchExec($sqls));
 		}
+		$db->commit();
+		$db->beginTransaction();
 		$dbc = new DBController();
 		$sql = $dbc->modsNeeded();
 		// crear las tablas
 		require_once dirname(__FILE__) . "/../SQLs/minimal-data.php";
 		$sql .= $basesql;
 		$sqls = explode(";", $sql);
-		$db = DB::Instance();
 		print_r($db->batchExec($sqls));
+		$db->commit();
 		$this->status->setValue($t="Installation Successful");
 	}
 }

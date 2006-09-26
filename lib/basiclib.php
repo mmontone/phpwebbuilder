@@ -6,10 +6,35 @@ require_once 'md.php';
 /**
  * Some basic functions.
  */
+
+
+function includeAll(){
+
+	if (!defined('modules')) {
+		define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick, CodeAnalyzer");
+	}
+	if (!defined('app_class')) {
+		define('app_class', "DefaultCMSApplication");
+	}
+
+	$modules = explode(",", modules);
+	$modules[]='Logging';
+	includeAllModules(pwbdir,modules);
+	define('app', "MyInstances,MyComponents" );
+	includeAllModules(basedir,app);
+	includeAllModules(pwbdir,'Session');
+
+}
+function includeAllModules($prefix, $modules){
+	foreach (explode(",", $modules) as $dir) {
+		includemodule($prefix.'/'.trim($dir));
+	}
+}
+
 /**
  * Gets all the files in a directory tree that matches the condition
  */
-function getfilesrec ($pred, $dir){
+ function getfilesrec ($pred, $dir){
 	if (is_dir($dir)) {
 			$ret = array();
 			$gestor=opendir($dir);
