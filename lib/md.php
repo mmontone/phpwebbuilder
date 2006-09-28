@@ -5,7 +5,7 @@
 require_once 'spyc-0.2.3/spyc.php';
 
 // Configuration
-$md_dir = basedir . '/md';
+$md_dir = basedir . '/mdc';
 if (defined('md_dir')) {
 	$md_dir = constant('md_dir');
 }
@@ -26,17 +26,10 @@ function load_md_files($dir) {
 
 
 function load_compiled_md_files($dir) {
-	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -4)==".mdc";', $a=array()), $dir) as $f){
+	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -4)==".php";', $a=array()), $dir) as $f){
+        //echo "Requiring $f <br />";
         require_once $f;
  	}
-	delete_lambda($lam);
-}
-
-function compile_md_file($file, $output_dir) {
-	echo 'Compiling ' . $file;
-	$compiled_src = compile_md_src(Spyc::YAMLLoad($file));
-	$output_file = $output_dir . '/' . substr($file, 0, strlen($file) - 3) . 'mdc';
-	file_put_contents($output_file, $compiled_src);
 }
 
 function compile_md_src($src) {

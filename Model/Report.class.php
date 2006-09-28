@@ -28,6 +28,11 @@ class Report extends Collection{
 	 /**
 	  * Adds a condition to filter the data
 	  */
+
+	function addTable($table) {
+		$this->tables[] = $table;
+	}
+
 	function setCondition($field, $comparator, $value){
 		$this->conditions[$this->parseField($field)]=array($comparator,$value);
 		$this->elements=null;
@@ -243,6 +248,10 @@ class Report extends Collection{
 
 	function getDataType(){
 		return $this->dataType;
+	}
+
+	function setDataType($dataType) {
+		$this->dataType = $dataType;
 	}
 	/**
 	  * Creates an element, and fills it from the record
