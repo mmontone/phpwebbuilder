@@ -6,6 +6,8 @@ class ValueHolder extends ValueModel
     var $__value;
 
     function ValueHolder($value) {
+    	if (func_num_args() == 0)
+    		print_backtrace();
     	parent::ValueModel();
     	$this->primitiveSetValue($value);
     }

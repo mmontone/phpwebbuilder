@@ -26,7 +26,7 @@ class OptionalSelect extends Component {
 			$selectopt =& new Select($this->value_model, $this->options, $this->displayF);
 			$selectopt->enable($this->selectOption);
 			$this->addComponent($selectopt, 'select_option');
-			$this->options->addEventListener('changed', new FunctionObject($this, 'optionsChanged'));
+			$this->options->addInterestIn('changed', new FunctionObject($this, 'optionsChanged'));
 		}
 	}
 

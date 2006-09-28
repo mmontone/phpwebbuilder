@@ -83,6 +83,7 @@ class Component extends PWBObject
     	$this->registered_callbacks[$selector] =& $callback;
     }
 	function &addComponent(&$component, $ind=null) {
+		//echo 'Adding component: ' . getClass($component) . '<br />';
 		if (!is_a($component, 'Component')) {
 			print_backtrace('Type error adding component: ' . getClass($component));
 			exit;
@@ -166,6 +167,7 @@ class Component extends PWBObject
     	$this->releaseAll();
     }
     function basicCall(&$component) {
+    	//echo 'Calling component: ' . getClass($component) . '<br />';
     	$this->replaceView($component);
     	$this->holder->hold($component);
 		if (isset($this->app))$component->linkToApp($this->app);

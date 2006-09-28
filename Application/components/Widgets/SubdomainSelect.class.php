@@ -38,14 +38,15 @@ class SubdomainSelect extends Component {
 		$this->target_items->addAll($source_elements);
 		//echo 'Source elemnents size: ' . $this->source_items->size();
 		$this->source_items->removeAll($source_elements);
-		foreach($this->source_items->elements() as $element) {
-			echo 'Class: ' . getClass($element);
-		}
+		//foreach($this->source_items->elements() as $element) {
+		//	echo 'Class: ' . getClass($element);
+		//}
 		//echo 'Source elemnents size: ' . count($this->source_items->elements());
 		//echo 'Source elemnents size: ' . getClass($this->source_items);
 		//echo 'Source elemnents size: ' . $this->source_items->size();
 		$this->setSelectedSourceItems(new Collection);
 		$this->setSelectedTargetItems(new Collection);
+		$this->triggerEvent('itemsAdded', $selected_source_items);
     }
 
 	function removeElements() {
@@ -55,6 +56,7 @@ class SubdomainSelect extends Component {
 		$this->target_items->removeAll($target_elements);
 		$this->setSelectedSourceItems(new Collection);
 		$this->setSelectedTargetItems(new Collection);
+		$this->triggerEvent('itemsRemoved', $selected_target_items);
     }
 
     function &getSelectedSourceItems() {

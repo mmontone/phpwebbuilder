@@ -147,6 +147,17 @@ class Collection extends PWBObject {
 	function push(& $elem) {
 		$this->add($elem);
 	}
+	/*
+	 *  Applies a function to all the elements of the collection
+	 */
+	 function for_each(&$f) {
+	 	$es = & $this->elements();
+
+		foreach (array_keys($es) as $k) {
+			$f ($es[$k]);
+		}
+	 }
+
 	/**
 	 *  Adds an element to the end of the collection
 	 */

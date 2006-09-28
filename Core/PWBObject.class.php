@@ -65,6 +65,10 @@ class PWBObject
 	 */
 
     function &addEventListener($event_specs, &$listener) {
+        if (!is_array($event_specs)) {
+        	print_backtrace('Type error');
+        	exit;
+        }
         $handles = array();
         $callback = array();
         $i = 1;
