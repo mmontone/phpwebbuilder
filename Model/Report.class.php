@@ -33,6 +33,16 @@ class Report extends Collection{
 		$this->tables[] = $table;
 	}
 
+	function setTables($tables) {
+		$this->tables = $tables;
+	}
+
+	function addTables($tables) {
+		foreach ($tables as $table) {
+			$this->addTable($table);
+		}
+	}
+
 	function setCondition($field, $comparator, $value){
 		$this->conditions[$this->parseField($field)]=array($comparator,$value);
 		$this->elements=null;
@@ -123,7 +133,11 @@ class Report extends Collection{
 	  * Returns the tables to be used
 	  */
 	function tableNames(){
-		return implode(',',$this->tables);
+		$tnames = array();
+		foreach($this->tables as $table) {
+			$tnames[] = '`' . $table . '`';
+		}
+		return implode(',',$tnames);
 	}
 	/**
 	  * Sets an order based on the field=>order array parameter
@@ -232,6 +246,7 @@ class Report extends Collection{
 
 	function &elements() {
 		if ($this->elements===null){
+			$this->elements = array();
 			$sql = $this->selectsql();
 			$db =& DB::Instance();
 			$reg = $db->SQLExec($sql, FALSE, $this);

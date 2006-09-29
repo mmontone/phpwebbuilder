@@ -66,8 +66,9 @@ class CollectionNavigator extends Component {
 		// through the collection interface (the in-memory collection doesn't get notified)
 		$col->refresh();
 		$elements = & $col->elements();
-		if ($elements===false) {
-			$this->addComponent(new Label(DB::lastError()),'status');
+		if (!is_array($elements)) {
+			print_backtrace('No elements: ' . var_dump($elements));
+			//$this->addComponent(new Label(DB::lastError()),'status');
 		} else {
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {

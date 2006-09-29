@@ -85,7 +85,8 @@ class Component extends PWBObject
 	function &addComponent(&$component, $ind=null) {
 		//echo 'Adding component: ' . getClass($component) . '<br />';
 		if (!is_a($component, 'Component')) {
-			print_backtrace('Type error adding component: ' . getClass($component));
+			print_backtrace('');
+			trigger_error('Type error adding component: ' . getClass($component),E_USER_ERROR);
 			exit;
 		}
 		if (!$component->checkAddingPermissions()){
@@ -95,7 +96,10 @@ class Component extends PWBObject
 				trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->$ind->stopAndCall($component);
 			} else {
-				if (isset($this->$ind)) trigger_error('Replacing variable with component',E_USER_ERROR);
+				if (isset($this->$ind)) {
+					print_backtrace('');
+					trigger_error("Replacing variable $ind with component ".getClass($component),E_USER_ERROR);
+				}
 				$keys = array();
 				$index =& $keys[$ind];
 				$index = $ind;
