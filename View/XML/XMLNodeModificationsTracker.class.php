@@ -6,7 +6,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function XMLNodeModificationsTracker($tag_name = 'div', $attributes = array ()) {
 		parent :: XMLNode($tag_name, $attributes);
 		$this->modifications = array();
-		$this->toFlush =& new NullXMLNodeModification;
+		$this->toFlush =& new NullXMLNodeModification($this);
 	}
 
 	function & instantiateFor(& $component) {
@@ -18,7 +18,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$n = null;
 		$a = array();
 		$this->modifications =& $a;
-		$this->toFlush =& new NullXMLNodeModification;
+		$this->toFlush =& new NullXMLNodeModification($this);
 		$cn =& $this->childNodes;
 		foreach (array_keys($cn) as $key) {
 			if (!is_object($cn[$key])) {
@@ -87,7 +87,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 		return parent :: insertBefore($old, $new);
 	}
 
-	/*function printString() {
+	function printString() {
 		$this->getRealId();
 		$attrs = "";
 		foreach ($this->attributes as $name => $val) {
@@ -96,11 +96,11 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$mods = $this->printModifications();
 
 		if (count($this->childNodes) == 0) {
-			$ret = "<$this->tagName $attrs>";
-			$ret .= "\n   <modifications>";
+			$ret = "&lt;printing $this->tagName $attrs>";
+			$ret .= "\n   &lt;modifications>";
 			$ret .= "\n      $mods";
-			$ret .= "\n   </modifications>\n";
-			$ret .="</$this->tagName>";
+			$ret .= "\n   &lt;/modifications>\n";
+			$ret .="&lt;/$this->tagName>";
 		}
 		else {
 			$childs = '';
@@ -109,11 +109,11 @@ class XMLNodeModificationsTracker extends XMLNode {
 				$childs .= $this->childNodes[$k]->printString();
 			}
 			$childs = str_replace("\n", "\n   ", $childs);
-			$ret .= "\n<$this->tagName $attrs><children>$childs</children>\n";
-			$ret .= "\n   <modifications>";
+			$ret .= "\n&lt;$this->tagName $attrs>&lt;children>$childs&lt;/children>\n";
+			$ret .= "\n   &lt;modifications>";
 			$ret .= "\n      $mods";
-			$ret .= "\n   </modifications>\n";
-			$ret .= "</$this->tagName>\n";
+			$ret .= "\n   &lt;/modifications>\n";
+			$ret .= "&lt;/$this->tagName>\n";
 		}
 
 		return $ret;
@@ -125,6 +125,6 @@ class XMLNodeModificationsTracker extends XMLNode {
 			$ret .= "\n";
 		}
 		return $ret;
-	}*/
+	}
 }
 ?>
