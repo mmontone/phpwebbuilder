@@ -11,6 +11,7 @@ class XMLNodeModification {
 		$visit_selector = 'visit' . getClass($this);
 		return $visitor->$visit_selector($this, $params);
 	}
+	function willFlush(){return true;}
 }
 
 class ReplaceNodeXMLNodeModification extends XMLNodeModification {
@@ -61,6 +62,11 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	function apply_replace(&$elem){
 		$this->replacement = & $elem;
 	}
+}
+
+class NullXMLNodeModification extends XMLNodeModification {
+	function renderAjaxResponseCommand() {}
+	function willFlush(){return false;}
 }
 
 class InsertBeforeXMLNodeModification extends XMLNodeModification {

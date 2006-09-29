@@ -48,6 +48,13 @@ class XMLNode extends DOMXMLNode {
 	function setId($id) {
 		$this->setAttribute('id', $id);
 	}
+	function &getController(){
+		if ($this->controller !== null) {
+			return $this->controller;
+		} else {
+			return $this->parentNode->getController();
+		}
+	}
 	function getRealId() {
 		if (($this->controller != null)) {
 			$id = $this->controller->getId();
