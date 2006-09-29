@@ -1,9 +1,13 @@
 <?php
 
 class SubdomainSelect extends Component {
+	/** The whole domain - the target items*/
 	var $source_items;
+	/** The image*/
 	var $target_items;
+	/** The selected domain*/
 	var $selected_target_items;
+	/** The selected image*/
 	var $selected_source_items;
 
     function SubdomainSelect(&$target_items, &$source_items) {

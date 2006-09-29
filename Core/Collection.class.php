@@ -1,6 +1,6 @@
 <?php
 class Collection extends PWBObject {
-	var $elements = array ();
+	var $elements = null;
 	/**
 	 * Fields from the objects contained
 	 */
@@ -13,7 +13,7 @@ class Collection extends PWBObject {
 	 * Returns the size of the collection
 	 */
 	function size() {
-		return count($this->elements);
+		return count($this->elements());
 	}
 	function allFields() {
 		return $this->fields;
@@ -69,12 +69,16 @@ class Collection extends PWBObject {
 	 *  Returns an array of object, taking into account the offset and limit
 	 */
 	function & elements() {
+		if ($this->elements === null) {
+			$this->elements = array();
+		}
 		if ($this->limit != 0) {
 			$e = $this->elements;
 			return array_splice($e, $this->offset, $this->limit);
 		} else {
 			return $this->elements;
 		}
+
 	}
 	/**
 	 *  Adds an element to the end of the collection

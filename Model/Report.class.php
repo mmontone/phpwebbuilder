@@ -217,7 +217,7 @@ class Report extends Collection{
 	  */
 
 	function refresh() {
-		$this->elements = array();
+		$this->elements = null;
 	}
 	/**
 	  * Returns the restrictions (which rows, and which tables)
@@ -231,7 +231,7 @@ class Report extends Collection{
 	  */
 
 	function &elements() {
-		if (empty($this->elements)){
+		if ($this->elements===null){
 			$sql = $this->selectsql();
 			$db =& DB::Instance();
 			$reg = $db->SQLExec($sql, FALSE, $this);
