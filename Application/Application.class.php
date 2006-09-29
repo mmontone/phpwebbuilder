@@ -89,6 +89,7 @@ class Application extends ComponentHolder {
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
 		$this->addStyleSheet(pwb_url . '/View/common.css');
+		$this->addStyleSheet(pwb_url . '/View/debug.css', false);
 		$this->addStyleSheets();
 	}
 
@@ -119,8 +120,8 @@ class Application extends ComponentHolder {
 		$this->wholeView->scripts[] = & $url;
 	}
 
-	function addStyleSheet($url) {
-		$this->wholeView->style_sheets[] = & $url;
+	function addStyleSheet($url, $enabled=true) {
+		$this->wholeView->style_sheets[] = array($url,$enabled);
 	}
 
 	function renderExtraHeaderContent() {}

@@ -50,6 +50,7 @@ class ActionDispatcher {
 		}
 	}
 	function & getComponent($path, & $app) {
+		if ($path=='app') return $app;
 		$path = explode(CHILD_SEPARATOR, $path);
 		if ($path[0] == "app") { // Maybe the parameter wasn't for us'
 			$comp = & $app->component;
