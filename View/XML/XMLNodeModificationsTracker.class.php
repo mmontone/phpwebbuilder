@@ -109,7 +109,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 				$childs .= $this->childNodes[$k]->printString();
 			}
 			$childs = str_replace("\n", "\n   ", $childs);
-			$ret .= "\n&lt;$this->tagName $attrs>&lt;children>$childs&lt;/children>\n";
+			$ret .= "\n&lt;printing $this->tagName $attrs>&lt;children>$childs&lt;/children>\n";
 			$ret .= "\n   &lt;modifications>";
 			$ret .= "\n      $mods";
 			$ret .= "\n   &lt;/modifications>\n";

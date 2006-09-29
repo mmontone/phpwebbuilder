@@ -48,6 +48,7 @@ class SelectMultiple extends Widget {
 		foreach($ks as $k){
 			$v->removeChild($cn[$k]);
 		}
+		$cn=array();
 		$this->initializeView(&$v);
 	}
 
