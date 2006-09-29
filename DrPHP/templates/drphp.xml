@@ -1,6 +1,7 @@
 <templates>
 	<template class="CodeAnalyzer">
-		<h1>PWB Code Analyzer</h1>
+		<h1>Welcome to DrPHP</h1>
+		<p><b>DrPHP</b> is a <b>PHP</b> code analyzer tool. Select the analysis, hit the button and heal your code!</p>
 		<table>
 			<tbody>
 				<tr>
@@ -20,7 +21,7 @@
 				</tr>
 				<tr>
 					<td>
-						Analyze: <br />
+						Analysis: <br />
 						(CTRL + Left-click to select several)
 				 	</td>
 					<td>

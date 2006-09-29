@@ -11,7 +11,7 @@ require_once 'md.php';
 function includeAll(){
 
 	if (!defined('modules')) {
-		define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick, CodeAnalyzer");
+		define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS, QuicKlick, DrPHP");
 	}
 	if (!defined('app_class')) {
 		define('app_class', "DefaultCMSApplication");
