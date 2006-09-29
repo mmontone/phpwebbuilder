@@ -4,9 +4,10 @@ require_once '../lib/basiclib.php';
 
 $args = $_SERVER['argv'];
 
-$help = "Syntax: mdc [OPTIONS] <files>\n" .
+$help = "PWB Multiple Dispatch Compiler\n\n" .
+		"Syntax: mdc [OPTIONS] <files>\n" .
         "OPTIONS:\n" .
-        "-d <dir> : The output directory for compiled files";
+        "-d <dir> : The output directory for compiled files\n\n";
 
 $gethelp = "Type \"mdc -h\" for help.\n";
 

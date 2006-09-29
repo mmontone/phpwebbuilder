@@ -5,13 +5,19 @@
 require_once 'spyc-0.2.3/spyc.php';
 
 // Configuration
-$md_dir = basedir . '/mdc';
+$mdc_dir = basedir . '/mdc';
+$md_dir = basedir . '/md';
+
 if (defined('md_dir')) {
 	$md_dir = constant('md_dir');
 }
 
+if (defined('mdc_dir')) {
+	$md_dir = constant('mdc_dir');
+}
+
 if (defined('md') and constant('md')=='compiled') {
-	load_compiled_md_files($md_dir);
+	load_compiled_md_files($mdc_dir);
 }
 else {
 	load_md_files($md_dir);
