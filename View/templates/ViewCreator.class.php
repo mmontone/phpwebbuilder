@@ -21,8 +21,13 @@ class ViewCreator {
 		$xs = array();
 		foreach($files as $f){
 			$x = file_get_contents($f);
-			$x2 = str_replace('$templatesdir', $templatesdir, $x);
-			$xml =& $p->parse($x2,$f);
+			$x = str_replace('$templatesdir', $templatesdir, $x);
+
+			foreach ($this->metaVars() as $var => $value) {
+				$x = str_replace('$' . $var, $value, $x);
+			}
+
+			$xml =& $p->parse($x,$f);
 			$cm =& $xml->childNodes;
 			$ks = array_keys($cm);
 			foreach($ks as $k){
@@ -36,6 +41,11 @@ class ViewCreator {
 		}
 		$this->addTemplates($tps);
 	}
+
+	function metaVars() {
+		return array('pwbdir' => pwbdir, 'basicdir' => basicdir, 'site_url' => site_url, 'pwb_url' => pwb_url);
+	}
+
 	function loadTemplatesDir ($templatesdir){
 		$fs = getfilesrec($lam = lambda('$file','$v=substr($file, -4)=="'.$this->app->page_renderer->templateExtension().'"; return $v;', $a=array()), $templatesdir);
 		delete_lambda($lam);

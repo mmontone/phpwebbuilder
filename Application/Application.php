@@ -8,7 +8,6 @@ require_once $d.'/UrlManager.class.php';
 require_once $d.'/Bookmark.class.php';
 require_once $d.'/Application.class.php';
 require_once $d.'/Component.class.php';
-require_once $d.'/ApplicationErrorHandler.class.php';
 require_once $d.'/JSComponent.class.php';
 require_once $d.'/ChildCallbackHandler.class.php';
 require_once $d.'/Translator.class.php';

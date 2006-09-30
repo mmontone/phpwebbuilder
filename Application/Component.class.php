@@ -90,7 +90,7 @@ class Component extends PWBObject
 	function &addComponent(&$component, $ind=null) {
 		//echo 'Adding component: ' . getClass($component) . '<br />';
 		if (!is_a($component, 'Component')) {
-			print_backtrace('');
+			print_backtrace('Type error adding component: ' . getClass($component));
 			trigger_error('Type error adding component: ' . getClass($component),E_USER_ERROR);
 			exit;
 		}
@@ -202,6 +202,7 @@ class Component extends PWBObject
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
         if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
+			var_dump($callbackComponent->registered_callbacks[$callback]);
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
 	}

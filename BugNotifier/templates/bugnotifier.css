@@ -1,0 +1,115 @@
+body, html, form {
+/*overflow:hidden;*/
+height:99%;
+}
+
+form#app > div{
+  /*height:100%;*/
+}
+
+div.Body, div.Menu{
+overflow:auto;
+height:95%;
+}
+
+table{
+	background-color: #DEF3FE;
+    border:thin outset #000000;
+}
+
+
+td {
+	border:inherit;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-family:"Courier New", Courier, mono;
+	font-size:12px;
+
+}
+
+td.operation {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+
+a.operation {
+	color: #DEF3FE;
+}
+
+td a {
+	color : Black;
+
+}
+
+img {
+	border:none;
+	color: transparent;
+}
+
+.error_msgs {
+	background-color: White;
+	/*#FF6C6C;*/
+	color : Black;
+	/*font-size:large;*/
+	font-weight:bold;
+}
+
+div.Menu, div.Body{
+        float:left;
+ 		padding: 1%;
+        border:1px inset grey;
+		margin: 0.5%;
+}
+div.Menu{
+ 		width:25%;
+ 		background-color:#DEF3DE;
+}
+div.Body{
+ 		width:65%;
+}
+
+
+ul.MenuList{
+    list-style-type: square;
+}
+a{
+        color: #677667;
+}
+a:hover{
+        color: #899889;
+}
+
+table.login{
+    background-color:#EFEFEF;
+    border:thin outset #000000;
+    margin: 10px;
+}
+
+div#loader {
+visibility: hidden;
+position:absolute;
+right:0px;
+top:0px;
+background-color:red;
+padding:1px;
+color:white;
+font-size:0.8em;
+}
+
+textarea {
+width:30em;
+height:15em;
+}
+input[type="text"], input[type="password"] {
+width:30em;
+}
+
+.invalid {
+    background-color:red;
+}
+
+.error_message {
+	color: red;
+	font-weight: bold;
+}

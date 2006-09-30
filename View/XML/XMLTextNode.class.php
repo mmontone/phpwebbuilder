@@ -12,6 +12,10 @@ class XMLTextNode extends XMLNodeModificationsTracker
 		echo toAjax($this->data);
 	}
 
+	function renderNonEcho() {
+		return toAjax($this->data);
+	}
+
 	function printString() {
 		return '<text>' . $this->data . '</text>';
 	}

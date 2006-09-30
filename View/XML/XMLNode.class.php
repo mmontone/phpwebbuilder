@@ -79,12 +79,20 @@ class XMLNode extends DOMXMLNode {
 		return $this->getAttribute('id');
 	}
 	function render(){
+		/*
 		ob_start();
 		$this->renderEcho();
 		$s = ob_get_contents();
+		var_dump($s);exit;
 		ob_end_clean();
 		return $s;
+		*/
+
+
+		$out = $this->renderNonEcho();
+		return $out;
 	}
+
 	function renderEcho() {
 		$id = $this->getId();
 		if ($this->getAttribute('id')!='' && !$this->controller) {
@@ -112,6 +120,42 @@ class XMLNode extends DOMXMLNode {
 			echo implode(array('</'.$this->tagName.'>'));
 		}
 	}
+
+	function renderNonEcho() {
+		$out = '';
+		$id = $this->getId();
+		if ($this->getAttribute('id')!='' && !$this->controller) {
+			if (defined('debugview') and constant('debugview')=='1') {
+				$this->addCSSclass('hiddencontainer');
+				$this->appendChild(new XMLTextNode($id));
+			} else {
+				return;
+			}
+		}
+		$cn =& $this->childNodes;
+		$out .= implode('',array('<',$this->tagName));
+
+
+		foreach ($this->attributes as $name => $val) {
+			$out .= implode('' , array(' ', $name , '="' , $val, '"'));
+		}
+
+		if (count($cn) == 0) {
+			$out .= '/>';
+		} else {
+			$out .= '>';
+			$ks = array_keys($cn);
+			foreach ($ks as $k) {
+				$out .= $cn[$k]->renderNonEcho();
+			}
+			//echo implode(array("\n</".$this->tagName.'>'));
+			$out .= implode(array('</'.$this->tagName.'>'));
+		}
+
+		return $out;
+	}
+
+
 	// For debugging
 	function printString() {
 		//$this->getRealId();

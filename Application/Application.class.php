@@ -71,8 +71,10 @@ class Application extends ComponentHolder {
 	}
 	function render() {
 		$this->viewCreator->createAllViews();
-		echo $this->page_renderer->render($this);
+		$out = $this->page_renderer->render($this);
+		echo $out;
 		session_write_close();
+		return $out;
 	}
 
 	function createView() {
@@ -175,7 +177,7 @@ class Application extends ComponentHolder {
 	function launch() {
 		$ad =& new ActionDispatcher();
 		$app =& $ad->dispatch();
-		$app->render();
+		return $app->render();
 	}
 	function &getWidgets(){
 		$ws=array();

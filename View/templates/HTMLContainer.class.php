@@ -10,6 +10,17 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 			}
 
 	}
+
+	function renderNonEcho() {
+			$fid = $this->getId();
+			if (defined('debugview') and constant('debugview')=='1') {
+				return "<span class=\"hiddencontainer\" id=\"$fid\">Container: $fid</span>";
+			} else {
+				return "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
+			}
+
+	}
+
 	function getRealId(){
 		$this->parentNode->getRealId();
 		$id = $this->parentNode->getAttribute('id');
