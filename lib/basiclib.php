@@ -368,4 +368,44 @@ if (version_compare(phpversion(), '5.0') < 0) {
     ');
 }
 
+
+
+
+
+
+
+/***************************/
+/** Error handler **********/
+/***************************/
+
+function fatal_error_handler($buffer) {
+	$s = print_backtrace('Fatal error handler');
+	return $s;
+
+	if (ereg("(error</b>:)(.+)(<br)", $buffer, $regs)) {
+		$err = preg_replace("/<.*?>/", "", $regs[2]);
+		error_log($err);
+
+		$error_handler_class = 'DevelopApplicationErrorHandler';
+
+		if (defined('app_mode') and (constant('app_mode') == 'deploy')) {
+			$error_handler_class = 'DeployApplicationErrorHandler';
+		}
+
+		$error_handler = & new $error_handler_class ($err);
+	}
+	return $buffer;
+}
+
+function handle_error($errno, $errstr, $errfile, $errline) {
+	print_backtrace();
+	error_log("$errstr in $errfile on line $errline");
+	if ($errno == FATAL || $errno == ERROR) {
+		print_backtrace();
+		ob_end_flush();
+		echo "ERROR CAUGHT check log file";
+		exit (0);
+	}
+}
+
 ?>

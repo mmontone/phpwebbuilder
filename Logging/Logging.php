@@ -9,6 +9,7 @@
  *
  * Access logging.php through the browser. Access out.log (i.e. through the browser)
  */
+
 if (defined('logging')){
  require_once peardir.'Log.php';
 if (logging=='window'){

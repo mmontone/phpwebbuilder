@@ -5,7 +5,7 @@ class MySQLdb extends DB {
 	var $tables_type = 'MyISAM';
 
     function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
-       	trace($sql. '<br/>');
+       	echo($sql. '<br/>');
 		$this->lastSQL = $sql;
         $reg = $this->query ($sql);
         if ($getID) { $obj->setID(mysql_insert_id());};

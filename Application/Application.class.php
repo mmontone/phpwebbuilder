@@ -23,6 +23,17 @@ class Application extends ComponentHolder {
 		$rc->linkToApp($this);
 	}
 
+	function getName() {
+		return ucfirst(getClass($this));
+	}
+
+	function getAdminEmail() {
+		if (defined('admin_email')) {
+			return constant('admin_email');
+		}
+		return '';
+	}
+
 	function pushCommand(&$command){
 		$this->commands->push($command);
 	}
