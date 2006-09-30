@@ -73,12 +73,28 @@ class StandardPageRenderer extends PageRenderer {
 		$ret .= $app->renderExtraHeaderContent();
 
 		foreach ($this->page->style_sheets as $c) {
-			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $c . "\" />";
+			$ss = $c[0];
+			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $ss ;
+			if (!$c[1]) {$ret .= '" disabled="disabled';}
+			$ret .= "\" />";
 		}
 
 
 		$ret .= '</head><body>';
-
+		if (defined('debugview')&&constant('debugview')=='1'){
+			$ret .='<div>' .
+						'<form action="'.site_url . '/Action.php" '.
+							' method="post"'.
+							' enctype="multipart/form-data">' .
+							'<input type="hidden" name="app_class" value="'.getClass($app).'" />' .
+							'<input type="hidden" name="event_target" value="app" />' .
+							'<input type="hidden" name="event" value="reset_templates" />' .
+							'Debug View ' .
+							'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
+							'<input type="submit" value="Reload Templates"/>' .
+						'</form>'.
+						'</div>';
+		}
 		foreach ($this->page->scripts as $s) {
 			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
 		}
@@ -138,7 +154,6 @@ class AjaxPageRenderer extends PageRenderer {
 	function initialRender(){
 			$p =& $this->page;
 			$p->toFlush = & new ReplaceNodeXMLNodeModification($p, $p);
-			$p->modifications[] =& $p->toFlush;
 	}
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();
@@ -160,20 +175,13 @@ class AjaxPageRenderer extends PageRenderer {
 
 	function renderAjaxResponseCommands(& $node) {
 		$xml = '';
-
+		$xml .=$node->toFlush->renderAjaxResponseCommand();
 		foreach (array_keys($node->modifications) as $i) {
-			if (method_exists($node->modifications[$i],'renderAjaxResponseCommand')){
-				$xml .= $node->modifications[$i]->renderAjaxResponseCommand();
-			}
-			/*else {
-				print_backtrace($node->modifications[$i]);
-			}*/
+			$xml .= $node->modifications[$i]->renderAjaxResponseCommand();
 		}
-
 		foreach (array_keys($node->childNodes) as $i) {
 			$xml .= $this->renderAjaxResponseCommands($node->childNodes[$i]);
 		}
-
 		return $xml;
 	}
 }
