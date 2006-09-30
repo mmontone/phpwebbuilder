@@ -7,6 +7,15 @@ class ViewCreator {
 		$this->app =& $app;
 		$this->templates =& new Collection;
 	}
+	function reloadView(){
+		$app =& $this->app;
+		$v=&$app->component->view;
+		$app->wholeView->removeChild($v);
+		//$v->release();
+		$this->templates =& new Collection;
+		$app->loadTemplates();
+		$app->component->createViews();
+	}
 	function parseTemplates ($files, $templatesdir){
 		$p =& new XMLParser;
 		$xs = array();
@@ -70,7 +79,7 @@ class ViewCreator {
 		//if (strcasecmp(getClass($view),'StdClass')==0) print_backtrace(get_class($component));
 		$id = $component->getSimpleId();
 		//if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
-		if ($parentView == null) print_backtrace();
+		if ($parentView === null) print_backtrace('The component '.getClass($component).' '.$component->getId().' has no parent view');
 		$vid =& $parentView->childrenWithId($id);
 		if ($vid!=null){
 			if (!$vid->isContainer()){

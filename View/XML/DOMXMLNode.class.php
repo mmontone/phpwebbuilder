@@ -40,18 +40,15 @@ class DOMXMLNode extends PWBObject {
 	}
 
 	function & first_child() {
+		if (empty($this->childNodes)) {$n=null;return $n;};
 		$ks = array_keys($this->childNodes);
 		return $this->childNodes[$ks[0]];
 	}
 	function & last_child() {
+		if (empty($this->childNodes)) {$n=null;return $n;};
 		$ks = array_keys($this->childNodes);
 		$p = count($ks)-1;
-		if (isset($ks[$p])){
-			return $this->childNodes[$ks[$p]];
-		} else {
-			$v = null;
-			return $v;
-		}
+		return $this->childNodes[$ks[$p]];
 	}
 	function insert_in(& $xml, $position) {
 		$this->childNodes[$position] = & $xml;
@@ -94,6 +91,9 @@ class DOMXMLNode extends PWBObject {
 	}
 
 	function insertBefore(& $old, & $new) {
+		if (!$old->parentNode->is($this)) {
+			print_backtrace('not a children'); exit;
+		}
 		$pos = $old->parentPosition;
 		$ks = array_keys($this->childNodes);
 		$c = count($ks);

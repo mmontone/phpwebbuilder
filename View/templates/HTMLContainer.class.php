@@ -34,7 +34,7 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 
 class XMLVariable extends XMLNodeModificationsTracker {
 	function getRealId(){
-		return $this->attribute['id'];
+		return $this->attributes['id'];
 	}
 
 }
