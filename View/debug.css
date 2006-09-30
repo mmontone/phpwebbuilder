@@ -1,0 +1,19 @@
+.template{
+	border: 1px solid black;
+}
+
+
+.debugging,.hiddencontainer{
+	visibility:visible;
+	width:auto;height:auto;overflow:inherit;
+	font-size:10px;
+}
+
+
+.debugging{
+	border: 2px solid red;
+}
+
+.hiddencontainer{
+	border: 2px dashed blue;
+}

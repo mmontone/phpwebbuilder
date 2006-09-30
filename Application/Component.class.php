@@ -53,8 +53,13 @@ class Component extends PWBObject
 		if ($this->listener != null)
 			$this->listener->releaseAll();
 	}
-
-
+	function createViews(){
+			$this->app->needsView($this);
+			$ks = array_keys($this->__children);
+			foreach($ks as $k){
+				$this->$k->createViews();
+			}
+	}
 	function linkToApp(&$app){
 		if (!isset($this->app)){
 			$this->app =& $app;

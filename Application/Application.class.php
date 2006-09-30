@@ -190,6 +190,12 @@ class Application extends ComponentHolder {
 	function &getRootComponent() {
 		return $this->getComponent();
 	}
+	function triggerEvent($ev){
+		$this->$ev();
+	}
+	function reset_templates(){
+		$this->viewCreator->reloadView();
+	}
 
 }
 ?>

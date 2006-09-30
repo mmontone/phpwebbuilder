@@ -2,18 +2,11 @@
 	cursor:pointer; cursor:hand;
 }
 
-.template{
-	border: 1px solid black;
+.debugging,.hiddencontainer{
+	visibility:hidden;
+	width:0;height:0;overflow:hidden;
+	font-size:0;
 }
-
-.debugging{
-	border: 2px solid red;
-}
-
-.hiddencontainer{
-	border: 2px dashed blue;
-}
-
 
 .uploadfile {
 	border: none;

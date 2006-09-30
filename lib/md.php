@@ -32,7 +32,7 @@ function load_md_files($dir) {
 
 
 function load_compiled_md_files($dir) {
-	foreach(getfilesrec($lam = lambda('$file','return $v=substr($file, -4)==".php";', $a=array()), $dir) as $f){
+	foreach(getfilesrec($lam = lambda('$file','$v=substr($file, -4)==".php";return $v;', $a=array()), $dir) as $f){
         //echo "Requiring $f <br />";
         require_once $f;
  	}
