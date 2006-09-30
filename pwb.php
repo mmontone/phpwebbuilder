@@ -5,7 +5,7 @@
  * Controller Version.
  * */
 
-ob_start("ob_gzhandler");
+//ob_start("ob_gzhandler");
 ini_set('memory_limit', '-1');
 set_time_limit(0);
 ini_set('display_errors', true);

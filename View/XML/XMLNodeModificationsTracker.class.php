@@ -88,18 +88,18 @@ class XMLNodeModificationsTracker extends XMLNode {
 	}
 
 	function printString() {
-		$this->getRealId();
+		//$this->getRealId();
 		$attrs = "";
 		foreach ($this->attributes as $name => $val) {
 			$attrs .= ' ' . $name . '="' . $val . '"';
 		}
-		$mods = $this->printModifications();
+		//$mods = $this->printModifications();
 
 		if (count($this->childNodes) == 0) {
 			$ret = "&lt;printing $this->tagName $attrs>";
-			$ret .= "\n   &lt;modifications>";
-			$ret .= "\n      $mods";
-			$ret .= "\n   &lt;/modifications>\n";
+			//$ret = "\n   &lt;modifications>";
+//			$ret .= "\n      $mods";
+			//$ret .= "\n   &lt;/modifications>\n";
 			$ret .="&lt;/$this->tagName>";
 		}
 		else {
@@ -109,10 +109,10 @@ class XMLNodeModificationsTracker extends XMLNode {
 				$childs .= $this->childNodes[$k]->printString();
 			}
 			$childs = str_replace("\n", "\n   ", $childs);
-			$ret .= "\n&lt;printing $this->tagName $attrs>&lt;children>$childs&lt;/children>\n";
-			$ret .= "\n   &lt;modifications>";
-			$ret .= "\n      $mods";
-			$ret .= "\n   &lt;/modifications>\n";
+			$ret = "\n&lt;printing $this->tagName $attrs>&lt;children>$childs&lt;/children>\n";
+			//$ret .= "\n   &lt;modifications>";
+//			$ret .= "\n      $mods";
+			//$ret .= "\n   &lt;/modifications>\n";
 			$ret .= "&lt;/$this->tagName>\n";
 		}
 
