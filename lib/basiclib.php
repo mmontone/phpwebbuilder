@@ -396,6 +396,27 @@ function fatal_error_handler($buffer) {
 	if (ereg("(error</b>:)(.+)(<br)", $buffer, $regs)) {
 		$err = preg_replace("/<.*?>/", "", $regs[2]);
 		error_log($err);
+
+		// The following is copied from Session.php without understanding much :S
+		// Programming by instinct :P
+		SessionHandler::setHooks();
+		session_name(strtolower('BugNotifierApplication'));
+		$sessionid = $_COOKIE[session_name()];
+  		$orgpath = getcwd();
+  		@chdir(PHP_BINDIR);
+  		@chdir(session_save_path());
+  		$path = realpath(getcwd()).'/';
+  		if(file_exists($path.'sess_'.$sessionid)) {
+   			@unlink($path.'sess_'.$sessionid);
+  		}
+  		@chdir($orgpath);
+  		session_start();
+  		session_destroy();
+  		SessionHandler::setHooks();
+  		session_regenerate_id();
+		session_start();
+		unset($_SESSION[sitename][app_class]);
+
 		$app = & new BugNotifierApplication;
 		$app->setError($err);
 		$app->setBacktrace(backtrace_plain_string($err));

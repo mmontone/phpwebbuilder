@@ -10,8 +10,7 @@ class XULPageRenderer extends PageRenderer {
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new XULDefaultView;
 	}
-	function setPage(&$view){
-		$app =& Application::instance();
+	function setPage(&$app, &$view){
 		$this->page=&$view;
 		$view->setTagName('box');
 		$this->addVariable('app_class', getClass($app));

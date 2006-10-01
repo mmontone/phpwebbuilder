@@ -1,34 +1,39 @@
 <?php
 
 class ApplicationErrorHandler extends Component {
-	var $error = '';
-	var $backtrace = '';
+	var $error;
+	var $backtrace;
 
+	function ApplicationErrorHandler() {
+		$this->error =& new ValueHolder('');
+		$this->backtrace =& new ValueHolder('');
+
+		parent::Component();
+	}
 	function getError() {
-		return $this->error;
+		return $this->error->getValue();
 	}
 
 	function getBacktrace() {
-		return $this->backtrace;
+		return $this->backtrace->getValue();
 	}
 
 	function setError($error) {
-		$this->error = $error;
+		$this->error->setValue($error);
 	}
 
 	function setBacktrace($backtrace) {
-		$this->backtrace = $backtrace;
+		$this->backtrace->setValue($backtrace);
 	}
 
 	function initialize() {
-		$this->addComponent(new DetailsPanel($this->getError(), $this->getBacktrace()), 'details_panel');
 		$this->addComponent(new Link(site_url . '?restart=yes', 'Restart application'),'restart_application');
 	}
 }
 
 class DevelopApplicationErrorHandler extends ApplicationErrorHandler {
 	function initialize() {
-		$this->addComponent(new DetailsPanel($this->getError(), $this->getBacktrace()), 'details_panel');
+		$this->addComponent(new DetailsPanel($this->error, $this->backtrace), 'details_panel');
 
 		parent::initialize();
 	}
@@ -43,7 +48,7 @@ class DeployedApplicationErrorHandler extends ApplicationErrorHandler {
 
 	function notifyAdministrators() {
 		$this->notify_administrators->delete();
-		$bugnotifier =& new BugNotifier($this->getError(), $this->getBacktrace());
+		$bugnotifier =& new BugNotifier($this->error, $this->backtrace);
 		$bugnotifier->registerCallback('notification_sent', new FunctionObject($this, 'closeBugNotifier'));
 		$this->addComponent($bugnotifier, 'bug_notifier');
 	}
@@ -53,13 +58,13 @@ class DeployedApplicationErrorHandler extends ApplicationErrorHandler {
 	}
 
 	function seeDetails() {
-		$this->addComponent(new DetailsPanel($this->getError(), $this->getBacktrace()), 'details_panel');
+		$this->addComponent(new DetailsPanel($this->error, $this->backtrace), 'details_panel');
 		$this->addComponent(new CommandLink(array('text' => '(Hide details)', 'proceedFunction' => new FunctionObject($this, 'hideDetails' ))), 'see_details');
 	}
 
 	function hideDetails() {
 		$this->details_panel->delete();
-		$this->addComponent(new CommandLink(array('text' => 'See details', 'proceedFunction' => new FunctionObject($this, 'seeDetails' ))), 'see_details');
+		$this->addComponent(new CommandLink(array('text' => '(See details)', 'proceedFunction' => new FunctionObject($this, 'seeDetails' ))), 'see_details');
 	}
 }
 
@@ -122,38 +127,14 @@ class DetailsPanel extends Component {
 	var $error;
 	var $backtrace;
 
-	function DetailsPanel($error, $backtrace) {
-		$this->error =& new ValueHolder($error);
-		$this->backtrace =& new ValueHolder($backtrace);
+	function DetailsPanel(&$error, &$backtrace) {
+		$this->error =& $error;
+		$this->backtrace =& $backtrace;
 		parent::Component();
 	}
 
-	function setError($error) {
-		$this->error->setValue($error);
-	}
-
-	function setBacktrace($backtrace) {
-		$this->backtrace->setValue($backtrace);
-	}
-
-	function getError() {
-		return $this->error->getValue();
-	}
-
-	function getBacktrace() {
-		return $this->backtrace->getValue();
-	}
-
 	function initialize() {
-		$this->addErrorArea();
-		$this->addBacktraceArea();
-	}
-
-	function addErrorArea() {
 		$this->addComponent(new Text($this->error), 'error_area');
-	}
-
-	function addBacktraceArea() {
 		$this->addComponent(new TextAreaComponent($this->backtrace), 'backtrace_area');
 	}
 }

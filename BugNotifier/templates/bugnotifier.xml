@@ -27,16 +27,28 @@
 					</td>
 					<td>A bug has ocurred.</td>
 				</tr>
-				<tr>
-					<container id="details_panel" />
-				</tr>
-			</tbody>
-		</table>
-		<div>
-			<input type="button" id="restart_application"
+				<template class="DetailsPanel">
+					<tr>
+						<td>Error:</td>
+						<td>
+							<container id="error_area" />
+						</td>
+					</tr>
+					<tr>
+						<td>Backtrace:</td>
+						<td>
+							<container id="backtrace_area" />
+						</td>
+					</tr>
+				</template>
+			<tr>
+			<td>			<input type="button" id="restart_application"
 				value="Restart application"
 				onclick="location.href='$site_url?restart=yes'" />
-		</div>
+			</td>
+			</tr>
+			</tbody>
+		</table>
 	</template>
 	<template class="DeployedApplicationErrorHandler">
 		<table>
@@ -46,23 +58,39 @@
 						<img
 							src="$pwb_url/DefaultCMS/Templates/Default/icons/Neu/48x48/status/dialog-error.png" />
 					</td>
-					<td><translated>A bug has ocurred</translated>
+					<td>
+						<translated>A bug has ocurred</translated>
 						<a id="see_details">(See details)</a>
 					</td>
 				</tr>
-			</tbody>
-		</table>
-		<div>
-			<container id="details_panel" />
-		</div>
-		<div>
-			<input type="button" id="restart_application"
+				<template class="DetailsPanel">
+					<tr>
+						<td>Error:</td>
+						<td>
+							<container id="error_area" />
+						</td>
+					</tr>
+					<tr>
+						<td>Backtrace:</td>
+						<td>
+							<container id="backtrace_area" />
+						</td>
+					</tr>
+				</template>
+				<tr>
+				<td>
+				<input type="button" id="restart_application"
 				value="Restart application"
 				onclick="location.href='$site_url?restart=yes'" />
-		</div>
-		<div>
-			<input type="button" id="notify_administrators"	value="Notify administrator" />
-		</div>
+				</td>
+				<td>
+							<input type="button" id="notify_administrators"
+				value="Notify administrator" />
+
+				</td>
+				</tr>
+			</tbody>
+		</table>
 		<div>
 			<container id="bug_notifier" />
 		</div>
@@ -71,32 +99,28 @@
 		<table>
 			<tbody>
 				<tr>
+					<td>Name:</td>
 					<td>
-						Name:
-					</td>
-					<td><container id="name_input" />
+						<container id="name_input" />
 					</td>
 				</tr>
 				<tr>
+					<td>Lastname:</td>
 					<td>
-						Lastname:
-					</td>
-					<td><container id="lastname_input" />
+						<container id="lastname_input" />
 					</td>
 				</tr>
 				<tr>
+					<td>Comment:</td>
 					<td>
-						Comment:
-					</td>
-					<td><container id="comment_area" />
+						<container id="comment_area" />
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<div>
 			<input type="button" id="notify_administrators"
-				value="Send"
-				 />
+				value="Send" />
 		</div>
 	</template>
 </templates>

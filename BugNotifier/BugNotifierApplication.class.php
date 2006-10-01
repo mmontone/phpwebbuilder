@@ -16,6 +16,7 @@ class BugNotifierApplication extends Application {
  		$this->viewCreator->loadTemplatesDir(pwbdir . "/BugNotifier/templates");
  		$this->viewCreator->loadTemplatesDir(basedir . "/MyTemplates/");
  	}
+
  	function addStyleSheets(){
  		$this->addStyleSheet(pwb_url."/BugNotifier/templates/bugnotifier.css");
  	}

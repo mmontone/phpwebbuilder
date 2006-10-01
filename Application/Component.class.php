@@ -202,7 +202,6 @@ class Component extends PWBObject
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
         if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
-			var_dump($callbackComponent->registered_callbacks[$callback]);
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
 	}

@@ -10,8 +10,7 @@ class PageRenderer // extends PWBObject
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new HTMLDefaultView;
 	}
-	function setPage(&$view){
-		$app =& Application::instance();
+	function setPage(&$app, &$view){
 		$this->page=&$view;
 		$view->tagName = 'form';
 		$view->setAttribute('action', site_url . '/Action.php');
@@ -147,8 +146,8 @@ class DebugPageRenderer extends StandardPageRenderer {
 }
 
 class AjaxPageRenderer extends PageRenderer {
-	function setPage(&$page){
-		parent::setPage($page);
+	function setPage(&$app, &$page){
+		parent::setPage($app, $page);
 		$page->setAttribute('onsubmit','postInAjax();');
 	}
 	function initialRender(){

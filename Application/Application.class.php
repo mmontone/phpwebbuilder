@@ -49,7 +49,7 @@ class Application extends ComponentHolder {
 	function standardRender() {
 		$this->viewCreator->createAllViews();
 		$pr =& new StandardPageRenderer();
-		$pr->setPage($this->wholeView);
+		$pr->setPage($this, $this->wholeView);
 		echo $pr->renderPage($this);
 	}
 	function & getInstanceOf($c) {
@@ -91,7 +91,7 @@ class Application extends ComponentHolder {
 			$this->setTitle($this->getTitle());
 			$this->initializeStyleSheets();
 			$this->initializeScripts();
-			$this->page_renderer->setPage($this->wholeView);
+			$this->page_renderer->setPage($this, $this->wholeView);
 			$this->page_renderer->initialRender();
 		}
 	}
