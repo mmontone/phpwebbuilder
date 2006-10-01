@@ -4,7 +4,7 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	function renderEcho() {
 			$fid = $this->getId();
 			if (defined('debugview') and constant('debugview')=='1') {
-				echo "<span class=\"hiddencontainer\" id=\"$fid\">Container: $fid</span>";
+				echo "<span class=\"hiddencontainer\" id=\"$fid\">Container: ".$this->getAttribute('id')."</span>";
 			} else {
 				echo "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
 			}

@@ -16,6 +16,10 @@
 	 background-color:#FFFF99;
 }
 
+.containerWithId{
+	border: 1px solid green;
+}
+
 .debugging{
 	border: 2px solid red;
 }

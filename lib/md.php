@@ -79,7 +79,7 @@ function &mdcall($function, $args) {
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
 	} else {
-		print_backtrace('Dispatch failed: ' . $function . '(' . print_r($c, true) . ');');
+		print_backtrace('error</b>:<br/>Dispatch failed: ' . $function . '(' . print_r($c, true) . ');');
 	}
 }
 
@@ -196,7 +196,7 @@ function &mdcompcall($function, $args) {
 		return $res;
 	}
 	else {
-		$msg = 'Dispatch failed: <br/>';
+		$msg = 'error</b>:<br/>Dispatch failed: <br/>';
 		$msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
 		$msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
 		print_backtrace($msg);

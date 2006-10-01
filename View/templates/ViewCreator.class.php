@@ -97,6 +97,8 @@ class ViewCreator {
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$component->setView($vid);
+				if (constant('debugview')=='1')$vid->addCSSClass('containerWithId');
+				$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');
 				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element "'.$vid->tagName.'"',E_USER_NOTICE);
 				return $vid;
 			} else {
@@ -130,7 +132,7 @@ class ViewCreator {
 				$tp =& $tp0->instantiateFor($component);
 				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
 				$name = 'Local '.$tp0->getAttribute('class');
-				$this->addTemplateName($tp, 'Local Template for class '.$tp0->getAttribute('class'));
+				$this->addTemplateName($tp, 'Local:'.$tp0->getAttribute('class').'('.$component->getSimpleId().')');
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
@@ -157,9 +159,9 @@ class ViewCreator {
 		$tp =& $this->templateForClass($component);
 		$t =& $tp->instantiateFor($component);
 		if ($t->getAttribute('class')!=''){
-			$this->addTemplateName($t, 'Global Template for class '.$tp->getAttribute('class'));
+			$this->addTemplateName($t, 'Global:'.$tp->getAttribute('class').'('.$component->getSimpleId().')');
 		} else {
-			$this->addTemplateName($t, 'Default Template for class '.getClass($component));
+			$this->addTemplateName($t, 'Default:'.getClass($component).'('.$component->getSimpleId().')');
 		}
 		return $t;
 	}
