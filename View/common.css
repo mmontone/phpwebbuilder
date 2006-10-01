@@ -2,7 +2,7 @@
 	cursor:pointer; cursor:hand;
 }
 
-.debugging,.hiddencontainer{
+.debugging,.hiddencontainer, .templateName{
 	visibility:hidden;
 	width:0;height:0;overflow:hidden;
 	font-size:0;

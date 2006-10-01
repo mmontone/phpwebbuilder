@@ -3,12 +3,18 @@
 }
 
 
-.debugging,.hiddencontainer{
+.debugging,.hiddencontainer,.templateName{
 	visibility:visible;
 	width:auto;height:auto;overflow:inherit;
 	font-size:10px;
 }
 
+.templateName{
+	 font-size:8px;
+	 color:black;
+	 weight:bold;
+	 background-color:#FFFF99;
+}
 
 .debugging{
 	border: 2px solid red;

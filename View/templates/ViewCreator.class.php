@@ -128,6 +128,7 @@ class ViewCreator {
 				$tp =& $tp0->instantiateFor($component);
 				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
 				$name = 'Local '.$tp0->getAttribute('class');
+				$this->addTemplateName($tp, 'Local Template for class '.$tp0->getAttribute('class'));
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
@@ -141,9 +142,24 @@ class ViewCreator {
 		$parentView->replaceChild($view,$pos);
 		return $view;
 	}
+	function addTemplateName(&$view, $name){
+		if (constant('debugview')=='1') {
+				$t =& new XMLTextNode($name);
+				$tn =& new XMLNodeModificationsTracker('span');
+				$tn->appendChild($t);
+				$tn->addCSSClass('templateName');
+				$view->appendChild($tn);
+		}
+	}
 	function &createTemplate(&$component){
 		$tp =& $this->templateForClass($component);
-		return $tp->instantiateFor($component);
+		$t =& $tp->instantiateFor($component);
+		if ($t->getAttribute('class')!=''){
+			$this->addTemplateName($t, 'Global Template for class '.$tp->getAttribute('class'));
+		} else {
+			$this->addTemplateName($t, 'Default Template for class '.getClass($component));
+		}
+		return $t;
 	}
 	function &templateForClass(&$component){
 		$ts =& $this->templates->filter($f = lambda(

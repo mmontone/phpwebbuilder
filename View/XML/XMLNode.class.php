@@ -11,7 +11,7 @@ class XMLNode extends DOMXMLNode {
 		parent :: DOMXMLNode($tag_name, $attributes);
 		$this->addCSSClasses();
 	}
-	function release(){
+	/*function release(){
 		parent::release();
 		$cn =& $this->childNodes;
 		foreach (array_keys($cn) as $k) $cn[$k]->release();
@@ -20,7 +20,7 @@ class XMLNode extends DOMXMLNode {
 		$this->controller->view =& $v;
 		$this->controller =& $c;
 		$this->childNodes = array();
-	}
+	}*/
 	function addCSSClasses(){
 		$c = $this->getAttribute('class');
 		if ($c!=''){
