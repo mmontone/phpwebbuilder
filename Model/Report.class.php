@@ -112,7 +112,8 @@ class Report extends Collection{
 	  */
 	function &getObject(){
 		$dt = $this->getDataType();
-		return new $dt;
+		$o  =& new $dt;
+		return $o;
 	}
 	/**
 	  * Returns all the field names, backquote encapsed

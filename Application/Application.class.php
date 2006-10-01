@@ -43,7 +43,7 @@ class Application extends ComponentHolder {
 	}
 	function redraw() {
 		$this->wholeView->flushModifications();
-		$this->wholeView->replaceChild($this->wholeView->first_child(), $other = $this->wholeView->first_child());
+		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
 	}
 
 	function standardRender() {

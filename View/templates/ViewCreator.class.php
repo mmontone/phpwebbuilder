@@ -11,10 +11,11 @@ class ViewCreator {
 		$app =& $this->app;
 		$v=&$app->component->view;
 		$app->wholeView->removeChild($v);
-		//$v->release();
+		$v->releaseAll();
 		$this->templates =& new Collection;
 		$app->loadTemplates();
 		$app->component->createViews();
+		//$app->redraw();
 	}
 	function parseTemplates ($files, $templatesdir){
 		$p =& new XMLParser;
@@ -43,7 +44,7 @@ class ViewCreator {
 	}
 
 	function metaVars() {
-		return array('pwbdir' => pwbdir, 'basicdir' => basicdir, 'site_url' => site_url, 'pwb_url' => pwb_url);
+		return array('pwbdir' => pwbdir, 'basedir' => basedir, 'site_url' => site_url, 'pwb_url' => pwb_url);
 	}
 
 	function loadTemplatesDir ($templatesdir){
@@ -88,6 +89,7 @@ class ViewCreator {
 		//Somewhere er're setting a value in view where the view is not initialized;
 		//if (strcasecmp(getClass($view),'StdClass')==0) print_backtrace(get_class($component));
 		$id = $component->getSimpleId();
+		$debugging = false;
 		//if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
 		if ($parentView === null) print_backtrace('The component '.getClass($component).' '.$component->getId().' has no parent view');
 		$vid =& $parentView->childrenWithId($id);
@@ -95,11 +97,11 @@ class ViewCreator {
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$component->setView($vid);
-				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element "'.$vid->tagName.'"',E_USER_NOTICE);
+				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element "'.$vid->tagName.'"',E_USER_NOTICE);
 				return $vid;
 			} else {
 				$pos =& $vid;
-				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' found container with id',E_USER_NOTICE);
+				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' found container with id',E_USER_NOTICE);
 				$parentView =& $vid->parentNode;
 			}
 		} else {
@@ -108,7 +110,7 @@ class ViewCreator {
 				$parentView =& $ct->parentNode;
 				$pos =& $ct->createCopy();
 				$parentView->insertBefore($ct, $pos);
-				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' found container for class '.$ct->getAttribute('class'),E_USER_NOTICE);
+				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' found container for class '.$ct->getAttribute('class'),E_USER_NOTICE);
 			} else {
 				if (defined('debugview') and constant('debugview')=='1') {
 					$debugging = true;
@@ -117,7 +119,7 @@ class ViewCreator {
 				} else {
 					$v =& new NullView;
 					$component->setView($v);
-					trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' got NullView ',E_USER_NOTICE);
+					//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' got NullView ',E_USER_NOTICE);
 					return $v;
 				}
 			}
@@ -126,7 +128,7 @@ class ViewCreator {
 			$tp0 =& $parentView->templateForClass($component);
 			if ($tp0!=null){
 				$tp =& $tp0->instantiateFor($component);
-				trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
+				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
 				$name = 'Local '.$tp0->getAttribute('class');
 				$this->addTemplateName($tp, 'Local Template for class '.$tp0->getAttribute('class'));
 			} else {
@@ -176,7 +178,7 @@ class ViewCreator {
 				}
 			}
 
-			trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Global Template for class '.$t->getAttribute('class'),E_USER_NOTICE);
+			//trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Global Template for class '.$t->getAttribute('class'),E_USER_NOTICE);
 			return $t;
 		}
 		else {
@@ -185,7 +187,7 @@ class ViewCreator {
 	}
 
 	function &defaultTemplate(&$component){
-		trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Default Template',E_USER_NOTICE);
+		//trigger_error('Component '.$component->getSimpleId().' ('.getClass($component).') of '.$component->getId() . ' gets Default Template',E_USER_NOTICE);
 		$t =& $this->app->page_renderer->defaultViewFactory->createFor($component);
 		return $t;
 	}

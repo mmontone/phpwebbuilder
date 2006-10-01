@@ -11,16 +11,16 @@ class XMLNode extends DOMXMLNode {
 		parent :: DOMXMLNode($tag_name, $attributes);
 		$this->addCSSClasses();
 	}
-	/*function release(){
-		parent::release();
+	function releaseAll(){
+		$this->release();
 		$cn =& $this->childNodes;
-		foreach (array_keys($cn) as $k) $cn[$k]->release();
+		foreach (array_keys($cn) as $k) $cn[$k]->releaseAll();
 		$c = null;
 		$v = null;
 		$this->controller->view =& $v;
 		$this->controller =& $c;
 		$this->childNodes = array();
-	}*/
+	}
 	function addCSSClasses(){
 		$c = $this->getAttribute('class');
 		if ($c!=''){

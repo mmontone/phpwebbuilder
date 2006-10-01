@@ -91,6 +91,7 @@ class StandardPageRenderer extends PageRenderer {
 							'Debug View ' .
 							'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
 							'<input type="submit" value="Reload Templates"/>' .
+							'<a href="Action.php?restart=yes">Restart application</a>' .
 						'</form>'.
 						'</div>';
 		}

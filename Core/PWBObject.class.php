@@ -145,7 +145,7 @@ class PWBObject
 	 */
 
     function triggerEvent($event_selector, &$params) {
-        trigger_error('Triggering event: ' . $event_selector);
+        //trigger_error('Triggering event: ' . $event_selector);
         $listeners =& $this->event_listeners[$event_selector];
 
 		if ($listeners == null) return;
