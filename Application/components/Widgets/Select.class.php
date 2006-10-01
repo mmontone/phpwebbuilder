@@ -92,7 +92,10 @@ class Select extends Widget {
 			if ($this->selected_index != -1) {
 				$this->opts[$this->selected_index]->removeAttribute('selected');
 			}
-			$this->opts[$this->getValueIndex()]->setAttribute('selected', 'selected');
+			$index = $this->getValueIndex();
+			if ($this->opts[$index] !== null) {
+				$this->opts[$index]->setAttribute('selected', 'selected');
+			}
 			$this->selected_index =& $this->getValueIndex();
 			$this->view->redraw();
 		}
