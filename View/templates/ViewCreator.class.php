@@ -13,6 +13,7 @@ class ViewCreator {
 		$app->wholeView->removeChild($v);
 		$v->releaseAll();
 		$this->templates =& new Collection;
+		$app->translators = array();
 		$app->loadTemplates();
 		$app->component->createViews();
 		//$app->redraw();
