@@ -24,4 +24,5 @@ class QuestionDialog extends Component
 		$this->callback('on_no');
 	}
 }
+
 ?>

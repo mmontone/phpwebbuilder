@@ -11,11 +11,15 @@ class ErrorDialog extends Component
 
 	function initialize() {
 		$this->addComponent(new Label($this->message), 'error');
-		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept');
 	}
 
 	function accept() {
 		$this->callback('on_accept');
+	}
+
+	function onAccept(&$function) {
+		$this->registerCallback('on_accept', $function);
+		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept');
 	}
 }
 ?>

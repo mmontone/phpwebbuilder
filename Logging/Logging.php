@@ -45,7 +45,7 @@ function errorHandler($code, $message, $file, $line)
 
 }
 
-set_error_handler('errorHandler');
+//set_error_handler('errorHandler');
 
 /* Use always the trigger_error function to trigger any kind of errors or notifications!! */
 trigger_error('************** Beggining log ************', E_USER_NOTICE);

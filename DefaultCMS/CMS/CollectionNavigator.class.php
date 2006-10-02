@@ -67,7 +67,7 @@ class CollectionNavigator extends Component {
 		$col->refresh();
 		$elements = & $col->elements();
 		if (!is_array($elements)) {
-			print_backtrace('No elements: ' . var_dump($elements));
+			print_backtrace('No elements: ' . print_r($elements,true));
 			//$this->addComponent(new Label(DB::lastError()),'status');
 		} else {
 		$ks = array_keys($elements);

@@ -92,7 +92,6 @@ class Component extends PWBObject
 		if (!is_a($component, 'Component')) {
 			print_backtrace('Type error adding component: ' . getClass($component));
 			trigger_error('Type error adding component: ' . getClass($component),E_USER_ERROR);
-			exit;
 		}
 		if (!$component->checkAddingPermissions()){
 			return $f=false;
@@ -102,7 +101,7 @@ class Component extends PWBObject
 				$this->$ind->stopAndCall($component);
 			} else {
 				if (isset($this->$ind)) {
-					print_backtrace('');
+					print_backtrace("Replacing variable $ind with component ".getClass($component));
 					trigger_error("Replacing variable $ind with component ".getClass($component),E_USER_ERROR);
 				}
 				$keys = array();
