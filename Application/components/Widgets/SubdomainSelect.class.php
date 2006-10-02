@@ -28,8 +28,8 @@ class SubdomainSelect extends Component {
 
 		$this->addComponent($target_list, 'c_target_list');
 		$this->addComponent($source_list, 'c_source_list');
-		$this->addComponent(new CommandLink(array('text' => 'Add', 'proceedFunction' => new FunctionObject($this, 'addElements'))));
-		$this->addComponent(new CommandLink(array('text' => 'Remove', 'proceedFunction' => new FunctionObject($this, 'removeElements'))));
+		$this->addComponent(new CommandLink(array('text' => 'Add', 'proceedFunction' => new FunctionObject($this, 'addElements'))), 'add');
+		$this->addComponent(new CommandLink(array('text' => 'Remove', 'proceedFunction' => new FunctionObject($this, 'removeElements'))), 'remove');
     }
 
     function printObject(&$object) {
