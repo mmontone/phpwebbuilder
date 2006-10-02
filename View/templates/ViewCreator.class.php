@@ -132,7 +132,7 @@ class ViewCreator {
 				$tp =& $tp0->instantiateFor($component);
 				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->getId() . ' gets Local Template for class '.$tp0->getAttribute('class'),E_USER_NOTICE);
 				$name = 'Local '.$tp0->getAttribute('class');
-				$this->addTemplateName($tp, 'Local:'.$tp0->getAttribute('class').'('.$component->getSimpleId().')');
+				$this->addTemplateName($tp, 'Local:'.$tp0->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
@@ -164,7 +164,7 @@ class ViewCreator {
 		$tp =& $this->templateForClass($component);
 		$t =& $tp->instantiateFor($component);
 		if ($tp->getAttribute('class')!=''){
-			$this->addTemplateName($t, 'Global:'.$tp->getAttribute('class').'('.$component->getSimpleId().')');
+			$this->addTemplateName($t, 'Global:'.$tp->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');
 		} else {
 			$this->addTemplateName($t, 'Default:'.getClass($component).'('.$component->getSimpleId().')');
 		}
