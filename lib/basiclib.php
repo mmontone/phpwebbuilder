@@ -419,15 +419,20 @@ function fatal_error_handler($buffer) {
 
 		$app = & new BugNotifierApplication;
 		$app->setError($err);
-		$app->setBacktrace(backtrace_plain_string($err));
+		//$app->setBacktrace(backtrace_plain_string($err));
+		$app->setBacktrace($buffer);
+
 		return $app->render();
 	}
 	return $buffer;
 }
 
 function handle_error($errno, $errstr, $errfile, $errline) {
-	error_log("$errstr in $errfile on line $errline");
+	//error_log("$errstr in $errfile on line $errline");
+	//print_backtrace($errno);
 	if ($errno == FATAL || $errno == ERROR) {
+		echo "error</b>:<br/>";
+		print_backtrace();
 		ob_end_flush();
 		echo "ERROR CAUGHT check log file";
 		exit (0);
