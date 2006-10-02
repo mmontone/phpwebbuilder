@@ -152,7 +152,12 @@ class ViewCreator {
 				$tn =& new XMLNodeModificationsTracker('span');
 				$tn->appendChild($t);
 				$tn->addCSSClass('templateName');
-				$view->appendChild($tn);
+				$fc =& $view->first_child();
+				if ($fc!==null){
+					$view->insertBefore($fc,$tn);
+				} else {
+					$view->appendChild($tn);
+				}
 		}
 	}
 	function &createTemplate(&$component){
