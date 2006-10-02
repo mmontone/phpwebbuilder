@@ -82,7 +82,7 @@ class Application extends ComponentHolder {
 			$this->viewCreator = & new ViewCreator($this);
 			$this->loadTemplates();
 			$this->wholeView = & new XMLNodeModificationsTracker;
-			$tc =& new HTMLContainer;
+			$tc =& new HTMLContainer('',array());
 			$tc->setAttribute('class','Component');
 			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;

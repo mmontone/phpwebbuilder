@@ -39,7 +39,7 @@ class Widget extends Component {
 		parent :: setView($view);
 		$this->setEvents($this->view);
 		$this->setEnqueuedHooks($view);
-		$view->setAttribute('name',$this->getId());
+		//$view->setAttribute('name',$this->getId());
 		$this->initializeView($view);
 		$this->prepareToRender();
 	}
@@ -97,14 +97,7 @@ class Widget extends Component {
 	}
 
 	function & createDefaultView() {
-		/*$v =& new XMLNodeModificationsTracker;
-		$ks = array_keys($this->__children);
-		foreach ($ks as $key){
-			$v->appendChild(
-				$this->$key->myContainer()
-			);
-		}*/
-		$v = & parent :: createDefaultView();
+		$v = & new XMLNodeModificationsTracker;
 		$this->initializeDefaultView($v);
 		return $v;
 	}

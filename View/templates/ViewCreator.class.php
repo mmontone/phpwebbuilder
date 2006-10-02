@@ -163,7 +163,7 @@ class ViewCreator {
 	function &createTemplate(&$component){
 		$tp =& $this->templateForClass($component);
 		$t =& $tp->instantiateFor($component);
-		if ($t->getAttribute('class')!=''){
+		if ($tp->getAttribute('class')!=''){
 			$this->addTemplateName($t, 'Global:'.$tp->getAttribute('class').'('.$component->getSimpleId().')');
 		} else {
 			$this->addTemplateName($t, 'Default:'.getClass($component).'('.$component->getSimpleId().')');

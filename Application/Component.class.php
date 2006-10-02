@@ -234,15 +234,8 @@ class Component extends PWBObject
 
 	function &createDefaultView(){
 		$v =& new XMLNodeModificationsTracker;
-		$t =& new HTMLContainer;
-		$t->setAttribute('class', 'Component');
+		$t =& new HTMLContainer('',array('class'=>'Component'));
 		$v->appendChild($t);
-		/*$ks = array_keys($this->__children);
-		foreach ($ks as $key){
-			$v->appendChild(
-				$this->$key->myContainer()
-			);
-		}*/
 		return $v;
 	}
 	function &createView(&$parentView){
@@ -267,8 +260,7 @@ class Component extends PWBObject
 	    }
 	}
 	function &myContainer(){
-		$cont =& new HTMLContainer;
-    	$cont->attributes['id'] = $this->getSimpleID();
+		$cont =& new HTMLContainer('',array('id'=>$this->getSimpleID()));
     	return $cont;
 	}
 	function getId(){

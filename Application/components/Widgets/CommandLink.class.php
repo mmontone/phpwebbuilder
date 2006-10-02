@@ -19,6 +19,13 @@ class CommandLink extends Widget{
 		$this->addComponent(new Label($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);
     }
+    function & createDefaultView() {
+		$v = & new XMLNodeModificationsTracker;
+		$v->appendChild(new HTMLContainer('',array('id'=>'linkName')));
+		$this->initializeDefaultView($v);
+		return $v;
+	}
+
 	function initializeDefaultView(&$view){
 		$view->setTagName('a');
 	}
