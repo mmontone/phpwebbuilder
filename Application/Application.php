@@ -15,6 +15,7 @@ require_once $d.'/EnglishTranslator.class.php';
 require_once $d.'/SpanishTranslator.class.php';
 require_once $d.'/components/Widgets/Widget.class.php';
 require_once $d.'/components/Widgets/Text.class.php';
+require_once $d.'/components/Widgets/HTML.class.php';
 require_once $d.'/components/Widgets/CompositeWidget.class.php';
 require_once $d.'/components/Widgets/Input.class.php';
 require_once $d.'/components/Widgets/WikiComponent.class.php';
