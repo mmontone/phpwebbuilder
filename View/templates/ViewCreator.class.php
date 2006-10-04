@@ -98,7 +98,7 @@ class ViewCreator {
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$component->setView($vid);
-				if (constant('debugview')=='1')$vid->addCSSClass('containerWithId');
+				if (defined('debugview') and constant('debugview')=='1')$vid->addCSSClass('containerWithId');
 				$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');
 				//trigger_error('Component '.$id.' ('.getClass($component).') of '.$component->holder->parent->getId() . ' got element "'.$vid->tagName.'"',E_USER_NOTICE);
 				return $vid;
