@@ -137,7 +137,7 @@ class ViewCreator {
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
-			if (constant('debugview')=='1') {
+			if (defined('debugview') and 	constant('debugview')=='1') {
 				$tp->addCSSClass('template');
 			}
 			$view =& $tp;
@@ -148,7 +148,7 @@ class ViewCreator {
 		return $view;
 	}
 	function addTemplateName(&$view, $name){
-		if (constant('debugview')=='1') {
+		if (defined('debugview') and constant('debugview')=='1') {
 				$t =& new XMLTextNode($name);
 				$tn =& new XMLNodeModificationsTracker('span');
 				$tn->appendChild($t);
