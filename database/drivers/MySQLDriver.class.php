@@ -5,8 +5,7 @@ class MySQLdb extends DB {
 	var $tables_type = 'MyISAM';
 
     function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
-       	//echo($sql. '<br/>');
-		$this->lastSQL = $sql;
+       	$this->lastSQL = $sql;
         $reg = $this->query ($sql);
         if ($getID) { $obj->setID(mysql_insert_id());};
         $rows = mysql_affected_rows();
@@ -48,12 +47,19 @@ class MySQLdb extends DB {
 
     function query($sql) {
     	trace($sql. '<br/>');
+    	if (defined('sql_echo') and constant('sql_echo') == 1) {
+    		echo($sql. '<br/>');
+    	}
 		$this->openDatabase();
 		$this->lastSQL = $sql;
         $reg = mysql_query ($sql);
         $this->closeDatabase();
         if (!$reg){
         	$this->lastError=mysql_error() . ': '.$sql;
+        	if (defined('sql_echo') and constant('sql_echo') == 1) {
+    			echo 'SQL Error: ' . $this->lastError;
+    		}
+
         	return false;
         }
         return $reg;

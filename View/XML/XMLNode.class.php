@@ -79,17 +79,17 @@ class XMLNode extends DOMXMLNode {
 		return $this->getAttribute('id');
 	}
 	function render(){
-
+		/*
 		ob_start();
 		$this->renderEcho();
 		$s = ob_get_contents();
 		echo $s;
 		ob_end_clean();
-		return $s;
+		return $s;*/
 
 
-		/*$out = $this->renderNonEcho();
-		return $out;*/
+		$out = $this->renderNonEcho();
+		return $out;
 	}
 
 	function renderEcho() {

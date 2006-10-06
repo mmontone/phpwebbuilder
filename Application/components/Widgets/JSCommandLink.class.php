@@ -5,25 +5,29 @@ class JSCommandLink extends Widget {
 	var $target;
 
     function JSCommandLink($params) {
-    	$this->text =& $params['text'];
+		$this->text =& $params['text'];
     	$this->target =& $params['target'];
 
     	parent::Widget($vh = null);
     }
 
-	function initialize(){
+	function setEvents(& $view) {}
+    function initialize(){
 		$this->addComponent(new Label($this->text), 'linkName');
 		$this->addComponent($this->target, 'linkTarget');
-
-		$fun =& $this->target->getMainFunction();
-		$this->view->setAttribute('onClick', "javascript:$fun();");
     }
+    function & createDefaultView() {
+		$v = & new XMLNodeModificationsTracker;
+		$v->appendChild(new HTMLContainer('',array('id'=>'linkName')));
+		$this->initializeDefaultView($v);
+		return $v;
+	}
 
 	function initializeDefaultView(&$view){
 		$view->setTagName('a');
-		$view->addCSSClass('clickable');
+		$fun =& $this->target->getMainFunction();
+		$view->setAttribute('onClick', "javascript:$fun();");
 	}
-
 	function initializeView(&$view){}
 }
 

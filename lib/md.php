@@ -170,10 +170,12 @@ function &mdcompcall($function, $args) {
 	$layers = $flayers;
 	$fname = null;
 
-	$msg = 'Trying to match:<br/>';
-	$msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
-	$msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
-	//echo $msg;
+	if (defined('md_echo') and (constant('md_echo') == 1)) {
+		$msg = 'Trying to match:<br/>';
+		$msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
+		$msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
+		echo $msg;
+	}
 
 	while (!empty($layers) and $fname == null) {
 		$f = $function . '_begctx_' . implode('_', $layers) . '_endctx';
@@ -191,7 +193,9 @@ function &mdcompcall($function, $args) {
 			$params[$i] = '$args[' . $i . ']';
 		}
 
-		//echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';
+		if (defined('md_echo') and (constant('md_echo') == 1)) {
+			echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';
+		}
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
 	}

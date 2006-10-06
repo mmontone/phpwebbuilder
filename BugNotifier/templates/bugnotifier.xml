@@ -17,6 +17,7 @@
 			</tbody>
 		</table>
 	</template>
+
 	<template class="DevelopApplicationErrorHandler">
 		<table>
 			<tbody>
@@ -50,6 +51,7 @@
 			</tbody>
 		</table>
 	</template>
+
 	<template class="DeployedApplicationErrorHandler">
 		<table>
 			<tbody>
@@ -95,6 +97,7 @@
 			<container id="bug_notifier" />
 		</div>
 	</template>
+
 	<template class="BugNotifier">
 		<table>
 			<tbody>

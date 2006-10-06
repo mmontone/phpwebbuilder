@@ -1,1 +1,1 @@
-php $PWB mdc.php $*
+php-cgi $PWB mdc.php $*

@@ -43,8 +43,9 @@ class ActionDispatcher {
 		}
 	}
 	function triggerEvent(& $event) {
-		//echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
 		$target = & $this->getComponent($event['target'], $event['app']);
+		//echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
+		//var_dump(getClass($target));
 		if ($target!=null){
 			$target->triggerEvent($event['event'], $v = array ());
 		}

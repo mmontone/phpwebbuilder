@@ -31,8 +31,6 @@ class Component extends PWBObject
 			$child =& $this->__children[$c]->component;
 			if ($child!=null)$child->stopAll();
 		}
-		if ($this->listener != null)
-			$this->listener->releaseAll();
 	}
 
 	function release() {
@@ -54,25 +52,35 @@ class Component extends PWBObject
 			$this->listener->releaseAll();
 	}
 	function createViews(){
-			$this->app->needsView($this);
-			$ks = array_keys($this->__children);
-			foreach($ks as $k){
-				$this->$k->createViews();
-			}
+		$this->app->needsView($this);
+		$ks = array_keys($this->__children);
+		foreach($ks as $k){
+			$this->$k->createViews();
+		}
 	}
 	function linkToApp(&$app){
-		if (!isset($this->app)){
-			$this->app =& $app;
-			//print_backtrace();
+		//if (isset($this->app)) print_backtrace_and_exit(getClass($this) . getClass($this->app));
+		// No se porque es necesaria la siguiente linea bajo las condiciones en que se esta llamando a linkToApp
+		// Pero si no esta, falla:
+		if (isset($this->app)) return;
 
-			$app->needsView($this);
-			$this->initialize();
-			$ks = array_keys($this->__children);
-			foreach($ks as $k){
-				if (!is_a($this->__children[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($this->__children[$k]->component));
-				$this->__children[$k]->component->linkToApp($app);
-			}
-			$this->start();
+		$this->app =& $app;
+
+		$app->needsView($this);
+		$this->initialize();
+
+		$this->start();
+
+		foreach(array_keys($this->__children) as $k){
+			if (!is_a($this->__children[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($this->__children[$k]->component));
+			$this->__children[$k]->component->linkToApp($app);
+		}
+	}
+
+	function startAll() {
+		$this->start();
+		foreach(array_keys($this->__children) as $k){
+			$this->__children[$k]->component->startAll();
 		}
 	}
 
@@ -111,8 +119,9 @@ class Component extends PWBObject
 				trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->__children[$index] =& new ComponentHolder($component,$index, $this);
 				$this->nextChildrenPosition++;
-				if (isset($this->app)) $component->linkToApp($this->app);
-				$component->start();
+				if (isset($this->app) and (!isset($component->app))) {
+					$component->linkToApp($this->app);
+				}
 			}
 			return $component;
 		}
@@ -170,15 +179,20 @@ class Component extends PWBObject
     	$this->basicCall($component);
 	}
     function stopAndCall(&$component) {
-		$this->stopAll();
-    	$this->basicCall($component);
+		$this->basicCall($component);
     	$this->releaseAll();
     }
     function basicCall(&$component) {
     	//echo 'Calling component: ' . getClass($component) . '<br />';
+    	$this->stopAll();
     	$this->replaceView($component);
     	$this->holder->hold($component);
-		if (isset($this->app))$component->linkToApp($this->app);
+		if (isset($this->app) and (!isset($component->app))) {
+			$component->linkToApp($this->app);
+		}
+		else {
+			$component->startAll();
+		}
     }
 
 	function dettachView(){
@@ -301,8 +315,17 @@ class Component extends PWBObject
 	function &getParent() {
 		return $this->holder->parent;
 	}
+
+	function addFieldComponent(& $component, $field_name) {
+		if ($field_name == null) {
+			print_backtrace();
+		}
+		$fc = & new FieldComponent;
+		//$fc->addComponent(new Label(ucfirst(CozzuolTranslator::TranslateWith('CozzuolTranslator',$field_name))), 'field_name');
+		$fc->addComponent(new Label(ucfirst(Translator :: Translate($field_name))), 'field_name');
+		$fc->addComponent($component, 'component');
+		$this->addComponent($fc, $field_name);
+	}
 }
-
-
 
 ?>

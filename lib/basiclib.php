@@ -195,6 +195,14 @@ function backtrace() {
  */
 function print_backtrace($error) {
 	echo backtrace_string($error);
+
+}
+
+function print_backtrace_and_exit($error) {
+	print_backtrace($error);
+	echo '<br />';
+	echo '<a href=' . site_url .'?restart=yes>Restart application</a>';
+	exit;
 }
 /**
  * Creates a text representation of the backtrace
@@ -389,13 +397,15 @@ if (version_compare(phpversion(), '5.0') < 0) {
 /***************************/
 
 function fatal_error_handler($buffer) {
-	if (defined('error_handler') and constant('error_handler') == 'disabled') {
-		return $buffer;
-	}
-
 	if (ereg("(error</b>:)(.+)(<br)", $buffer, $regs)) {
 		$err = preg_replace("/<.*?>/", "", $regs[2]);
 		error_log($err);
+
+		if (defined('error_handler') and constant('error_handler') == 'disabled') {
+			$buffer .= backtrace_string();
+			$buffer .= '<br /><a href="' . site_url . '?restart=yes">Restart application</a>';
+			return $buffer;
+		}
 
 		// The following is copied from Session.php without understanding much :S
 		// Programming by instinct :P
@@ -430,7 +440,7 @@ function fatal_error_handler($buffer) {
 function handle_error($errno, $errstr, $errfile, $errline) {
 	//error_log("$errstr in $errfile on line $errline");
 	//print_backtrace($errno);
-	if ($errno == FATAL || $errno == ERROR) {
+	if ($errno == 'FATAL' || $errno == 'ERROR') {
 		echo "error</b>:<br/>";
 		print_backtrace();
 		ob_end_flush();
