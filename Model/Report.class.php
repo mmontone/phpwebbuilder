@@ -136,7 +136,11 @@ class Report extends Collection{
 	function tableNames(){
 		$tnames = array();
 		foreach($this->tables as $table) {
-			$tnames[] = '`' . $table . '`';
+			if (strstr($table, ' ')){
+				$tnames[] = $table;
+			} else {
+				$tnames[] = '`' . $table . '`';
+			}
 		}
 		return implode(',',$tnames);
 	}
