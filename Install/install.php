@@ -1,6 +1,6 @@
 <?php
 
-define('modules', 'Core,Application,View,database,DefaultCMS/Administrator,Model,QuicKlick');
+define('modules', 'Core,Application,View,database,DefaultCMS/Administrator,Model,BugNotifier,QuicKlick');
 define('app_class', 'InstallApplication');
 define('pwbdir', dirname(__FILE__).'/../');
 define('basedir', dirname(__FILE__));
