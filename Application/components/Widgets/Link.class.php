@@ -9,12 +9,6 @@ class Link extends Widget
 		$this->target = $target;
 		$this->addComponent(new Label($text), "linkName");
 	}
-    function & createDefaultView() {
-		$v = & new XMLNodeModificationsTracker;
-		$v->appendChild(new HTMLContainer('',array('id'=>'linkName')));
-		$this->initializeDefaultView($v);
-		return $v;
-	}
 	function setEvents(& $view) {}
 	function initializeDefaultView(&$view){
 		$view->setTagName('a');

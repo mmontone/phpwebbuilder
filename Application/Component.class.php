@@ -239,19 +239,8 @@ class Component extends PWBObject
 	/**
      * Functions for the new type of views.
      */
-    function setView(&$view){
-		$this->view =& $view;
-		$this->view->controller =& $this;
-    }
-
 	function viewUpdated ($params){}
-
-	function &createDefaultView(){
-		$v =& new XMLNodeModificationsTracker;
-		$t =& new HTMLContainer('',array('class'=>'Component'));
-		$v->appendChild($t);
-		return $v;
-	}
+	function setView(& $view) {}
 	function &createView(&$parentView){
 		return $this->app->viewCreator->createView($parentView, $this);
 	}

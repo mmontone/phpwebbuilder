@@ -2,11 +2,6 @@
 
 class TextAreaComponent extends Widget{
 
-	function &createDefaultView(){
-		$v =& new XMLNodeModificationsTracker;
-		$v->setTagName('textarea');
-		return $v;
-	}
 	function valueChanged(&$value_model, &$params) {
 		/*WARNING!!! If there's an error, look here first ;) */
 		$text = & $this->printValue();

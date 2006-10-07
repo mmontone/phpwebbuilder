@@ -12,10 +12,6 @@ class HTML extends Widget {
 	}
 	function setEvents(& $view) {}
 
-	function & createDefaultView() {
-		$t =& new XMLNodeModificationsTracker('span');
-		return $t;
-	}
 	function prepareToRender(){
 		$text =& $this->value_model->getValue();
 		$this->view->removeChilds();

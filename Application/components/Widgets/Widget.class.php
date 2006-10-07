@@ -95,12 +95,6 @@ class Widget extends Component {
 	function & getValue() {
 		return $this->value_model->getValue();
 	}
-
-	function & createDefaultView() {
-		$v = & new XMLNodeModificationsTracker;
-		$this->initializeDefaultView($v);
-		return $v;
-	}
 	function initializeDefaultView(& $view) {}
 	function initializeView(& $view) {}
 	function setHook(& $hook) {
