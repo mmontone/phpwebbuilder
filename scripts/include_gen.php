@@ -3,6 +3,10 @@
 $d = $_REQUEST['dir'];
 $n = strlen($d)+1;
 
+if ($d===null){
+	echo "parameter dir should be a directory";
+}
+
 function includefile(&$file) {
 	global $n;
 	if (is_dir($file)) {
@@ -14,7 +18,7 @@ function includefile(&$file) {
 	} else {
 		if (substr($file, -4)=='.php') {
                   //echo "Including file: " . $file;
-                  echo "require_once \$d.'/".substr($file, $n)."';<br/>";
+                  echo "<br/>require_once \$d.'/".substr($file, $n)."';";
 		}
 	}
 }
