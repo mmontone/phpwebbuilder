@@ -80,7 +80,7 @@ function getfiles($pred, $dir) {
  * Includes all php files from a directory tree
  */
 function includefile(& $file) {
-		foreach (getfilesrec($lam = lambda('$file', 'return $v=substr($file, -4)==".php";', $a = array ()), $file) as $f) {
+		foreach (getfilesrec($lam = lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
 		require_once ($f);
 	}
 	delete_lambda($lam);
