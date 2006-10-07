@@ -53,6 +53,9 @@ class PageRenderer // extends PWBObject
 	function defaultTag(){
 		return 'div';
 	}
+	function viewHandler(){
+		return new HTMLHandler;
+	}
 }
 
 class StandardPageRenderer extends PageRenderer {

@@ -16,4 +16,5 @@ require_once $d.'/templates/HTMLContainer.class.php';
 require_once $d.'/templates/HTMLTemplate.class.php';
 require_once $d.'/NullView.class.php';
 require_once $d.'/XML/XMLTextNode.class.php';
+require_once $d.'/Handler/Handler.php';
 ?>

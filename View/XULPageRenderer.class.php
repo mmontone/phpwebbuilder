@@ -63,6 +63,9 @@ class XULPageRenderer extends PageRenderer {
 	function templateExtension(){
 		return '.xul';
 	}
+	function viewHandler(){
+		return new XULHandler;
+	}
 
 }
 ?>

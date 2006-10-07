@@ -1,6 +1,6 @@
 <?php
 class HTMLTemplate extends XMLNodeModificationsTracker {
-	function & instantiateFor(& $component) {
+	function & instantiate() {
 		if (count($this->childNodes) != 1) {
 			$app =& Application::instance();
 			$tv = & new XMLNodeModificationsTracker($app->page_renderer->defaultTag());
@@ -11,7 +11,6 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		} else {
 			$tv = & $this->xml2template($this->first_child());
 		}
-		$component->setView($tv);
 		return $tv;
 	}
 

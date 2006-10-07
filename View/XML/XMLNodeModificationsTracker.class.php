@@ -9,8 +9,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$this->toFlush =& new NullXMLNodeModification($this);
 	}
 
-	function & instantiateFor(& $component) {
-		$component->setView($this);
+	function & instantiate() {
 		return $this;
 	}
 
