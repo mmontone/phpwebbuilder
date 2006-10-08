@@ -10,17 +10,26 @@ class Application extends ComponentHolder {
 	var $translators = array();
 	var $commands;
 	var $urlManager;
+	var $ajaxCommands = array();
 
 	function Application() {
 		$_SESSION[sitename][getClass($this)] = & $this;
 		$this->commands =& new Collection();
 		$this->urlManager =& new UrlManager($this);
 		$page_renderer = constant('page_renderer');
-		$this->page_renderer = new $page_renderer;
+		$this->page_renderer = new $page_renderer($this);
 		$this->createView();
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
+	}
+
+	function addAjaxCommand(&$cmd) {
+		$this->ajaxCommands[] =& $cmd;
+	}
+
+	function &getAjaxCommands() {
+		return $this->ajaxCommands;
 	}
 
 	function getName() {
@@ -48,7 +57,7 @@ class Application extends ComponentHolder {
 
 	function standardRender() {
 		$this->viewCreator->createAllViews();
-		$pr =& new StandardPageRenderer();
+		$pr =& new StandardPageRenderer($this);
 		$pr->setPage($this, $this->wholeView);
 		echo $pr->renderPage($this);
 	}

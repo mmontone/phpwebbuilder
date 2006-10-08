@@ -4,8 +4,11 @@ class PageRenderer // extends PWBObject
 	var $page;
 	var $csss = array ();
 	var $defaultViewFactory;
-	function PageRenderer(){
+	var $app;
+
+	function PageRenderer(&$app){
 		$this->setDefaultViewFactory();
+		$this->app =& $app;
 	}
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new HTMLDefaultView;
@@ -169,9 +172,22 @@ class AjaxPageRenderer extends PageRenderer {
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
 		$xml .= $this->renderAjaxResponseCommands($this->page);
+		$xml .= $this->renderAjaxCommands();
 		$xml .= "</ajax>";
 
 		$this->page->flushModifications();
+
+		return $xml;
+	}
+
+	function renderAjaxCommands() {
+		$xml = '';
+		foreach (array_keys($this->app->ajaxCommands) as $i) {
+			$xml .= $this->app->ajaxCommands[$i]->renderAjaxResponseCommand();
+		}
+
+		$a = array();
+		$this->app->ajaxCommands =& $a;
 
 		return $xml;
 	}

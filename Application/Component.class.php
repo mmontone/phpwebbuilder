@@ -52,12 +52,16 @@ class Component extends PWBObject
 			$this->listener->releaseAll();
 	}
 	function createViews(){
-		$this->app->needsView($this);
+		$this->obtainView();
 		$ks = array_keys($this->__children);
 		foreach($ks as $k){
 			$this->$k->createViews();
 		}
 	}
+	function obtainView() {
+		$this->app->needsView($this);
+	}
+
 	function linkToApp(&$app){
 		//if (isset($this->app)) print_backtrace_and_exit(getClass($this) . getClass($this->app));
 		// No se porque es necesaria la siguiente linea bajo las condiciones en que se esta llamando a linkToApp
@@ -66,7 +70,7 @@ class Component extends PWBObject
 
 		$this->app =& $app;
 
-		$app->needsView($this);
+		$this->obtainView();
 		$this->initialize();
 
 		$this->start();
@@ -245,11 +249,15 @@ class Component extends PWBObject
 		return $this->app->viewCreator->createView($parentView, $this);
 	}
 	function replaceView(&$other){
-		if (isset($other->view)){
-			$pv =& $this->view->parentNode;
-			$pv->replaceChild($other->view, $this->view);
+		$other->takeView($this);
+	}
+
+	function takeView(&$comp) {
+		if (isset($this->view)){
+			$pv =& $comp->view->parentNode;
+			$pv->replaceChild($this->view, $comp->view);
 		} else {
-    		$this->createContainer();
+    		$comp->createContainer();
 		}
 	}
 	function createContainer(){

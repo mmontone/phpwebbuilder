@@ -45,13 +45,14 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function replaceChild(& $new_child, & $old_child) {
 		// I don't want modifications on the $new_child to be taken into account by the page renderer
 		$new_child->flushModifications();
+
 		if ($old_child->toFlush->willFlush()) {
 			$old_child->toFlush->apply_replace($new_child);
 			$new_child->toFlush =& $old_child->toFlush;
-			$old_child->flushModifications();
 		} else {
 			$new_child->toFlush = & new ReplaceChildXMLNodeModification($new_child, $old_child, $this);
 		}
+
 		return parent :: replaceChild($new_child, $old_child);
 	}
 
@@ -61,11 +62,14 @@ class XMLNodeModificationsTracker extends XMLNode {
 				$old =& $child->toFlush->child;
 				$old->toFlush = & new RemoveChildXMLNodeModification($this, $old);
 			}
-		} else {
-			$child->toFlush = & new RemoveChildXMLNodeModification($this, $child);
+		}
+		else {
+			$mod =& new RemoveChildXMLNodeModification($this, $child);
+			$this->modifications[] =& $mod;
 		}
 		return parent :: removeChild($child);
 	}
+
 
 	function redraw() {
 		$this->parentNode->replaceChild($this, clone($this));
