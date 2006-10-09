@@ -30,7 +30,7 @@ class ApplicationErrorHandler extends Component {
 		$this->addComponent(new Link(site_url . '?restart=yes', 'Restart application'),'restart_application');
 	}
 	function mail($to, $subject, $message){
-		mail($to, $subject, $message);
+		return mail($to, $subject, $message);
 	}
 }
 
@@ -112,13 +112,14 @@ class BugNotifier extends Component {
 	}
 
 	function getNotification() {
-		$username =& $this->user_name->getValue();
-		$lastname =& $this->user_lastname->getValue();
-		$comments =& $this->comment->getValue();
-
+		$username = $this->user_name->getValue();
+		$lastname = $this->user_lastname->getValue();
+		$comments = $this->comment->getValue();
+		$error = $this->error->getValue();
+		$bt = $this->backtrace->getValue();
 		return "User: $username $lastname\n" .
-		       "Error: $this->error\n" .
-		       "Backtrace: $this->backtrace\n" .
+		       "Error: $error\n" .
+		       "Backtrace: $bt\n" .
 		       "Comments: $comment";
 	}
 
