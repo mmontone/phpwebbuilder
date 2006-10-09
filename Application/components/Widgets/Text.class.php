@@ -8,7 +8,6 @@ class Text extends Widget {
 			$this->redraw();
 		}
 	}
-		//TODO Remove view
-	function setEvents(& $view) {}
+	function setEvents() {}
 }
 ?>

@@ -10,8 +10,7 @@ class JSCommandLink extends Widget {
 
     	parent::Widget($vh = null);
     }
-	//TODO Remove view
-	function setEvents(& $view) {}
+	function setEvents() {}
     function initialize(){
 		$this->addComponent(new Label($this->text), 'linkName');
 		$this->addComponent($this->target, 'linkTarget');

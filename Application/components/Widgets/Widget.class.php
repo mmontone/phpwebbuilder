@@ -4,6 +4,8 @@ class Widget extends Component {
 	var $enqueued_hooks = array ();
 	var $disabled;
 	var $invalid;
+	var $clickable;
+	var $events;
 	function Widget(& $value_model, $callback_actions = array ()) {
 		if ($value_model == null) {
 			$this->value_model = & new ValueHolder($null = null);
@@ -19,6 +21,8 @@ class Widget extends Component {
 		), $this);
 		$this->invalid =& new ValueHolder($b1=false);
 		$this->disabled =& new ValueHolder($b2=false);
+		$this->clickable =& new ValueHolder($b3=false);
+		$this->events =& new Collection();
 		parent::Component();
 		$this->registerCallbacks($callback_actions);
 	}
@@ -34,34 +38,28 @@ class Widget extends Component {
 	function fieldRequiredButEmpty(&$field) {
 		$this->invalid->setValue($b=true);
 	}
-	function setEnqueuedHooks(& $view) {
-		foreach (array_keys($this->enqueued_hooks) as $i) {
-			$this->enqueued_hooks[$i]->callWith(&$view);
-		}
-	}
-
-	function setEvents(& $view) {
+	function setEvents() {
 		/* Default events, override in subclasses */
 		$class = getClass($this);
-		$view->setAttribute('onchange', "javascript:enqueueChange(getEventTarget(event),{$class}GetValue)");
+		$this->events->atPut('onchange', $a=array('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue)"));
 	}
 
-	function setOnChangeEvent(& $view) {
+	function setOnChangeEvent() {
 		$class = getClass($this);
-		$view->setAttribute('onchange', "javascript:enqueueChange(getEventTarget(event),{$class}GetValue); componentChange(getEventTarget(event))");
+		$this->events->atPut('onchange', $a=array('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue); componentChange(getEventTarget(event))"));
 	}
 
-	function setOnBlurEvent(& $view) {
-		$view->setAttribute('onblur', "javascript:componentBlur(getEventTarget(event))");
+	function setOnBlurEvent() {
+		$this->events->atPut('onblur', $a=array('onblur', "javascript:componentBlur(getEventTarget(event))"));
 	}
 
-	function setOnFocusEvent(& $view) {
-		$view->setAttribute('onfocus', "javascript:componentFocus(getEventTarget(event))");
+	function setOnFocusEvent() {
+		$this->events->atPut('onfocus', $a=array('onfocus', "javascript:componentFocus(getEventTarget(event))"));
 	}
 
-	function setOnClickEvent(& $view) {
-		$view->setAttribute('onclick', "componentClicked(getEventTarget(event));");
-		$view->addCSSClass('clickable');
+	function setOnClickEvent() {
+		$this->clickable->setValue($v=true);
+		$this->events->atPut('onclick', $a=array('onclick', "componentClicked(getEventTarget(event));"));
 	}
 	function viewUpdated($params) {
 		$new_value = & $this->valueFromForm($params);
@@ -83,17 +81,6 @@ class Widget extends Component {
 	function & getValue() {
 		return $this->value_model->getValue();
 	}
-	function setHook(& $hook) {
-		if ($this->view)
-			$hook->callWith($this->view);
-		else
-			$this->enqueueHook($hook);
-	}
-
-	function enqueueHook(& $hook) {
-		$this->enqueued_hooks[] = $hook;
-	}
-
 	function onChangeSend($selector, & $target) {
 		$this->addEventListener(array (
 			'changed' => $selector
@@ -122,16 +109,16 @@ class Widget extends Component {
 		parent :: addInterestIn($event, & $event_callback);
 			switch ($event) {
 				case 'changed' :
-					$this->setHook(new FunctionObject($this, 'setOnChangeEvent'));
+					$this->setOnChangeEvent();
 					break;
 				case 'blur' :
-					$this->setHook(new FunctionObject($this, 'setOnBlurEvent'));
+					$this->setOnBlurEvent();
 					break;
 				case 'focus' :
-					$this->setHook(new FunctionObject($this, 'setOnFocusEvent'));
+					$this->setOnFocusEvent();
 					break;
 				case 'click' :
-					$this->setHook(new FunctionObject($this, 'setOnClickEvent'));
+					$this->setOnClickEvent();
 					break;
 			}
 	}

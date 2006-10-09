@@ -3,11 +3,7 @@
 class Filename extends Input {
 	var $file;
 	var $fileuploaded = false;
-	//TODO Remove view
-	function setEvents(&$view) {
-		parent::setEvents(&$view);
-		$view->removeAttribute('onchange');
-	}
+	function setEvents() {}
 
 	function loadFile($file_data) {
 		$file =& new File;

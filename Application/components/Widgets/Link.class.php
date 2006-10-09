@@ -9,7 +9,6 @@ class Link extends Widget
 		$this->target = $target;
 		$this->addComponent(new Label($text), "linkName");
 	}
-		//TODO Remove view
-	function setEvents(& $view) {}
+	function setEvents() {}
 }
 ?>

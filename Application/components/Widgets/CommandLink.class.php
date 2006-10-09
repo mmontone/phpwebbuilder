@@ -14,7 +14,7 @@ class CommandLink extends Widget{
 		if (!$this->proceed) print_backtrace();
 		return $this->proceed->hasPermissions();
     }
-	function setEvents(& $view) {}
+	function setEvents() {}
     function initialize(){
 		$this->addComponent(new Label($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);
@@ -23,9 +23,10 @@ class CommandLink extends Widget{
 		$this->proceed->call();
 	}
 	//TODO Remove view
-	function setOnClickEvent(&$view){
-		parent::setOnClickEvent($view);
-		$view->setAttribute('onclick', $view->getAttribute('onclick').'var ev = getEvent(event); ev.returnValue=false;return false;');
+	function setOnClickEvent(){
+		parent::setOnClickEvent();
+		$oc = $this->events->at('onclick');
+		$this->events->atPut('onclick', $a=array('onclick', $oc[1].'var ev = getEvent(event); ev.returnValue=false;return false;'));
 	}
 
 }

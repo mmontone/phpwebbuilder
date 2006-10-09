@@ -9,7 +9,25 @@ class WidgetHTMLHandler extends HTMLHandler{
 	function setComponent(&$comp){
 		parent::setComponent($comp);
 		$comp->invalid->onChangeSend('updateInvalid',$this);
+		$comp->events->onChangeSend('updateEvent',$this);
 		$comp->disabled->onChangeSend('updateDisabled',$this);
+		$comp->value_model->onChangeSend('valueChanged',$this);
+		$comp->clickable->onChangeSend('updateClickable',$this);
+	}
+	function valueChanged(& $value_model, &$params) {
+		if ($this->view){
+			$this->viewHandler->prepareToRender();
+			$this->redraw();
+		}
+	}
+
+	function updateEvent(&$col, &$ev){
+		$this->view->setAttribute($ev[0], $ev[1]);
+	}
+	function updateEvents(&$col){
+		$self =& $this;
+		$col->map($f=lambda('&$e', '$self->updateEvent($col, $e);', get_defined_vars()));
+		delete_lambda($f);
 	}
 	function updateInvalid(&$vh){
 		if ($vh->getValue()){
@@ -25,14 +43,21 @@ class WidgetHTMLHandler extends HTMLHandler{
 			$this->view->removeAttribute('disabled');
 		}
 	}
+	function updateClickable(&$vh){
+		if ($vh->getValue()){
+			$this->view->addCSSClass('clickable');
+		} else {
+			$this->view->removeCSSClass('clickable');
+		}
+	}
 	function setView(& $view) {
 		parent :: setView($view);
-		$this->component->setEvents($view);
-		$this->component->setEnqueuedHooks($view);
+		$this->component->setEvents();
 		$this->initializeView($view);
 		$this->prepareToRender();
 		$this->updateInvalid($this->component->invalid);
 		$this->updateDisabled($this->component->disabled);
+		$this->updateEvents($this->component->events);
 	}
 	function initializeView(){}
 	function prepareToRender() {}

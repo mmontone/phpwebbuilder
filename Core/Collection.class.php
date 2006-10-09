@@ -39,6 +39,11 @@ class Collection extends PWBObject {
 			return null;
 		}
 	}
+	function atPut($pos, &$elem){
+		$es = & $this->elements();
+		$es[$pos] =& $elem;
+		$this->triggerEvent('changed', $elem);
+	}
 	/**
 	 *  Returns the index of the first element equal to the parameter
 	 */
