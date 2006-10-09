@@ -60,6 +60,7 @@ class WidgetHTMLHandler extends HTMLHandler{
 		$this->updateEvents($this->component->events);
 	}
 	function initializeView(){}
+	function initializeDefaultView(){}
 	function prepareToRender() {}
 }
 ?>
