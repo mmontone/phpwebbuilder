@@ -5,11 +5,16 @@ class OptionalSelect extends Component {
 	var $displayF;
 	var $value_model;
 	var $selectOption;
+	var $noopts_msg;
 
-	function OptionalSelect(&$value_model, &$collection, $displayF=null) {
+	function OptionalSelect(&$value_model, &$collection, $extra_params) {
 		$this->value_model =& $value_model;
 		$this->options =& $collection;
-		$this->displayF =& $displayF;
+		$this->displayF =& $extra_params['displayF'];
+		$this->noopts_msg =& $extra_params['noopts_msg'];
+		if ($this->noopts_msg == null) {
+			$this->noopts_msg = 'No hay objetos creados';
+		}
 		$this->selectOption = false;
 
 		parent::Component();
@@ -35,7 +40,11 @@ class OptionalSelect extends Component {
 	}
 
 	function noOptionsMessage() {
-		return 'No hay tipos de documentos creados';
+		return $this->noopts_msg;
+	}
+
+	function setNoOptionsMessage($msg) {
+		$this->noopts_msg = $msg;
 	}
 
 	function selectOptionChanged() {
