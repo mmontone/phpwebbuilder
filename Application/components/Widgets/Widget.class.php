@@ -23,6 +23,7 @@ class Widget extends Component {
 		$this->disabled =& new ValueHolder($b2=false);
 		$this->clickable =& new ValueHolder($b3=false);
 		$this->events =& new Collection();
+		$this->setEvents();
 		parent::Component();
 		$this->registerCallbacks($callback_actions);
 	}
