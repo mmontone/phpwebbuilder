@@ -76,20 +76,6 @@ class Select extends Widget {
 			$i++;', get_defined_vars()));
 		delete_lambda($f);
 	}
-	//TODO Remove view
-	function valueChanged(&$value_model, &$params) {
-		if ($this->view){
-			if ($this->selected_index != -1) {
-				$this->opts[$this->selected_index]->removeAttribute('selected');
-			}
-			$index = $this->getValueIndex();
-			if ($this->opts[$index] !== null) {
-				$this->opts[$index]->setAttribute('selected', 'selected');
-			}
-			$this->selected_index =& $this->getValueIndex();
-			$this->redraw();
-		}
-	}
 
 	function &getValueIndex() {
 		return $this->options->indexOf($this->getValue());

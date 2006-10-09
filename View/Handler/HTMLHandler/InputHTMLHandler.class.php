@@ -8,5 +8,10 @@ class InputHTMLHandler extends WidgetHTMLHandler{
 		$view->setTagName('input');
 		$view->setAttribute('type', 'text');
 	}
+	function valueChanged(&$value_model, &$params) {
+		if ($this->view){
+			$this->view->setAttribute('value', $this->printValue());
+		}
+	}
 }
 ?>

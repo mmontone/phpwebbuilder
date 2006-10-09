@@ -17,6 +17,19 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 	function initializeView(&$v){
 		$this->component->appendOptions($v);
 	}
+	function valueChanged(&$value_model, &$params) {
+		if ($this->view){
+			if ($this->component->selected_index != -1) {
+				$this->component->opts[$this->component->selected_index]->removeAttribute('selected');
+			}
+			$index = $this->component->getValueIndex();
+			if ($this->component->opts[$index] !== null) {
+				$this->component->opts[$index]->setAttribute('selected', 'selected');
+			}
+			$this->component->selected_index =& $this->component->getValueIndex();
+			$this->redraw();
+		}
+	}
 
 }
 ?>

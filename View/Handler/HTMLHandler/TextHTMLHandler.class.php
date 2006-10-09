@@ -10,5 +10,11 @@ class TextHTMLHandler extends WidgetHTMLHandler{
 		$this->view->removeChilds();
 		$this->view->appendChild(new XMLTextNode($text));
 	}
+	function valueChanged(& $value_model, &$params) {
+		if ($this->view){
+			$this->prepareToRender();
+			$this->redraw();
+		}
+	}
 }
 ?>

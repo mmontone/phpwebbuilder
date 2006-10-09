@@ -16,7 +16,7 @@ class WidgetHTMLHandler extends HTMLHandler{
 	}
 	function valueChanged(& $value_model, &$params) {
 		if ($this->view){
-			$this->viewHandler->prepareToRender();
+			$this->prepareToRender();
 			$this->redraw();
 		}
 	}

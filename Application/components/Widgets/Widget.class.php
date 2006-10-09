@@ -139,5 +139,6 @@ class Widget extends Component {
 		$ws[$this->getId()]=&$this;
 		parent::getWidgets($ws);
 	}
+	function valueChanged(){}
 }
 ?>

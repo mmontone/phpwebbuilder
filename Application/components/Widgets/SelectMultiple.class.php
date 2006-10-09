@@ -90,23 +90,5 @@ class SelectMultiple extends Widget {
 			$this->setValue($newitems);
 		}
 	}
-	//TODO Remove view
-	function valueChanged(&$value_model, &$params) {
-		//print_backtrace('value changed');
-
-		$elements =& $params->elements();
-
-		foreach (array_keys($this->opts) as $opt) {
-			$this->opts[$opt]->removeAttribute('selected');
-		}
-
-		foreach(array_keys($elements) as $e) {
-			$element =& $elements[$e];
-			$opt = $this->options->indexOf($element);
-			$this->opts[$opt]->setAttribute('selected', 'selected');
-		}
-
-		$this->redraw();
-	}
 }
 ?>
