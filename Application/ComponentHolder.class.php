@@ -6,7 +6,7 @@ class ComponentHolder
 	var $component;
 	var $__owner_index;
 	var $parent;
-	var $realId;
+	var $realId =null;
 	function ComponentHolder(&$component,&$owner_index, &$parent) {
 	   $this->__owner_index = $owner_index;
 	   $this->parent =& $parent;
@@ -28,7 +28,7 @@ class ComponentHolder
 	}
 
     function getRealId(){
-    	if (!$this->realId)
+    	if ($this->realId===null)
 	   		$this->realId = implode(array($this->parent->getId(),CHILD_SEPARATOR,$this->__owner_index));
     	return $this->realId;
     }

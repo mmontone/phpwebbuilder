@@ -269,11 +269,7 @@ class Component extends PWBObject
     	return $cont;
 	}
 	function getId(){
-		if ($this->holder){
-			return $this->holder->getRealId();
-		} else {
-			return '';
-		}
+		return $this->holder->getRealId();
 	}
 	//TODO Remove View
 	function &parentView(){
