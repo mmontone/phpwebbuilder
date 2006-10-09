@@ -4,7 +4,7 @@ class FilenameHTMLHandler extends InputHTMLHandler{
 	function initializeDefaultView(&$view) {
 		$view->setTagName('iframe');
 		$view->setAttribute('src', toAjax(pwb_url.'/lib/uploadFile.php' .
-								'?basedir='.basedir.'&filenamefield='.$this->getId()
+								'?basedir='.basedir.'&filenamefield='.$this->component->getId()
 								. '&app='.app_class));
 		$view->addCSSClass('uploadfile');
 	}
