@@ -8,8 +8,13 @@ class TextAreaComponentHTMLHandler extends WidgetHTMLHandler{
 	}
 	function prepareToRender() {
 		$this->view->appendChild(new XMLTextNode($this->component->printValue()));
-		if ($this->component->disabled)
+	}
+	function updateDisabled(&$vh){
+		if ($vh->getValue()) {
 			$this->view->setAttribute('readonly','true');
+		} else {
+			$this->view->removeAttribute('readonly');
+		}
 	}
 	function valueChanged(&$value_model, &$params) {
 		$text = & $this->component->printValue();
