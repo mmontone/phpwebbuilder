@@ -53,6 +53,7 @@ class Select extends Widget {
 			$v->removeChild($cn[$k]);
 		}
 		$this->viewHandler->initializeView(&$v);
+		$this->redraw();
 	}
 
 	function setSize($size) {

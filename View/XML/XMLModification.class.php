@@ -122,9 +122,10 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 	function RemoveChildXMLNodeModification(&$target, & $child) {
 		parent::XMLNodeModification(&$target);
 		$this->child = & $child;
+		$this->childId = $child->getId();
 	}
 	function renderAjaxResponseCommand() {
-		$xml = '<rem id="' . $this->child->getId() . '" />';
+		$xml = '<rem id="' . $this->childId . '" />';
 		return $xml;
 	}
 }

@@ -60,12 +60,12 @@ class XMLNodeModificationsTracker extends XMLNode {
 		if ($child->toFlush->willFlush()) {
 			if (getClass($child->toFlush) == "replacechildxmlnodemodification"){
 				$old =& $child->toFlush->child;
-				$old->toFlush = & new RemoveChildXMLNodeModification($this, $old);
+				$this->modifications[$old->getId()] =& new RemoveChildXMLNodeModification($this, $old);
 			}
 		}
 		else {
 			$mod =& new RemoveChildXMLNodeModification($this, $child);
-			$this->modifications[] =& $mod;
+			$this->modifications[$child->getId()] =& $mod;
 		}
 		return parent :: removeChild($child);
 	}
