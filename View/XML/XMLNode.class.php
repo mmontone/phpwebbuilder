@@ -79,17 +79,18 @@ class XMLNode extends DOMXMLNode {
 		return $this->getAttribute('id');
 	}
 	function render(){
-		/*
-		ob_start();
-		$this->renderEcho();
-		$s = ob_get_contents();
-		echo $s;
-		ob_end_clean();
-		return $s;*/
 
-
-		$out = $this->renderNonEcho();
-		return $out;
+		/*$ok = @ob_start();
+		if ($ok) {
+			$this->renderEcho();
+			$s = ob_get_contents();
+			echo $s;
+			ob_end_clean();
+			return $s;
+		} else {*/
+			$out = $this->renderNonEcho();
+			return $out;
+		//}
 	}
 
 	function renderEcho() {
@@ -131,14 +132,13 @@ class XMLNode extends DOMXMLNode {
 				return;
 			}
 		}
-		$cn =& $this->childNodes;
 		$out .= implode('',array('<',$this->tagName));
 
 
 		foreach ($this->attributes as $name => $val) {
 			$out .= implode('' , array(' ', $name , '="' , $val, '"'));
 		}
-
+		$cn =& $this->childNodes;
 		if (count($cn) == 0) {
 			$out .= '/>';
 		} else {
@@ -199,15 +199,14 @@ class XMLNode extends DOMXMLNode {
 		$cont = array ();
 		$childId = array ();
 		$cn = & $this->childNodes;
-		$ks = array_keys($cn);
-		foreach ($ks as $k) {
+		foreach (array_keys($cn) as $k) {
 			$t = & $cn[$k];
 			$t->getTemplatesAndContainers();
 			if ($t->isTemplate()) {
 				$temp[] = & $t;
 				$cont[] = & $t;
-			} else if (isset($t->attributes["id"])) {
-				$childId[strtolower($t->attributes["id"])]=&$t;
+			} else if (isset($t->attributes['id'])) {
+				$childId[strtolower($t->attributes['id'])]=&$t;
 			} else if ($t->isContainer()) {
 				$cont[] = & $t;
 			} else {
@@ -220,16 +219,13 @@ class XMLNode extends DOMXMLNode {
 		$t = & $this->templates;
 		$c = & $this->containers;
 		$i = & $this->childById;
-		$ks1 = array_keys($childId);
-		foreach ($ks1 as $k1) {
+		foreach (array_keys($childId) as $k1) {
 			$i[$k1] = & $childId[$k1];
 		}
-		$ks2 = array_keys($temp);
-		foreach ($ks2 as $k2) {
+		foreach (array_keys($temp) as $k2) {
 			$t[] = & $temp[$k2];
 		}
-		$ks3 = array_keys($cont);
-		foreach ($ks3 as $k3) {
+		foreach (array_keys($cont) as $k3) {
 			$c[] = & $cont[$k3];
 		}
 	}

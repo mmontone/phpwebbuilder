@@ -68,7 +68,7 @@ class Component extends PWBObject
 		//if (isset($this->app)) print_backtrace_and_exit(getClass($this) . getClass($this->app));
 		// No se porque es necesaria la siguiente linea bajo las condiciones en que se esta llamando a linkToApp
 		// Pero si no esta, falla:
-		if (isset($this->app)) return;
+		if ($this->app!==null) return;
 
 		$this->app =& $app;
 
@@ -76,10 +76,10 @@ class Component extends PWBObject
 		$this->initialize();
 
 		$this->start();
-
-		foreach(array_keys($this->__children) as $k){
-			if (!is_a($this->__children[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($this->__children[$k]->component));
-			$this->__children[$k]->component->linkToApp($app);
+		$cn =& $this->__children;
+		foreach(array_keys($cn) as $k){
+			//if (!is_a($cn[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($cn[$k]->component));
+			$this->$k->linkToApp($app);
 		}
 	}
 
@@ -103,29 +103,29 @@ class Component extends PWBObject
     }
 	function &addComponent(&$component, $ind=null) {
 		//echo 'Adding component: ' . getClass($component) . '<br />';
-		if (!is_a($component, 'Component')) {
+		/*if (!is_a($component, 'Component')) {
 			print_backtrace('Type error adding component: ' . getClass($component));
 			trigger_error('Type error adding component: ' . getClass($component),E_USER_ERROR);
-		}
+		}*/
 		if (!$component->checkAddingPermissions()){
 			return $f=false;
 		} else {
-			if (($ind !=null) and (isset($this->__children[$ind]))) {
-				trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
+			if (($ind !==null) and (isset($this->__children[$ind]))) {
+				//trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->$ind->stopAndCall($component);
 			} else {
-				if (isset($this->$ind)) {
+				/*if (isset($this->$ind)) {
 					print_backtrace("Replacing variable $ind with component ".getClass($component));
 					trigger_error("Replacing variable $ind with component ".getClass($component),E_USER_ERROR);
+				}*/
+				if ($ind===null){
+					$index = $this->nextChildrenPosition++;
+				} else {
+					$index = $ind;
 				}
-				$keys = array();
-				$index =& $keys[$ind];
-				$index = $ind;
-				if ($index===null){$index = $this->nextChildrenPosition;}
-				trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
+				//trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->__children[$index] =& new ComponentHolder($component,$index, $this);
-				$this->nextChildrenPosition++;
-				if (isset($this->app) and (!isset($component->app))) {
+				if (isset($this->app)) {
 					$component->linkToApp($this->app);
 				}
 			}
