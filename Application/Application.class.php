@@ -210,6 +210,10 @@ class Application extends ComponentHolder {
 	function reset_templates(){
 		$this->viewCreator->reloadView();
 	}
+	function defaultTag(){
+		$app =& Application::instance();
+		return $app->page_renderer->defaultTag();
+	}
 
 }
 ?>

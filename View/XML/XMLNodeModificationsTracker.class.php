@@ -3,7 +3,7 @@
 class XMLNodeModificationsTracker extends XMLNode {
 	var $modifications;
 	var $toFlush = null;
-	function XMLNodeModificationsTracker($tag_name = 'div', $attributes = array ()) {
+	function XMLNodeModificationsTracker($tag_name = '', $attributes = array ()) {
 		parent :: XMLNode($tag_name, $attributes);
 		$this->modifications = array();
 		$this->toFlush =& new NullXMLNodeModification($this);

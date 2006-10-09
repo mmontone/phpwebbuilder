@@ -7,7 +7,7 @@ class XMLNode extends DOMXMLNode {
 	var $childById = array ();
 	var $css_classes = array();
 
-	function XMLNode($tag_name = 'div', $attributes = array ()) {
+	function XMLNode($tag_name = '', $attributes = array ()) {
 		parent :: DOMXMLNode($tag_name, $attributes);
 		$this->addCSSClasses();
 	}
@@ -71,7 +71,6 @@ class XMLNode extends DOMXMLNode {
 			$this->attributes['id'] =  $id;
 			return $id;
 		} else {
-			//if ($this->parentNode)
 				return $this->parentNode->getRealId();
 		}
 	}
