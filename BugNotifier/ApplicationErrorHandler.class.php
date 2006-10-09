@@ -29,6 +29,9 @@ class ApplicationErrorHandler extends Component {
 	function initialize() {
 		$this->addComponent(new Link(site_url . '?restart=yes', 'Restart application'),'restart_application');
 	}
+	function mail($to, $subject, $message){
+		mail($to, $subject, $message);
+	}
 }
 
 class DevelopApplicationErrorHandler extends ApplicationErrorHandler {
@@ -48,7 +51,7 @@ class DeployedApplicationErrorHandler extends ApplicationErrorHandler {
 
 	function notifyAdministrators() {
 		$this->notify_administrators->delete();
-		$bugnotifier =& new BugNotifier($this->error, $this->backtrace);
+		$bugnotifier =& new BugNotifier($this->error, $this->backtrace, $this);
 		$bugnotifier->registerCallback('notification_sent', new FunctionObject($this, 'closeBugNotifier'));
 		$this->addComponent($bugnotifier, 'bug_notifier');
 	}
@@ -75,12 +78,13 @@ class BugNotifier extends Component {
 	var $error;
 	var $backtrace;
 
-	function BugNotifier($error, $backtrace) {
+	function BugNotifier($error, $backtrace, $handler) {
 		$this->error =& $error;
 		$this->backtrace =& $backtrace;
 		$this->comment =& new ValueHolder('');
 		$this->user_name =& new ValueHolder('');
 		$this->user_lastname =& new ValueHolder('');
+		$this->handler =& $handler;
 
 		parent::Component();
 	}
@@ -95,7 +99,7 @@ class BugNotifier extends Component {
 	function notifyAdministrators() {
 		$app =& Application::instance();
 
-		$ok = mail($app->getAdminEmail(), $app->getName() . ' bug!!', $this->getNotification());
+		$ok = $this->handler->mail($app->getAdminEmail(), $app->getName() . ' bug!!', $this->getNotification());
 
 		if ($ok) {
 			$notification =& new NotificationDialog('Bug notification sent successfully');
