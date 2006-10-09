@@ -1,10 +1,6 @@
 <?php
 
-class HTMLHandler extends ViewHandler{
-	function &createDefaultView() {
-		return $this->component->createDefaultView();
-	}
-}
+class HTMLHandler extends ViewHandler{}
 
 class ComponentHTMLHandler extends HTMLHandler{
 	function &createDefaultView(){
