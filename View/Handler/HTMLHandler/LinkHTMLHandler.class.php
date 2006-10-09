@@ -12,8 +12,5 @@ class LinkHTMLHandler extends WidgetHTMLHandler{
 		$this->view->setAttribute('href', toAjax($this->component->target));
 		$this->view->addCSSClass('clickable');
 	}
-	function initializeDefaultView(&$view){
-		$view->setTagName('a');
-	}
 }
 ?>
