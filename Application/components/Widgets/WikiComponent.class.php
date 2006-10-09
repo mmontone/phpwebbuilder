@@ -28,12 +28,12 @@ class WikiComponent extends Widget{
     }
     function addLinks(&$comp, $text){
 		/* Here, we parse the links */
-		$arr = split('(\[|\])',' '.$text.' ');
+		$arr = split('(\[|\])',' '.$this->applyTextModifications($text).' ');
     	for ($i=0,$max=count($arr)-1;$i<$max; $i+=2){
-    		$comp->addComponent(new HTML($this->applyTextModifications($arr[$i])));
+    		$comp->addComponent(new HTML($arr[$i]));
     		$comp->addComponent($this->addLink($arr[$i+1]));
     	}
-    	$comp->addComponent(new HTML($this->applyTextModifications($arr[$i])));
+    	$comp->addComponent(new HTML($arr[$i]));
     }
     function applyTextModifications($text){
     	$text = toAjax($text);

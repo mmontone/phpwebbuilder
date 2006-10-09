@@ -3,6 +3,7 @@
 class Component extends PWBObject
 {
 	var $view;
+	var $viewHandler;
  	var $model;
  	var $app=null;
 	var $listener;
@@ -38,6 +39,7 @@ class Component extends PWBObject
 		$n = null;
 		$this->app =& $n;
 	    $this->view =& $n;
+	    $this->viewHandler =& $n;
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;
 			if ($child!=null)$child->release();
@@ -143,7 +145,7 @@ class Component extends PWBObject
 			$this->deleteComponentAt($k);
 		}
 	}
-
+	// TODO Remove View
 	function delete(){
 		$v =& $this->view;
 		$pv =& $v->parentNode;
@@ -160,8 +162,8 @@ class Component extends PWBObject
 		$this->stopAndRelease();
 	}
 	function redraw(){
-		if ($this->view){
-			$this->view->redraw();
+		if ($this->viewHandler){
+			$this->viewHandler->redraw();
 		}
 	}
 	function &componentAt($index) {
@@ -198,11 +200,6 @@ class Component extends PWBObject
 			$component->startAll();
 		}
     }
-
-	function dettachView(){
-		$this->view->parentNode->removeChild($this->view);
-	}
-
 	function callback($callback=null) {
 		$this->callbackWith($callback, $a = array());
 	}
@@ -244,10 +241,7 @@ class Component extends PWBObject
      * Functions for the new type of views.
      */
 	function viewUpdated ($params){}
-	function setView(& $view) {}
-	function &createView(&$parentView){
-		return $this->app->viewCreator->createView($parentView, $this);
-	}
+	// TODO Remove View
 	function replaceView(&$other){
 		$other->takeView($this);
 	}
@@ -281,24 +275,13 @@ class Component extends PWBObject
 			return '';
 		}
 	}
+	//TODO Remove View
 	function &parentView(){
 		return $this->holder->view();
 	}
 	function getSimpleId(){
 		return $this->holder->getSimpleId();
 	}
-	function prepareToRender(){}
-	/* For debugging */
-	function printTree(){
-		$ks = array_keys($this->__children);
-		foreach ($ks as $key){
-			$comp =& $this->componentAt($key);
-			$ret .=  $key ."=>". $comp->printTree()."\n<br/>";
-		}
-		$ret = str_replace("\n<br/>", "\n<br/>&nbsp;&nbsp;&nbsp;", $ret);
-		return $ret;
-	}
-
 	function translate($msg) {
 		return $this->app->translate($msg);
 	}

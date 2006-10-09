@@ -54,13 +54,6 @@ class Application extends ComponentHolder {
 		$this->wholeView->flushModifications();
 		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
 	}
-
-	function standardRender() {
-		$this->viewCreator->createAllViews();
-		$pr =& new StandardPageRenderer($this);
-		$pr->setPage($this, $this->wholeView);
-		echo $pr->renderPage($this);
-	}
 	function & getInstanceOf($c) {
 		$class = strtolower($c);
 		if (!isset ($_SESSION[sitename][$class])) {
@@ -79,7 +72,6 @@ class Application extends ComponentHolder {
 		$this->render();
 	}
 	function render() {
-		$this->viewCreator->createAllViews();
 		$out = $this->page_renderer->render($this);
 		echo $out;
 		session_write_close();

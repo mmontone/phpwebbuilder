@@ -78,7 +78,7 @@ class CollectionNavigator extends Component {
 				$this->objs->addComponent($fc);
 			}
 		}
-		$this->view->redraw();
+		$this->redraw();
 		}
 	}
 

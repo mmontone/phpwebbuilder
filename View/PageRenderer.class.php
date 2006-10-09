@@ -33,7 +33,7 @@ class PageRenderer // extends PWBObject
 		$this->page->appendChild($n);
 	}
 	function initialPageRenderPage(&$app){
-		$initial_page_renderer = & new StandardPageRenderer();
+		$initial_page_renderer = & new StandardPageRenderer($app);
 		$initial_page_renderer->page=&$app->wholeView;
 		echo $initial_page_renderer->renderPage($app);
 	}
@@ -46,7 +46,6 @@ class PageRenderer // extends PWBObject
 		}
 	}
 	function ajaxRenderPage($app){
-		$initial_page_renderer = & new AjaxPageRenderer();
 		$initial_page_renderer->page=&$app->wholeView;
 		echo $initial_page_renderer->ajaxRenderPage($app);
 	}

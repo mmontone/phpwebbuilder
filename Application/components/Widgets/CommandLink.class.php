@@ -19,14 +19,10 @@ class CommandLink extends Widget{
 		$this->addComponent(new Label($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);
     }
-
-	function initializeDefaultView(&$view){
-		$view->setTagName('a');
-	}
-	function initializeView(&$view){}
 	function execute(){
 		$this->proceed->call();
 	}
+	//TODO Remove view
 	function setOnClickEvent(&$view){
 		parent::setOnClickEvent($view);
 		$view->setAttribute('onclick', $view->getAttribute('onclick').'var ev = getEvent(event); ev.returnValue=false;return false;');

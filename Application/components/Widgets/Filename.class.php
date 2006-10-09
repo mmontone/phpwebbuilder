@@ -3,15 +3,7 @@
 class Filename extends Input {
 	var $file;
 	var $fileuploaded = false;
-
-	function initializeDefaultView(&$view) {
-		$view->setTagName('iframe');
-		$view->setAttribute('src', toAjax(pwb_url.'/lib/uploadFile.php' .
-								'?basedir='.basedir.'&filenamefield='.$this->getId()
-								. '&app='.app_class));
-		$view->addCSSClass('uploadfile');
-	}
-
+	//TODO Remove view
 	function setEvents(&$view) {
 		parent::setEvents(&$view);
 		$view->removeAttribute('onchange');

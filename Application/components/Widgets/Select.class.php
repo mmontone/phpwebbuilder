@@ -44,7 +44,7 @@ class Select extends Widget {
 		if ($new_value != $value)
 			$this->setValueIndex($new_value);
 	}
-
+	//TODO Remove View
 	function updateViewFromCollection() {
 		$v =& $this->view;
 		$cn =& $this->opts;
@@ -52,13 +52,7 @@ class Select extends Widget {
 		foreach($ks as $k){
 			$v->removeChild($cn[$k]);
 		}
-		$this->initializeView(&$v);
-	}
-
-    function initializeDefaultView(&$view){
-		$view->setTagName('select');
-		$view->setAttribute('size', (string) $this->getSize());
-		$view->setAttribute('style', 'overflow:4;');
+		$this->viewHandler->initializeView(&$v);
 	}
 
 	function setSize($size) {
@@ -68,11 +62,7 @@ class Select extends Widget {
 	function getSize() {
 		return $this->size;
 	}
-
-	function initializeView(&$v){
-		$this->appendOptions($v);
-	}
-
+	//TODO Remove view
 	function appendOptions(&$view) {
 		$i=0;
 		$self =& $this;
@@ -86,7 +76,7 @@ class Select extends Widget {
 			$i++;', get_defined_vars()));
 		delete_lambda($f);
 	}
-
+	//TODO Remove view
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
 			if ($this->selected_index != -1) {
@@ -97,7 +87,7 @@ class Select extends Widget {
 				$this->opts[$index]->setAttribute('selected', 'selected');
 			}
 			$this->selected_index =& $this->getValueIndex();
-			$this->view->redraw();
+			$this->redraw();
 		}
 	}
 
@@ -107,14 +97,6 @@ class Select extends Widget {
 
 	function setValueIndex(&$index){
 		$this->setValue($this->options->at($index));
-	}
-
-	function prepareToRender(){
-		parent::prepareToRender();
-		$index =& $this->getValueIndex();
-		if ($this->opts[$index] != null) {
-			$this->opts[$index]->setAttribute('selected', 'selected');
-		}
 	}
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-class PWBFactory {
+class PWBFactory extends PWBObject{
 	function &createFor(&$target) {
 		$ok = false;
 		$c = getClass($target);

@@ -1,5 +1,5 @@
 <?php
-
+//TODO Remove
 class PermissionChecker {
     function &addComponent(&$parent, &$comp, $cond, $position=null) {
 		/*if ($cond){

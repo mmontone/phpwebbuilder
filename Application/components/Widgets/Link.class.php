@@ -9,14 +9,7 @@ class Link extends Widget
 		$this->target = $target;
 		$this->addComponent(new Label($text), "linkName");
 	}
+		//TODO Remove view
 	function setEvents(& $view) {}
-	function initializeDefaultView(&$view){
-		$view->setTagName('a');
-	}
-	function prepareToRender(){
-		parent::prepareToRender();
-		$this->view->setAttribute('href', toAjax($this->target));
-		$this->view->addCSSClass('clickable');
-	}
 }
 ?>

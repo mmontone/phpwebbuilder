@@ -9,16 +9,21 @@ class ViewHandler extends PWBFactory{
 	}
 	function setComponent(&$component){
 		$this->component =& $component;
+		$component->viewHandler =& $this;
 	}
 	function &defaultView(){
 		$v =& $this->createDefaultView();
 		$this->setView($v);
 		return $v;
 	}
+	function redraw(){
+		if ($this->view){
+			$this->view->redraw();
+		}
+	}
 	function setView(&$view){
 		$this->component->view =& $view;
 		$view->controller =& $this->component;
-		$this->component->setView($view);
 		$this->view =& $view;
 	}
 	function &instantiateTemplate(&$template){

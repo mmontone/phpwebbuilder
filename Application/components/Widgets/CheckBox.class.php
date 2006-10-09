@@ -6,11 +6,7 @@ class CheckBox extends Widget {
 		parent :: Widget($boolHolder);
 	}
 
-	function initializeDefaultView(&$view) {
-		$view->setTagName('input');
-		$view->setAttribute('type', 'checkbox');
-	}
-
+	//TODO Remove view
 	function valueChanged(& $value_model, & $params) {
 			if ($this->getValue()) {
 				$this->view->setAttribute('checked', 'checked');
@@ -20,12 +16,6 @@ class CheckBox extends Widget {
 					$this->view->removeAttribute('checked');
 				}
 			}
-	}
-
-	function prepareToRender() {
-		parent::prepareToRender();
-		if ($this->getValue())
-			$this->view->setAttribute('checked', 'checked');
 	}
 
 	function valueFromForm(& $params) {

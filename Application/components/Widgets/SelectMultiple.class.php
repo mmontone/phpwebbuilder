@@ -39,7 +39,7 @@ class SelectMultiple extends Widget {
 	function &printPrimitive(&$primitive) {
 		return $primitive;
 	}
-
+	//TODO Remove view
     function updateViewFromCollection() {
 		//print_backtrace('Options changed');
 		$v =& $this->view;
@@ -49,7 +49,7 @@ class SelectMultiple extends Widget {
 			$v->removeChild($cn[$k]);
 		}
 		$cn=array();
-		$this->initializeView(&$v);
+		$this->viewHandler->initializeView(&$v);
 	}
 
     function setSize($size) {
@@ -59,10 +59,7 @@ class SelectMultiple extends Widget {
 	function getSize() {
 		return $this->size;
 	}
-
-	function initializeView(&$v){
-		$this->appendOptions($v);
-	}
+	//TODO Remove view
 
 	function appendOptions(&$view) {
 		$i=0;
@@ -93,7 +90,7 @@ class SelectMultiple extends Widget {
 			$this->setValue($newitems);
 		}
 	}
-
+	//TODO Remove view
 	function valueChanged(&$value_model, &$params) {
 		//print_backtrace('value changed');
 
@@ -109,13 +106,7 @@ class SelectMultiple extends Widget {
 			$this->opts[$opt]->setAttribute('selected', 'selected');
 		}
 
-		$this->view->redraw();
-	}
-
-    function initializeDefaultView(&$view){
-		$view->setTagName('select');
-		$view->setAttribute('multiple', 'multiple');
-		//$view->setAttribute('size', (string) $this->getSize());
+		$this->redraw();
 	}
 }
 ?>

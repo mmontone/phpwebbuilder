@@ -101,7 +101,6 @@ class PWBObject
 	/**
 	 * Registers a callback for the changed event
 	 */
-
     function onChangeSend($call_back_selector, & $listener) {
 		$this->addEventListener(array (
 			'changed' => $call_back_selector

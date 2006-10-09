@@ -5,7 +5,7 @@ class Label extends Text
     function Label($string) {
     	parent::Text(new ValueHolder($string));
     }
-
+	//TODO Remove view
     function valueChanged(&$value_model, &$params) {
 		if ($this->view){
 			$this->view->setAttribute('value', $this->printValue());

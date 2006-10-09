@@ -7,10 +7,6 @@ class NavigationLink extends CommandLink{
 		$this->bookmark = $bookmark;
 		$this->params = $params;
 	}
-
-	function initializeView(&$view){
-		$view->setAttribute('href', toAjax($this->app->setLinkTarget($this->bookmark, $this->params)));
-	}
 	function checkAddingPermissions(){
 		$v = $this->bookmark.'Bookmark';
 		$b =& new $v;

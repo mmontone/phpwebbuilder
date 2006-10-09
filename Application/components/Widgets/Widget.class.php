@@ -2,8 +2,8 @@
 class Widget extends Component {
 	var $value_model;
 	var $enqueued_hooks = array ();
-	var $disabled = false;
-
+	var $disabled;
+	var $invalid;
 	function Widget(& $value_model, $callback_actions = array ()) {
 		if ($value_model == null) {
 			$this->value_model = & new ValueHolder($null = null);
@@ -17,31 +17,22 @@ class Widget extends Component {
 			'invalid' => 'fieldInvalid',
 			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
-
-		$this->enqueued_hooks = array ();
+		$this->invalid =& new ValueHolder($b1=false);
+		$this->disabled =& new ValueHolder($b2=false);
 		parent::Component();
 		$this->registerCallbacks($callback_actions);
 	}
 
 	function fieldValidated(&$field) {
-		$this->view->removeCSSClass('invalid');
+		$this->invalid->setValue($b=false);
 	}
 
 	function fieldInvalid(&$field) {
-		$this->view->addCSSClass('invalid');
+		$this->invalid->setValue($b=true);
 	}
 
 	function fieldRequiredButEmpty(&$field) {
-		$this->view->addCSSClass('invalid');
-	}
-
-	function setView(& $view) {
-		parent :: setView($view);
-		$this->setEvents($this->view);
-		$this->setEnqueuedHooks($view);
-		//$view->setAttribute('name',$this->getId());
-		$this->initializeView($view);
-		$this->prepareToRender();
+		$this->invalid->setValue($b=true);
 	}
 	function setEnqueuedHooks(& $view) {
 		foreach (array_keys($this->enqueued_hooks) as $i) {
@@ -72,9 +63,6 @@ class Widget extends Component {
 		$view->setAttribute('onclick', "componentClicked(getEventTarget(event));");
 		$view->addCSSClass('clickable');
 	}
-
-	//function valueChanged(&$value_model, &$params) {}
-
 	function viewUpdated($params) {
 		$new_value = & $this->valueFromForm($params);
 		$value = & $this->getValue();
@@ -95,8 +83,6 @@ class Widget extends Component {
 	function & getValue() {
 		return $this->value_model->getValue();
 	}
-	function initializeDefaultView(& $view) {}
-	function initializeView(& $view) {}
 	function setHook(& $hook) {
 		if ($this->view)
 			$hook->callWith($this->view);
@@ -159,24 +145,9 @@ class Widget extends Component {
 	}
 
 	function enable($value=true) {
-		$this->disabled = !$value;
-		if ($this->view != null) {
-			$this->updateView();
-		}
+		$this->disabled->setValue($value=!$value);
 	}
 
-	function updateView() {
-		if ($this->disabled) {
-			$this->view->setAttribute('disabled','disabled');
-		}
-		else {
-			$this->view->removeAttribute('disabled');
-		}
-	}
-
-	function prepareToRender() {
-		$this->updateView();
-	}
 	function getWidgets(&$ws){
 		$ws[$this->getId()]=&$this;
 		parent::getWidgets($ws);

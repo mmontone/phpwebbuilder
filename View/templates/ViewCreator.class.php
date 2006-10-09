@@ -16,7 +16,6 @@ class ViewCreator {
 		$app->translators = array();
 		$app->loadTemplates();
 		$app->component->createViews();
-		//$app->redraw();
 	}
 	function parseTemplates ($files, $templatesdir){
 		$p =& new XMLParser;
@@ -63,21 +62,6 @@ class ViewCreator {
 	function addTemplates(&$templates){
 		$this->templates->addAll($templates);
 	}
-
-	function createAllViews(){
-		$nv =& $this->app->needView;
-		$ks = array_keys($nv);
-		foreach($ks as $k){
-			$c =& $nv[$k];
-			$this->createElemView($c->parentView(), $c);
-		}
-		foreach($ks as $k){
-			$c =& $nv[$k];
-			$c->prepareToRender();
-		}
-		$this->app->needView = array();
-	}
-
 	function &createElemView(&$pV, &$component){
 		/*
 		 * - If my view is in the parent, return it.
