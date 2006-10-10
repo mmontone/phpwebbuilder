@@ -3,7 +3,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	function & instantiate() {
 		if (count($this->childNodes) != 1) {
 			$app =& Application::instance();
-			$tv = & new XMLNodeModificationsTracker($app->page_renderer->defaultTag());
+			$tv = & new XMLNodeModificationsTracker();
 			foreach ($this->childNodes as $h) {
 				$t = & $this->xml2template($h);
 				$tv->insert_in($t,$tv->nextNode++);
@@ -44,6 +44,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 			case 'template': $temp = & new HTMLTemplate($tag,$atts); break;
 			case 'container': $temp = & new HTMLContainer($tag,$atts); break;
 			case 'translated':
+				if ($xml->childNodes[0]==null) print_backtrace_and_exit();
 				$ret = new XMLTextNode(Translator::Translate($xml->childNodes[0]->data));
 				return $ret;
 				break;
