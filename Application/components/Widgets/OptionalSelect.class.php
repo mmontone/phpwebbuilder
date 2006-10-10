@@ -4,7 +4,7 @@ class OptionalSelect extends Component {
 	var $options;
 	var $displayF;
 	var $value_model;
-	var $selectOption;
+	var $selectOption = false;
 	var $noopts_msg;
 
 	function OptionalSelect(&$value_model, &$collection, $extra_params) {
@@ -32,6 +32,7 @@ class OptionalSelect extends Component {
 			$selectopt->enable($this->selectOption);
 			$this->addComponent($selectopt, 'select_option');
 			$this->options->addInterestIn('changed', new FunctionObject($this, 'optionsChanged'));
+			$this->value_model->setValue($n = null);
 		}
 	}
 
@@ -52,6 +53,9 @@ class OptionalSelect extends Component {
 
 		if ($this->selectOption) {
 			$this->value_model->setValue($this->options->first());
+		}
+		else {
+			$this->value_model->setValue($n = null);
 		}
 	}
 
