@@ -17,3 +17,5 @@ user=usuario
 login successful=usted ha entrado al sistema
 login failed=el usuario o contraseña son incorrectos
 correct the following errors=Corrija los siguientes errores
+The bug notification couldn\'t be sent. Try again. If the problem persists, contact the administrator=No se pudo enviar la notificación del error al administrador. Si el problema persiste, contacte al administrador.
+Bug notification sent successfully=La notificación del error se envió satisfactoriamente

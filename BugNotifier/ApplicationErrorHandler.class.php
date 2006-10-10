@@ -99,15 +99,15 @@ class BugNotifier extends Component {
 	function notifyAdministrators() {
 		$app =& Application::instance();
 
-		$ok = $this->handler->mail($app->getAdminEmail(), $app->getName() . ' bug!!', $this->getNotification());
+		$ok = $this->handler->mail($app->getAdminEmail(), constant('sitename').  ' '. $app->getName() . ' bug!!', $this->getNotification());
 
 		if ($ok) {
-			$notification =& new NotificationDialog('Bug notification sent successfully');
+			$notification =& new NotificationDialog(Translator::translate('Bug notification sent successfully'));
 			$notification->registerCallback('on_accept', new FunctionObject($this, 'notificationSent'));
 			$this->call($notification);
 		}
 		else {
-			$this->call(new NotificationDialog('The bug notification couldn\'t be sent. Try again. If the problem persists, contact the administrator'));
+			$this->call(new NotificationDialog(Translator::translate('The bug notification couldn\'t be sent. Try again. If the problem persists, contact the administrator')));
 		}
 	}
 
