@@ -104,12 +104,18 @@ class Application extends ComponentHolder {
 		$this->wholeView->style_sheets = array ();
 		$this->addStyleSheet(pwb_url . '/View/common.css');
 		$this->addStyleSheet(pwb_url . '/View/debug.css', false);
+ 		$this->addStyleSheet(pwb_url.'/lib/modal-message/css/modal-message.css');
+
 		$this->addStyleSheets();
 	}
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array ();
 		$this->addScript(pwb_url . '/lib/common.js');
+		$this->addScript(pwb_url . '/lib/modal-message/pwb/dialogs.js');
+		$this->addScript(pwb_url . '/lib/modal-message/js/ajax.js');
+		$this->addScript(pwb_url . '/lib/modal-message/js/modal-message.js');
+		$this->addScript(pwb_url . '/lib/modal-message/js/ajax-dynamic-content.js');
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}

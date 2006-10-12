@@ -8,7 +8,13 @@ class ErrorDialog extends Component
 		$this->message = $message;
 		parent::Component();
 	}
-
+	function &create($message){
+		if (constant('page_renderer') == 'AjaxPageRenderer') {
+			return new ModalErrorDialog($message);
+		} else {
+			return new ErrorDialog($message);
+		}
+	}
 	function initialize() {
 		$this->addComponent(new Label($this->message), 'error');
 	}

@@ -72,18 +72,20 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	function deleteObject($params) {
 		$obj =& $params['object'];
 		$translator = translator;
-		if (!$translator)
+		/*if (!$translator)
 			$translator = 'EnglishTranslator';
-		$translator =& new $translator;
-		$msg = $translator->translate('Are you sure that you want to delete the object?');
-		$this->call(new QuestionDialog($msg, array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$obj)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
+		$translator =& new $translator;*/
+		$msg = Translator::translate('Are you sure that you want to delete the object?');
+		$this->call($qd =& QuestionDialog::create($msg));
+		$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$obj)), 'on_no' => new FunctionObject($this, 'deleteRejected')));
 	}
 
 	function deleteConfirmed($params, $objparams) {
 		$obj =& $objparams['object'];
 		$ok = $obj->delete();
 		if (!$ok) {
-			$this->call(new NotificationDialog('Error deleting object', array('on_accept' => new FunctionObject($this, 'warningAccepted')) , 'warning'));
+			$this->call($nd =& NotificationDialog::create('Error deleting object'));
+			$nd->registerCallbacks(array('on_accept' => new FunctionObject($this, 'warningAccepted')));
 		} else {
 			$this->callback('object_deleted');
 		}

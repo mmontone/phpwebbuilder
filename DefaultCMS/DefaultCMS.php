@@ -41,5 +41,6 @@ require_once $d.'/Users/Login.class.php';
 require_once $d.'/Users/Logout.class.php';
 require_once $d.'/Users/AddUser.class.php';
 require_once $d.'/Users/ModUser.class.php';
+require_once $d.'/Templates/Handlers.class.php';
 require_once $d.'/QuicKlick/QuicKlickComponent.class.php';
 ?>

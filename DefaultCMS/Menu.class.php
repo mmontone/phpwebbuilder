@@ -12,6 +12,7 @@ class Menu extends Component {
 		$this->addComponent(new Text(new ValueHolder($un)), "username");
 		$this->menus->deleteChildren();
 		$this->menus();
+		$this->redraw();
 	}
 	function menus() {
 		$this->realMenus();

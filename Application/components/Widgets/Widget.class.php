@@ -42,20 +42,20 @@ class Widget extends Component {
 	function setEvents() {
 		/* Default events, override in subclasses */
 		$class = getClass($this);
-		$this->events->atPut('onchange', $a=array('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue)"));
+		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue)"));
 	}
 
 	function setOnChangeEvent() {
 		$class = getClass($this);
-		$this->events->atPut('onchange', $a=array('onchange',"javascript:enqueueChange(getEventTarget(event),{$class}GetValue); componentChange(getEventTarget(event))"));
+		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue); componentChange(getEventTarget(event))"));
 	}
 
 	function setOnBlurEvent() {
-		$this->events->atPut('onblur', $a=array('onblur', "javascript:componentBlur(getEventTarget(event))"));
+		$this->events->atPut('onblur', $a=array('onblur', "componentBlur(getEventTarget(event))"));
 	}
 
 	function setOnFocusEvent() {
-		$this->events->atPut('onfocus', $a=array('onfocus', "javascript:componentFocus(getEventTarget(event))"));
+		$this->events->atPut('onfocus', $a=array('onfocus', "componentFocus(getEventTarget(event))"));
 	}
 
 	function setOnClickEvent() {

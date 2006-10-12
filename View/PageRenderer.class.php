@@ -46,6 +46,7 @@ class PageRenderer // extends PWBObject
 		}
 	}
 	function ajaxRenderPage($app){
+		$initial_page_renderer = & new AjaxPageRenderer($app);
 		$initial_page_renderer->page=&$app->wholeView;
 		echo $initial_page_renderer->ajaxRenderPage($app);
 	}

@@ -94,6 +94,9 @@ class Component extends PWBObject
 		return $this->app;
 	}
 
+	/**
+	 * Receives an array of selector=>FunctionObject
+	 */
 	function registerCallbacks($callbacks) {
 		$this->registered_callbacks =& $callbacks;
     }

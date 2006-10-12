@@ -30,7 +30,8 @@ class FieldEditor extends Component {
     }
 
     function confirmCancel() {
-    	$this->call(new QuestionDialog('Are you sure you want to cancel your changes?', array('on_yes' => new FunctionObject($this, 'cancelConfirmed'), 'on_no' => new FunctionObject($this, 'cancelRejected'))));
+    	$this->call($qd =& QuestionDialog::create('Are you sure you want to cancel your changes?'));
+    	$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'cancelConfirmed'), 'on_no' => new FunctionObject($this, 'cancelRejected')));
     }
 
     function cancelRejected() {

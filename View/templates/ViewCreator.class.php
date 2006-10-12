@@ -166,8 +166,9 @@ class ViewCreator {
 	}
 	function &instantiateFor(&$template, &$component){
 		$h = $template->getAttribute('handler');
-		if (class_exists($h)){
+		if ($h != '' && class_exists($h)){
 			$handler =& new $h;
+			$handler->setComponent($component);
 		} else {
 			$vh =& $this->app->page_renderer->viewHandler();
 			$handler =& $vh->createFor($component);

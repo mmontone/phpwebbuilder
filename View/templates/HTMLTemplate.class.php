@@ -16,15 +16,17 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 
 
 	function renderEcho() {
+		$tag_name=Application::defaultTag();
 		$this->getRealId();
 		$fid = $this->getAttribute('fakeid');
-		echo "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
+		echo "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";
 	}
 
 	function renderNonEcho() {
+		$tag_name=Application::defaultTag();
 		$this->getRealId();
 		$fid = $this->getAttribute('fakeid');
-		return "<span style=\"visibility:hidden\" id=\"$fid\"></span>";
+		return "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";
 	}
 
 	function getRealId(){

@@ -8,7 +8,13 @@ class QuestionDialog extends Component
 		$this->message = $question;
 		parent::Component();
 	}
-
+	function &create($message){
+		if (constant('page_renderer') == 'AjaxPageRenderer') {
+			return new ModalQuestionDialog($message);
+		} else {
+			return new QuestionDialog($message);
+		}
+	}
 	function initialize(){
 		$this->addComponent(new Label($this->message), 'question');
 		$this->addComponent(new CommandLink(array('proceedFunction' => new FunctionObject($this, 'yes'),

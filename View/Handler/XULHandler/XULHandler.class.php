@@ -13,10 +13,19 @@ class ComponentXULHandler extends XULHandler{
 	}
 }
 
-class InputXULHandler extends XULHandler{
+class InputXULHandler extends WidgetXULHandler{
 	function &createDefaultView(){
 		$v =& new XMLNodeModificationsTracker('textbox');
 		$v->setAttribute('size', '10');
+		return $v;
+	}
+}
+
+class CommandLinkXULHandler extends WidgetXULHandler{
+    function & createDefaultView() {
+		$v = & new XMLNodeModificationsTracker;
+		$v->setAttribute('label', $this->component->textv);
+		$v->setTagName('button');
 		return $v;
 	}
 }

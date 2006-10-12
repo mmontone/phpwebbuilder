@@ -5,7 +5,8 @@ class XULPageRenderer extends PageRenderer {
 		return 'box';
 	}
 	function initializeScripts(&$app) {
-		$app->addXULRenderingSpecificScripts();
+		//$app->addXULRenderingSpecificScripts();
+		$app->addAjaxRenderingSpecificScripts();
 	}
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new XULDefaultView;
@@ -31,13 +32,13 @@ class XULPageRenderer extends PageRenderer {
 		$ret = '<?xml version="1.0"?>
 		<?xml-stylesheet href="chrome://global/skin/" type="text/css" ?>';
 		foreach ($this->page->style_sheets as $c) {
-			$ret .= '<?xml-stylesheet href="' . $c . '" type="text/css" ?>';
+			$ret .= '<?xml-stylesheet href="' . $c[0] . '" type="text/css" ?>';
 		}
 		$ret .='<window id="findfile-window"
     title="Hello worls"
     orient="horizontal" '
 	.'xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" '
-	//.'xmlns:html="http://www.w3.org/1999/xhtml" '
+	.'xmlns:html="http://www.w3.org/1999/xhtml" '
 	.'>';
 
 

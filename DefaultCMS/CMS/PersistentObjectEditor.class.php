@@ -26,7 +26,8 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     }
 
     function confirmCancel() {
-    	$this->call(new QuestionDialog('Are you sure you want to cancel your changes?', array('on_yes' => new FunctionObject($this, 'cancelConfirmed'), 'on_no' => new FunctionObject($this, 'cancelRejected'))));
+    	$this->call($qd =& QuestionDialog::create('Are you sure you want to cancel your changes?'));
+    	$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'cancelConfirmed'), 'on_no' => new FunctionObject($this, 'cancelRejected')));
     }
 
     function cancelRejected() {
@@ -53,7 +54,8 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 	}
 
 	function deleteObject(&$obj) {
-		$this->call(new QuestionDialog('Are you sure that you want to delete the object?', array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => $obj)), 'on_no' => new FunctionObject($this, 'deleteRejected'))));
+		$this->call($qd =& QuestionDialog::create('Are you sure that you want to delete the object?'));
+		$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'deleteConfirmed',array('object' => $obj)), 'on_no' => new FunctionObject($this, 'deleteRejected')));
 	}
 
 	function deleteConfirmed($params, $fparams) {

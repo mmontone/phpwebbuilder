@@ -9,7 +9,13 @@ class NotificationDialog extends Component
 		parent::Component();
 		//$this->registerCallbacks($callback_actions);
 	}
-
+	function &create($message){
+		if (constant('page_renderer') == 'AjaxPageRenderer') {
+			return new ModalNotificationDialog($message);
+		} else {
+			return new NotificationDialog($message);
+		}
+	}
 	function initialize() {
 		$this->addComponent(new Label($this->message), 'notification');
 
