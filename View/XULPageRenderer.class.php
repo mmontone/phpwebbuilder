@@ -40,7 +40,21 @@ class XULPageRenderer extends PageRenderer {
 	.'xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" '
 	.'xmlns:html="http://www.w3.org/1999/xhtml" '
 	.'>';
-
+	if (defined('debugview')&&constant('debugview')=='1'){
+			$ret .='<html:div>' .
+						'<html:form action="'.site_url . '/Action.php" '.
+							' method="post"'.
+							' enctype="multipart/form-data">' .
+							'<html:input type="hidden" name="app_class" value="'.getClass($app).'" />' .
+							'<html:input type="hidden" name="event_target" value="app" />' .
+							'<html:input type="hidden" name="event" value="reset_templates" />' .
+							'Debug View ' .
+							'<html:input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
+							'<html:input type="submit" value="Reload Templates"/>' .
+							'<html:a href="Action.php?restart=yes">Restart application</html:a>' .
+						'</html:form>'.
+						'</html:div>';
+		}
 
 
 		foreach ($this->page->scripts as $s) {

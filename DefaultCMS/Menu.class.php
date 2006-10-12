@@ -70,6 +70,9 @@ class MenuSectionComponent extends Component {
 	function addItem(&$i){
 		$this->add = $this->addComponent($i);
 	}
+	function checkAddingPermissions(){
+		return count($this->__children)>1;
+	}
 }
 
 /*class MenuItemComponent extends Component {

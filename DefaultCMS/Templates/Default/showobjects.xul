@@ -1,16 +1,20 @@
 <templates>
 	<template class="PersistentObjectEditor">
 		<container id="validation_errors" />
-		<description><translated>Object of class</translated></description>
+		<description>
+			<translated>Object of class</translated>
+		</description>
 		<container id="className" />
 		id:
 		<container id="idN" />
 		<grid>
 			<rows>
-				<template class="FieldValueComponent"><row>
-							<container id="fieldName" />
-							<container id="value" />
-				</row></template>
+				<template class="FieldValueComponent">
+					<row>
+						<container id="fieldName" />
+						<container id="value" />
+					</row>
+				</template>
 			</rows>
 		</grid>
 		<box id="save">
@@ -82,16 +86,17 @@
 	<template class="CollectionViewer">
 		<vbox>
 			<description>
-			<translated>Class</translated>:
+				<translated>Class</translated>
+				:
 			</description>
- 			<container id="className" />
-			<container id="status"/>
+			<container id="className" />
+			<container id="status" />
 			<grid>
 				<rows>
 					<row>
-						<template class="CompositeWidget"><box>
+						<template class="CompositeWidget">
 								<container class="ActionLink" />
-						</box></template>
+						</template>
 						<label>
 							<translated>View</translated>
 						</label>
@@ -104,71 +109,88 @@
 					</row>
 				</rows>
 				<rows id="objs">
-					<row><label></label></row>
+					<row>
+						<label></label>
+					</row>
 					<template class="PersistentObjectViewer">
-							<row>
-							<template class="FieldValueComponent"><box>
+						<row>
+							<template class="FieldValueComponent">
+								<box>
 									<container id="value" />
-							</box></template>
-						<box>
+								</box>
+							</template>
+
 							<box href="#" id="viewer">
 								<image class="operation" title="View"
 									src="$templatesdir/icons/stock_properties.png" />
 							</box>
-						</box>
-							<box>
-								<box href="#" id="editor">
-									<image class="operation" title="Edit"
-										src="$templatesdir/icons/stock_edit.png" />
-								</box>
+
+
+							<box href="#" id="editor">
+								<image class="operation" title="Edit"
+									src="$templatesdir/icons/stock_edit.png" />
 							</box>
-							<box>
-								<box href="#" id="deleter">
-									<image class="operation"
-										title="Delete" src="$templatesdir/icons/stock_delete.png" />
-								</box>
+
+
+							<box href="#" id="deleter">
+								<image class="operation" title="Delete"
+									src="$templatesdir/icons/stock_delete.png" />
 							</box>
+
 						</row>
 					</template>
 				</rows>
 			</grid>
-			<box href="#" id="new">
-				<image class="operation" title="New"
-					src="$templatesdir/icons/stock_new.png" />
-			</box>
+			<hbox>
+				<box href="#" id="new">
+					<image class="operation" title="New"
+						src="$templatesdir/icons/stock_new.png" />
+				</box>
 
-			<box href="#" id="first">
-				<image class="operation" title="First"
-					src="$templatesdir/icons/stock_first.png" />
-			</box>
-			<box href="#" id="prev">
-				<image class="operation" title="Previous"
-					src="$templatesdir/icons/stock_left.png" />
-			</box>
-			<textbox type="text" id="firstElem" style="width:4em" />
-			<box href="#" id="next">
-				<image class="operation" title="Next"
-					src="$templatesdir/icons/stock_right.png" />
-			</box>
-			<box  id="last">
-				<image class="operation" title="Last"
-					src="$templatesdir/icons/stock_last.png" />
-			</box>
-			<br />
-			<box  id="refresh">
-				<description><translated>refresh</translated></description>
-			</box>
-			<box id="filter">
-				<image class="operation" title="Search"
-					src="$templatesdir/icons/stock_search.png" />
-			</box>
-			<description><translated>Showing</translated></description>
-			<input type="text" id="pSize" style="width:4em" />
-			<description><translated>per page</translated>
-			.</description>
-			<description><container id="realSize" />
-			<translated>elements available</translated>
-			.</description>
+				<box href="#" id="first">
+					<image class="operation" title="First"
+						src="$templatesdir/icons/stock_first.png" />
+				</box>
+				<box href="#" id="prev">
+					<image class="operation" title="Previous"
+						src="$templatesdir/icons/stock_left.png" />
+				</box>
+				<textbox type="text" id="firstElem" style="width:4em" />
+				<box href="#" id="next">
+					<image class="operation" title="Next"
+						src="$templatesdir/icons/stock_right.png" />
+				</box>
+				<box id="last">
+					<image class="operation" title="Last"
+						src="$templatesdir/icons/stock_last.png" />
+				</box>
+			</hbox>
+			<hbox>
+				<box id="refresh">
+					<description>
+						<translated>refresh</translated>
+					</description>
+				</box>
+				<box id="filter">
+					<image class="operation" title="Search"
+						src="$templatesdir/icons/stock_search.png" />
+				</box>
+				<description>
+					<translated>Showing</translated>
+				</description>
+				<textbox id="pSize" style="width:4em" />
+				<description>
+					<translated>per page</translated>
+					.
+				</description>
+			</hbox>
+			<hbox>
+				<description>
+					<container id="realSize" />
+					<translated>elements available</translated>
+					.
+				</description>
+			</hbox>
 		</vbox>
 	</template>
 </templates>
