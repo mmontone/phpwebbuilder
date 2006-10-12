@@ -7,10 +7,10 @@ class CMSMenuSectionHandler extends ComponentXULHandler{
 	}
 }
 
-class CMSMenuItemHandler extends ComponentXULHandler{
+class CMSMenuItemHandler extends WidgetXULHandler{
 	function setView(&$view){
 		parent::setView($view);
-		$view->setAttribute('label', $this->component->link->textv);
+		$view->setAttribute('label', $this->component->textv);
 	}
 }
 

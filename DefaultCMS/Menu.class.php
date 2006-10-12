@@ -40,7 +40,6 @@ class Menu extends Component {
 	}
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
-		//$arr = Application::GetPersistentClasses();
 		$sect = & new MenuSectionComponent();
 		$sect->addComponent(new Label('Objects'), 'secName');
 		$u =& User::logged();
@@ -48,9 +47,8 @@ class Menu extends Component {
 		foreach ($arr as $p=>$c) {
 			$class =& $arr[$p];
 			$obj =& new $class;
-			$sect->addComponent(new MenuItemComponent($this, $obj->displayString,
-					$temp[$p] = array ('bookmark'=>'CollectionViewer',
-					'class' => $class)));
+			$sect->addComponent(new NavigationLink('CollectionViewer', $obj->displayString,
+					$temp[$p] = array ('class' => $class)));
 		}
 		$log = array ('bookmark'=>'MenuItem',
 			'Component' => 'Logout'
@@ -59,7 +57,7 @@ class Menu extends Component {
 		$this->menus->addComponent($sect);
 	}
 	function additem(& $comp, $text, & $sect) {
-		$sect->addItem(new MenuItemComponent($this, $text, $comp));
+		$sect->addItem(new NavigationLink($comp['bookmark'], $text, $comp));
 	}
 	function menuclick(& $comp) {
 		$c = & new $comp['Component'] ($comp['params']);
@@ -69,28 +67,30 @@ class Menu extends Component {
 
 class MenuSectionComponent extends Component {
 	var $add = false;
-	/*function checkAddingPermissions(){
-		return $this->add;
-	}*/
 	function addItem(&$i){
 		$this->add = $this->addComponent($i);
 	}
 }
 
-class MenuItemComponent extends Component {
+/*class MenuItemComponent extends Component {
 	var $text, $items;
 	function MenuItemComponent(& $menu, $text, & $items) {
 		$this->text = $text;
 		$this->items =& $items;
 		parent :: Component();
 	}
-	/*function chechAddingPermissions(){
-		return ($this->componentAt('link')!=null);
-	}*/
 	function initialize(){
 		$bk =$this->items['bookmark'];
 		unset($this->items['bookmark']);
 		$this->addComponent(new NavigationLink($bk, $this->text,$this->items), "link");
+	}
+}*/
+
+class MenuItemComponent extends NavigationLink {
+	function MenuItemComponent(& $menu, $text, & $items) {
+		$bk =$this->items['bookmark'];
+		unset($this->items['bookmark']);
+		parent::NavigationLink($bk, $text,$items);
 	}
 }
 

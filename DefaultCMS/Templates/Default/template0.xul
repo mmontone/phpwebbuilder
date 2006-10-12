@@ -7,14 +7,14 @@
 			</hbox>
 		</vbox>
 	</template>
-	<template class="Menus">
+	<template class="Menu">
 		<vbox class="Menu">
 			<toolbox flex="1"  id="menus">
 				<menubar class="MenuList">
 					<template class="MenuSectionComponent"  handler="CMSMenuSectionHandler">
 						<menu>
 							<menupopup>
-								<template class="MenuItemComponent"  handler="CMSMenuItemHandler">
+								<template class="NavigationLink"  handler="CMSMenuItemHandler">
 									<menuitem
 										id="link" />
 								</template>

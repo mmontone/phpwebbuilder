@@ -13,11 +13,9 @@
 		<ul id="menus" class="MenuList">
 			<template class="MenuSectionComponent">
 				<container id="secName" />
-				<template class="MenuItemComponent"><div>
-						<template class="NavigationLink">
+				<template class="NavigationLink">
 						    <a><li><container id="linkName" /></li></a>
 						 </template>
-				</div></template>
 			</template>
 		</ul>
 		</div>
