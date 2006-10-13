@@ -59,6 +59,19 @@ class PageRenderer // extends PWBObject
 	function viewHandler(){
 		return new HTMLHandler;
 	}
+	function addTemplateName(&$view, $name){
+		$t =& new XMLTextNode($name);
+		$tn =& new XMLNodeModificationsTracker();
+		$tn->appendChild($t);
+		$tn->addCSSClass('templateName');
+		$fc =& $view->first_child();
+		if ($fc!==null){
+			$view->insertBefore($fc,$tn);
+		} else {
+			$view->appendChild($tn);
+		}
+	}
+
 }
 
 class StandardPageRenderer extends PageRenderer {
@@ -158,8 +171,7 @@ class AjaxPageRenderer extends PageRenderer {
 		$page->setAttribute('onsubmit','postInAjax();');
 	}
 	function initialRender(){
-			$p =& $this->page;
-			$p->toFlush = & new ReplaceNodeXMLNodeModification($p, $p);
+		$this->app->redraw();
 	}
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();

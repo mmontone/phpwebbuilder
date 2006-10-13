@@ -34,26 +34,20 @@ class XULPageRenderer extends PageRenderer {
 		foreach ($this->page->style_sheets as $c) {
 			$ret .= '<?xml-stylesheet href="' . $c[0] . '" type="text/css" ?>';
 		}
-		$ret .='<window id="findfile-window"
-    title="Hello worls"
+		$ret .='<window id="main-window"
+    title="'.$this->page->title .'"
     orient="horizontal" '
 	.'xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" '
 	.'xmlns:html="http://www.w3.org/1999/xhtml" '
 	.'>';
 	if (defined('debugview')&&constant('debugview')=='1'){
-			$ret .='<html:div>' .
-						'<html:form action="'.site_url . '/Action.php" '.
-							' method="post"'.
-							' enctype="multipart/form-data">' .
-							'<html:input type="hidden" name="app_class" value="'.getClass($app).'" />' .
-							'<html:input type="hidden" name="event_target" value="app" />' .
-							'<html:input type="hidden" name="event" value="reset_templates" />' .
-							'Debug View ' .
-							'<html:input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
-							'<html:input type="submit" value="Reload Templates"/>' .
-							'<html:a href="Action.php?restart=yes">Restart application</html:a>' .
-						'</html:form>'.
-						'</html:div>';
+			$ret .=
+						'<box>'.
+							'<label>Debug View</label>' .
+							'<checkbox label="disable" checked="true" oncommand="document.styleSheets.item(2).disabled = !document.styleSheets.item(2).disabled;"/>' .
+							'<button oncommand="sendEvent(\'reset_templates\', document.getElementById(\'app\'));" label="Reload Templates"/>' .
+							'<button oncommand="sendUpdate(new Update(\'restart\', \'yes\'));" label="Restart application"/>' .
+						'</box>';
 		}
 
 
@@ -81,6 +75,10 @@ class XULPageRenderer extends PageRenderer {
 	function viewHandler(){
 		return new XULHandler;
 	}
+	function addTemplateName(&$view, $name){
+		$view->setAttribute('tooltiptext', $name);
+	}
+
 
 }
 ?>

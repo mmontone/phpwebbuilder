@@ -17,4 +17,5 @@ require_once $d.'/HTMLHandler/FilenameHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/PasswordHTMLHandler.class.php';
 
 require_once $d.'/XULHandler/XULHandler.class.php';
+require_once $d.'/XULHandler/InputXULHandler.class.php';
 ?>

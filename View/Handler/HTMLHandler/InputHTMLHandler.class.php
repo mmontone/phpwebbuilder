@@ -2,7 +2,7 @@
 
 class InputHTMLHandler extends WidgetHTMLHandler{
 	function prepareToRender(){
-		$this->view->setAttribute('value', $this->component->printValue());
+		$this->valueChanged($this->component->value_model, $n=null);
 	}
 	function initializeDefaultView(&$view){
 		$view->setTagName('input');

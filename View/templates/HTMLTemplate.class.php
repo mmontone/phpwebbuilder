@@ -47,7 +47,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 			case 'container': $temp = & new HTMLContainer($tag,$atts); break;
 			case 'translated':
 				if ($xml->childNodes[0]==null) print_backtrace_and_exit();
-				$ret = new XMLTextNode(Translator::Translate($xml->childNodes[0]->data));
+				$ret = new XMLTextNode(Translator::Translate(trim($xml->childNodes[0]->data)));
 				return $ret;
 				break;
 			case '': $ret =& new XMLTextNode($xml->data);

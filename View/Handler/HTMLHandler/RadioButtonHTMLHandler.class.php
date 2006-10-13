@@ -1,10 +1,9 @@
 <?php
 
 class RadioButtonHTMLHandler extends WidgetHTMLHandler{
-	function prepareToRender(){
-		if ($this->component->value_model->getValue()) {
-			$this->view->setAttribute('checked', 'checked');
-		}
+	function prepareToRender() {
+		parent::prepareToRender();
+		$this->valueChanged($this->component->value_model, $n=null);
 	}
     function initializeView(&$view){
 		$view->setTagName('input');

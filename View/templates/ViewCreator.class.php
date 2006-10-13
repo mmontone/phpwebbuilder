@@ -127,16 +127,7 @@ class ViewCreator {
 	}
 	function addTemplateName(&$view, $name){
 		if (defined('debugview') and constant('debugview')=='1') {
-				$t =& new XMLTextNode($name);
-				$tn =& new XMLNodeModificationsTracker('span');
-				$tn->appendChild($t);
-				$tn->addCSSClass('templateName');
-				$fc =& $view->first_child();
-				if ($fc!==null){
-					$view->insertBefore($fc,$tn);
-				} else {
-					$view->appendChild($tn);
-				}
+			$this->app->page_renderer->addTemplateName(&$view, $name);
 		}
 	}
 	function &createTemplate(&$component){
