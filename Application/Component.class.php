@@ -33,12 +33,23 @@ class Component extends PWBObject
 			if ($child!=null)$child->stopAll();
 		}
 	}
-
+	function releaseView(){
+		 $n = null;
+		 $this->view =& $n;
+		 if (!$this->viewHandler) print_backtrace(getClass($this));
+		 $this->viewHandler->release();
+		 $this->viewHandler =& $n;
+		foreach(array_keys($this->__children) as $c) {
+			$child =& $this->__children[$c]->component;
+			if ($child!=null)$child->releaseView();
+		}
+	}
 	function release() {
 		parent::release();
 		$n = null;
 		$this->app =& $n;
 	    $this->view =& $n;
+	    $this->viewHandler->release();
 	    $this->viewHandler =& $n;
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;

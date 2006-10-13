@@ -11,7 +11,7 @@ class ViewCreator {
 		$app =& $this->app;
 		$v=&$app->component->view;
 		$app->wholeView->removeChild($v);
-		$v->releaseAll();
+		$app->component->releaseView();
 		$this->templates =& new Collection;
 		$app->translators = array();
 		$app->loadTemplates();
