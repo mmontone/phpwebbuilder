@@ -10,6 +10,14 @@ class PageRenderer // extends PWBObject
 		$this->setDefaultViewFactory();
 		$this->app =& $app;
 	}
+	function &create(&$app){
+		if ($_REQUEST['render']=='xul') {
+			return new XULPageRenderer($app);
+		} else {
+			$page_renderer = constant('page_renderer');
+			return new $page_renderer($app);
+		}
+	}
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new HTMLDefaultView;
 	}
@@ -74,7 +82,11 @@ class PageRenderer // extends PWBObject
 
 }
 
-class StandardPageRenderer extends PageRenderer {
+class HTMLPageRenderer extends PageRenderer {
+
+}
+
+class StandardPageRenderer extends HTMLPageRenderer {
 	function initializeScripts(&$app) {
 		$app->addStdRenderingSpecificScripts();
 	}

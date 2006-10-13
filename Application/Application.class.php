@@ -16,8 +16,7 @@ class Application extends ComponentHolder {
 		$_SESSION[sitename][getClass($this)] = & $this;
 		$this->commands =& new Collection();
 		$this->urlManager =& new UrlManager($this);
-		$page_renderer = constant('page_renderer');
-		$this->page_renderer = new $page_renderer($this);
+		$this->page_renderer =& PageRenderer::create($this);
 		$this->createView();
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
