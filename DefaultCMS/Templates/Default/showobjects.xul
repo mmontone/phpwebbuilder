@@ -1,86 +1,96 @@
 <templates>
 	<template class="PersistentObjectEditor">
-		<container id="validation_errors" />
-		<description>
-			<translated>Object of class</translated>
-		</description>
-		<container id="className" />
-		id:
-		<container id="idN" />
-		<grid>
-			<rows>
-				<template class="FieldValueComponent">
-					<row>
-						<container id="fieldName" />
-						<container id="value" />
-					</row>
-				</template>
-			</rows>
-		</grid>
-		<box id="save">
-			<image class="operation" title="Save changes"
-				src="$templatesdir/icons/stock_save.png" />
-		</box>
-		<box id="cancel">
-			<image class="operation" title="Cancel"
-				src="$templatesdir/icons/stock_cancel.png" />
-		</box>
-		<box href="#" id="delete">
-			<image class="operation" title="Delete"
-				src="$templatesdir/icons/stock_delete.png" />
-		</box>
-	</template>
-
-	<template class="FieldEditor">
-		<tr>
-			<td>
-				<container id="fieldName" />
-			</td>
-			<td>
-				<container id="widget" />
-				<box href="#" id="save">
+		<vbox>
+			<hbox>
+				<container id="validation_errors" />
+				<description>
+					<translated>Object of class</translated>
+				</description>
+				<container id="className" />
+				<description>id:</description>
+				<container id="idN" />
+			</hbox>
+			<grid>
+				<rows>
+					<template class="FieldValueComponent">
+						<row>
+							<container id="fieldName" />
+							<container id="value" />
+						</row>
+					</template>
+				</rows>
+			</grid>
+			<hbox>
+				<box id="save">
 					<image class="operation" title="Save changes"
 						src="$templatesdir/icons/stock_save.png" />
 				</box>
-				<box href="#" id="cancel">
+				<box id="cancel">
 					<image class="operation" title="Cancel"
 						src="$templatesdir/icons/stock_cancel.png" />
 				</box>
-			</td>
-		</tr>
+				<box id="delete">
+					<image class="operation" title="Delete"
+						src="$templatesdir/icons/stock_delete.png" />
+				</box>
+			</hbox>
+		</vbox>
+	</template>
+
+	<template class="FieldEditor">
+		<row>
+			<box>
+				<container id="fieldName" />
+			</box>
+			<box>
+				<container id="widget" />
+				<box id="save">
+					<image class="operation" title="Save changes"
+						src="$templatesdir/icons/stock_save.png" />
+				</box>
+				<box id="cancel">
+					<image class="operation" title="Cancel"
+						src="$templatesdir/icons/stock_cancel.png" />
+				</box>
+			</box>
+		</row>
 	</template>
 
 	<template class="PersistentObjectViewer">
-		<translated>Object of class</translated>
-		<container id="className" />
-		id:
-		<container id="idN" />
-		<table>
-			<tbody>
-				<template class="FieldValueComponent">
-					<tr>
-						<td>
+		<vbox>
+			<hbox>
+				<label>
+					<translated>Object of class</translated>
+				</label>
+				<container id="className" />
+				<label>id:</label>
+				<container id="idN" />
+			</hbox>
+			<grid>
+				<rows>
+					<template class="FieldValueComponent">
+						<row>
 							<container id="fieldName" />
-						</td>
-						<td>
 							<container id="value" />
-						</td>
-					</tr>
-				</template>
-			</tbody>
-		</table>
-		<box href="#" id="cancel">
-			<image class="operation" title="Exit viewer"
-				src="$templatesdir/icons/stock_undo.png" />
-		</box>
-		<box href="#" id="editor">
-			<image class="operation" title="Edit"
-				src="$templatesdir/icons/stock_edit.png" />
-		</box>
-		<box href="#" id="deleter">
-			<image class="operation" title="Delete"
-				src="$templatesdir/icons/stock_delete.png" />
-		</box>
+						</row>
+					</template>
+				</rows>
+			</grid>
+			<hbox>
+				<box id="cancel">
+					<image class="operation" title="Exit viewer"
+						src="$templatesdir/icons/stock_undo.png" />
+				</box>
+				<box id="editor">
+					<image class="operation" title="Edit"
+						src="$templatesdir/icons/stock_edit.png" />
+				</box>
+				<box id="deleter">
+					<image class="operation" title="Delete"
+						src="$templatesdir/icons/stock_delete.png" />
+				</box>
+			</hbox>
+		</vbox>
 	</template>
 
 	<template class="CollectionViewer">
@@ -95,7 +105,7 @@
 				<rows>
 					<row>
 						<template class="CompositeWidget">
-								<container class="ActionLink" />
+							<container class="ActionLink" />
 						</template>
 						<label>
 							<translated>View</translated>
@@ -120,19 +130,19 @@
 								</box>
 							</template>
 
-							<box href="#" id="viewer">
+							<box id="viewer">
 								<image class="operation" title="View"
 									src="$templatesdir/icons/stock_properties.png" />
 							</box>
 
 
-							<box href="#" id="editor">
+							<box id="editor">
 								<image class="operation" title="Edit"
 									src="$templatesdir/icons/stock_edit.png" />
 							</box>
 
 
-							<box href="#" id="deleter">
+							<box id="deleter">
 								<image class="operation" title="Delete"
 									src="$templatesdir/icons/stock_delete.png" />
 							</box>
@@ -142,21 +152,21 @@
 				</rows>
 			</grid>
 			<hbox>
-				<box href="#" id="new">
+				<box id="new">
 					<image class="operation" title="New"
 						src="$templatesdir/icons/stock_new.png" />
 				</box>
 
-				<box href="#" id="first">
+				<box id="first">
 					<image class="operation" title="First"
 						src="$templatesdir/icons/stock_first.png" />
 				</box>
-				<box href="#" id="prev">
+				<box id="prev">
 					<image class="operation" title="Previous"
 						src="$templatesdir/icons/stock_left.png" />
 				</box>
 				<textbox type="text" id="firstElem" style="width:4em" />
-				<box href="#" id="next">
+				<box id="next">
 					<image class="operation" title="Next"
 						src="$templatesdir/icons/stock_right.png" />
 				</box>
@@ -164,13 +174,13 @@
 					<image class="operation" title="Last"
 						src="$templatesdir/icons/stock_last.png" />
 				</box>
-			</hbox>
-			<hbox>
 				<box id="refresh">
 					<description>
 						<translated>refresh</translated>
 					</description>
 				</box>
+			</hbox>
+			<hbox>
 				<box id="filter">
 					<image class="operation" title="Search"
 						src="$templatesdir/icons/stock_search.png" />
