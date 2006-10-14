@@ -88,8 +88,6 @@ class TextAreaComponentXULHandler extends WidgetXULHandler{
 }
 
 
-class SelectXULHandler extends WidgetXULHandler{}
-class SelectMultipleXULHandler extends WidgetXULHandler{}
 class FilenameXULHandler extends WidgetXULHandler{}
 class HTMLXULHandler extends WidgetXULHandler{}
 ?>

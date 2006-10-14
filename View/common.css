@@ -6,6 +6,7 @@
 	visibility:hidden;
 	width:0;height:0;overflow:hidden;
 	font-size:0;
+	display:inline;
 }
 
 .uploadfile {

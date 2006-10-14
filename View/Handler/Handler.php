@@ -13,9 +13,14 @@ require_once $d.'/HTMLHandler/CheckBoxHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/InputHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/RadioButtonHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/SelectHTMLHandler.class.php';
+require_once $d.'/HTMLHandler/SelectMultipleHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/FilenameHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/PasswordHTMLHandler.class.php';
 
 require_once $d.'/XULHandler/XULHandler.class.php';
+require_once $d.'/XULHandler/WidgetXULHandler.class.php';
+require_once $d.'/XULHandler/SelectXULHandler.class.php';
+require_once $d.'/XULHandler/SelectMultipleXULHandler.class.php';
 require_once $d.'/XULHandler/InputXULHandler.class.php';
+
 ?>

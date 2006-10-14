@@ -3,7 +3,6 @@
 class Select extends Widget {
 	var $options;
 	var $displayF;
-	var $opts = array();
 	var $selected_index = -1;
 	var $size = 1;
 
@@ -18,8 +17,9 @@ class Select extends Widget {
     	} else {
     		$this->displayF =& new FunctionObject($this, 'printPrimitive');
     	}
-
-    	$collection->addEventListener(array('changed'=>'updateViewFromCollection'), $this);
+		$this->initializeOptions();
+    }
+    function initializeOptions(){
     	if (($this->getValueIndex() == -1) and (!$this->options->isEmpty())) {
     		$this->setValueIndex($i = 0);
     	}
@@ -44,18 +44,6 @@ class Select extends Widget {
 		if ($new_value != $value)
 			$this->setValueIndex($new_value);
 	}
-	//TODO Remove View
-	function updateViewFromCollection() {
-		$v =& $this->view;
-		$cn =& $this->opts;
-		$ks = array_keys($cn);
-		foreach($ks as $k){
-			$v->removeChild($cn[$k]);
-		}
-		$this->viewHandler->initializeView(&$v);
-		$this->redraw();
-	}
-
 	function setSize($size) {
 		$this->size = $size;
 	}
@@ -63,21 +51,6 @@ class Select extends Widget {
 	function getSize() {
 		return $this->size;
 	}
-	//TODO Remove view
-	function appendOptions(&$view) {
-		$i=0;
-		$self =& $this;
-		$this->options->map(
-			$f = lambda('&$elem',
-			'$option =& new XMLNodeModificationsTracker(\'option\');
-			$option->setAttribute(\'value\', $i);
-			$option->appendChild(new XMLTextNode($self->displayElement($elem)));
-			$self->opts[$i] =& $option;
-			$view->appendChild($option);
-			$i++;', get_defined_vars()));
-		delete_lambda($f);
-	}
-
 	function &getValueIndex() {
 		return $this->options->indexOf($this->getValue());
 	}
