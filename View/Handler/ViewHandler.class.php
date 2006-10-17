@@ -31,5 +31,6 @@ class ViewHandler extends PWBFactory{
 		$this->setView($v);
 		return $v;
 	}
+	function prepareToRender() {}
 }
 ?>

@@ -70,19 +70,17 @@ class ViewCreator {
 		 * */
 		$parentView =& $pV;
 		$view  =& $component->view;
+		$debugging = defined('debugview') and constant('debugview')=='1';
 		$hasView = $view!=null && strcasecmp(getClass($view),'NullView')!=0 && strcasecmp(getClass($view),'StdClass')!=0;
-		//Somewhere er're setting a value in view where the view is not initialized;
-		//if (strcasecmp(getClass($view),'StdClass')==0) print_backtrace(get_class($component));
 		$id = $component->getSimpleId();
-		$debugging = false;
-		//if (!in_array(strtolower('childrenWithId'),get_class_methods(getClass($parentView)))) print_backtrace(getClass($parentView));
 		if ($parentView === null) print_backtrace('The component '.getClass($component).' '.$component->getId().' has no parent view');
 		$vid =& $parentView->childrenWithId($id);
+		$db = false;
 		if ($vid!=null){
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$this->instantiateFor($vid,$component);
-				if (defined('debugview') and constant('debugview')=='1')$vid->addCSSClass('containerWithId');
+				if ($debugging) $vid->addCSSClass('containerWithId');
 				$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');
 				return $vid;
 			} else {
@@ -96,8 +94,8 @@ class ViewCreator {
 				$pos =& $ct->createCopy();
 				$parentView->insertBefore($ct, $pos);
 			} else {
-				if (defined('debugview') and constant('debugview')=='1') {
-					$debugging = true;
+				if ($debugging) {
+					$db = true;
 					$pos =& new HTMLContainer;
 					$parentView->appendChild($pos);
 				} else {
@@ -115,14 +113,15 @@ class ViewCreator {
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
-			if (defined('debugview') and 	constant('debugview')=='1') {
+			if ($debugging) {
 				$tp->addCSSClass('template');
 			}
 			$view =& $tp;
 			$view->getTemplatesAndContainers();
-			if ($debugging) $view->addCSSClass('debugging');
+			if ($debugging &&$db) $view->addCSSClass('debugging');
 		}
 		$parentView->replaceChild($view,$pos);
+		$component->viewHandler->prepareToRender();
 		return $view;
 	}
 	function addTemplateName(&$view, $name){

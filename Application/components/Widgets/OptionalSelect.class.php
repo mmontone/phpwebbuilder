@@ -7,7 +7,7 @@ class OptionalSelect extends Component {
 	var $selectOption = false;
 	var $noopts_msg;
 
-	function OptionalSelect(&$value_model, &$collection, $extra_params) {
+	function OptionalSelect(&$value_model, &$collection, $extra_params=array()) {
 		$this->value_model =& $value_model;
 		$this->options =& $collection;
 		$this->displayF =& $extra_params['displayF'];

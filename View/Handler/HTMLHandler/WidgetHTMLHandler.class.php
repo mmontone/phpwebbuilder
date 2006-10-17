@@ -54,13 +54,11 @@ class WidgetHTMLHandler extends HTMLHandler{
 		parent :: setView($view);
 
 		$this->initializeView($view);
-		$this->prepareToRender();
 		$this->updateInvalid($this->component->invalid);
 		$this->updateDisabled($this->component->disabled);
 		$this->updateEvents($this->component->events);
 	}
 	function initializeView(){}
 	function initializeDefaultView(){}
-	function prepareToRender() {}
 }
 ?>

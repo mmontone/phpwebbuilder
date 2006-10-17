@@ -9,7 +9,6 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 	}
 	function prepareToRender(){
 		parent::prepareToRender();
-		$index =& $this->component->getValueIndex();
 		$this->valueChanged($this->component->value_model, $n=null);
 	}
 
