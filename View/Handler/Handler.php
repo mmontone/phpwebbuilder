@@ -21,6 +21,12 @@ require_once $d.'/XULHandler/XULHandler.class.php';
 require_once $d.'/XULHandler/WidgetXULHandler.class.php';
 require_once $d.'/XULHandler/SelectXULHandler.class.php';
 require_once $d.'/XULHandler/SelectMultipleXULHandler.class.php';
+require_once $d.'/XULHandler/RadioButtonXULHandler.class.php';
+require_once $d.'/XULHandler/CommandLinkXULHandler.class.php';
+require_once $d.'/XULHandler/LinkXULHandler.class.php';
+require_once $d.'/XULHandler/CheckBoxXULHandler.class.php';
+require_once $d.'/XULHandler/TextXULHandler.class.php';
+require_once $d.'/XULHandler/TextAreaComponentXULHandler.class.php';
 require_once $d.'/XULHandler/InputXULHandler.class.php';
 
 ?>
