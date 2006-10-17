@@ -38,14 +38,8 @@ class User extends PersistentObject {
 
 	function hasRole($uid, $roleid) {
 		$urc = new PersistentCollection(UserRole);
-		$urc->conditions["user"] = array (
-			"=",
-			$uid
-		);
-		$urc->conditions["role"] = array (
-			"=",
-			$roleid
-		);
+		$urc->setCondition("user", "=",	$uid);
+		$urc->setCondition("role", "=", $roleid);
 		return count($urc->elements()) > 0;
 	}
 	function & login($user, $pass) {

@@ -9,7 +9,7 @@ class SelectMultipleHTMLHandler extends SelectHTMLHandler{
 		WidgetHTMLHandler::prepareToRender();
 	}
 	function valueChanged(&$value_model, &$params) {
-		$elements =& $params->component->elements();
+		$elements =& $params->elements();
 		foreach (array_keys($this->opts) as $opt) {
 			$this->opts[$opt]->removeAttribute('selected');
 		}

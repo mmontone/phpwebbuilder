@@ -32,6 +32,10 @@ class IndexField extends NumField {
 		return $this->getTarget();
 	}
 
+	function getDataType() {
+		return $this->datatype;
+	}
+
 	function setTarget(& $target) {
 		$this->buffered_target =& $target;
 		$n = null;

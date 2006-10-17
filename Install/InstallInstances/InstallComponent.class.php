@@ -114,7 +114,7 @@ class InstallComponent extends Component {
 				if (strcasecmp($c, "ObjSQL") == 0)
 					continue;
 				$c = new $c;
-				$sql .= "DROP TABLE IF EXISTS `" . $c->tableName() . "`;";
+				$sql .= "DROP TABLE IF EXISTS " . $c->tableName() . ";";
 			}
 			$sqls = explode(";", $sql);
 			print_r($db->batchExec($sqls));

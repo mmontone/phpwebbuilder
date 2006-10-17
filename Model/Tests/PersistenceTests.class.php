@@ -10,14 +10,6 @@ class PersistenceTests extends UnitTestCase {
     function setUp() {
 		TestsDb::setUp();
 		$this->db =& DB::Instance();
-
-		$this->db->SQLExec('CREATE TABLE `users` (
-							`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-							`PWBversion` INT,
-							`user` VARCHAR( 30 ) NOT NULL ,
-							`pass` VARCHAR( 30 ) NOT NULL
-							) TYPE = innodb;');
-
     }
 
     function testSave() {
@@ -26,8 +18,10 @@ class PersistenceTests extends UnitTestCase {
 		$alex->pass->setValue('alexpass');
 		$this->assertTrue($alex->save(), 'Saving a user');
 
-		$alex=& User::getById('User',0);
+		$alex=& User::getWithIndex('User',array('user' => 'alex'));
+
 		$this->assertEqual($alex->user->getValue(), 'alex', 'Loading a user');
+		$this->assertEqual($alex->pass->getValue(), 'alexpass', 'Loading a user');
 	}
 }
 

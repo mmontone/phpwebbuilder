@@ -5,7 +5,7 @@ class JoinedPersistentCollection extends PersistentCollection{
 		parent::PersistentCollection ($dataType);
 		$this->innerTable = $table;
 		$this->innerField = $field;
-		$this->conditions[$table.'.'.$field] = array('=',$this->tableName().'.id');
+		$this->setCondition($table.'.'.$field, '=',$this->tableName().'.id');
 	}
 	function tableNames() {
 		$obj = new $this->dataType;

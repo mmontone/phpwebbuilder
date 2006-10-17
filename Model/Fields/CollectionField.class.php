@@ -25,10 +25,7 @@ class CollectionField extends DataField {
 		} else {
 			$this->collection = & new PersistentCollection($params['type']);
 		}
-		$this->collection->conditions[$this->creationParams['reverseField']] = array (
-			'=',
-			'-1'
-		);
+		$this->collection->setCondition($this->creationParams['reverseField'], '=',	'-1');
 	}
 	function add(&$elem){
 		$m =& $this->createElement();
@@ -71,10 +68,9 @@ class CollectionField extends DataField {
 
 	function setID($id) {
 		$this->setValue($id);
-		$this->collection->conditions[$this->creationParams['reverseField']] = array (
-			'=',
-			$id
-		);
+
+		$this->collection->setCondition($this->creationParams['reverseField'], '=', $id);
+
 	}
 	function SQLvalue() {
 	}

@@ -34,7 +34,7 @@ class PersistentObjectTableCheckView {
  	}
 
 	function show () {
-		$table = $this->obj->tablename();
+		$table = $this->obj->getTable();
 		$sql = "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
 		$db = new MySQLDB;
 		$res = $db->SQLexec($sql, FALSE, $this->obj);
@@ -117,7 +117,7 @@ class PersistentObjectTableCheckView {
 		return $ret;
 	}
 	function uniques() {
-		$table = $this->obj->tablename();
+		$table = $this->obj->getTable();
 		$ifs =& $this->obj->allIndexFields();
 		$unis=array();
 		foreach ($this->obj->indexFields as $i){
@@ -173,7 +173,7 @@ class TablesChecker {
 			$dbc = new PersistentObjectTableCheckView;
 			$dbc->obj=$obj;
 			$mod .= $dbc->show();
-			$table = $obj->tablename();
+			$table = $obj->getTable();
 			unset($tables[$table]);
 		}
 		$del ='';

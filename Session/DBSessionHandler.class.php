@@ -13,7 +13,7 @@ class DBSessionHandler extends SessionHandler{
 		return $this->gc();
 	}
 	function read($sess_id){
-		$this->ss->conditions['session_id']=array('=',"'$sess_id'");
+		$this->ss->setCondition('session_id','=',"'$sess_id'");
 		if (!$this->ss->isEmpty()){
 			$this->instance =& $this->ss->first();
 			$ret = $this->instance->session_data->getValue();

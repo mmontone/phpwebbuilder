@@ -83,7 +83,7 @@ class DataField extends ValueModel {
 	 */
 	function fieldName($operation) {
 		if ($operation=='SELECT'){
-			return '`'.$this->owner->tableName().'`.`'.$this->colName
+			return $this->owner->tableName().'.`'.$this->colName
 				   .'` as `'.$this->sqlName().	'`, ';
 		} else {
 			return '`'.$this->colName .	'`, ';
@@ -93,7 +93,7 @@ class DataField extends ValueModel {
 	 * Returns the sql name of the field
 	 */
 	function sqlName(){
-		return $this->owner->tableName().'_'.$this->colName;
+		return $this->owner->getTable().'_'.$this->colName;
 	}
 	/**
 	 * Returns the sql value of the field

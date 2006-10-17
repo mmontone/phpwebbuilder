@@ -22,10 +22,11 @@ class CollectionViewer extends CollectionNavigator {
 	function newObject(&$n) {
 		$dt = $this->col->getDataType();
 		$obj = & new $dt;
-		$c =& $this->col->conditions;
-		foreach($c as $f=>$cond){
-			if ($cond[0] == '='){
-				$obj->$f->setValue($cond[1]);
+		$c =& $this->col->getConditions();
+		foreach($c as $cond){
+			if ($cond[1] == '='){
+				$f = $cond[0];
+				$obj->$f->setValue($cond[2]);
 			}
 		}
 		$obj->commitChanges();

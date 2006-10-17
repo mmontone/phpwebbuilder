@@ -263,12 +263,16 @@ class DescriptedObject extends PWBObject {
 		if ($this->$field->isEmpty()) {
 			$this->$field->requiredButEmpty();
 			$error =& new EmptyFieldException(array('message' => $message, 'content' => & $this->$field));
-			$this->validation_errors[] =& $error;
+			$this->addValidationError($error);
 			return $error;
 		}
 		else {
 			return false;
 		}
+	}
+
+	function addValidationError(&$error) {
+		$this->validation_errors[] =& $error;
 	}
 
 	/*@deprecated*/

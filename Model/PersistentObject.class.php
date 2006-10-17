@@ -56,21 +56,26 @@ class PersistentObject extends DescriptedObject {
 	 * Returns the table name for the object.
 	 */
 	function tableName() {
-		return baseprefix . $this->table;
+		return '`' . constant('baseprefix') . $this->table .'`';
 	}
+
+	function getTable() {
+		return constant('baseprefix') . $this->table;
+	}
+
 	/**
 	 * Returns the table names for the object (including all
 	 * hierarchy that involves it)
 	 */
-	function tableNames(){
-		$tns[] = '`'.$this->tableName().'`';
+	function getTables() {
+		$tns[] = $this->tableName();
 		$p0 = getClass($this);
 		$pcs = get_superclasses($p0);
 		$o0 =& $this;
 		foreach($pcs as $pc){
 			$o1 =& new $pc;
 			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-				$tns[] = 'LEFT OUTER JOIN `'.$o1->tableName().'` ON `'. $o1->tableName().'`.id = `'.$o0->tableName().'`.super';
+				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o1->tableName().'.id = '.$o0->tableName().'.super';
 			}
 			$o0 =& $o1;
 			$p0 = $pc;
@@ -81,12 +86,18 @@ class PersistentObject extends DescriptedObject {
 			$pc = get_parent_class($sc);
 			$o2 =& new $pc;
 			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-				$tns[] = 'LEFT OUTER JOIN `'.$o1->tableName().'` ON `'. $o2->tableName().'`.id = `'.$o1->tableName().'`.super';
+				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
 			}
 		}
-		$tn = implode(' ',$tns);
+		$tn = array(implode(' ',$tns));
 		return $tn;
 	}
+
+	function tableNames(){
+		$tns = $this->getTables();
+		return $tns[0];
+	}
+
 	/**
 	 * Returns the id comparison for the object
 	 */
@@ -146,7 +157,7 @@ class PersistentObject extends DescriptedObject {
 			$values .= $field->insertValue();
 		}
 		$values = substr($values, 0, -2);
-		$sql = 'INSERT INTO `' . $this->tableName() . '` (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
+		$sql = 'INSERT INTO ' . $this->tableName() . ' (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DB::Instance();
 		$db->SQLExec($sql, TRUE, & $this, & $rows);
 		$ok = $rows > 0;
@@ -164,7 +175,7 @@ class PersistentObject extends DescriptedObject {
 			$values .= $field->updateString();
 		}
 		$values = substr($values, 0, -2);
-		return "UPDATE `" . $this->tableName() . "` SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
+		return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
 	}
 	/**
 	 * Updates this level of the object, taking into account versioning
@@ -185,7 +196,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function basicDelete() {
 		if (!$this->existsObject) return true;
-		$sql = 'DELETE FROM `' . $this->tableName() . '` WHERE id=' . $this->getId();
+		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DB::Instance();
 		$can = TRUE;
 		foreach ($this->allFieldsThisLevel() as $f) {
@@ -286,7 +297,7 @@ class PersistentObject extends DescriptedObject {
 	function & getWithIndex($class, $indArray) {
 		$cs = & new PersistentCollection($class);
 		foreach($indArray as $i=>$v){
-			$cs->conditions[$i]=array('=',$v);
+			$cs->setCondition($i,'=',$v);
 		}
 		return $cs->first();
 	}
@@ -407,6 +418,28 @@ class PersistentObject extends DescriptedObject {
 			}
 		}
 		return $col;
+	}
+
+	function tableForField($field) {
+		$o1 =& $this;
+		//echo 'Checking class ' . getClass($o1). ' field ' . $field . '<br />';
+		if (in_array($field, $o1->allFieldNamesThisLevel())) {
+			//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
+			return $o1->getTable();
+		}
+
+		$p0 = getClass($this);
+		$pcs = get_superclasses($p0);
+		foreach($pcs as $pc){
+			$o1 =& new $pc;
+			//echo 'Checking class ' . getClass($o1). ' field ' . $field . '<br />';
+			if (in_array($field, $o1->allFieldNamesThisLevel())) {
+				//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
+				return $o1->getTable();
+			}
+		}
+
+		print_backtrace('No field');
 	}
 }
 ?>

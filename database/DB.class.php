@@ -44,11 +44,11 @@ class DB {
 		return $res[0][1];
 	}
 	function &Instance(){
-		if (!isset($_SESSION[sitename]['DB'])){
+		if (!isset($_SESSION[constant('sitename')]['DB'])){
 			$c = constant('DBObject');
-			$_SESSION[sitename]['DB'] =& new $c;
+			$_SESSION[constant('sitename')]['DB'] =& new $c;
 		}
-		return $_SESSION[sitename]['DB'];
+		return $_SESSION[constant('sitename')]['DB'];
 	}
 }
 ?>
