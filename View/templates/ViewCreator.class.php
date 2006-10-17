@@ -70,7 +70,7 @@ class ViewCreator {
 		 * */
 		$parentView =& $pV;
 		$view  =& $component->view;
-		$debugging = defined('debugview') and constant('debugview')=='1';
+		$debugging = defined('debugview') && (constant('debugview')=='1');
 		$hasView = $view!=null && strcasecmp(getClass($view),'NullView')!=0 && strcasecmp(getClass($view),'StdClass')!=0;
 		$id = $component->getSimpleId();
 		if ($parentView === null) print_backtrace('The component '.getClass($component).' '.$component->getId().' has no parent view');
@@ -80,7 +80,7 @@ class ViewCreator {
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$this->instantiateFor($vid,$component);
-				if ($debugging) $vid->addCSSClass('containerWithId');
+				if ($debugging) {$vid->addCSSClass('containerWithId');}
 				$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');
 				return $vid;
 			} else {
@@ -118,7 +118,7 @@ class ViewCreator {
 			}
 			$view =& $tp;
 			$view->getTemplatesAndContainers();
-			if ($debugging &&$db) $view->addCSSClass('debugging');
+			if ($debugging && $db) $view->addCSSClass('debugging');
 		}
 		$parentView->replaceChild($view,$pos);
 		$component->viewHandler->prepareToRender();
