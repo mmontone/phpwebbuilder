@@ -55,9 +55,9 @@ class MySQLdb extends DB {
         $reg = mysql_query ($sql);
         $this->closeDatabase();
         if (!$reg){
-        	$this->lastError=mysql_error() . ': '.$sql;
+        	$this->registerDBError($sql);
         	if (defined('sql_echo') and constant('sql_echo') == 1) {
-    			echo 'SQL Error: ' . $this->lastError;
+    			echo $this->lastError->printHtml();
     		}
 
         	return false;
@@ -65,19 +65,23 @@ class MySQLdb extends DB {
         return $reg;
     }
 
+    function registerDBError($sql) {
+    	$this->lastError =& new DBError(array('number' => mysql_errno(), 'message' => mysql_error(), 'sql' => $sql));
+    }
+
     function fetchrecord($res) {
     	return mysql_fetch_assoc($res);
     }
     function openDatabase() {
     	if (!$this->conn){
-	      $this->conn = mysql_connect(serverhost, baseuser, basepass);
+	      $this->conn = mysql_connect(constant('serverhost'), constant('baseuser'), constant('basepass'));
 	      if (!$this->conn){
-	          $this->lastError = mysql_error();
+	          $this->registerDBError('CONNECT');
 	          return false;
 	      }
-	      $b = mysql_select_db(basename);
+	      $b = mysql_select_db(constant('basename'));
 	      if (!$b){
-	          $this->lastError = mysql_error();
+	          $this->registerDBError('SELECTDB ' . constant('basename'));
 	          return false;
 	      }
     	}

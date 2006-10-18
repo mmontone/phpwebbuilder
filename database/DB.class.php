@@ -1,7 +1,7 @@
 <?php
 
 class DB {
-	var $lastError = 'No Error';
+	var $lastError;
 	var $lastSQL = '';
 
 	function DB() {
@@ -31,10 +31,17 @@ class DB {
 		}
 		return $ret;
 	}
+
 	function lastError(){
 		$db =& DB::instance();
 		return $db->lastError;
 	}
+
+	function &GetLastError() {
+		$db =& DB::instance();
+		return $db->lastError;
+	}
+
 	function lastSQL(){
 		$db =& DB::instance();
 		return $db->lastSQL;
@@ -51,4 +58,33 @@ class DB {
 		return $_SESSION[constant('sitename')]['DB'];
 	}
 }
+
+class DBError {
+	var $number;
+	var $message;
+	var $sql;
+
+	function DBError($params) {
+		$this->number = $params['number'];
+		$this->message = $params['message'];
+		$this->sql = $params['sql'];
+	}
+
+	function getNumber() {
+		return $this->number;
+	}
+
+	function getMessage() {
+		return $this->message;
+	}
+
+	function getSQL() {
+		return $this->sql;
+	}
+
+	function printHtml() {
+		return 'DBError: <br/>Number: ' . $this->getNumber() . '<br />Message: ' . $this->getMessage() . '<br />SQL: ' . $this->getSQL();
+	}
+}
+
 ?>
