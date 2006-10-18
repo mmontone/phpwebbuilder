@@ -33,8 +33,8 @@ class DB {
 	}
 
 	function lastError(){
-		$db =& DB::instance();
-		return $db->lastError;
+		$last_error =& DB::GetLastError();
+		return $last_error->getMessage();
 	}
 
 	function &GetLastError() {
