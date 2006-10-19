@@ -11,6 +11,7 @@ require_once $d.'/HTMLHandler/HTMLHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/CommandLinkHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/CheckBoxHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/InputHTMLHandler.class.php';
+require_once $d.'/HTMLHandler/DateInputHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/RadioButtonHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/SelectHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/SelectMultipleHTMLHandler.class.php';

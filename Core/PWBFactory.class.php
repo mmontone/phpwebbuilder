@@ -10,6 +10,7 @@ class PWBFactory extends PWBObject{
 			$ok = class_exists($name);
 			$c = get_parent_class($c);
 		}
+		//echo 'Creating ' . $name  . ' for ' . getClass($target) . '<br />';
 		$v =& new $name;
 		return $v->createInstanceFor($target);
 	}

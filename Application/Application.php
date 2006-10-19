@@ -36,6 +36,7 @@ require_once $d.'/components/Widgets/Label.class.php';
 require_once $d.'/components/Widgets/TextAreaComponent.class.php';
 require_once $d.'/components/Widgets/RadioButton.class.php';
 require_once $d.'/components/Widgets/CheckBox.class.php';
+require_once $d.'/components/Widgets/DateInput.class.php';
 require_once $d.'/components/NotificationDialog.class.php';
 require_once $d.'/components/JSNotificationDialog.class.php';
 require_once $d.'/components/ModalNotificationDialog.class.php';
