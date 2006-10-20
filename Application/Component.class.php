@@ -49,7 +49,7 @@ class Component extends PWBObject
 		$n = null;
 		$this->app =& $n;
 	    $this->view =& $n;
-	    $this->viewHandler->release();
+	    if ($this->viewHandler) $this->viewHandler->release();
 	    $this->viewHandler =& $n;
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;

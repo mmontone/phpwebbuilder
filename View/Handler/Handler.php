@@ -9,6 +9,7 @@ require_once $d.'/HTMLHandler/LinkHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/JSCommandLinkHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/HTMLHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/CommandLinkHTMLHandler.class.php';
+require_once $d.'/HTMLHandler/NavigationLinkHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/CheckBoxHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/InputHTMLHandler.class.php';
 require_once $d.'/HTMLHandler/DateInputHTMLHandler.class.php';

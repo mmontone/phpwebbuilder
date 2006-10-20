@@ -1,8 +1,8 @@
 <?php
 
-class NavigationLinkHTMLHandler extends ComandLinkHTMLHandler{
+class NavigationLinkHTMLHandler extends CommandLinkHTMLHandler{
 	function initializeView(&$view){
-		$view->setAttribute('href', toAjax($this->app->setLinkTarget($this->bookmark, $this->params)));
+		$view->setAttribute('href', toAjax($this->component->app->setLinkTarget($this->component->bookmark, $this->component->params)));
 	}
 }
 ?>
