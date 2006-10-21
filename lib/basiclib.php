@@ -253,71 +253,12 @@ function my_assert_handler($file, $line, $code) {
 assert_options(ASSERT_CALLBACK, 'my_assert_handler');
 
 /**
- * encodes the string to valid XHTML
- */
-
-function toHTML($s) {
-	$s = str_replace('&', '&amp;', $s);
-	$s = str_replace('ñ', '&ntilde;', $s);
-	$s = str_replace('¿', '&iquest;', $s);
-	$s = str_replace('Ñ', '&Ntilde;', $s);
-	$s = str_replace('á', '&aacute;', $s);
-	$s = str_replace('é', '&eacute;', $s);
-	$s = str_replace('í', '&iacute;', $s);
-	$s = str_replace('ó', '&oacute;', $s);
-	$s = str_replace('ú', '&uacute;', $s);
-	$s = str_replace('Á', '&Aacute;', $s);
-	$s = str_replace('É', '&Eacute;', $s);
-	$s = str_replace('Í', '&Iacute;', $s);
-	$s = str_replace('Ó', '&Ooacute;', $s);
-	$s = str_replace('Ú', '&Uacute;', $s);
-
-	$s = htmlentities($s);
-	return $s;
-	//return mb_convert_encoding($s,"HTML-ENTITIES","auto");
-}
-
-/**
- * Encodes the string in valid XML
- */
-
-function toXML($s) {
-	$s = str_replace('&', '&amp;', $s);
-	$s = ereg_replace('&(amp;|&amp;)+(([A-Za-z0-9#]+);)', '&\\2', $s);
-	$s = str_replace('>', '&#62;', $s);
-	$s = str_replace('&gt;', '&#62;', $s);
-	$s = str_replace('<', '&#60;', $s);
-	$s = str_replace('&lt;', '&#60;', $s);
-	$s = str_replace('"', '&#34;', $s);
-	//$s = str_replace('|', '&#166;', $s);
-	$s = str_replace('&amp;', '&#38;', $s);
-	$s = str_replace('&iquest;', '&#191;', $s);
-	$s = str_replace('&aacute;', '&#225;', $s);
-	$s = str_replace('&eacute;', '&#233;', $s);
-	$s = str_replace('&iacute;', '&#237;', $s);
-	$s = str_replace('&oacute;', '&#243;', $s);
-	$s = str_replace('&uacute;', '&#250;', $s);
-	$s = str_replace('&uuml;', '&#252;', $s);
-	$s = str_replace('&ntilde;', '&#241;', $s);
-	$s = str_replace('&Aacute;', '&#193;', $s);
-	$s = str_replace('&Eacute;', '&#201;', $s);
-	$s = str_replace('&Iacute;', '&#205;', $s);
-	$s = str_replace('&Oacute;', '&#211;', $s);
-	$s = str_replace('&Uacute;', '&#218;', $s);
-	$s = str_replace('&Uuml;', '&#220;', $s);
-	$s = str_replace('&Ntilde;', '&#209;', $s);
-
-	$s = str_replace('&quote;', '&#34;', $s);
-	$s = str_replace('&nbsp;', '&#160;', $s);
-	$s = ereg_replace('&([A-Za-z0-9]+);', '&#38;\\1;', $s);
-	return $s;
-}
-/**
  * Encodes the string una ajax suitable manner
  */
 
 function toAjax($s) {
-	return toXML(toHTML($s));
+	$app =&Application::instance();
+	return $app->page_renderer->toAjax($s);
 }
 /**
  * Receives the definition of the parameters, the definition of the body,
@@ -429,7 +370,6 @@ function fatal_error_handler($buffer) {
 
 		$app = & new BugNotifierApplication;
 		$app->setError($err);
-		//$app->setBacktrace(backtrace_plain_string($err));
 		$app->setBacktrace($buffer);
 
 		return $app->render();
