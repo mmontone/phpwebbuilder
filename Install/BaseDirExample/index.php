@@ -1,6 +1,6 @@
 <?php
 
-$_REQUEST["reset"]="yes";
+$_REQUEST["restart"]="yes";
 
 require_once 'Action.php';
 
