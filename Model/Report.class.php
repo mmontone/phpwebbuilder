@@ -645,7 +645,7 @@ class PathExpression extends Expression {
 			$obj =& new $class;
 			$report->addTables($obj->getTables());
 			$otable = $o->tableForField($index);
-			echo 'Setting condition: ' . $otable. '.' . $index, '=', $obj->getTable() . '.id<br />';
+			//echo 'Setting condition: ' . $otable. '.' . $index, '=', $obj->getTable() . '.id<br />';
 			$report->setCondition($otable. '.' . $index, '=', $obj->getTable() . '.id');
 			$o =& $obj;
 		}

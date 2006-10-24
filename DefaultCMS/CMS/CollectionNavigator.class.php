@@ -21,10 +21,7 @@ class CollectionNavigator extends Component {
 	}
 
 	function initialize() {
-		$this->addComponent(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
-		$this->addComponent(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
-		$this->addComponent(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
-		$this->addComponent(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
+		$this->addNavigationButtons();
 		$this->addComponent(new ActionLink($this, 'filter', 'filter', $n = null), 'filter');
 		$this->addComponent(new ActionLink($this, 'refresh', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 1);
@@ -50,6 +47,20 @@ class CollectionNavigator extends Component {
 			}
 		}
 		$this->refresh();
+	}
+
+	function addNavigationButtons() {
+		$this->addComponent(new ActionLink($this, 'nextPage', 'next', $n = null), 'next');
+		$this->addComponent(new ActionLink($this, 'prevPage', 'prev', $n = null), 'prev');
+		$this->addComponent(new ActionLink($this, 'firstPage', 'first', $n = null), 'first');
+		$this->addComponent(new ActionLink($this, 'lastPage', 'last', $n = null), 'last');
+	}
+
+	function removeNavigationButtons() {
+		$this->deleteComponentAt('next');
+		$this->deleteComponentAt('prev');
+		$this->deleteComponentAt('first');
+		$this->deleteComponentAt('last');
 	}
 
 	function setPageSize($size) {
