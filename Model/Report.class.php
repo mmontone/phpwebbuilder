@@ -34,7 +34,7 @@ class Report extends Collection{
 	  var $select_exp;
 
 
-	function Report($params) {
+	function Report() {
 		$this->select_exp =& new AndExp;
 		parent::Collection();
 
@@ -477,7 +477,7 @@ class Condition extends Expression {
 	var $evaluated_e1;
 	var $evaluated_e2;
 
-	function Condition($params) {
+	function Condition($params=array()) {
 		$this->exp1 =& $params['exp1'];
 		$this->exp2 =& $params['exp2'];
 		$this->operation = $params['operation'];
