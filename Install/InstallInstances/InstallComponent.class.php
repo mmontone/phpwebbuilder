@@ -97,7 +97,7 @@ class InstallComponent extends Component {
 			}
 		}
 	}
-	function do_install_database(){
+	function load_application(){
 		$conf =& new ConfigReader;
 		$configfile = $this->configfile->value->getValue();
 		$c = $conf->load($configfile);
@@ -105,8 +105,10 @@ class InstallComponent extends Component {
 		$a = $c['app']!=''?$c['app']:"MyInstances,MyComponents";
 		includeAllModules(pwbdir, $m);
 		$bdir = $conf->loadDir($c['basedir'],$configfile);
-		echo $bdir;
 		includeAllModules($bdir, $a);
+	}
+	function do_install_database(){
+		$this->load_application();
 		$db =& DB::instance();
 		$db->beginTransaction();
 		if ($this->execEliminar->value->getValue()) {
@@ -132,6 +134,7 @@ class InstallComponent extends Component {
 	}
 
 	function do_install_application() {
+		$this->load_application();
 		$app_class = $this->app_class->value->getValue();
 		if (($app_class == null) or ($app_class == '')) {
 			echo 'The application is is not defined';
