@@ -14,4 +14,5 @@ class InputHTMLHandler extends WidgetHTMLHandler{
 		}
 	}
 }
+
 ?>

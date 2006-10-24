@@ -57,7 +57,9 @@ class Widget extends Component {
 	function setOnFocusEvent() {
 		$this->events->atPut('onfocus', $a=array('onfocus', "componentFocus(getEventTarget(event))"));
 	}
-
+	function setEvent($event,  $function){
+		$this->events->atPut($event, $a=array($event, $function));
+	}
 	function setOnClickEvent() {
 		$this->clickable->setValue($v=true);
 		$this->events->atPut('onclick', $a=array('onclick', "componentClicked(getEventTarget(event));"));

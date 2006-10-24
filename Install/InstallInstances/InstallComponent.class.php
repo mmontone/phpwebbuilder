@@ -48,6 +48,7 @@ class InstallComponent extends Component {
 		$this->addComp("Erase data from previous installation:", 'execEliminar',new CheckBox(new ValueHolder($vh='')));
 		$this->addComponent(new ActionLink($this, 'do_install_config', 'Create config file', $n=null), 'install');
 		$this->addComponent(new ActionLink($this, 'do_install_database', 'Update Database', $n=null), 'installdatabase');
+		$this->addComponent(new ActionLink($this, 'do_install_application', 'Install Application', $n=null), 'installapplication');
 		$this->readConfigFile();
 	}
 	function addPrompt($label,$name, $defvalue){
@@ -128,6 +129,41 @@ class InstallComponent extends Component {
 		print_r($db->batchExec($sqls));
 		$db->commit();
 		$this->status->setValue($t="Installation Successful");
+	}
+
+	function do_install_application() {
+		$app_class = $this->app_class->value->getValue();
+		if (($app_class == null) or ($app_class == '')) {
+			echo 'The application is is not defined';
+			return;
+		}
+		eval('$res =& ' . $app_class . '::Install();');
+
+		if (is_object($res)) {
+			// Exception raised
+			echo 'Error installing application';
+
+			/*
+			$dialog =& ErrorDialog::create($res->getMessage());
+			$dialog->onAccept(new FunctionObject($this, 'installErrorAccepted'));
+			$this->call($dialog);*/
+		}
+		else {
+			echo 'The application has been installed successfully';
+
+			/*
+			$dialog =& NotificationDialog::create('The application has been installed successfully');
+			$dialog->onAccept(new FunctionObject($this, 'installSuccessAccepted'));
+			$this->call($dialog);*/
+		}
+	}
+
+	function installSuccessAccepted() {
+
+	}
+
+	function installErrorAccepted() {
+
 	}
 }
 ?>

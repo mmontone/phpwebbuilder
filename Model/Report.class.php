@@ -31,6 +31,14 @@ class Report extends Collection{
 
 	  var $group = array();
 	  var $vars = array();
+	  var $select_exp;
+
+
+	function Report($params) {
+		$this->select_exp =& new AndExp;
+		parent::Collection();
+
+	}
 
 	function addTable($table) {
 		$this->tables[] = $table;
@@ -46,9 +54,16 @@ class Report extends Collection{
 		}
 	}
 
-	function setCondition($field, $comparator, $value){
+	function setCondition($field, $comparator, $value) {
 		//echo 'Report: Setting condition: ' . $field . $comparator . $value . '<br />';
-		$this->conditions[]=array($this->parseField($field),$comparator,$value);
+		$cond =& new Condition;
+		$cond->operation = $comparator;
+		//$cond->exp1 =& new ValueExpression($this->parseField($field));
+		$cond->exp1 =& new ValueExpression('`' . $this->parseField($field) . '`');
+		$cond->exp2 =& new ValueExpression($value);
+		$cond->evaluateIn($this);
+		$this->select_exp->addExpression($cond);
+		//$this->conditions[]=array($this->parseField($field),$comparator,$value);
 		$n = null;
 		$this->elements=& $n;
 	}
@@ -65,8 +80,12 @@ class Report extends Collection{
 		$this->vars[$id] =& $class;
 	}
 
+
 	function setPathCondition(&$condition) {
-		$condition->applyTo($this);
+		//$condition->applyTo($this);
+		//print_backtrace('Setting path condition: ' . print_r($condition,true));
+		$condition->evaluateIn($this);
+		$this->select_exp->addExpression($condition);
 	}
 	/**
 	  * removes a condition
@@ -87,16 +106,35 @@ class Report extends Collection{
 	  */
 
 	function conditions() {
+
+		/*
 		$cond = '1=1';
 		foreach ($this->getConditions() as $c) {
 			$cond .= ' AND `'. $c[0] .'` '. $c[1] .' '. $c[2];
 		}
-		$cond = ' WHERE ' . $cond;
+		$cond = ' WHERE ' . $cond;*/
+
+		$select_exp =& $this->getSelectExp();
+		if ($select_exp->isEmpty()) {
+			$cond = ' ';
+		}
+		else {
+			$cond = ' WHERE ' . $select_exp->printString();
+		}
 		return $cond;
 	}
 
 	function &getConditions() {
 		return $this->conditions;
+	}
+
+	function &getSelectExp() {
+		return $this->select_exp;
+	}
+
+	function setSelectExp(&$exp) {
+		$exp->evaluateIn($this);
+		$this->select_exp =& $exp;
 	}
 	/**
 	  * Returns the size of the collection
@@ -133,6 +171,7 @@ class Report extends Collection{
 	function parseField($f){
 		return str_replace('.','`.`',$f);
 	}
+
 	/**
 	  * Returns a new object of the dataype
 	  */
@@ -301,6 +340,8 @@ class Report extends Collection{
 	  */
 
 	function restrictions() {
+		$select_exp =& $this->getSelectExp();
+		//$select_exp->evaluateIn($this);
 		return $this->tableNames() . $this->conditions();
 	}
 	/**
@@ -364,6 +405,14 @@ class CompositeReport extends Report {
 		return array_merge($this->conditions, $this->report->getConditions());
 	}
 
+	function &getSelectExp() {
+		$e =& new AndExp;
+		$e->addExpression($this->select_exp);
+		$e->addExpression($this->report->getSelectExp());
+
+		return $e;
+	}
+
 	function &getGroup() {
 		return array_merge($this->group,$this->report->getGroup());
 	}
@@ -421,10 +470,12 @@ function array_union_values() {
      return $new_array2;
 }
 
-class Condition {
+class Condition extends Expression {
 	var $exp1;
 	var $operation;
 	var $exp2;
+	var $evaluated_e1;
+	var $evaluated_e2;
 
 	function Condition($params) {
 		$this->exp1 =& $params['exp1'];
@@ -432,10 +483,14 @@ class Condition {
 		$this->operation = $params['operation'];
 	}
 
-	function applyTo(&$report) {
-		$e1 = $this->exp1->evaluateIn($report);
-		$e2 = $this->exp2->evaluateIn($report);
-		$report->setCondition($e1, $this->operation, $e2);
+	function evaluateIn(&$report) {
+		$this->evaluated_e1 = $this->exp1->evaluateIn($report);
+		$this->evaluated_e2 = $this->exp2->evaluateIn($report);
+	}
+
+	function printString() {
+		if ($this->evaluated_e1 == null) print_backtrace_and_exit(print_r($this, true));
+		return $this->evaluated_e1 . ' ' . $this->operation . ' ' . $this->evaluated_e2;
 	}
 }
 
@@ -451,7 +506,86 @@ class Expression {
 
 	}
 	function evaluateIn(&$report) {
+		print_backtrace_and_exit('Subclass responsibility');
+	}
 
+	function printString() {
+		print_backtrace_and_exit('Subclass responsibility');
+	}
+}
+
+class AndExp extends Expression {
+	var $exps;
+
+	function AndExp() {
+		$c =& new Condition(array('exp1' => new ValueExpression(1), 'operation' => '=', 'exp2' => new ValueExpression(1)));
+		$c->evaluateIn($n = null);
+		$this->exps = array($c);
+
+		parent::Expression();
+	}
+	function addExpression(&$exp) {
+		$this->exps[] =& $exp;
+	}
+
+	function addExpressionUnique($index, &$exp) {
+		$this->exps[$index] =& $exp;
+	}
+
+	function evaluateIn(&$report) {
+		foreach(array_keys($this->exps) as $e) {
+			$exp =& $this->exps[$e];
+			$exp->evaluateIn($report);
+		}
+	}
+
+	function printString() {
+		$printed = array();
+		foreach(array_keys($this->exps) as $e) {
+			$exp =& $this->exps[$e];
+			$printed[] = '(' . $exp->printString() . ')';
+		}
+
+		return implode(' AND ', $printed);
+	}
+
+	function isEmpty() {
+		return empty($this->exps);
+	}
+}
+
+class OrExp extends Expression {
+	var $exps;
+
+	function OrExp() {
+		$c =& new Condition(array('exp1' => new ValueExpression(1), 'operation' => '=', 'exp2' => new ValueExpression(2)));
+		$c->evaluateIn($n = null);
+		$this->exps = array($c);
+
+		parent::Expression();
+	}
+	function addExpression(&$exp) {
+		$this->exps[] =& $exp;
+	}
+	function evaluateIn(&$report) {
+		foreach(array_keys($this->exps) as $e) {
+			$exp =& $this->exps[$e];
+			$exp->evaluateIn($report);
+		}
+	}
+
+	function printString() {
+		$printed = array();
+		foreach(array_keys($this->exps) as $e) {
+			$exp =& $this->exps[$e];
+			$printed[] = '(' . $exp->printString() . ')';
+		}
+
+		return implode(' OR ', $printed);
+	}
+
+	function isEmpty() {
+		return empty($this->exps);
 	}
 }
 
@@ -463,6 +597,10 @@ class ValueExpression extends Expression {
 		parent::Expression();
 	}
 	function evaluateIn(&$report) {
+		return $this->value;
+	}
+
+	function printString() {
 		return $this->value;
 	}
 }
@@ -492,21 +630,22 @@ class PathExpression extends Expression {
 		$pp = explode('.', $this->path);
 		$target = $pp[0];
 		if (!isset($report->vars[$target])) {
-			$o =& new $report->getDataType();
+			//print_backtrace($target . ' not defined');
+			$datatype = $report->getDataType();
 		}
 		else {
-			$o =& new $report->vars[$target];
+			$datatype = $report->vars[$target];
 			array_shift($pp);
 		}
 
-		//echo 'Setting path condition ' . print_r($pp, true) . '<br />';
+		$o =& new $datatype;
 
 		foreach ($pp as $index) {
 			$class =& $o->$index->getDataType();
 			$obj =& new $class;
 			$report->addTables($obj->getTables());
 			$otable = $o->tableForField($index);
-			//echo 'Setting path condition: ' . $otable. '.' . $index, '=', $obj->getTable() . '.id<br />';
+			echo 'Setting condition: ' . $otable. '.' . $index, '=', $obj->getTable() . '.id<br />';
 			$report->setCondition($otable. '.' . $index, '=', $obj->getTable() . '.id');
 			$o =& $obj;
 		}
@@ -526,7 +665,7 @@ class AttrPathExpression extends PathExpression {
 		$o =& $this->registerPath($report);
 		$otable = $o->tableForField($this->attr);
 		$attr = $otable . '.' . $this->attr;
-		return $attr;
+		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
 }
 

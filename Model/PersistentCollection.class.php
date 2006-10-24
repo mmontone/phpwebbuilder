@@ -5,12 +5,21 @@ class PersistentCollection extends Report{
 	 */
 	function PersistentCollection($dataType = "") {
 		$this->setDataType($dataType);
-		parent::Collection();
+		parent::Report();
 	}
 
 	function setCondition($field, $comparator, $value){
 		//echo 'Persistent collection: Setting condition ' . $this->parseField($field) . $comparator . $value . '<br />';
-		$this->conditions[$this->parseField($field)]=array($this->parseField($field),$comparator,$value);
+		/*
+		$this->conditions[$this->parseField($field)]=array($this->parseField($field),$comparator,$value);*/
+
+		$cond =& new Condition;
+		$cond->operation = $comparator;
+		$cond->exp1 =& new ValueExpression('`' . $this->parseField($field) . '`');
+		$cond->exp2 =& new ValueExpression($value);
+		$cond->evaluateIn($this);
+
+		$this->select_exp->addExpressionUnique($this->parseField($field), $cond);
 		$n = null;
 		$this->elements=& $n;
 	}

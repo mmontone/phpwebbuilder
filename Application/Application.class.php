@@ -23,6 +23,11 @@ class Application extends ComponentHolder {
 		$rc->linkToApp($this);
 	}
 
+	function Install() {
+		// Return an exception if something goes wrong
+ 		return false;
+	}
+
 	function addAjaxCommand(&$cmd) {
 		$this->ajaxCommands[] =& $cmd;
 	}

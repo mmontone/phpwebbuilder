@@ -6,8 +6,9 @@
 <tr><td><container id="name"/></td><td><container id="value"/></td></tr>
 </template>
 <tfoot>
-<tr><td><input type="button" id="install" value="Create config file"/>
-<input type="button" id="installdatabase" value="Update Database"/></td></tr>
+<tr><td><input type="button" id="install" value="Create config file"/></td></tr>
+<tr><td><input type="button" id="installdatabase" value="Update Database"/></td></tr>
+<tr><td><input type="button" id="installapplication" value="Install Application"/></td></tr>
 </tfoot>
 </table>
 </template>
