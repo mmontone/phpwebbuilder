@@ -194,21 +194,20 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Deletes this level of the object. Fails if a collection is not empty
 	 */
-	function basicDelete() {
-		if (!$this->existsObject) return true;
-		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
-		$db =& DB::Instance();
+	function canDelete(){
 		$can = TRUE;
 		foreach ($this->allFieldsThisLevel() as $f) {
 			$can = $can & $f->canDelete();
 		}
-		if ($can){
-			$db->SQLExec($sql, FALSE, $this);
-			$this->existsObject=FALSE;
-		} else {
-			trace('The object is not erasable<BR>\n');
-		}
 		return $can;
+	}
+	function basicDelete() {
+		if (!$this->existsObject) return true;
+		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
+		$db =& DB::Instance();
+		$db->SQLExec($sql, FALSE, $this);
+		$this->existsObject=FALSE;
+		return TRUE;
 	}
 	/**
 	 * Returns a string representation of the object
@@ -401,9 +400,13 @@ class PersistentObject extends DescriptedObject {
 	function delete() {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
-			$p->delete();
+			$ok = $p->delete();
 		}
-		return $this->basicDelete();
+		if ($ok && $this->canDelete())  {
+			return $this->basicDelete();
+		} else {
+			return false;
+		}
 	}
 		/**
 	 * finds all similar objects (objects with same atributes set in same values)
