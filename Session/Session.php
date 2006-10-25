@@ -12,7 +12,7 @@ require_once $d.'/MMSessionHandler.class.php';
 
 SessionHandler::setHooks();
 session_name(strtolower(app_class));
-if (isset($_REQUEST["restart"])) {
+if (isset($_REQUEST["restart"]) && isset($_COOKIE[session_name()])) {
   $sessionid = $_COOKIE[session_name()];
   $orgpath = getcwd();
   @chdir(PHP_BINDIR);

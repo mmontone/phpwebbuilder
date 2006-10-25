@@ -24,7 +24,7 @@ class UrlManager extends PWBObject{
     	$params=array();
     	array_shift($urls);
     	foreach($urls as $u){
-    		$temp = explode('=', $u);
+    		$temp = explode('=', $u,2);
     		$params [$temp[0]] = $temp[1];
     	}
     	$ret ['bookmark'] = $bm;

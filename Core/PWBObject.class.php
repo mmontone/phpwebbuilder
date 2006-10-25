@@ -45,9 +45,10 @@ class PWBObject
 	 *  Returns if the object is the same as the parameter
 	 */
 	function is(&$other_pwb_object){
+		if (!isPWBObject($other_pwb_object)) return false;
 		$ok = $this->equalTo($other_pwb_object);
 		$realid = $this->__instance_id;
-		$this->__instance_id = 0;
+		$this->__instance_id = -10;
 		$ok2 = $this->equalTo($other_pwb_object);
 		$this->__instance_id = $realid;
 		return $ok && $ok2;

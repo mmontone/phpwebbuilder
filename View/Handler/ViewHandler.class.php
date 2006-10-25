@@ -7,6 +7,10 @@ class ViewHandler extends PWBFactory{
 		$this->setComponent($component);
 		return $this;
 	}
+	function release(){
+		parent::release();
+		$this->view->release();
+	}
 	function setComponent(&$component){
 		$this->component =& $component;
 		$component->viewHandler =& $this;

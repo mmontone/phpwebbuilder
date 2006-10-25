@@ -9,6 +9,7 @@
 		<input type="button" value="Execute" id="exec_sql"/>
 		<container id="sql_res"/>
 		<h1>Check Table Structure</h1>
+		<span>Step by step</span><input type="checkbox" value="Step by step" id="stepping"/>
 		<input type="button" value="Check" id="check_tables"/>
 	</template>
 </templates>

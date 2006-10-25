@@ -153,7 +153,7 @@ class PersistentObjectTableCheckView {
 }
 
 class TablesChecker {
-	function checkTables(){
+	function checkTables($stepping=false){
 		$arr = get_subclasses("PersistentObject");
 		/*Comparing existing tables, existing objects, and added objects*/
 		/*If a table has not an object table, we have to delete it*/
@@ -171,11 +171,10 @@ class TablesChecker {
 			$obj = new $o;
 			$dbc = new PersistentObjectTableCheckView;
 			$dbc->obj=$obj;
-						$ret =  $o. ' '.$obj->getTable();
 			$mod .= $dbc->show();
 			$table = $obj->getTable();
 			unset($tables[$table]);
-			if ($mod!='') return $ret .$mod;
+			if ($mod!='' && $stepping) return $mod;
 		}
 		$del ='';
 		foreach ($tables as $t2){

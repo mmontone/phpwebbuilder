@@ -46,6 +46,8 @@ class WikiComponent extends Widget{
 		$name = $ls[1];
 		if (strcasecmp('http://',substr($bookmark,0,7))==0){
     		return new Link($bookmark, $name, 'blank');
+		} else if (strcasecmp('https://',substr($bookmark,0,8))==0){
+    		return new Link($bookmark, $name, 'blank');
 		} else if (strcasecmp('mailto:',substr($bookmark,0,7))==0){
 			return new Link($bookmark, $name);
 		} else {
