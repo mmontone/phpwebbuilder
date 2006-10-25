@@ -36,7 +36,7 @@ class PersistentObjectTableCheckView {
 	function show () {
 		$table = $this->obj->getTable();
 		$sql = "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
-		$db = new MySQLDB;
+		$db = DB::instance();
 		$res = $db->SQLexec($sql, FALSE, $this->obj);
 		if (strcasecmp(getClass($this->obj),"ObjSQL")!=0) {
 			trace("Inspecting object ". getClass($this->obj));
@@ -45,7 +45,6 @@ class PersistentObjectTableCheckView {
 				$ret ="";
 				//$sql = "SHOW COLUMNS FROM `" . $table."`";
 				$sql = $db->showColumnsFromTableSQL($table);
-				$db =& DB::instance();
 				$res = $db->query($sql);
 				$arr = $db->fetchArray($res);
 				foreach ($arr as $f) {
@@ -62,7 +61,7 @@ class PersistentObjectTableCheckView {
 					if (!isset($arr[$f["Field"]])) {
 						trace("Field not found:" . print_r($f, TRUE));
 						//$temp .= "\n    DROP COLUMN `$name`, ";
-						$temp .= "\n     " . $db->dropColumnSQL($name) . ",";
+						$temp .= "\n     " . $db->dropColumnSQL($name) . ", ";
 					}
 				}
 				$actunique = array();
@@ -172,9 +171,11 @@ class TablesChecker {
 			$obj = new $o;
 			$dbc = new PersistentObjectTableCheckView;
 			$dbc->obj=$obj;
+						$ret =  $o. ' '.$obj->getTable();
 			$mod .= $dbc->show();
 			$table = $obj->getTable();
 			unset($tables[$table]);
+			if ($mod!='') return $ret .$mod;
 		}
 		$del ='';
 		foreach ($tables as $t2){
