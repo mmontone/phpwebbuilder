@@ -121,7 +121,10 @@ class Component extends PWBObject
 			print_backtrace('Type error adding component: ' . getClass($component));
 			trigger_error('Type error adding component: ' . getClass($component),E_USER_ERROR);
 		}*/
-		if (!$component->checkAddingPermissions()){
+
+		$res = $component->checkAddingPermissions();
+		if ($res == false){
+			//echo 'Denying add component to ' . $ind . '<br />';
 			return $f=false;
 		} else {
 			if (($ind !==null) and (isset($this->__children[$ind]))) {

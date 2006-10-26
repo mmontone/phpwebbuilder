@@ -52,12 +52,12 @@ class RolesController extends Component {
 		} else {
 			$sql= "DELETE FROM RolePermission WHERE permission='$perm' AND role=".$this->role->getId();
 		}
-		$db =& DB::instance();
+		$db =& DBSession::instance();
 		$ok = $db->query($sql);
 		if ($ok){
 			$this->status->setValue('changed permission '.$perm);
 		} else {
-			$this->status->setValue(DB::lastError());
+			$this->status->setValue(DBSession::lastError());
 		}
 
 	}

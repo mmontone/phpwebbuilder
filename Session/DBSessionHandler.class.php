@@ -28,14 +28,14 @@ class DBSessionHandler extends SessionHandler{
 		$i->session_id->setValue($sess_id);
 		$i->last_updated->setValue($i->last_updated->now());
 		$ok = $i->save();
-		if (!$ok) print_backtrace('error saving session '.DB::lastError());
+		if (!$ok) print_backtrace('error saving session '.DBSession::lastError());
 		return true;
 	}
 	function destroy(){
 		return $this->instance->delete();
 	}
 	function gc(){
-		$db =& DB::instance();
+		$db =& DBSession::instance();
 		$q = 'DELETE FROM '.$this->instance->tableName().' WHERE last_updated < ADDTIME(now(), \'-00:20:00.0\')';
 		$db->query($q);
 		return true;

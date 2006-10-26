@@ -9,8 +9,8 @@ class LoginTest extends UnitTestCase {
 	}
 
 	function setUp() {
-		TestsDB :: setUp();
-		$this->db =& DB::Instance();
+		TestsDBSession:: setUp();
+		$this->db =& DBSession::Instance();
 
 		$this->db->SQLExec('CREATE TABLE `users` (
 							`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -37,7 +37,7 @@ class LoginTest extends UnitTestCase {
 	function tearDown() {
 		User::logout();
 		$this->db->SQLExec('DROP TABLE `users`');
-		TestsDB::release();
+		TestsDBSession::release();
 	}
 
 	function testLogout() {

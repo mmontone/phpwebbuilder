@@ -8,7 +8,7 @@
 define('app_class','DefaultCMSApplication');
 define('pwbdir', dirname(dirname(__FILE__)));
 define('page_renderer', 'StandardPageRenderer');
-define('DBObject', 'MySQLdb');
+define('db_driver', 'MySQLdb');
 define('basedir', pwbdir.'/Install/BaseDirExample');
 define('pwb_url','http://'.$_SERVER['SERVER_NAME'].dirname(dirname($_SERVER['SCRIPT_NAME'])));
 require_once pwbdir.'/pwb.php';

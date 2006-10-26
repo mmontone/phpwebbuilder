@@ -8,7 +8,7 @@ class MemoryTest extends UnitTestCase {
 		global $setup_sql;
 		$sqls = explode(';', $setup_sql);
 
-		$this->db = & DB :: Instance();
+		$this->db = & DBSession:: Instance();
 
 		foreach ($sqls as $sql) {
 			$this->db->SQLExec($sql);

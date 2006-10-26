@@ -1,5 +1,6 @@
 <?php
 
+/*
 class TestsDB extends MySQLdb {
 	function setUp() {
 		$_SESSION[sitename]['DB'] = & new TestsDB;
@@ -29,5 +30,5 @@ class TestsDB extends MySQLdb {
 		return true;
 	}
 }
-
+*/
 ?>

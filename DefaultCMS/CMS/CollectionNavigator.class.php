@@ -78,8 +78,8 @@ class CollectionNavigator extends Component {
 		$col->refresh();
 		$elements = & $col->elements();
 		if (!is_array($elements)) {
-			print_backtrace('No elements: ' . print_r($elements,true) . DB::lastError());
-			//$this->addComponent(new Label(DB::lastError()),'status');
+			print_backtrace('No elements: ' . print_r($elements,true) . DBSession::lastError());
+			//$this->addComponent(new Label(DBSession::lastError()),'status');
 		} else {
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {

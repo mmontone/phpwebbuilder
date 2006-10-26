@@ -48,7 +48,7 @@ class CollectionField extends DataField {
 		$m =& $this->createElement();
 		$params = $this->creationParams;
 		$sql = 'DELETE FROM '.$params['joinTable']. ' WHERE '. $params['joinField'].'=' .$elem->getIdOfClass($params['joinField']).' AND ' .$params['joinFieldOwn'] .'='.$this->owner->getId();
-		$db =& DB::instance();
+		$db =& DBSession::instance();
 		return $db->query($sql);
 	}
 	function defaultValues($params) {

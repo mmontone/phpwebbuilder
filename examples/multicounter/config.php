@@ -16,7 +16,7 @@ appdir=MyInstances
 pwbdir=../../
 site_url=
 pwb_url=../../
-DBObject=MySQLdb
+db_driver=MySQLdb
 baseprefix=
 peardir=
 */?>

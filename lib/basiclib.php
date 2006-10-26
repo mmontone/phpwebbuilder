@@ -1,5 +1,6 @@
 <?php
 require_once 'md.php';
+
 //require_once 'md2.php';
 
 /**
@@ -398,4 +399,5 @@ function handle_error($errno, $errstr, $errfile, $errline) {
 		exit (0);
 	}
 }
+
 ?>

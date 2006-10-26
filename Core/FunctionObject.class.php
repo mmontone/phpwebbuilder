@@ -22,10 +22,12 @@ class FunctionObject
     }
 
     function callString($method) {
-    	if ($this->target == null)
+    	if ($this->target == null) {
     		return $method;
-    	else
+    	}
+    	else {
        		return '$this->target->' . $method;
+    	}
     }
 	/**
 	 *  Permission checking

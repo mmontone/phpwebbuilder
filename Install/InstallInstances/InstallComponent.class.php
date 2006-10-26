@@ -15,7 +15,7 @@ class InstallComponent extends Component {
 			"app_class" => "Application Class",
 			"site_url" => "Application's Url",
 			"pwb_url" => "PHPWebBuilder's Url",
-			"DBObject" => "Database Class",
+			"db_driver" => "Database Driver",
 			"baseprefix" => "Database table prefix",
 			"sitename" => "Application Name",
 			"page_renderer" => "Page Renderer(Ajax, or Standard)",
@@ -35,7 +35,7 @@ class InstallComponent extends Component {
 		$default["basedir"] = dirname(dirname($_SERVER["DOCUMENT_ROOT"] . dirname($_SERVER["PHP_SELF"])));
 		$default["appdir"] = $default["basedir"] . "/MyInstances";
 		$default["site_url"] = "http://" . dirname(dirname($_SERVER["HTTP_HOST"] . dirname($_SERVER["PHP_SELF"])));
-		$default["DBObject"] = "MySQLdb";
+		$default["db_driver"] = "MySQLDriver";
 		$default["baseprefix"] = "";
 		$default["pwbdir"] = dirname($_SERVER["DOCUMENT_ROOT"] . dirname($_SERVER["PHP_SELF"]));
 		$default["peardir"] = "";
@@ -109,7 +109,7 @@ class InstallComponent extends Component {
 	}
 	function do_install_database(){
 		$this->load_application();
-		$db =& DB::instance();
+		$db =& DBSession::instance();
 		$db->beginTransaction();
 		if ($this->execEliminar->value->getValue()) {
 			$sql = "";
@@ -140,7 +140,7 @@ class InstallComponent extends Component {
 			echo 'The application is is not defined';
 			return;
 		}
-		eval('$res =& ' . $app_class . '::Install();');
+		eval('$res =& ' . $app_class . '::Install(\'' . $this->basedir->value->getValue() . '\');');
 
 		if (is_object($res)) {
 			// Exception raised

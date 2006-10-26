@@ -36,7 +36,9 @@ class PersistentObject extends DescriptedObject {
 	    		return $this->parent->getIdOfClass($class);
 	    	}
     }
-
+	function existsObject() {
+		return $this->existsObject;
+	}
 	/**
 	 * Gets all the fields of all the levels for the SQL query
 	 */
@@ -134,7 +136,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &basicLoad() {
 		$sql = $this->loadSQL();
-		$db =& DB::Instance();
+		$db =& DBSession::Instance();
 		$rec = $db->SQLExec($sql, FALSE, $this);
 		if (!$rec) return false;
 		$record = $db->fetchRecord($rec);
@@ -158,7 +160,7 @@ class PersistentObject extends DescriptedObject {
 		}
 		$values = substr($values, 0, -2);
 		$sql = 'INSERT INTO ' . $this->tableName() . ' (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
-		$db =& DB::Instance();
+		$db =& DBSession::Instance();
 		$db->SQLExec($sql, TRUE, & $this, & $rows);
 		$ok = $rows > 0;
 		$this->existsObject = $ok;
@@ -182,7 +184,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function basicUpdate() {
 		$sql = $this->updateString();
-		$db =& DB::Instance();
+		$db =& DBSession::Instance();
 		$ok = $db->SQLExec($sql, FALSE, & $this, &$rows);
 		if ($ok !== FALSE && $rows>0){
 			return true;
@@ -204,7 +206,7 @@ class PersistentObject extends DescriptedObject {
 	function basicDelete() {
 		if (!$this->existsObject) return true;
 		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
-		$db =& DB::Instance();
+		$db =& DBSession::Instance();
 		$db->SQLExec($sql, FALSE, $this);
 		$this->existsObject=FALSE;
 		return TRUE;

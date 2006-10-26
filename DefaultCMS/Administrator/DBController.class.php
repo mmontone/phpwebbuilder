@@ -23,7 +23,8 @@ class DBController extends Component {
 		return "DatabaseAdmin";
 	}
 	function exec_sql() {
-		$db = new MySQLDB;
+		//$db = new MySQLDB;
+		$db =& DBSession::Instance();
 		$sqlstr = stripslashes($this->sql->getValue());
 		$sqls = explode(";",$sqlstr);
 		$ress = $db->batchExec($sqls);
@@ -40,7 +41,8 @@ class DBController extends Component {
 		}
 	}
 	function modsNeeded(){
-		return TablesChecker::checkTables($this->stepping->getValue());
+		//return TablesChecker::checkTables($this->stepping->getValue());
+		return TablesChecker::checkTables(false);
 	}
 }
 ?>

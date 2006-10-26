@@ -1,6 +1,6 @@
 <?php
 
-class PgSQLdb extends DB {
+class PgSQLDriver extends DBDriver {
     var $conn;
     function SQLExec ($sql, $getID, $obj) {
         if ($getID) {

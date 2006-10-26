@@ -1,11 +1,11 @@
 <?
 
-class MySQLdb extends DB {
+class MySQLDriver extends DBDriver {
 	var $conn;
 	var $tables_type = 'MyISAM';
 
     function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
-       	$this->lastSQL = $sql;
+       	$this->setLastSQL($sql);
         $reg = $this->query ($sql);
         if ($getID) { $obj->setID(mysql_insert_id());};
         $rows = mysql_affected_rows();
@@ -17,6 +17,19 @@ class MySQLdb extends DB {
 			$this->setTablesType(tables_type);
 		}
     }
+
+    function fetchArray($res) {
+		$arr = array();
+		if ($res===true) {
+			$arr[]="Query suceeded";
+		} else if ($res===false) {
+			$arr[]="Query failed " . mysql_error();
+			trigger_error(mysql_error(),E_USER_NOTICE);
+		} else {
+			while ($rec = $this->fetchRecord($res)) $arr[]= $rec;
+		}
+		return $arr;
+	}
 
     function beginTransaction() {
     	$this->openDatabase();
@@ -61,13 +74,14 @@ class MySQLdb extends DB {
     		echo($sql. '<br/>');
     	}
 		$this->openDatabase();
-		$this->lastSQL = $sql;
+		$this->setLastSQL($sql);
         $reg = mysql_query ($sql);
         $this->closeDatabase();
         if (!$reg){
         	$this->registerDBError($sql);
         	if (defined('sql_echo') and constant('sql_echo') == 1) {
-    			echo $this->lastError->printHtml();
+    			$lastError =& $this->getLastError();
+    			echo $lastError->printHtml();
     		}
 
 
@@ -77,7 +91,8 @@ class MySQLdb extends DB {
     }
 
     function registerDBError($sql) {
-    	$this->lastError =& new DBError(array('number' => mysql_errno(), 'message' => mysql_error(), 'sql' => $sql));
+    	trigger_error(mysql_error());
+    	$this->setLastError(new DBError(array('number' => mysql_errno(), 'message' => mysql_error(), 'sql' => $sql)));
     }
 
     function fetchrecord($res) {

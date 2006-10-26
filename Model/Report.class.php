@@ -148,7 +148,7 @@ class Report extends Collection{
 			$sql .= '*';
 		}
 		$sql .=') as collection_size FROM ' . $this->restrictions();
-		$db = & DB::Instance();
+		$db = & DBSession::Instance();
 		$reg = $db->query($sql);
 		if ($reg===false) {
 			return false;
@@ -352,7 +352,7 @@ class Report extends Collection{
 		if ($this->elements===null){
 			$this->elements = array();
 			$sql = $this->selectsql();
-			$db =& DB::Instance();
+			$db =& DBSession::Instance();
 			$reg = $db->SQLExec($sql, FALSE, $this);
 			if ($reg===false) return false;
 			while ($data = $db->fetchrecord($reg)) {

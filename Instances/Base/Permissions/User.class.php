@@ -75,7 +75,7 @@ class User extends PersistentObject {
 	}
 
 	function getPermissions() {
-		$db = & DB :: Instance();
+		$db = & DBSession:: Instance();
 		$sql = implode(array (
 			'SELECT permission FROM ',
 			baseprefix,

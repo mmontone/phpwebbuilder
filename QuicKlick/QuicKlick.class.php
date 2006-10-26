@@ -59,7 +59,7 @@ class QuicKlick {
 		$t->name->setValue($name);
 		$t->totalPasses->setValue($iters);
 		$t->passed->setValue(false);
-		if (!$t->save()) {echo DB::lastError();}
+		if (!$t->save()) {echo DBSession::lastError();}
 		$_SESSION['QKtest'] =& $t;
 		for($i=0; $i<$iters; $i++){
 			$this->app->component->view->flushModifications();
@@ -74,7 +74,7 @@ class QuicKlick {
 			$res = ob_get_clean();
 			$p->output->setValue(addslashes($res));
 			echo $res;
-			if (!$p->save()) {echo DB::lastError();}
+			if (!$p->save()) {echo DBSession::lastError();}
 		}
 		$t->timeEnded->setNow();
 		$t->passed->setValue(true);

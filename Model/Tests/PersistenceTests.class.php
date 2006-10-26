@@ -9,7 +9,7 @@ class PersistenceTests extends UnitTestCase {
 
     function setUp() {
 		TestsDb::setUp();
-		$this->db =& DB::Instance();
+		$this->db =& DBSession::Instance();
     }
 
     function testSave() {

@@ -36,7 +36,7 @@ class PersistentObjectTableCheckView {
 	function show () {
 		$table = $this->obj->getTable();
 		$sql = "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
-		$db = DB::instance();
+		$db =& DBSession::Instance();
 		$res = $db->SQLexec($sql, FALSE, $this->obj);
 		if (strcasecmp(getClass($this->obj),"ObjSQL")!=0) {
 			trace("Inspecting object ". getClass($this->obj));
@@ -44,7 +44,7 @@ class PersistentObjectTableCheckView {
 				trace("Tables with name $table are" . mysql_num_rows($res));
 				$ret ="";
 				//$sql = "SHOW COLUMNS FROM `" . $table."`";
-				$sql = $db->showColumnsFromTableSQL($table);
+				$sql = $db->driver->showColumnsFromTableSQL($table);
 				$res = $db->query($sql);
 				$arr = $db->fetchArray($res);
 				foreach ($arr as $f) {
@@ -61,7 +61,7 @@ class PersistentObjectTableCheckView {
 					if (!isset($arr[$f["Field"]])) {
 						trace("Field not found:" . print_r($f, TRUE));
 						//$temp .= "\n    DROP COLUMN `$name`, ";
-						$temp .= "\n     " . $db->dropColumnSQL($name) . ", ";
+						$temp .= "\n     " . $db->driver->dropColumnSQL($name) . ", ";
 					}
 				}
 				$actunique = array();
@@ -108,7 +108,7 @@ class PersistentObjectTableCheckView {
 					$ret .= ", ".$u;
 				}
 				$ret .= "\n";
-				$ret .= "\n) " . $db->tablePropertiesSQL() .";";
+				$ret .= "\n) " . $db->driver->tablePropertiesSQL() .";";
 			}
 		} else {
 			$ret="";
@@ -158,7 +158,7 @@ class TablesChecker {
 		/*Comparing existing tables, existing objects, and added objects*/
 		/*If a table has not an object table, we have to delete it*/
 		$sql = "SHOW TABLES FROM `" . basename. '` LIKE \''.baseprefix.'%\'';
-		$db = new MySQLDB;
+		$db =& DBSession::Instance();
 		$res = $db->SQLexec($sql, FALSE, $this->obj);
 		$tbs = $db->fetchArray($res);
 		$tables= array();

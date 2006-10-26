@@ -42,7 +42,7 @@ class TestsDBTest extends DBTest {
 
 	function testSettingUp() {
 		TestsDb::setUp();
-		$db =& DB::Instance();
+		$db =& DBSession::Instance();
 		$this->assertEqual(getClass($db), 'testsdb', 'Checking setup');
 	}
 
@@ -51,10 +51,10 @@ class TestsDBTest extends DBTest {
 		// Need to plug a new site configuration but now i can't do that
 		// because of the "defines"
 		TestsDb::setUp();
-		DB::release();
+		DBSession::release();
 		$conf =& SiteConfig::getInstance();
 		$cong->setDBDriver('MySQLdb');
-		$db =& DB::Instance();
+		$db =& DBSession::Instance();
 		$this->assertEqual(getClass($db), 'MySQLdb');
 	}
 */
