@@ -24,6 +24,9 @@ class MySQLdb extends DB {
         mysql_query ("START TRANSACTION;"); /* or
             die (print_backtrace(mysql_error() . ": $sql"));*/
         trigger_error("Starting transaction");
+        if (defined('sql_echo') and constant('sql_echo') == 1) {
+   			echo 'Beggining transaction';
+   		}
         $this->closeDatabase();
     }
 
@@ -33,6 +36,10 @@ class MySQLdb extends DB {
         mysql_query ("COMMIT;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
         trigger_error("Comitting transaction");
+        if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Comitting transaction';
+			print_backtrace();
+   		}
         $this->closeDatabase();
     }
 
@@ -42,6 +49,9 @@ class MySQLdb extends DB {
         mysql_query ("ROLLBACK;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
         trigger_error("Rolling back transaction");
+        if (defined('sql_echo') and constant('sql_echo') == 1) {
+   			echo 'Rolling back';
+   		}
         $this->closeDatabase();
     }
 
@@ -59,6 +69,7 @@ class MySQLdb extends DB {
         	if (defined('sql_echo') and constant('sql_echo') == 1) {
     			echo $this->lastError->printHtml();
     		}
+
 
         	return false;
         }

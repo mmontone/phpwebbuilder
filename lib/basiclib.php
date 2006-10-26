@@ -333,6 +333,16 @@ if (version_compare(phpversion(), '5.0') < 0) {
 	    ');
 }
 
+function exceptions_enabled() {
+	return (defined('exceptions') and (constant('exceptions') == 1));
+}
+
+function is_exception(&$ex) {
+	return (is_subclass_of($ex, 'PWBException')) or
+	       (is_subclass_of($ex, 'Exception'));
+}
+
+
 /***************************/
 /** Error handler **********/
 /***************************/

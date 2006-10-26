@@ -183,7 +183,7 @@ class PersistentObject extends DescriptedObject {
 	function basicUpdate() {
 		$sql = $this->updateString();
 		$db =& DB::Instance();
-		$ok = $db->SQLExec($sql, FALSE, $this, &$rows);
+		$ok = $db->SQLExec($sql, FALSE, & $this, &$rows);
 		if ($ok !== FALSE && $rows>0){
 			return true;
 		} else{
@@ -351,13 +351,18 @@ class PersistentObject extends DescriptedObject {
 	 * Persists the object in the database. Returns if everything worked
 	 */
 	function save() {
-			$this->commitChanges();
 			if ($this->existsObject) {
-				return $this->update();
+				$ok = $this->update();
 			}
 			else {
-				return $this->insert();
+				$ok = $this->insert();
 			}
+
+			if ($ok) {
+				$this->commitChanges();
+			}
+
+			return $ok;
 	}
 	/**
 	 * Updates the object in the database
