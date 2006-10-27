@@ -16,7 +16,7 @@ class DBController extends Component {
 
 		$this->addComponent(new Label('Check Table Structure'));
 		$this->addComponent(new Label('Step by step checking'));
-		$this->addComponent(new CheckBox($v=null), 'stepping');
+		$this->addComponent(new CheckBox(new ValueHolder($n=false)), 'stepping');
 		$this->addComponent(new ActionLink($this, 'check_tables', 'Check Table Structure', $n=null), 'check_tables');
 	}
 	function permissionNeeded () {
@@ -41,8 +41,7 @@ class DBController extends Component {
 		}
 	}
 	function modsNeeded(){
-		//return TablesChecker::checkTables($this->stepping->getValue());
-		return TablesChecker::checkTables(false);
+		return TablesChecker::checkTables($this->stepping->getValue());
 	}
 }
 ?>

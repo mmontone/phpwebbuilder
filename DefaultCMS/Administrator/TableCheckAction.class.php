@@ -6,7 +6,7 @@ class TableCheckAction {
 	function &viewFactory(&$obj) {
 		$ok = false;
 		$c = getClass($obj);
-		while(!$ok) {
+		while(!$ok && $c!='') {
 			$name = $c.getClass($this);
 			$ok = class_exists($name);
 			$c = get_parent_class($c);
@@ -28,14 +28,14 @@ class TableCheckAction {
 		return "\n   `".$this->obj->colName ."` ". $this->type().", ";
 	}
 	function frmName(&$object) {
-		return $object->formName() . $this->field->colName;
+		return $object->formName() . $this->obj->colName;
 	}
 	function type(){
 		trace ("Error: ".print_r($this,TRUE));
 	}
 	function compareType ($t) {
 		$b = eregi($this->typeEreg(), $t);
-		trace("en ". $this->field->colName." ".	$t.
+		trace("en ". $this->obj->colName." ".	$t.
 			" es ".	($b?"igual":"<b>diferente</b>")." a ".
 			$this->type() . "<br>");
 		return $b;

@@ -52,6 +52,7 @@ class PersistentObjectTableCheckView {
 				}
 				$this->gotFields = $arr2;
 				$arr = $this->fieldsMap($this->obj->fieldNames, TRUE);
+				$temp = '';
 				foreach ($arr as $name=>$f) {
 					$temp .= $f;
 				}
@@ -145,7 +146,6 @@ class PersistentObjectTableCheckView {
 			} else $ret = "";
 			return $ret;
 		} else {
-			trace(print_r($field, TRUE));
 			$add = "\n    ADD COLUMN `$name` ". $field->type().", ";
 			return $add;
 		}
@@ -159,7 +159,7 @@ class TablesChecker {
 		/*If a table has not an object table, we have to delete it*/
 		$sql = "SHOW TABLES FROM `" . basename. '` LIKE \''.baseprefix.'%\'';
 		$db =& DBSession::Instance();
-		$res = $db->SQLexec($sql, FALSE, $this->obj);
+		$res = $db->SQLexec($sql, FALSE, $n=null);
 		$tbs = $db->fetchArray($res);
 		$tables= array();
 		foreach($tbs as $t){
