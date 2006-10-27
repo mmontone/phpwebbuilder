@@ -17,8 +17,10 @@ class DBSession {
 		else {
 			$this->nesting++;
 		}
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Beggining transaction ('. $this->nesting . ')';
+		}
 	}
-
 
 	function &currentTransaction() {
 		return $this->current_transaction;
@@ -35,6 +37,10 @@ class DBSession {
 			$this->nesting--;
 		}
 
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Commiting transaction ('. $this->nesting . ')';
+		}
+
 	}
 
 	function rollback() {
@@ -45,6 +51,10 @@ class DBSession {
 		else {
 			$this->nesting--;
 			//$this->rollback=true;
+		}
+
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Rolling back transaction ('. $this->nesting . ')';
 		}
 	}
 

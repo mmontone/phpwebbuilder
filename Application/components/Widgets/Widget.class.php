@@ -47,7 +47,11 @@ class Widget extends Component {
 
 	function setOnChangeEvent() {
 		$class = getClass($this);
-		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue); componentChange(getEventTarget(event))"));
+		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue); " . $this->componentChangeJSFunction() . "(getEventTarget(event))"));
+	}
+
+	function componentChangeJSFunction() {
+		return 'componentChange';
 	}
 
 	function setOnBlurEvent() {
@@ -62,8 +66,13 @@ class Widget extends Component {
 	}
 	function setOnClickEvent() {
 		$this->clickable->setValue($v=true);
-		$this->events->atPut('onclick', $a=array('onclick', "componentClicked(getEventTarget(event));"));
+		$this->events->atPut('onclick', $a=array('onclick', $this->componentClickedJSFunction() . '(getEventTarget(event));'));
 	}
+
+	function componentClickedJSFunction() {
+		return 'componentClicked';
+	}
+
 	function viewUpdated($params) {
 		$new_value = & $this->valueFromForm($params);
 		$value = & $this->getValue();
