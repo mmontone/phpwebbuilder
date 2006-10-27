@@ -122,8 +122,8 @@ class InstallComponent extends Component {
 			$sqls = explode(";", $sql);
 			print_r($db->batchExec($sqls));
 		}
-		$dbc = new DBController();
-		$sql = $dbc->modsNeeded();
+		$sql= TablesChecker::checkTables(false);
+
 		// crear las tablas
 		require_once dirname(__FILE__) . "/../SQLs/minimal-data.php";
 		$sql .= $basesql;
