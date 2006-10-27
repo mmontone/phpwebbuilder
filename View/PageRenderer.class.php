@@ -98,7 +98,6 @@ class PageRenderer // extends PWBObject
 		$s = str_replace('Í', '&Iacute;', $s);
 		$s = str_replace('Ó', '&Ooacute;', $s);
 		$s = str_replace('Ú', '&Uacute;', $s);
-
 		$s = htmlentities($s);
 		return $s;
 		//return mb_convert_encoding($s,"HTML-ENTITIES","auto");
@@ -140,7 +139,7 @@ class PageRenderer // extends PWBObject
 		return $s;
 	}
 	function toAjax($s) {
-		return $this->toHTML($s);
+		return $this->toXML($this->toHTML($s));
 	}
 
 }
