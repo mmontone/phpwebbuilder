@@ -17,9 +17,6 @@ class DOMXMLNode extends PWBObject {
 	function release() {
 		parent :: release();
 		$n = null;
-		if ($this->parentPosition!==null && isset($this->parentNode->childNodes[$this->parentPosition]) &&$this->is($this->parentNode->childNodes[$this->parentPosition])) {
-			$this->parentNode->removeChild($this);
-		}
 		$this->parentNode =& $n;
 		$this->parentPosition =& $n;
 	}

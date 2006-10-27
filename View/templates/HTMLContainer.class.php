@@ -29,7 +29,8 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	}
 
 	function getRealId(){
-		$id =$this->parentNode->getRealId();
+		if ($this->parentNode)$id =$this->parentNode->getRealId();
+
 		$id.= CHILD_SEPARATOR.$this->getAttribute('class');
 		$id.= CHILD_SEPARATOR.$this->getAttribute('simpleId');
 		$this->attributes['fakeid'] =$id;
