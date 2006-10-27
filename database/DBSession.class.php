@@ -14,9 +14,9 @@ class DBSession {
 			$this->driver->beginTransaction();
 			$this->current_transaction =& new DBTransaction($this->driver);
 		}
-		else {
-			$this->nesting++;
-		}
+
+		$this->nesting++;
+
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Beggining transaction ('. $this->nesting . ')';
 		}
@@ -27,15 +27,15 @@ class DBSession {
 	}
 
 	function commit() {
-		if ($this->nesting == 0) {
+		if ($this->nesting == 1) {
 			//if (!$this->rollback) {
 				$this->current_transaction->commit();
 			//}
 			$this->expireTransaction();
 		}
-		else {
-			$this->nesting--;
-		}
+
+		$this->nesting--;
+
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Commiting transaction ('. $this->nesting . ')';
@@ -44,14 +44,13 @@ class DBSession {
 	}
 
 	function rollback() {
-		if ($this->nesting == 0) {
+		if ($this->nesting == 1) {
 			$this->current_transaction->rollback();
 			$this->expireTransaction();
 		}
-		else {
-			$this->nesting--;
-			//$this->rollback=true;
-		}
+
+		$this->nesting--;
+		//$this->rollback=true;
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Rolling back transaction ('. $this->nesting . ')';
@@ -62,7 +61,7 @@ class DBSession {
 		$n = null;
 		$this->current_transaction =& $n;
 		//$this->rollback = false;
-		if ($this->nesting !== 0) {
+		if ($this->nesting !== 1) {
 			print_backtrace('Error');
 		}
 	}

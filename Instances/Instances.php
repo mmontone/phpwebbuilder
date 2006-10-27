@@ -9,6 +9,9 @@ require_once $d.'/Base/Permissions/User.class.php';
 require_once $d.'/Base/Permissions/UserRole.class.php';
 require_once $d.'/Base/Permissions/Role.class.php';
 require_once $d.'/File.class.php';
+require_once $d.'/DBInfo.class.php';
+require_once $d.'/DBVersion.class.php';
+
 /*
 require_once $d.'/Translator.class.php';
 require_once $d.'/Message.class.php';

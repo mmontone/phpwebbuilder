@@ -1,6 +1,14 @@
 <?php
 require_once dirname(__FILE__) . "/../BaseDirExample/Configuration/ConfigReader.class.php";
 
+function handle_dberror(&$db) {
+	$db->rollback();
+	echo $db->lastError();
+	exit;
+}
+
+
+
 class InstallComponent extends Component {
 	function initialize() {
 		$this->addComponent(new Text(new ValueHolder($s='status')),'status');
@@ -123,12 +131,13 @@ class InstallComponent extends Component {
 			print_r($db->batchExec($sqls));
 		}
 		$sql= TablesChecker::checkTables(false);
-
-		// crear las tablas
-		require_once dirname(__FILE__) . "/../SQLs/minimal-data.php";
-		$sql .= $basesql;
 		$sqls = explode(";", $sql);
 		print_r($db->batchExec($sqls));
+
+		// crear las tablas
+		echo 'Requiring ' . dirname(__FILE__) . "/../SQLs/minimal-data.php";
+		require_once dirname(__FILE__) . "/../SQLs/minimal-data.php";
+
 		$db->commit();
 		$this->status->setValue($t="Installation Successful");
 	}
