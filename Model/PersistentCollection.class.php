@@ -12,11 +12,11 @@ class PersistentCollection extends Report{
 		//echo 'Persistent collection: Setting condition ' . $this->parseField($field) . $comparator . $value . '<br />';
 		/*
 		$this->conditions[$this->parseField($field)]=array($this->parseField($field),$comparator,$value);*/
-
-		$cond =& new Condition;
-		$cond->operation = $comparator;
-		$cond->exp1 =& new ValueExpression('`' . $this->parseField($field) . '`');
-		$cond->exp2 =& new ValueExpression($value);
+		$e1=&new ValueExpression('`' . $this->parseField($field) . '`');
+		$e2=&new ValueExpression($value);
+		$cond =& new Condition(array('exp1'=> &$e1,
+				'operation'=>$comparator,
+				'exp2' => &$e2));
 		$cond->evaluateIn($this);
 
 		$this->select_exp->addExpressionUnique($this->parseField($field), $cond);

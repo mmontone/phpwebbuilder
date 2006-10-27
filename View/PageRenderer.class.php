@@ -47,7 +47,7 @@ class PageRenderer // extends PWBObject
 	}
 	function initialRender(){}
 	function render(&$page){
-		if ($_REQUEST['ajax']=='true'){
+		if (isset($_REQUEST['ajax'])&&$_REQUEST['ajax']=='true'){
 			return $this->ajaxRenderPage(&$page);
 		} else {
 			return $this->renderPage(&$page);
@@ -140,7 +140,7 @@ class PageRenderer // extends PWBObject
 		return $s;
 	}
 	function toAjax($s) {
-		return $s;
+		return $this->toHTML($s);
 	}
 
 }

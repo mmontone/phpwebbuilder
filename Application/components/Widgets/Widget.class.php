@@ -82,7 +82,8 @@ class Widget extends Component {
 	}
 
 	function & getValue() {
-		return $this->value_model->getValue();
+		$v =& $this->value_model->getValue();
+		return $v;
 	}
 	function onChangeSend($selector, & $target) {
 		$this->addEventListener(array (
