@@ -24,7 +24,7 @@ class PageRenderer // extends PWBObject
 	function setPage(&$app, &$view){
 		$this->page=&$view;
 		$view->tagName = 'form';
-		$view->setAttribute('action', site_url . '/Action.php');
+		$view->setAttribute('action', site_url . 'Action.php');
 		$view->setAttribute('method', 'post');
 		$view->setAttribute('enctype', 'multipart/form-data');
 		$this->addVariable('app_class', getClass($app));

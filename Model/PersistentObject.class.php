@@ -201,6 +201,7 @@ class PersistentObject extends DescriptedObject {
 		foreach ($this->allFieldsThisLevel() as $f) {
 			$can = $can & $f->canDelete();
 		}
+		var_dump($can);
 		return $can;
 	}
 	function basicDelete() {
@@ -408,6 +409,8 @@ class PersistentObject extends DescriptedObject {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$ok = $p->delete();
+		} else {
+			$ok = true;
 		}
 		if ($ok && $this->canDelete())  {
 			return $this->basicDelete();

@@ -40,6 +40,7 @@ class CollectionViewer extends CollectionNavigator {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);
 		$this->objs->addComponent($fc);
 		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
+		$fc->registerCallback('object_deleted',new FunctionObject($this, 'refresh'));
 		return $fc;
 	}
 }

@@ -49,6 +49,10 @@ class Component extends PWBObject
 		$n = null;
 		$this->app =& $n;
 	    $this->view =& $n;
+	    if (getClass($this->viewHandler)=='stdclass') {
+	    	echo getClass($this);
+	    	echo print_r($this->viewHandler);
+	    }
 	    if ($this->viewHandler) $this->viewHandler->release();
 	    $this->viewHandler =& $n;
 		foreach(array_keys($this->__children) as $c) {
@@ -111,7 +115,7 @@ class Component extends PWBObject
 	function registerCallbacks($callbacks) {
 		$this->registered_callbacks =& $callbacks;
     }
-
+	/** Registers a callback for the component */
     function registerCallback($selector, &$callback) {
     	$this->registered_callbacks[$selector] =& $callback;
     }
@@ -164,13 +168,6 @@ class Component extends PWBObject
 	}
 	// TODO Remove View
 	function delete(){
-		$v =& $this->view;
-		$pv =& $v->parentNode;
-		if ($v!=null && $pv!=null){
-			$pv->removeChild($v);
-		}
-		unset($pv);
-		unset($v);
 		$h =& $this->holder;
 		$p =& $h->parent;
 		$pos =&  $h->__owner_index;
