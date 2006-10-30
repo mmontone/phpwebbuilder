@@ -4,8 +4,21 @@
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <templates>
  	<template class="DBController">
+		<div>
+			Version:<container id="version" />
+		</div>
+		<div>
+			<container id="switch_label" /> <container id="select_version" />
+			<input type="button" id="switch_version" value="Switch"/>
+		</div>
 		<h1>Execute SQL in Database:</h1>
 		<textarea rows="10" cols="50" id="sql_comp">&nbsp;</textarea>
+		<div>
+			Migration code:
+		</div>
+		<div>
+			<textarea rows="10" cols="50" id="migration_code_area">&nbsp;</textarea>
+		</div>
 		<input type="button" value="Execute" id="exec_sql"/>
 		<container id="sql_res"/>
 		<h1>Check Table Structure</h1>

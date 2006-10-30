@@ -126,6 +126,12 @@ if (!$db->save($version)) {
 	handle_dberror($db);
 }
 
+$dbinfo =& new DBInfo;
+$dbinfo->version->setTarget($version);
+if (!$db->save($dbinfo)) {
+	handle_dberror($db);
+}
+
 $db->commit();
 
 ?>

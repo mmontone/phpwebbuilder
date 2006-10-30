@@ -29,12 +29,12 @@ class PersistentObject extends DescriptedObject {
 	 * have that class, it prints an error message.
 	 */
     function getIdOfClass($class){
-	    	if (strcasecmp(getClass($this), $class)==0) {
-	    		return $this->id->getValue();
-	    	} else {
-	    		if ($this->parent==null) print_backtrace(getClass($this).' doesn have parent '.$class);
-	    		return $this->parent->getIdOfClass($class);
-	    	}
+    	if (strcasecmp(getClass($this), $class)==0) {
+    		return $this->id->getValue();
+    	} else {
+    		if ($this->parent==null) print_backtrace(getClass($this).' doesn have parent '.$class);
+    		return $this->parent->getIdOfClass($class);
+    	}
     }
 	function existsObject() {
 		return $this->existsObject;
