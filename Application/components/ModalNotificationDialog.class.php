@@ -7,6 +7,9 @@ class AjaxComponent extends Component{
 	function replaceView(&$comp) {
 		// We don't use a view. We are a "semantic" component
 	}
+    function stopAndCall(&$component) {
+		$this->basicCall($component);
+    }
 }
 
 class ModalNotificationDialog extends AjaxComponent {

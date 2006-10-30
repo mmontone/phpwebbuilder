@@ -9,24 +9,29 @@ class FunctionObject
     var $params;
 
     function FunctionObject(&$target, $method_name, $params=array()) {
-        $this->target =& $target;
+        $this->setTarget($target);
         $this->method_name = $method_name;
         $this->params = $params;
     }
-
+	function setTarget(&$target){
+		$this->target =& $target;
+	}
+	function &getTarget(){
+		return $this->target;
+	}
     function call() {
       	$method_name = $this->method_name;
       	$ret = '';
-       	eval('$ret =& '. $this->callString($method_name) . '($this->params);');
+       	eval($this->callString($method_name) . '($this->params);');
        	return $ret;
     }
 
     function callString($method) {
     	if ($this->target == null) {
-    		return $method;
+    		return '$ret =& '. $method;
     	}
     	else {
-       		return '$this->target->' . $method;
+       		return '$t =& $this->getTarget(); $ret =& $t->' . $method;
     	}
     }
 	/**
@@ -46,11 +51,11 @@ class FunctionObject
 		$method_name = $this->method_name;
 		$ret ='';
         if (empty($this->params)) {
-        	eval('$ret =& '. $this->callString($method_name) . '($params);');
+        	eval($this->callString($method_name) . '($params);');
         	return $ret;
         }
         else {
-        	eval('$ret =& '. $this->callString($method_name) . '($params, $this->params);');
+        	eval($this->callString($method_name) . '($params, $this->params);');
         	return $ret;
         }
     }
@@ -59,11 +64,11 @@ class FunctionObject
     	$method_name = $this->method_name;
     	$ret ='';
     	if (empty($this->params)) {
-        	eval('$ret =& '. $this->callString($method_name) . '($param1, $param2);');
+        	eval($this->callString($method_name) . '($param1, $param2);');
         	return $ret;
     	}
         else {
-        	eval('$ret =& '. $this->callString($method_name) . '($param1, $param2, $this->params);');
+        	eval($this->callString($method_name) . '($param1, $param2, $this->params);');
         	return $ret;
         }
     }

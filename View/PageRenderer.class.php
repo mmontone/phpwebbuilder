@@ -11,12 +11,14 @@ class PageRenderer // extends PWBObject
 		$this->app =& $app;
 	}
 	function &create(&$app){
-		if ($_REQUEST['render']=='xul') {
-			return new XULPageRenderer($app);
+		$v = null;
+		if (isset($_REQUEST['render'])&&$_REQUEST['render']=='xul') {
+			$v =& new XULPageRenderer($app);
 		} else {
 			$page_renderer = constant('page_renderer');
-			return new $page_renderer($app);
+			$v =& new $page_renderer($app);
 		}
+		return $v;
 	}
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new HTMLDefaultView;

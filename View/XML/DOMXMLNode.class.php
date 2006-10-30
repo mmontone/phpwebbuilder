@@ -9,6 +9,7 @@ class DOMXMLNode extends PWBObject {
 
 	function DOMXMLNode($tag_name = null, $attributes = array ()) {
 		if ($tag_name===null)$tag_name=Application::defaultTag();
+		parent::PWBObject();
 		$this->tagName = $tag_name;
 		$this->attributes = $attributes;
 		$this->nextNode = 0;

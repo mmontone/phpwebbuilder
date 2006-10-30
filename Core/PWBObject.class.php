@@ -22,6 +22,7 @@ class PWBObject
 		}
 		PWBInstanceIdAssigner::assignIdTo($this);
 		$this->creationParams = array_merge($this->defaultValues($params),$params);
+		$this->__wakeup();
 		if (!isset($params['dontCreateInstance'])){
 			$this->createInstance($this->creationParams);
 		}
@@ -40,6 +41,14 @@ class PWBObject
 	 */
 	function equalTo(&$other_pwb_object) {
 		return $this->__instance_id == $other_pwb_object->__instance_id;
+	}
+	function getInstanceId(){
+		return $this->__instance_id;
+	}
+	function __wakeup() {
+		global $allObjectsInMem;
+		if (!$this->getInstanceId()) echo getClass($this);
+		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**
 	 *  Returns if the object is the same as the parameter
@@ -73,17 +82,14 @@ class PWBObject
         	print_backtrace('Type error');
         	exit;
         }
-        $handles = array();
         $callback = array();
         $i = 1;
 
         foreach ($event_specs as $event_selector => $event_callback) {
   			$callback[$i] =& new FunctionObject($listener, $event_callback);
-  			$handles[] =& $this->addInterestIn($event_selector, $callback[$i]);
+			$this->addInterestIn($event_selector, $callback[$i]);
   			$i++;
         }
-
-        return $handles;
     }
 	/**
 	 * Adds a listener for the event, with the specified callback function
@@ -93,11 +99,8 @@ class PWBObject
     	if (!isset($this->event_listeners[$event])) {
 	        $this->event_listeners[$event] = array();
         }
-    	$this->event_listeners[$event][$this->listener_handle] =& $function;
-    	$handle = array('event' => $event, 'handle' => $this->listener_handle, 'target' => &$this);
+    	$this->event_listeners[$event][$this->listener_handle] =& WeakFunctionObject::fromFunctionObject($function);
        	$this->listener_handle++;
-    	$function->target->registerEventHandle($handle);
-       	return $handle;
     }
 	/**
 	 * Registers a callback for the changed event
@@ -115,13 +118,6 @@ class PWBObject
 		$this->triggerEvent('changed', $this);
 	}
 	/**
-	 * Registers a handle for the event
-	 */
-
-    function registerEventHandle(&$handle) {
-    	$this->event_handles[$handle['target']->__instance_id][$handle['event']] =& $handle;
-    }
-	/**
 	 * Removes the listener associated with the handle.
 	 */
 
@@ -130,18 +126,6 @@ class PWBObject
     	if (count($this->event_listeners[$handle['event']])==0){
     		unset($this->event_listeners[$handle['event']]);
     	}
-    }
-	/**
-	 * Releases the handle, and removes the interest
-	 */
-
-    function releaseHandle(&$handle) {
-    	$target =& $handle['target'];
-		unset ($this->event_handles[$target->__instance_id][$handle['event']]);
-		if (count($this->event_handles[$target->__instance_id])==0){
-			unset($this->event_handles[$target->__instance_id]);
-		}
-    	$target->retractInterest($handle);
     }
 	/**
 	 * Triggers the event, notifying all listeners of the selector
@@ -153,13 +137,14 @@ class PWBObject
 
 		if ($listeners == null) return;
 
-        $listener = array();
-        $i = 1;
-
         foreach(array_keys($listeners) as $l) {
-        	$listener[$i] =& $listeners[$l];
-        	$listener[$i]->callWithWith($this, $params);
-        	$i++;
+        	$listener =& $listeners[$l];
+
+        	if ($listener->getTarget()!=null) {
+        		$listener->callWithWith($this, $params);
+        	} else {
+				unset($listeners[$l]);
+        	}
         }
     }
 	/**
@@ -174,25 +159,7 @@ class PWBObject
 	 * so memory leaking will occurr.
 	 */
 
-	function release() {
-		foreach(array_keys($this->event_handles) as $t) {
-			$target =& $this->event_handles[$t];
-			foreach(array_keys($target) as $h) {
-				$handle =& $target[$h];
-				$this->releaseHandle($handle);
-			}
-		}
-		foreach(array_keys($this->event_listeners) as $s) {
-			$selector =& $this->event_listeners[$s];
-			if(is_array($selector)){
-				foreach(array_keys($selector) as $h) {
-					$function =& $selector[$h];
-			    	$handle = array('event' => $s, 'handle' => $h, 'target' => &$this);
-			    	$function->target->releaseHandle($handle);
-				}
-			}
-		}
-	}
+	function release() {	}
 	/**
 	 * Removes the hadler associated with the listener and selector
 	 */

@@ -5,6 +5,7 @@ class UrlManager extends PWBObject{
 	var $prevUrl='Home';
 	var $application;
     function UrlManager(&$app) {
+    	parent::PWBObject();
     	$this->application =& $app;
     }
     function goBack(){
