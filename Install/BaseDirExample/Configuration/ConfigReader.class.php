@@ -39,12 +39,6 @@ class ConfigReader
         		case 'dir':
 	        		$v = $this->loadDir($value,$file_name);
 	        		break;
-	        	case 'url':
-					if (substr($value,0,7)=='http://'){
-	        			$v = $value;
-	        		} else {
-	        			$v = dirname($_SERVER['PHP_SELF']).'/'.$value;
-	        		}break;
         		default:
         			$v = $value;
         	}
