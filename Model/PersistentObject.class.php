@@ -406,14 +406,18 @@ class PersistentObject extends DescriptedObject {
 	 * Deletes the object from the database
 	 */
 	function delete() {
-		if ($this->isNotTopClass($this)) {
-			$p = & $this->getParent();
-			$ok = $p->delete();
-		} else {
-			$ok = true;
-		}
-		if ($ok && $this->canDelete())  {
-			return $this->basicDelete();
+		if ($this->canDelete())  {
+			if ($this->isNotTopClass($this)) {
+				$p = & $this->getParent();
+				$ok = $p->delete();
+			} else {
+				$ok = true;
+			}
+			if ($ok)  {
+				return $this->basicDelete();
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
