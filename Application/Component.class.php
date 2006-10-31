@@ -47,12 +47,7 @@ class Component extends PWBObject
 	function release() {
 		parent::release();
 		$n = null;
-		$this->app =& $n;
-	    $this->view =& $n;
-	    if (getClass($this->viewHandler)=='stdclass') {
-	    	echo getClass($this);
-	    	echo print_r($this->viewHandler);
-	    }
+
 	    if ($this->viewHandler) $this->viewHandler->release();
 	    $this->viewHandler =& $n;
 		foreach(array_keys($this->__children) as $c) {
@@ -91,8 +86,7 @@ class Component extends PWBObject
 		$this->initialize();
 
 		$this->start();
-		$cn =& $this->__children;
-		foreach(array_keys($cn) as $k){
+		foreach(array_keys($this->__children) as $k){
 			//if (!is_a($cn[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($cn[$k]->component));
 			$this->$k->linkToApp($app);
 		}
@@ -140,12 +134,10 @@ class Component extends PWBObject
 					trigger_error("Replacing variable $ind with component ".getClass($component),E_USER_ERROR);
 				}*/
 				if ($ind===null){
-					$index = $this->nextChildrenPosition++;
-				} else {
-					$index = $ind;
+					$ind = $this->nextChildrenPosition++;
 				}
 				//trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
-				$this->__children[$index] =& new ComponentHolder($component,$index, $this);
+				$this->__children[$ind] =& new ComponentHolder($component,$ind, $this);
 				if (isset($this->app)) {
 					$component->linkToApp($this->app);
 				}
@@ -166,7 +158,6 @@ class Component extends PWBObject
 			$this->deleteComponentAt($k);
 		}
 	}
-	// TODO Remove View
 	function delete(){
 		$h =& $this->holder;
 		$p =& $h->parent;
