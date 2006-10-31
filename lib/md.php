@@ -76,6 +76,7 @@ function &mdcall($function, $args) {
 		}
 
 		//echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';
+		$res = null;
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
 	} else {
@@ -196,6 +197,7 @@ function &mdcompcall($function, $args) {
 		if (defined('md_echo') and (constant('md_echo') == 1)) {
 			echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';
 		}
+		$res = null;
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
 	}

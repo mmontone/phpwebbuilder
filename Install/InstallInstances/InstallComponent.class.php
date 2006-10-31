@@ -149,6 +149,7 @@ class InstallComponent extends Component {
 			echo 'The application is is not defined';
 			return;
 		}
+		$res='';
 		eval('$res =& ' . $app_class . '::Install(\'' . $this->basedir->value->getValue() . '\');');
 
 		if (is_object($res)) {

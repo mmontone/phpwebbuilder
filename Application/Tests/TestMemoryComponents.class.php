@@ -24,6 +24,7 @@ class TestMemoryComponents extends UnitTestCase {
 		$m = session_encode();
 		$c1->call($c2 = new Component);
 		$c2->callback();
+		$lm = strlen($m);
  		$regs = array('i:[0-9]*;',
  				'\"event_handles\";a:[0-9]*');
  		$v2 = session_encode(); $v1 = $m;

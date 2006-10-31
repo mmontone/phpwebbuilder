@@ -292,6 +292,7 @@ class OrdinaryMDFunctionDef extends MDFunctionDef {
 		for($i = 0; $i < count($args); $i++) {
 			$params[] = '$args['.$i .']';
 		}
+		$res = null;
 		eval('$res =& ' . $this->definitionName() . '('. implode(',', $params) .');');
 		return $res;
 	}
@@ -392,6 +393,7 @@ class ContextMDFunctionDef extends MDFunctionDef {
 		for($i = 0; $i < count($args); $i++) {
 			$params[] = '$args['.$i .']';
 		}
+		$res = null;
 		eval('$res =& ' . $this->defName() . '('. implode(',', $params) .');');
 		return $res;
 	}

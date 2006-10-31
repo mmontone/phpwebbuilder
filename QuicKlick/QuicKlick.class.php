@@ -122,7 +122,7 @@ class QuicKlickReprise extends QuicKlick{
 		if ($t===null) return;
 		if (!$t->passed->getValue()){
 			$p =& $t->lastPass();
-			$p->output->setValue(addslashes($res));
+			$p->output->setValue('');
 			$p->save();
 		}
 		$t->function->setTarget($funOb);
