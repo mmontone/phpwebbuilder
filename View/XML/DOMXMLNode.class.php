@@ -1,5 +1,5 @@
 <?php
-class DOMXMLNode extends PWBObject {
+class DOMXMLNode {
 	var $childNodes = array ();
 	var $parentNode = null;
 	var $tagName;
@@ -9,14 +9,12 @@ class DOMXMLNode extends PWBObject {
 
 	function DOMXMLNode($tag_name = null, $attributes = array ()) {
 		if ($tag_name===null)$tag_name=Application::defaultTag();
-		parent::PWBObject();
 		$this->tagName = $tag_name;
 		$this->attributes = $attributes;
 		$this->nextNode = 0;
 	}
 
 	function release() {
-		parent :: release();
 		$n = null;
 		$this->parentNode =& $n;
 		$this->parentPosition =& $n;
@@ -90,9 +88,6 @@ class DOMXMLNode extends PWBObject {
 	}
 
 	function insertBefore(& $old, & $new) {
-		if (!$old->parentNode->is($this)) {
-			print_backtrace('not a children'); exit;
-		}
 		$pos = $old->parentPosition;
 		$ks = array_keys($this->childNodes);
 		$c = count($ks);

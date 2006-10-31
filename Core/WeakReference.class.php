@@ -17,6 +17,10 @@ class WeakReference {
 		if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}
 		return $obj;
 	}
+	function isNotNull(){
+		global $allObjectsInMem;
+		return $allObjectsInMem[$this->refId]!=null;
+	}
 }
 
 class WeakFunctionObject extends FunctionObject{
@@ -28,6 +32,9 @@ class WeakFunctionObject extends FunctionObject{
 	}
 	function &getTarget(){
 		return $this->target->getTarget();
+	}
+	function isNotNull(){
+		return $this->target->isNotNull();
 	}
 }
 

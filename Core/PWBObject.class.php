@@ -40,7 +40,7 @@ class PWBObject
 	 *  Returns if the object is the same as the parameter, or a copy
 	 */
 	function equalTo(&$other_pwb_object) {
-		return $this->__instance_id == $other_pwb_object->__instance_id;
+		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
 	function getInstanceId(){
 		return $this->__instance_id;
@@ -56,7 +56,7 @@ class PWBObject
 	function is(&$other_pwb_object){
 		if (!isPWBObject($other_pwb_object)) return false;
 		$ok = $this->equalTo($other_pwb_object);
-		$realid = $this->__instance_id;
+		$realid = $this->getInstanceId();
 		$this->__instance_id = -10;
 		$ok2 = $this->equalTo($other_pwb_object);
 		$this->__instance_id = $realid;
@@ -132,15 +132,11 @@ class PWBObject
 	 */
 
     function triggerEvent($event_selector, &$params) {
-        //trigger_error('Triggering event: ' . $event_selector);
         $listeners =& $this->event_listeners[$event_selector];
-
 		if ($listeners == null) return;
-
         foreach(array_keys($listeners) as $l) {
         	$listener =& $listeners[$l];
-
-        	if ($listener->getTarget()!=null) {
+        	if ($listener->isNotNull()) {
         		$listener->callWithWith($this, $params);
         	} else {
 				unset($listeners[$l]);
@@ -151,12 +147,9 @@ class PWBObject
 	 * Event Handlres
 	 */
 	/**
-	 * Removes all the listeners and the handles of the object
+	 * Removes all the listeners and the handles of the object.
+	 * (Not needed anymore)
 	 *
-	 * Call when an object is no longer used, and needs to be freed.
-	 * PHP has a garbage collectior, but listeners keep track of
-	 * listened objects, and listened objects keep track of listeners,
-	 * so memory leaking will occurr.
 	 */
 
 	function release() {	}
@@ -171,14 +164,11 @@ class PWBObject
 		$match = false;
 
 		while (!$match && (list($key, $array_obj) = each($listeners))) {
-		 	$match = $array_obj['listener']->equalTo($listener);
+		 	$match = $listener->is($array_obj['listener']->getTarget());
 		 	next($listeners);
 		}
-
-
 		if (!$match) {
 			print_backtrace('Fatal error removing listener');
-			print_r($listeners);
 			exit;
 		}
 

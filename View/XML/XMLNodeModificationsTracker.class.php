@@ -121,12 +121,12 @@ class XMLNodeModificationsTracker extends XMLNode {
 
 		return $ret;
 	}
-	function release(){
+/*	function release(){
 		if ($this->parentPosition!==null && isset($this->parentNode->childNodes[$this->parentPosition]) &&$this->is($this->parentNode->childNodes[$this->parentPosition])) {
 			$this->parentNode->removeChild($this);
 		}
 	parent::release();
-	}
+	}*/
 	function printModifications() {
 		foreach (array_keys($this->modifications) as $mod) {
 			$ret .= $this->modifications[$mod]->printString($this);
