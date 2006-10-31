@@ -114,13 +114,23 @@ class DBController extends Component {
 	}
 
 	function getCurrentVersionNumber() {
+		if(!$this->dbinfo->version)	return '0';
 		$current_version =& $this->dbinfo->version->getTarget();
+		if (!$current_version) return '0';
 		return $current_version->version->getValue();
 	}
 
 	function &getDBInfo() {
 		$dbinfos =& new PersistentCollection('DBInfo');
 		$dbinfo =& $dbinfos->first();
+		if ($dbinfo==null) {
+			$dbinfo =& new DBInfo;
+			$ver = & new DBVersion;
+			$ver->version->setValue(0);
+			$ver->save();
+			$dbinfo->version->setTarget($ver);
+			$dbinfo->save();
+		}
 		return $dbinfo;
 	}
 
