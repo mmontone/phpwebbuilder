@@ -21,7 +21,7 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
-			if ($this->component->selected_index != -1) {
+			if ($this->opts[$this->component->selected_index]) {
 				$this->opts[$this->component->selected_index]->removeAttribute('selected');
 			}
 			$index = $this->component->getValueIndex();
