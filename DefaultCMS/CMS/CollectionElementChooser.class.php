@@ -16,8 +16,19 @@ class CollectionElementChooser extends CollectionNavigator {
 	}
 
 	function objectEdited(&$object) {
-		$object->save();
-		$this->refresh();
+		$db =& DBSession::Instance();
+		$db->beginTransaction();
+		$ex =& $db->save($object);
+		if (is_exception($ex)) {
+			$db->rollback();
+			$dialog =& ErrorDialog::Create($ex->getMessage());
+			$dialog->onAccept(new FunctionObject($this, 'doNothing'));
+			$this->call($dialog);
+		}
+		else {
+			$this->refresh();
+			$db->commit();
+		}
 	}
 
 	function &addLine(&$obj) {

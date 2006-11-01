@@ -53,11 +53,22 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     }
 
     function objectEdited(&$object) {
-		$ok = $object->save();
-
-		if (!$ok){
-			$this->editObject(array('object'=> &$object, 'msg' =>array('version'=>new ValidationException(array('message'=>'This object has been modified by another user')))));
+		$db =& DBSession::Instance();
+		$db->beginTransaction();
+		$ex =& $db->save($object);
+		if (is_exception($ex)) {
+			$db->rollback();
+			$dialog =& ErrorDialog::Create($ex->getMessage());
+			$dialog->onAccept(new FunctionObject($this, 'doNothing'));
+			$this->call($dialog);
 		}
+		else {
+			$db->commit();
+		}
+	}
+
+	function doNothing() {
+
 	}
 
 	function cancel() {
@@ -82,11 +93,15 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 
 	function deleteConfirmed($params, $objparams) {
 		$obj =& $objparams['object'];
-		$ok = $obj->delete();
-		if (!$ok) {
-			$this->call($nd =& NotificationDialog::create('Error deleting object'));
+		$db =& DBSession::Instance();
+		$db->beginTransaction();
+		$ex =& $obj->delete();
+		if (is_exception($ex)) {
+			$db->rollback();
+			$this->call($nd =& NotificationDialog::Create('Error deleting object: ' . $ex->getMessage()));
 			$nd->registerCallbacks(array('on_accept' => new FunctionObject($this, 'warningAccepted')));
 		} else {
+			$db->commit();
 			$this->callback('object_deleted');
 		}
 	}

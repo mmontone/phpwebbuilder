@@ -4,11 +4,14 @@ class MySQLDriver extends DBDriver {
 	var $conn;
 	var $tables_type = 'MyISAM';
 
-    function SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
+    function &SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
        	$this->setLastSQL($sql);
         $reg = $this->query ($sql);
-        if ($getID) { $obj->setID(mysql_insert_id());};
-        $rows = mysql_affected_rows();
+        if (!is_exception($reg)) {
+	        if ($getID) { $obj->setID(mysql_insert_id());};
+	        $rows = mysql_affected_rows();
+	        return $reg;
+        }
         return $reg;
     }
 
@@ -82,22 +85,23 @@ class MySQLDriver extends DBDriver {
 		$this->setLastSQL($sql);
         $reg = mysql_query ($sql);
         $this->closeDatabase();
-        if (!$reg){
-        	$this->registerDBError($sql);
+        if (!$reg) {
+        	$error =& $this->registerDBError($sql);
         	if (defined('sql_echo') and constant('sql_echo') == 1) {
     			$lastError =& $this->getLastError();
     			echo $lastError->printHtml();
     		}
 
-
-        	return false;
+        	return $error;
         }
         return $reg;
     }
 
-    function registerDBError($sql) {
+    function &registerDBError($sql) {
     	trigger_error(mysql_error());
-    	$this->setLastError(new DBError(array('number' => mysql_errno(), 'message' => mysql_error(), 'sql' => $sql)));
+    	$error =& new DBError(array('number' => mysql_errno(), 'message' => mysql_error(), 'sql' => $sql));
+    	$this->setLastError($error);
+    	return $error;
     }
 
     function fetchrecord($res) {

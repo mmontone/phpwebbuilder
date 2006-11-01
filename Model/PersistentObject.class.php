@@ -138,9 +138,13 @@ class PersistentObject extends DescriptedObject {
 		$sql = $this->loadSQL();
 		$db =& DBSession::Instance();
 		$rec = $db->SQLExec($sql, FALSE, $this);
-		if (!$rec) return false;
-		$record = $db->fetchRecord($rec);
-		return $record;
+		if (is_exception($rec)) {
+			return $rec;
+		}
+		else {
+			$record = $db->fetchRecord($rec);
+			return $record;
+		}
 	}
 	/**
 	 * Returns the query for creating the object
@@ -161,10 +165,11 @@ class PersistentObject extends DescriptedObject {
 		$values = substr($values, 0, -2);
 		$sql = 'INSERT INTO ' . $this->tableName() . ' (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DBSession::Instance();
-		$db->SQLExec($sql, TRUE, & $this, & $rows);
-		$ok = $rows > 0;
-		$this->existsObject = $ok;
-		return $ok;
+		$res =& $db->SQLExec($sql, TRUE, & $this, & $rows);
+		if (!is_exception($res)) {
+			$this->existsObject = true;
+		}
+		return $res;
 	}
 	/**
 	 * Returns the string for updating the object
@@ -182,15 +187,19 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Updates this level of the object, taking into account versioning
 	 */
-	function basicUpdate() {
+	function &basicUpdate() {
 		$sql = $this->updateString();
 		$db =& DBSession::Instance();
-		$ok = $db->SQLExec($sql, FALSE, & $this, &$rows);
-		if ($ok !== FALSE && $rows>0){
-			return true;
-		} else{
+		$res = $db->SQLExec($sql, FALSE, & $this, &$rows);
+		if (is_exception($res)) {
 			$this->PWBversion->flushChanges();
-			return false;
+			return $res;
+		}
+		else {
+			if ($rows == 0) {
+				$this->PWBversion->flushChanges();
+				return new PWBException(array('message' => 'Could not update'));
+			}
 		}
 	}
 	/**
@@ -207,9 +216,11 @@ class PersistentObject extends DescriptedObject {
 		if (!$this->existsObject) return true;
 		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DBSession::Instance();
-		$db->SQLExec($sql, FALSE, $this);
-		$this->existsObject=FALSE;
-		return TRUE;
+		$res =& $db->SQLExec($sql, FALSE, $this);
+		if (!is_exception($res)) {
+			$this->existsObject=FALSE;
+		}
+		return $res;
 	}
 	/**
 	 * Returns a string representation of the object
@@ -353,73 +364,74 @@ class PersistentObject extends DescriptedObject {
 	 * Persists the object in the database. Returns if everything worked
 	 */
 	function save() {
-			if ($this->existsObject) {
-				$ok = $this->update();
-			}
-			else {
-				$ok = $this->insert();
-			}
+		if ($this->existsObject) {
+			$res = $this->update();
+		}
+		else {
+			$res = $this->insert();
+		}
 
-			if ($ok) {
-				$this->commitChanges();
-			}
+		if (!is_exception($res)) {
+			$this->commitChanges();
+		}
 
-			return $ok;
+		return $res;
 	}
 	/**
 	 * Updates the object in the database
 	 */
 	function update() {
+		$res = null;
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$p->id->setValue($this->super->getValue());
-			$ok = $p->update();
-		} else $ok=true;
-		if ($ok){
-			$ok = $this->basicUpdate();
-		} else {
-			return false;
+			$res = $p->update();
 		}
-		return $ok;
+
+		if (!is_exception($res)){
+			$res =& $this->basicUpdate();
+		}
+
+		return $res;
 	}
 	/**
 	 * Inserts the object in the database
 	 */
 	function insert() {
+		$res = null;
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
-			$ok = $p->insert();
+			$res =& $p->insert();
 			$this->super->setValue($p->id->getValue());
-		} else $ok=true;
-		if ($ok){
-			$ok = $this->basicInsert();
-		} else {
-			return false;
 		}
-		if (!$ok && $this->isNotTopClass($this)){
-			$p->delete();
+
+		if (!is_exception($res)){
+			$res = $this->basicInsert();
+			if (!is_exception($res) && $this->isNotTopClass($this)){
+				$res =& $p->delete();
+			}
 		}
-		return $ok;
+
+		return $res;
 	}
 	/**
 	 * Deletes the object from the database
 	 */
 	function delete() {
+		$res = null;
 		if ($this->canDelete())  {
 			if ($this->isNotTopClass($this)) {
 				$p = & $this->getParent();
-				$ok = $p->delete();
-			} else {
-				$ok = true;
+				$res = $p->delete();
 			}
-			if ($ok)  {
-				return $this->basicDelete();
-			} else {
-				return false;
+			if (!is_exception($res))  {
+				return $res =& $this->basicDelete();
 			}
-		} else {
-			return false;
 		}
+		else {
+			$res =& new PWBException(array('message' => 'Cannot delete object'));
+		}
+		return $res;
 	}
 		/**
 	 * finds all similar objects (objects with same atributes set in same values)
