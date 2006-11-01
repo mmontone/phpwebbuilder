@@ -15,11 +15,11 @@ class DBSession {
 			$this->current_transaction =& new DBTransaction($this->driver);
 		}
 
-		$this->nesting++;
-
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Beggining transaction ('. $this->nesting . ')';
+			echo 'Beggining transaction ('. $this->nesting . ')<br/>';
 		}
+
+		$this->nesting++;
 	}
 
 	function &currentTransaction() {
@@ -31,6 +31,10 @@ class DBSession {
 			//if (!$this->rollback) {
 				$this->current_transaction->commit();
 			//}
+
+			if (defined('sql_echo') and constant('sql_echo') == 1) {
+				echo 'Expiring transaction<br/>';
+			}
 			$this->expireTransaction();
 		}
 
@@ -38,7 +42,7 @@ class DBSession {
 
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Commiting transaction ('. $this->nesting . ')';
+			echo 'Commiting transaction ('. $this->nesting . ')<br/>';
 		}
 
 	}
@@ -53,7 +57,7 @@ class DBSession {
 		//$this->rollback=true;
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Rolling back transaction ('. $this->nesting . ')';
+			echo 'Rolling back transaction ('. $this->nesting . ')<br/>';
 		}
 	}
 
@@ -180,12 +184,12 @@ class DBSession {
 
 
 
-class DBError {
+class DBError extends PWBException {
 	var $number;
 	var $message;
 	var $sql;
 
-	function DBError($params) {
+	function createInstance($params) {
 		$this->number = $params['number'];
 		$this->message = $params['message'];
 		$this->sql = $params['sql'];
@@ -193,10 +197,6 @@ class DBError {
 
 	function getNumber() {
 		return $this->number;
-	}
-
-	function getMessage() {
-		return $this->message;
 	}
 
 	function getSQL() {

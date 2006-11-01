@@ -47,7 +47,9 @@ class PWBObject
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		if (!$this->getInstanceId()) echo getClass($this);
+		if (!$this->getInstanceId()) {
+			print_backtrace(getClass($this) . ' doesn\'t have id!!!');
+		}
 		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**
@@ -95,7 +97,7 @@ class PWBObject
 	 * Adds a listener for the event, with the specified callback function
 	 */
 
-    function &addInterestIn($event, &$function) {
+    function addInterestIn($event, &$function) {
     	if (!isset($this->event_listeners[$event])) {
 	        $this->event_listeners[$event] = array();
         }
