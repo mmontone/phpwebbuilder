@@ -339,8 +339,8 @@ function exceptions_enabled() {
 }
 
 function is_exception(&$ex) {
-	return (is_subclass_of($ex, 'PWBException')) or
-	       (is_subclass_of($ex, 'Exception'));
+	return (is_a($ex, 'pwbexception')) or
+	       (is_a($ex, 'exception'));
 }
 
 
