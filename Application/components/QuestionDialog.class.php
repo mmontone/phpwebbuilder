@@ -29,6 +29,14 @@ class QuestionDialog extends Component
 	function no() {
 		$this->callback('on_no');
 	}
+
+	function onYes(&$function) {
+		$this->registerCallback('on_yes', $function);
+	}
+
+	function onNo(&$function) {
+		$this->registerCallback('on_no', $function);
+	}
 }
 
 ?>

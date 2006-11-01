@@ -3,28 +3,48 @@
 class PromptDialog extends Component
 {
 	var $message;
+	var $text;
 
-	function PromptDialog($message, $callback_actions=array('on_accept' => 'text_filled_in')) {
-		parent::Component();
-		$this->registerCallbacks($callback_actions);
+	function PromptDialog($message) {
 		$this->message = $message;
+		$this->text =& new ValueHolder('');
+
+		parent::Component();
 	}
 
-	function render_on(&$out) {
-		$html =& $this->html_renderer;
-		$out .= "<h1>" . $this->message . "</h1>\n";
-		$html->begin_form_for_action('done', $out);
-		$out .= "    <input type=text name=" . $html->form_param('text') . " /></br>";
-		$out .= $html->submit_button(array('label' => 'Accept', 'action' => 'accept'));
-		$out .= "</form>";
+	function &Create($message){
+		if (constant('page_renderer') == 'AjaxPageRenderer') {
+			return new ModalPromptDialog($message);
+		} else {
+			return new PromptDialog($message);
+		}
 	}
 
-	function declare_actions() {
-		return array('done');
+	function initialize() {
+		$this->addComponent(new Label($this->message), 'msg');
+		$this->addComponent(new Input($this->text), 'input');
 	}
 
-	function done($params) {
-		$this->callback('on_accept',$params);
+	function setText($text) {
+		$this->text->setValue($text);
+	}
+
+	function accept() {
+		$this->callbackWith('on_accept', $this->text->getValue());
+	}
+
+	function cancel() {
+		$this->callback('on_cancel');
+	}
+
+	function onAccept(&$function) {
+		$this->registerCallback('on_accept', $function);
+		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept');
+	}
+
+	function onCancel(&$function) {
+		$this->registerCallback('on_cancel', $function);
+		$this->addComponent(new CommandLink(array('text' => 'Cancel', 'proceedFunction' => new FunctionObject($this, 'cancel'))), 'cancel');
 	}
 }
 ?>
