@@ -339,8 +339,8 @@ function exceptions_enabled() {
 }
 
 function is_exception(&$ex) {
-	return (is_a($ex, 'pwbexception')) or
-	       (is_a($ex, 'exception'));
+	return ($ex->isA('PWBException')) or
+	       (is_a($ex, 'Exception'));
 }
 
 

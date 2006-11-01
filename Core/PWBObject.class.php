@@ -34,7 +34,7 @@ class PWBObject
 	 *  Returns if the object has the specified class
 	 */
 	function isA($class) {
-		return getClass($this) == $class;
+		return is_a($this,$class);
 	}
 	/**
 	 *  Returns if the object is the same as the parameter, or a copy
