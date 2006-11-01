@@ -3,14 +3,12 @@
 class PWBException extends PWBObject {
 	var $message;
 	var $content;
+	var $backtrace;
 
-    function PWBException($params) {
-    	$this->createInstance($params);
-    }
-
-	function createInstance($params) {
+    function createInstance($params) {
 		$this->message =& $params['message'];
     	$this->content =& $params['content'];
+    	$this->backtrace = debug_backtrace();
 	}
 
     function raise(&$handler) {
