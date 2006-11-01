@@ -93,12 +93,6 @@ class CollectionField extends DataField {
 		// If we modify this collection with setCondition, then this will not work
 		// This field collection should be inmutable
 		return $this->collection->isEmpty();
-		/*
-		$arr = & $this->collection->elements();
-		$can = count($arr) == 0;
-		if (!$can)
-			trace("The " . $this->colName . " collection is not empty<BR>\n");
-		return $can;*/
 	}
 }
 ?>
