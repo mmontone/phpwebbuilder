@@ -430,6 +430,15 @@ class PersistentObject extends DescriptedObject {
 		$this->existsObject = false;
 	}
 
+	function commitMetaFields() {
+		if ($this->isNotTopClass($this)) {
+			$p = & $this->getParent();
+			$p->commitMetaFields();
+		}
+		$this->id->primitiveCommitChanges();
+		$this->PWBversion->primitiveCommitChanges();
+	}
+
 	/**
 	 * Deletes the object from the database
 	 */

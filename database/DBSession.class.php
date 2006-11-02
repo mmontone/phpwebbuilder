@@ -26,25 +26,25 @@ class DBSession {
     }
 
     function commitTransaction() {
+		$this->driver->commit();
+
 		foreach (array_keys($this->commands) as $c) {
 			$cmd =& $this->commands[$c];
 			$cmd->commit();
 		}
 
 		$this->commands = array();
-
-		$this->driver->commit();
     }
 
     function rollbackTransaction() {
+		$this->driver->rollback();
+
 		foreach (array_keys($this->commands) as $c) {
 			$cmd =& $this->commands[$c];
 			$cmd->rollback();
 		}
 
 		$this->commands = array();
-
-		$this->driver->rollback();
     }
 
 	function beginTransaction() {
@@ -250,6 +250,7 @@ class CreateObjectDBCommand extends DBCommand {
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Committing creation: ' . getClass($this->object) . '<br />';
 		}
+		$this->object->commitMetaFields();
 	}
 
 	function rollback() {
@@ -265,6 +266,7 @@ class UpdateObjectDBCommand extends DBCommand {
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Committing update: ' . getClass($this->object) . '<br />';
 		}
+		$this->object->commitMetaFields();
 	}
 
 	function rollback() {
