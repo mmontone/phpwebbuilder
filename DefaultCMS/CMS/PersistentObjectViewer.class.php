@@ -95,7 +95,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$obj =& $objparams['object'];
 		$db =& DBSession::Instance();
 		$db->beginTransaction();
-		$ex =& $obj->delete();
+		$ex =& $db->delete($obj);
 		if (is_exception($ex)) {
 			$db->rollback();
 			$this->call($nd =& NotificationDialog::Create('Error deleting object: ' . $ex->getMessage()));

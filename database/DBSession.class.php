@@ -1,59 +1,91 @@
 <?php
 
 class DBSession {
-	var $current_transaction = null;
-	var $driver;
 	var $lastError;
 	var $lastSQL = '';
 	var $rollback_on_error = false;
 	var $rollback = false;
 	var $nesting = 0;
+	var $commands;
+
+    function registerSave(&$object) {
+    	if ($object->existsObject()) {
+   			$this->addCommand(new UpdateObjectDBCommand($object));
+    	}
+    	else {
+    		$this->addCommand(new CreateObjectDBCommand($object));
+    	}
+    }
+
+    function registerDelete(&$object) {
+    	$this->addCommand(new DeleteObjectDBCommand($object));
+    }
+
+    function addCommand(&$command) {
+    	$this->commands[] =& $command;
+    }
+
+    function commitTransaction() {
+		foreach (array_keys($this->commands) as $c) {
+			$cmd =& $this->commands[$c];
+			$cmd->commit();
+		}
+
+		$this->commands = array();
+
+		$this->driver->commit();
+    }
+
+    function rollbackTransaction() {
+		foreach (array_keys($this->commands) as $c) {
+			$cmd =& $this->commands[$c];
+			$cmd->rollback();
+		}
+
+		$this->commands = array();
+
+		$this->driver->rollback();
+    }
 
 	function beginTransaction() {
-		if ($this->nesting == 0) {
+		$this->nesting++;
+
+		if ($this->nesting == 1) {
 			$this->driver->beginTransaction();
-			$this->current_transaction =& new DBTransaction($this->driver);
 		}
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Beggining transaction ('. $this->nesting . ')<br/>';
+			print_backtrace('Beggining transaction ('. $this->nesting . ')<br/>');
 		}
-
-		$this->nesting++;
-	}
-
-	function &currentTransaction() {
-		return $this->current_transaction;
 	}
 
 	function commit() {
 		if ($this->nesting == 1) {
 			if (!$this->rollback) {
-				$this->current_transaction->commit();
+				if (defined('sql_echo') and constant('sql_echo') == 1) {
+					echo 'Commiting transaction ('. $this->nesting . ')<br/>';
+				}
+				$this->commitTransaction();
 			}
 			else {
-				echo 'Rolling back!!';
-				$this->current_transaction->rollback();
+				if (defined('sql_echo') and constant('sql_echo') == 1) {
+					echo 'Rollback transaction ('. $this->nesting . ')<br/>';
+				}
+				$this->rollbackTransaction();
 			}
-
-			if (defined('sql_echo') and constant('sql_echo') == 1) {
-				echo 'Expiring transaction<br/>';
-			}
-			$this->expireTransaction();
+			$this->rollback = false;
 		}
 
 		$this->nesting--;
-
-
-		if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Commiting transaction ('. $this->nesting . ')<br/>';
-		}
 	}
 
 	function rollback() {
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');
+		}
+
 		if ($this->nesting == 1) {
-			$this->current_transaction->rollback();
-			$this->expireTransaction();
+			$this->rollbackTransaction();
 		}
 		else {
 			//echo 'Setting rollback in true';
@@ -61,22 +93,6 @@ class DBSession {
 		}
 
 		$this->nesting--;
-
-
-
-		if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Rolling back transaction ('. $this->nesting . ')<br/>';
-		}
-	}
-
-	function expireTransaction() {
-		$n = null;
-		$this->current_transaction =& $n;
-		//echo 'Setting rollback in false';
-		$this->rollback = false;
-		if ($this->nesting !== 1) {
-			print_backtrace('Error');
-		}
 	}
 
 	function &Instance(){
@@ -157,7 +173,7 @@ class DBSession {
 	}
 
 	function &save(&$object) {
-		$this->current_transaction->save($object);
+		$this->registerSave($object);
 		$res =& $object->save();
 		if (is_exception($res)) {
 			if ($this->rollback_on_error) {
@@ -169,7 +185,7 @@ class DBSession {
 	}
 
 	function delete(&$object) {
-		$this->current_transaction->delete($object);
+		$this->registerDelete($object);
 
 		$res =& $object->delete();
 		if (is_exception($res)) {
@@ -206,6 +222,66 @@ class DBError extends PWBException {
 
 	function printHtml() {
 		return 'DBError: <br/>Number: ' . $this->getNumber() . '<br />Message: ' . $this->getMessage() . '<br />SQL: ' . $this->getSQL();
+	}
+}
+
+class DBCommand {
+	var $object;
+
+	function DBCommand(&$object) {
+		$this->object =& $object;
+	}
+
+	function commit() {
+		print_backtrace_and_exit('Subclass responsibility');
+	}
+
+	function rollback() {
+		print_backtrace_and_exit('Subclass responsibility');
+	}
+
+	function &getObject() {
+		return $this->object;
+	}
+}
+
+class CreateObjectDBCommand extends DBCommand {
+	function commit() {
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Committing creation: ' . getClass($this->object) . '<br />';
+		}
+	}
+
+	function rollback() {
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Rolling back creation: ' . getClass($this->object) . '<br />';
+		}
+		$this->object->flushInsert();
+	}
+}
+
+class UpdateObjectDBCommand extends DBCommand {
+	function commit() {
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Committing update: ' . getClass($this->object) . '<br />';
+		}
+	}
+
+	function rollback() {
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Rolling back update: ' . getClass($this->object) . '<br />';
+		}
+		$this->object->flushUpdate();
+	}
+}
+
+class DeleteObjectDBCommand extends DBCommand {
+	function commit() {
+
+	}
+
+	function delete() {
+
 	}
 }
 
