@@ -141,7 +141,7 @@ class DataField extends ValueModel {
 	 */
 	function commitChanges() {
 		if ($this->modified) {
-			$this->value =& $this->buffered_value;
+			$this->primitiveCommitChanges();
 			$this->modified = false;
 			$this->triggerEvent('commited', $this);
 		}
@@ -151,10 +151,17 @@ class DataField extends ValueModel {
 	 */
 	function flushChanges() {
 		if ($this->modified) {
-			$this->setValue($this->value);
+			$this->primitiveFlushChanges();
 			$this->modified = false;
 			$this->triggerEvent('flushed', $this);
 		}
+	}
+
+	function primitiveCommitChanges() {
+		$this->value =& $this->buffered_value;
+	}
+	function primitiveFlushChanges() {
+		$this->setValue($this->value);
 	}
 	/**
 	 * Returns if the field was modified

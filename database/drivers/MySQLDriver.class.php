@@ -89,7 +89,7 @@ class MySQLDriver extends DBDriver {
         	$error =& $this->registerDBError($sql);
         	if (defined('sql_echo') and constant('sql_echo') == 1) {
     			$lastError =& $this->getLastError();
-    			echo $lastError->printHtml();
+    			echo $lastError->printHtml() . '<br />';
     		}
 
         	return $error;

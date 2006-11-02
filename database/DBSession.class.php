@@ -32,6 +32,7 @@ class DBSession {
 				$this->current_transaction->commit();
 			}
 			else {
+				echo 'Rolling back!!';
 				$this->current_transaction->rollback();
 			}
 
@@ -54,9 +55,14 @@ class DBSession {
 			$this->current_transaction->rollback();
 			$this->expireTransaction();
 		}
+		else {
+			//echo 'Setting rollback in true';
+			$this->rollback=true;
+		}
 
 		$this->nesting--;
-		$this->rollback=true;
+
+
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Rolling back transaction ('. $this->nesting . ')<br/>';
@@ -66,6 +72,7 @@ class DBSession {
 	function expireTransaction() {
 		$n = null;
 		$this->current_transaction =& $n;
+		//echo 'Setting rollback in false';
 		$this->rollback = false;
 		if ($this->nesting !== 1) {
 			print_backtrace('Error');

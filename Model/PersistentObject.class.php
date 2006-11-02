@@ -158,7 +158,7 @@ class PersistentObject extends DescriptedObject {
 	function basicInsert() {
 		$values = '';
 		$this->PWBversion->setValue(0);
-		$this->PWBversion->commitChanges();
+		$this->PWBversion->primitiveCommitChanges();
 		foreach ($this->allFieldsThisLevel() as $index => $field) {
 			$values .= $field->insertValue();
 		}
@@ -395,8 +395,7 @@ class PersistentObject extends DescriptedObject {
 			$p = & $this->getParent();
 			$p->flushUpdate();
 		}
-		$this->PWBversion->flushChanges();
-		//$this->PWBversion->setValue($this->PWBversion->getValue() - 1);
+		$this->PWBversion->primitiveFlushChanges();
 		//echo 'PWBVersion flushed value: ' . getClass($this) . ' : ' . $this->PWBversion->getValue();
 	}
 	/**
@@ -428,7 +427,7 @@ class PersistentObject extends DescriptedObject {
 			$p = & $this->getParent();
 			$p->flushInsert();
 		}
-		$this->id->flushChanges();
+		$this->id->primitiveFlushChanges();
 		$this->existsObject = false;
 	}
 

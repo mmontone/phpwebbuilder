@@ -71,22 +71,30 @@ class DBCommand {
 
 class CreateObjectDBCommand extends DBCommand {
 	function commit() {
-		//echo 'Committing creation: ' . getClass($this->object) . '<br />';
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Committing creation: ' . getClass($this->object) . '<br />';
+		}
 	}
 
 	function rollback() {
-		//echo 'Rolling back creation: ' . getClass($this->object) . '<br />';
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Rolling back creation: ' . getClass($this->object) . '<br />';
+		}
 		$this->object->flushInsert();
 	}
 }
 
 class UpdateObjectDBCommand extends DBCommand {
 	function commit() {
-		//echo 'Committing update: ' . getClass($this->object) . '<br />';
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Committing update: ' . getClass($this->object) . '<br />';
+		}
 	}
 
 	function rollback() {
-		//echo 'Rolling back update: ' . getClass($this->object) . '<br />';
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Rolling back update: ' . getClass($this->object) . '<br />';
+		}
 		$this->object->flushUpdate();
 	}
 }

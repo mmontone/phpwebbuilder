@@ -38,6 +38,16 @@ class DescriptedObject extends PWBObject {
 		$this->modified = false;
 		$this->triggerEvent('changes_committed', $this);
 	}
+
+	function primitiveCommitChanges() {
+		//print_backtrace('Committing changes');
+		foreach($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			$field->primitiveCommitChanges();
+		}
+		$this->modified = false;
+		$this->triggerEvent('changes_committed', $this);
+	}
 	/**
 	 * Prints a visual representation of the object (the values of
 	 * it's index fields)
@@ -103,7 +113,7 @@ class DescriptedObject extends PWBObject {
 		}
 		else {
 			$this->setID($this->id->getValue());
-			$this->commitChanges();
+			$this->primitiveCommitChanges();
 			$this->existsObject = TRUE;
 			return true;
 		}

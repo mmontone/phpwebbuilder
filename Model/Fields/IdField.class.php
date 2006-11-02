@@ -21,16 +21,22 @@ class IdField extends NumField {
         $this->setValue($id);
     }
 
-    /*
     function setValue($value) {
 		// Don't register a modification
     	$this->buffered_value =& $value;
     }
-	*/
 
     function validate() {
     	return false;
     }
+
+	function flushChanges() {
+
+	}
+
+	function commitChanges() {
+
+	}
 }
 
 ?>
