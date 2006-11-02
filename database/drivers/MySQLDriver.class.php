@@ -6,7 +6,7 @@ class MySQLDriver extends DBDriver {
 
     function &SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
        	$this->setLastSQL($sql);
-        $reg = $this->query ($sql);
+        $reg =& $this->query ($sql);
         if (!is_exception($reg)) {
 	        if ($getID) { $obj->setID(mysql_insert_id());};
 	        $rows = mysql_affected_rows();
@@ -76,7 +76,7 @@ class MySQLDriver extends DBDriver {
         $this->closeDatabase();
     }
 
-    function query($sql) {
+    function &query($sql) {
     	trace($sql. '<br/>');
     	if (defined('sql_echo') and constant('sql_echo') == 1) {
     		echo($sql. '<br/>');

@@ -57,11 +57,11 @@ class DBCommand {
 	}
 
 	function commit() {
-		print_backtrace('Subclass responsibility');
+		print_backtrace_and_exit('Subclass responsibility');
 	}
 
 	function rollback() {
-		print_backtrace('Subclass responsibility');
+		print_backtrace_and_exit('Subclass responsibility');
 	}
 
 	function &getObject() {
@@ -71,22 +71,23 @@ class DBCommand {
 
 class CreateObjectDBCommand extends DBCommand {
 	function commit() {
-
+		//echo 'Committing creation: ' . getClass($this->object) . '<br />';
 	}
 
 	function rollback() {
-		$this->object->id->setValue($n = null);
-		$this->object->existsObject = false;
+		//echo 'Rolling back creation: ' . getClass($this->object) . '<br />';
+		$this->object->flushInsert();
 	}
 }
 
 class UpdateObjectDBCommand extends DBCommand {
 	function commit() {
-
+		//echo 'Committing update: ' . getClass($this->object) . '<br />';
 	}
 
 	function rollback() {
-
+		//echo 'Rolling back update: ' . getClass($this->object) . '<br />';
+		$this->object->flushUpdate();
 	}
 }
 

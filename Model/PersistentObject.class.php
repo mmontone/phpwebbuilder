@@ -192,12 +192,10 @@ class PersistentObject extends DescriptedObject {
 		$db =& DBSession::Instance();
 		$res = $db->SQLExec($sql, FALSE, & $this, &$rows);
 		if (is_exception($res)) {
-			$this->PWBversion->flushChanges();
 			return $res;
 		}
 		else {
 			if ($rows == 0) {
-				$this->PWBversion->flushChanges();
 				return new PWBException(array('message' => 'Could not update'));
 			}
 		}
@@ -213,6 +211,7 @@ class PersistentObject extends DescriptedObject {
 		return $can;
 	}
 	function basicDelete() {
+		print_backtrace('basic delete');
 		if (!$this->existsObject) return true;
 		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DBSession::Instance();
@@ -363,16 +362,12 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Persists the object in the database. Returns if everything worked
 	 */
-	function save() {
+	function &save() {
 		if ($this->existsObject) {
-			$res = $this->update();
+			$res =& $this->update();
 		}
 		else {
-			$res = $this->insert();
-		}
-
-		if (!is_exception($res)) {
-			$this->commitChanges();
+			$res =& $this->insert();
 		}
 
 		return $res;
@@ -380,12 +375,12 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Updates the object in the database
 	 */
-	function update() {
+	function &update() {
 		$res = null;
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$p->id->setValue($this->super->getValue());
-			$res = $p->update();
+			$res =& $p->update();
 		}
 
 		if (!is_exception($res)){
@@ -394,10 +389,20 @@ class PersistentObject extends DescriptedObject {
 
 		return $res;
 	}
+
+	function flushUpdate() {
+		if ($this->isNotTopClass($this)) {
+			$p = & $this->getParent();
+			$p->flushUpdate();
+		}
+		$this->PWBversion->flushChanges();
+		//$this->PWBversion->setValue($this->PWBversion->getValue() - 1);
+		//echo 'PWBVersion flushed value: ' . getClass($this) . ' : ' . $this->PWBversion->getValue();
+	}
 	/**
 	 * Inserts the object in the database
 	 */
-	function insert() {
+	function &insert() {
 		$res = null;
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
@@ -406,26 +411,39 @@ class PersistentObject extends DescriptedObject {
 		}
 
 		if (!is_exception($res)){
-			$res = $this->basicInsert();
+			$res =& $this->basicInsert();
+
+			/*
 			if (!is_exception($res) && $this->isNotTopClass($this)){
 				$res =& $p->delete();
 			}
+			*/
 		}
 
 		return $res;
 	}
+
+	function flushInsert() {
+		if ($this->isNotTopClass($this)) {
+			$p = & $this->getParent();
+			$p->flushInsert();
+		}
+		$this->id->flushChanges();
+		$this->existsObject = false;
+	}
+
 	/**
 	 * Deletes the object from the database
 	 */
-	function delete() {
+	function &delete() {
 		$res = null;
 		if ($this->canDelete())  {
 			if ($this->isNotTopClass($this)) {
 				$p = & $this->getParent();
-				$res = $p->delete();
+				$res =& $p->delete();
 			}
 			if (!is_exception($res))  {
-				return $res =& $this->basicDelete();
+				$res =& $this->basicDelete();
 			}
 		}
 		else {

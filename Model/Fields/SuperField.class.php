@@ -4,10 +4,12 @@ class SuperField extends NumField {
 		return $obj->visitedSuperField($this);
 	}
 	function updateString() {}
+	/*
 	function setValue($value) {
 		// Don't register modifications
     	$this->buffered_value =& $value;
     }
+    */
 
     function validate() {
     	return false;

@@ -30,6 +30,7 @@ class DescriptedObject extends PWBObject {
 	 * Commits the changes to each field.
 	 */
 	function commitChanges() {
+		//print_backtrace('Committing changes');
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->commitChanges();
@@ -48,6 +49,7 @@ class DescriptedObject extends PWBObject {
 	 * Removes all changes made to the object
 	 */
 	function flushChanges() {
+		//print_backtrace('Flushing changes');
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->flushChanges();

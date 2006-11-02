@@ -6,7 +6,7 @@ class DBSession {
 	var $lastError;
 	var $lastSQL = '';
 	var $rollback_on_error = false;
-	//var $rollback = false;
+	var $rollback = false;
 	var $nesting = 0;
 
 	function beginTransaction() {
@@ -28,9 +28,12 @@ class DBSession {
 
 	function commit() {
 		if ($this->nesting == 1) {
-			//if (!$this->rollback) {
+			if (!$this->rollback) {
 				$this->current_transaction->commit();
-			//}
+			}
+			else {
+				$this->current_transaction->rollback();
+			}
 
 			if (defined('sql_echo') and constant('sql_echo') == 1) {
 				echo 'Expiring transaction<br/>';
@@ -44,7 +47,6 @@ class DBSession {
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Commiting transaction ('. $this->nesting . ')<br/>';
 		}
-
 	}
 
 	function rollback() {
@@ -54,7 +56,7 @@ class DBSession {
 		}
 
 		$this->nesting--;
-		//$this->rollback=true;
+		$this->rollback=true;
 
 		if (defined('sql_echo') and constant('sql_echo') == 1) {
 			echo 'Rolling back transaction ('. $this->nesting . ')<br/>';
@@ -64,7 +66,7 @@ class DBSession {
 	function expireTransaction() {
 		$n = null;
 		$this->current_transaction =& $n;
-		//$this->rollback = false;
+		$this->rollback = false;
 		if ($this->nesting !== 1) {
 			print_backtrace('Error');
 		}
@@ -100,7 +102,7 @@ class DBSession {
 		return $db->lastSQL;
 	}
 
-	function SQLExec($sql, $getID=false, $obj=null, $rows=0) {
+	function &SQLExec($sql, $getID=false, $obj=null, $rows=0) {
        	return $this->driver->SQLExec($sql, $getID, & $obj, & $rows);
     }
 
@@ -148,33 +150,26 @@ class DBSession {
 	}
 
 	function &save(&$object) {
+		$this->current_transaction->save($object);
 		$res =& $object->save();
-		if ($this->isException($res)) {
+		if (is_exception($res)) {
 			if ($this->rollback_on_error) {
 				$this->rollback();
 			}
 		}
-		else {
-			$this->current_transaction->save($object);
-		}
-		return $res;
-	}
 
-	function isException(&$ex) {
-		return is_exception($ex);
+		return $res;
 	}
 
 	function delete(&$object) {
+		$this->current_transaction->delete($object);
+
 		$res =& $object->delete();
-		if ($this->isException($res)) {
+		if (is_exception($res)) {
 			if ($this->rollback_on_error) {
 				$this->rollback();
 			}
 		}
-		else {
-			$this->current_transaction->delete($object);
-		}
-		return $res;
 	}
 
 	function rollbackOnError($b = true) {
@@ -186,13 +181,12 @@ class DBSession {
 
 class DBError extends PWBException {
 	var $number;
-	var $message;
 	var $sql;
 
 	function createInstance($params) {
 		$this->number = $params['number'];
-		$this->message = $params['message'];
 		$this->sql = $params['sql'];
+		parent::createInstance($params);
 	}
 
 	function getNumber() {
