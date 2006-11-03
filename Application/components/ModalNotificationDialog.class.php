@@ -36,6 +36,56 @@ class ModalNotificationDialog extends AjaxComponent {
     }
 }
 
+class ModalPromptDialog extends AjaxComponent {
+	var $message;
+	var $text;
+
+    function ModalPromptDialog($message) {
+    	$this->message = $message;
+    	$this->text =& new ValueHolder('Ingrese aqui');
+    	parent::AjaxComponent();
+    }
+
+    function setText($text) {
+    	$this->text->setValue($text);
+    }
+
+	function start() {
+    	$app =& Application::instance();
+    	$app->addAjaxCommand(new AjaxCommand('openPromptDialog', array(toAjax($this->message), toAjax($this->text->getValue()), $this->getId(), constant('pwb_url'))));
+    	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
+    	$this->addInterestIn('cancel', new FunctionObject($this, 'cancel'));
+    }
+
+    function initialize() {
+    	$input =& new Input($this->text);
+    	//$input->view->setAttribute('hidden', 'true');
+    	$this->addComponent($input, 'prompt_input');
+    }
+
+    function stop() {
+    	$this->prompt_input->delete();
+    }
+
+
+
+    function accept() {
+    	$this->callbackWith('on_accept', $this->text);
+    }
+
+    function cancel() {
+    	$this->callback('on_cancel');
+    }
+
+    function onAccept(&$function) {
+		$this->registerCallback('on_accept', $function);
+    }
+
+    function onCancel(&$function) {
+		$this->registerCallback('on_cancel', $function);
+    }
+}
+
 class ModalErrorDialog extends AjaxComponent {
 	var $message;
 
@@ -85,6 +135,14 @@ class ModalQuestionDialog extends AjaxComponent {
 
     function no() {
     	$this->callback('on_no');
+    }
+
+    function onYes(&$function) {
+		$this->registerCallback('on_yes', $function);
+    }
+
+    function onNo(&$function) {
+		$this->registerCallback('on_no', $function);
     }
 }
 

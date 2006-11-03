@@ -8,6 +8,7 @@ class Select extends Widget {
 
     function Select(&$value_model, &$collection, $displayF=null) {
     	parent::Widget($value_model);
+
     	$this->options =& $collection;
 
     	if ($displayF!=null){
