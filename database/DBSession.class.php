@@ -32,7 +32,7 @@ class DBSession {
 			$cmd =& $this->commands[$c];
 			$cmd->commit();
 		}
-
+		$this->rollback = false;
 		$this->commands = array();
     }
 
@@ -43,7 +43,7 @@ class DBSession {
 			$cmd =& $this->commands[$c];
 			$cmd->rollback();
 		}
-
+		$this->rollback = false;
 		$this->commands = array();
     }
 
@@ -63,17 +63,28 @@ class DBSession {
 		if ($this->nesting == 1) {
 			if (!$this->rollback) {
 				if (defined('sql_echo') and constant('sql_echo') == 1) {
-					echo 'Commiting transaction ('. $this->nesting . ')<br/>';
+						print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');
 				}
 				$this->commitTransaction();
 			}
 			else {
 				if (defined('sql_echo') and constant('sql_echo') == 1) {
-					echo 'Rollback transaction ('. $this->nesting . ')<br/>';
+						print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');
 				}
 				$this->rollbackTransaction();
 			}
-			$this->rollback = false;
+		}
+		else {
+			if (!$this->rollback) {
+				if (defined('sql_echo') and constant('sql_echo') == 1) {
+						print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');
+				}
+			}
+			else {
+				if (defined('sql_echo') and constant('sql_echo') == 1) {
+						print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');
+				}
+			}
 		}
 
 		$this->nesting--;
@@ -88,7 +99,7 @@ class DBSession {
 			$this->rollbackTransaction();
 		}
 		else {
-			//echo 'Setting rollback in true';
+			echo 'Setting rollback in true';
 			$this->rollback=true;
 		}
 
@@ -200,30 +211,6 @@ class DBSession {
 	}
 }
 
-
-
-class DBError extends PWBException {
-	var $number;
-	var $sql;
-
-	function createInstance($params) {
-		$this->number = $params['number'];
-		$this->sql = $params['sql'];
-		parent::createInstance($params);
-	}
-
-	function getNumber() {
-		return $this->number;
-	}
-
-	function getSQL() {
-		return $this->sql;
-	}
-
-	function printHtml() {
-		return 'DBError: <br/>Number: ' . $this->getNumber() . '<br />Message: ' . $this->getMessage() . '<br />SQL: ' . $this->getSQL();
-	}
-}
 
 class DBCommand {
 	var $object;

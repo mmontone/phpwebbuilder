@@ -25,7 +25,6 @@ require_once $d.'/Report.class.php';
 require_once $d.'/PersistentCollection.class.php';
 require_once $d.'/JoinedPersistentCollection.class.php';
 require_once $d.'/PersistentObject.class.php';
-require_once $d.'/Validation/PWBException.class.php';
 require_once $d.'/Validation/Validation.class.php';
 require_once $d.'/Validation/ValidationException.class.php';
 require_once $d.'/Validation/OneOfException.class.php';

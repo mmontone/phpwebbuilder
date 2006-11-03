@@ -425,6 +425,7 @@ class PersistentObject extends DescriptedObject {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$p->flushInsert();
+			$this->super->primitiveFlushChanges();
 		}
 		$this->id->primitiveFlushChanges();
 		$this->existsObject = false;
@@ -434,6 +435,7 @@ class PersistentObject extends DescriptedObject {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
 			$p->commitMetaFields();
+			$this->super->primitiveCommitChanges();
 		}
 		$this->id->primitiveCommitChanges();
 		$this->PWBversion->primitiveCommitChanges();
