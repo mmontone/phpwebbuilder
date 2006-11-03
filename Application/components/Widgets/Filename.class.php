@@ -13,13 +13,16 @@ class Filename extends Input {
 		$fields =& $file->allFields();
 		$bin_data = addslashes(fread(fopen($file_data['tmp_name'], 'r'), max($file_data['size'],1)));
 		unlink($file_data['tmp_name']);
-		$fields['bin_data']->setValue($bin_data);
+		$file->bin_data->setValue($bin_data);
 		unset($bin_data);
-		$fields['filename']->setValue($file_data['name']);
-		$fields['filesize']->setValue($file_data['size']);
-		$fields['filetype']->setValue($file_data['type']);
+		$file->filename->setValue($file_data['name']);
+		$file->filesize->setValue($file_data['size']);
+		$file->filetype->setValue($file_data['type']);
 		$this->fileuploaded=true;
 		$this->file =& $file;
+		$file->save();
+		$file->bin_data->setValue(null);
+		$file->commitChanges();
 		return true;
 	}
 
