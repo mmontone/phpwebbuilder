@@ -135,7 +135,7 @@ class DBController extends Component {
 	}
 
 	function permissionNeeded () {
-		return "DatabaseAdmin";
+		//return "DatabaseAdmin";
 	}
 	function exec_sql() {
 		$db =& DBSession::Instance();
@@ -154,8 +154,8 @@ class DBController extends Component {
 		}
 		else {
 			$this->dbinfo->version->setTarget($this->new_version);
-			$ok = $db->save($this->dbinfo);
-			if (!$ok) {
+			$result =& $db->save($this->dbinfo);
+			if (is_exception($result)) {
 				$db->rollback();
 			}
 			else {
