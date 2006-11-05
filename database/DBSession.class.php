@@ -99,6 +99,7 @@ class DBSession {
 			$this->rollbackTransaction();
 		}
 		else {
+			echo 'Setting rollback in true';
 			$this->rollback=true;
 		}
 
@@ -149,6 +150,14 @@ class DBSession {
 
 	function &getLastErr() {
 		return $this->lastError;
+	}
+
+	function clearLastSQL() {
+		$this->setLastSQL('');
+		if ($this->lastError) {
+			$this->lastError->sql='';
+			$this->lastError->backtrace='';
+		}
 	}
 
 	function setLastSQL($sql) {

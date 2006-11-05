@@ -400,4 +400,25 @@ function handle_error($errno, $errstr, $errfile, $errline) {
 	}
 }
 
+function print_n($obj, $n){
+	if ($n!=0){
+		if (is_array($obj)) {
+			$ret = 'Array(';
+			foreach($obj as $i=>$o) {
+				$ret .= $i .'=>'.print_n($o, $n-1);
+			}
+			return $ret.')';
+		}
+		if (is_object($obj)) {
+			$ret = 'Object(';
+			foreach($obj as $i=>$o) {
+				$ret .= $i .'=>'.print_n($o, $n-1);
+			}
+			return $ret.')';
+		}
+		return gettype($obj).':'.$obj;
+	}
+}
+
+
 ?>

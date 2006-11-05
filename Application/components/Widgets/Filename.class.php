@@ -23,6 +23,8 @@ class Filename extends Input {
 		$file->save();
 		$file->bin_data->setValue(null);
 		$file->commitChanges();
+		$db =& DBSession::instance();
+		$db->clearLastSQL();
 		return true;
 	}
 
