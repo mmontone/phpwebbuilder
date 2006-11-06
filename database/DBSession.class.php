@@ -6,7 +6,7 @@ class DBSession {
 	var $rollback_on_error = false;
 	var $rollback = false;
 	var $nesting = 0;
-	var $commands;
+	var $commands = array();
 
     function registerSave(&$object) {
     	if ($object->existsObject()) {
