@@ -6,6 +6,7 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 		$view->setTagName('select');
 		$view->setAttribute('size', (string) $this->component->getSize());
 		$view->setAttribute('style', 'overflow:4;');
+		$view->appendChild(new XMLTextNode(''));
 	}
 	function prepareToRender(){
 		parent::prepareToRender();
