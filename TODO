@@ -1,6 +1,0 @@
-Optimizations:
-
-ToDo:
-- ajax.js has "admin" as pwb_url. Think a way to work it around.
-- Checkboxes, and edit or delete many elements at the same time (ShowCollectionComponent).
-- (ShowCollectionComponent): Elements should be added by the id on the class (so consecutive actions, like deletions, can be carried out).
