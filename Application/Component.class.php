@@ -299,13 +299,15 @@ class Component extends PWBObject
 		return $this->holder->parent;
 	}
 
-	function addFieldComponent(& $component, $field_name) {
+	function addFieldComponent(& $component, $field_name, $text=null) {
 		if ($field_name == null) {
 			print_backtrace();
 		}
+		if ($text == null) {
+			$text = $field_name;
+		}
 		$fc = & new FieldComponent;
-		//$fc->addComponent(new Label(ucfirst(CozzuolTranslator::TranslateWith('CozzuolTranslator',$field_name))), 'field_name');
-		$fc->addComponent(new Label(ucfirst(Translator :: Translate($field_name))), 'field_name');
+		$fc->addComponent(new Label(ucfirst(Translator :: Translate($text))), 'field_name');
 		$fc->addComponent($component, 'component');
 		$this->addComponent($fc, $field_name);
 	}

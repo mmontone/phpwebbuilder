@@ -196,7 +196,16 @@ class PersistentObject extends DescriptedObject {
 		}
 		else {
 			if ($rows == 0) {
-				return new PWBException(array('message' => 'Could not update'));
+				$db =& DBSession::Instance();
+				$rec =& $db->query('SELECT PWBversion FROM ' . $this->tableName() . ' WHERE id=' . $this->getId());
+				if ($rec['PWBversion'] !== $this->PWBversion->getValue()) {
+					$ex =& new PWBException(array('message' => 'Versioning error'));
+				}
+				else {
+					$ex =& new PWBException(array('message' => 'Could not update'));
+				}
+
+				return $ex;
 			}
 		}
 	}
