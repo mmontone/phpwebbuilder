@@ -72,7 +72,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 
 
 	function redraw() {
-		if(!$this->parentNode)	$this->parentNode->replaceChild($this, clone($this));
+		if($this->parentNode)	$this->parentNode->replaceChild($this, clone($this));
 	}
 
 	function setAttribute($attribute, $value) {
