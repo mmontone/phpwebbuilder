@@ -135,7 +135,7 @@ class DBController extends Component {
 	}
 
 	function permissionNeeded () {
-		//return "DatabaseAdmin";
+		return "DatabaseAdmin";
 	}
 	function exec_sql() {
 		$db =& DBSession::Instance();
