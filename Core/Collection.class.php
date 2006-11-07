@@ -243,6 +243,12 @@ class Collection extends PWBObject {
 		}
 	}
 
+	function addAllFromCollection(&$collection) {
+		$self =& $this;
+		$collection->for_each($f =& lambda('&$x', '$self->add($x);', get_defined_vars()));
+		delete_lambda($f);
+	}
+
 	/**
 	 *  Removes all of the elements of the array from the collection
 	 */
@@ -251,6 +257,12 @@ class Collection extends PWBObject {
 		foreach (array_keys($arr) as $k) {
 			$this->remove($arr[$k]);
 		}
+	}
+
+	function removeAllFromCollection(&$collection) {
+		$self =& $this;
+		$collection->for_each($f =& lambda('&$x', '$self->remove($x);', get_defined_vars()));
+		delete_lambda($f);
 	}
 
 	/**

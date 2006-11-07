@@ -677,6 +677,21 @@ class ObjectPathExpression extends PathExpression {
 	}
 }
 
+class ExistsExpression extends Expression {
+	var $query;
 
+	function ExistsExpression(&$query) {
+		$this->query =& $query;
+		parent::Expression();
+	}
+
+	function evaluateIn(&$report) {
+
+	}
+
+	function printString() {
+		return 'EXISTS (' . $this->query->selectsql() . ')';
+	}
+}
 
 ?>
