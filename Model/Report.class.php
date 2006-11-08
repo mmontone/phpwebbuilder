@@ -32,6 +32,7 @@ class Report extends Collection{
 	  var $group = array();
 	  var $vars = array();
 	  var $select_exp;
+	  var $select = null;
 
 
 	function Report() {
@@ -184,6 +185,10 @@ class Report extends Collection{
 	  * Returns all the field names, backquote encapsed
 	  */
 	function fieldNames(){
+		if ($this->select !== null) {
+			return $this->select;
+		}
+
 		foreach($this->getFields() as $f=>$n){
 			if (!is_numeric($f)){
 				$ret []= $f .' as `'. $n.'`';
@@ -198,6 +203,10 @@ class Report extends Collection{
 
 	function &getFields() {
 		return $this->fields;
+	}
+
+	function select($string) {
+		$this->select = $string;
 	}
 
 	/**
@@ -356,10 +365,14 @@ class Report extends Collection{
 			$reg = $db->SQLExec($sql, FALSE, $this);
 			if ($reg===false) return false;
 			while ($data = $db->fetchrecord($reg)) {
-				$this->elements[] =& $this->makeElement($data);
+				$this->addElement($this->makeElement($data));
 			}
 		}
 		return $this->elements;
+	}
+
+	function addElement(&$element) {
+		$this->elements[] =& $element;
 	}
 	/**
 	  * Returns the datatype
