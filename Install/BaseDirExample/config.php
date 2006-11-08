@@ -18,13 +18,13 @@ page_renderer=AjaxPageRenderer
 basedir=
 appdir=MyInstances
 site_url=
-DBObject=MySQLdb
+db_driver=MySQLDriver
 
 app_class=ExampleApplication
 sitename=Example
 translator=EnglishTranslator
 error_handler=DevelopErrorHandler
-DBObject=MySQLdb
+db_driver=MySQLDriver
 sessionHandler=PHP
 admin_email=webmaster@yoursite.com
 
