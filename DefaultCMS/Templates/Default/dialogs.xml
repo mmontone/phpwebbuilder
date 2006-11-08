@@ -42,6 +42,22 @@
 		</table>
 	</template>
 
+	<template class="PromptDialog">
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<div>
+							<container id="msg" /> : <input id="input" />
+						</div>
+						<input type="button" id="cancel" value="Cancelar" />
+						<input type="button" id="accept" value="Aceptar" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+
 	<template class="ErrorDialog">
 		<table>
 			<tbody>
