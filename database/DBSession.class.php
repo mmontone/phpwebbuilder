@@ -203,7 +203,7 @@ class DBSession {
 		return $res;
 	}
 
-	function delete(&$object) {
+	function &delete(&$object) {
 		$this->registerDelete($object);
 
 		$res =& $object->delete();
@@ -212,6 +212,7 @@ class DBSession {
 				$this->rollback();
 			}
 		}
+		return $res;
 	}
 
 	function rollbackOnError($b = true) {
@@ -277,8 +278,11 @@ class DeleteObjectDBCommand extends DBCommand {
 
 	}
 
-	function delete() {
-
+	function rollback() {
+		if (defined('sql_echo') and constant('sql_echo') == 1) {
+			echo 'Rolling back delete: ' . getClass($this->object) . '<br />';
+		}
+		$this->object->existsObject=TRUE;
 	}
 }
 

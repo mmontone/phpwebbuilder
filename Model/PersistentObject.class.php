@@ -215,7 +215,7 @@ class PersistentObject extends DescriptedObject {
 	function canDelete(){
 		$can = TRUE;
 		foreach ($this->allFieldsThisLevel() as $f) {
-			$can = $can & $f->canDelete();
+			$can = $can && $f->canDelete();
 		}
 		return $can;
 	}
