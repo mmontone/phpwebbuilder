@@ -154,6 +154,7 @@ class DataField extends ValueModel {
 			$this->primitiveFlushChanges();
 			$this->modified = false;
 			$this->triggerEvent('flushed', $this);
+			$this->triggerEvent('changed', $no_params = null);
 		}
 	}
 
