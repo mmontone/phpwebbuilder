@@ -83,6 +83,8 @@ class PageRenderer // extends PWBObject
 	}
 	/**
 	 * encodes the string to valid XHTML
+	 *
+	 * http://www.htmlhelp.com/reference/html40/entities/
 	 */
 
 	function toHTML($s) {
@@ -100,6 +102,8 @@ class PageRenderer // extends PWBObject
 		$s = str_replace('Í', '&Iacute;', $s);
 		$s = str_replace('Ó', '&Ooacute;', $s);
 		$s = str_replace('Ú', '&Uacute;', $s);
+		$s = str_replace('º', '&ordm;', $s);
+		$s = str_replace('ª', '&ordf;', $s);
 		$s = htmlentities($s);
 		return $s;
 		//return mb_convert_encoding($s,"HTML-ENTITIES","auto");
@@ -107,6 +111,8 @@ class PageRenderer // extends PWBObject
 
 	/**
 	 * Encodes the string in valid XML
+	 *
+	 * http://www.htmlhelp.com/reference/html40/entities/
 	 */
 
 	function toXML($s) {
@@ -134,9 +140,10 @@ class PageRenderer // extends PWBObject
 		$s = str_replace('&Uacute;', '&#218;', $s);
 		$s = str_replace('&Uuml;', '&#220;', $s);
 		$s = str_replace('&Ntilde;', '&#209;', $s);
-
 		$s = str_replace('&quote;', '&#34;', $s);
 		$s = str_replace('&nbsp;', '&#160;', $s);
+		$s = str_replace('&ordm;', '&#186;', $s);
+		$s = str_replace('&ordf;', '&#170;', $s);
 		$s = ereg_replace('&([A-Za-z0-9]+);', '&#38;\\1;', $s);
 		return $s;
 	}
