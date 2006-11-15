@@ -71,4 +71,38 @@ class OptionalSelect extends Component {
 	}
 }
 
+class OptionalComponent extends Component {
+	var $comp;
+	var $selectOption;
+
+	function OptionalComponent(&$comp) {
+		$this->comp =& $comp;
+		$this->selectOption = false;
+
+		parent::Component();
+	}
+
+	function initialize() {
+		$selectOption =& new CheckBox(new AspectAdaptor($this, 'selectOption'));
+		$selectOption->onChangeSend('selectOptionChanged', $this);
+		$this->addComponent($selectOption, 'selectoption_checkbox');
+
+		$this->addComponent($this->comp, 'opt_comp');
+		$this->comp->enable($this->selectOption);
+	}
+
+	function selectOptionChanged() {
+		$this->opt_comp->enable($this->selectOption);
+		$this->callbackWith('select_option_changed', $this->selectOption);
+	}
+
+	function setSelectOption(&$value) {
+		$this->selectOption =& $value;
+	}
+
+	function &getSelectOption() {
+		return $this->selectOption;
+	}
+}
+
 ?>

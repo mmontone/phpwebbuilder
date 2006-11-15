@@ -99,7 +99,10 @@ class DBSession {
 			$this->rollbackTransaction();
 		}
 		else {
-			echo 'Setting rollback in true';
+			if (defined('sql_echo') and constant('sql_echo') == 1) {
+				print_backtrace('Setting rollback in true <br/>');
+			}
+
 			$this->rollback=true;
 		}
 
