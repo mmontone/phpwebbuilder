@@ -15,12 +15,9 @@ class BlobField extends DataField {
    }
    function &getCompleteValue(){
    	   $this->getComplete = true;
-   	   $this->owner->loadFromId($this->owner->getId());
+   	   $rec = $this->owner->basicLoad();
    	   $this->getComplete = false;
-   	   $v =& $this->getValue();
-   	   $this->setValue(null);
-   	   $this->commitChanges();
-   	   return $v;
+   	   return $rec[$this->sqlName()];;
    }
 
 }
