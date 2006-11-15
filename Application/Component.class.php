@@ -11,7 +11,7 @@ class Component extends PWBObject
 	var $registered_callbacks = array();
 	var $configuration;
 	var $__children;
-	var $nextChildrenPosition =0;
+	var $nextChildrenPosition = 0;
 
 	function Component($params=array()) {
 		parent::PWBObject($params);

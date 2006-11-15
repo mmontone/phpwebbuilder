@@ -35,7 +35,7 @@ class DateTimeField extends DataField {
     	return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $d);
     }
 
-    function validate() {
+    function &validate() {
     	$v = $this->getValue();
     	if ((!$this->validateTime($v)) or (!$this->validateDate($v))) {
     		return new ValidationException(array('message' => 'The time or date are invalid', 'content' => &$this));
@@ -78,7 +78,7 @@ class DateField extends DateTimeField {
         return $obj->visitedDateField($this);
     }
 
-    function validate() {
+    function &validate() {
     	$v = $this->getValue();
     	if (!$this->validateDate($v)) {
     		return new ValidationException(array('message' => 'The date is invalid', 'content' => &$this));

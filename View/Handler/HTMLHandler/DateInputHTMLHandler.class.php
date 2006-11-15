@@ -1,5 +1,6 @@
 <?php
 
+/*
 class DateTimeInputHTMLHandler extends InputHTMLHandler {
 	function initializeDefaultView(&$view){
 		$date_input =& $this->getComponent();
@@ -38,6 +39,8 @@ class DateTimeInputHTMLHandler extends InputHTMLHandler {
 		$date_node->setAttribute($ev[0], $ev[1]);
 	}
 }
+
+*/
 
 
 

@@ -6,6 +6,7 @@ class Widget extends Component {
 	var $invalid;
 	var $clickable;
 	var $events;
+
 	function Widget(& $value_model, $callback_actions = array ()) {
 		if ($value_model == null) {
 			$this->value_model = & new ValueHolder($null = null);
