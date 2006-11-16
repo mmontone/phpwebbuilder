@@ -8,24 +8,32 @@ class Widget extends Component {
 	var $events;
 
 	function Widget(& $value_model, $callback_actions = array ()) {
+		parent::Component();
+
 		if ($value_model == null) {
 			$this->value_model = & new ValueHolder($null = null);
 		}
 		else {
 			$this->value_model = & $value_model;
 		}
+
 		$this->value_model->addEventListener(array (
 			'changed' => 'valueChanged',
 			'validated' => 'fieldValidated',
 			'invalid' => 'fieldInvalid',
 			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
+
+
+		/*
+		$this->value_model->addInterestIn('invalid', new FunctionObject($this, 'fieldInvalid'));
+		$this->value_model->addInterestIn('changed', new FunctionObject($this, 'valueChanged'));
+		*/
 		$this->invalid =& new ValueHolder($b1=false);
 		$this->disabled =& new ValueHolder($b2=false);
 		$this->clickable =& new ValueHolder($b3=false);
 		$this->events =& new Collection();
 		$this->setEvents();
-		parent::Component();
 		$this->registerCallbacks($callback_actions);
 	}
 

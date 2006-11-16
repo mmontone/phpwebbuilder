@@ -314,10 +314,10 @@ class DescriptedObject extends PWBObject {
 	 * Validates each fields, and validates the object's specific restrictions
 	 */
 	function validateAll() {
-		$this->validateObject();
 		$this->validateFields();
+		$this->validateObject();
 
-		return !empty($this->validation_errors);
+		return empty($this->validation_errors);
 	}
 	/**
 	 * validates the object, and return if it's valid

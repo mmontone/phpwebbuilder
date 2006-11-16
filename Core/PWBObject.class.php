@@ -5,7 +5,7 @@ class PWBObject
     var $event_listeners = array();
     var $listener_handle = 1;
     var $config;
-    var $__instance_id;
+    var $__instance_id = null;
 	var $creationParams;
 	var $event_handles = array();
 
@@ -43,6 +43,9 @@ class PWBObject
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
 	function getInstanceId(){
+		if (is_null($this->__instance_id)) {
+			print_backtrace_and_exit(getClass($this) . ' has no assigned id!!!');
+		}
 		return $this->__instance_id;
 	}
 	function __wakeup() {
@@ -136,6 +139,7 @@ class PWBObject
     function triggerEvent($event_selector, &$params) {
         $listeners =& $this->event_listeners[$event_selector];
 		if ($listeners == null) return;
+        //print_backtrace('Triggering event ' . $event_selector . ' listeners: ' . count($listeners));
         foreach(array_keys($listeners) as $l) {
         	$listener =& $listeners[$l];
         	if ($listener->isNotNull()) {

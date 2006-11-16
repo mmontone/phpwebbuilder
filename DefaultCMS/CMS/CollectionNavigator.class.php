@@ -5,6 +5,8 @@ class CollectionNavigator extends Component {
 	var $classN;
 
 	function CollectionNavigator(&$col, $fields=null, $callbacks=array()) {
+		parent::Component();
+
 		if ($col == null) print_backtrace();
 		$this->col = & $col;
 		$this->col->addEventListener(array('changed'=>'refresh'), $this);
@@ -16,7 +18,6 @@ class CollectionNavigator extends Component {
 			$this->fields =& $fields;
 		}
 
-		parent::Component();
 		$this->registerCallbacks($callbacks);
 	}
 
