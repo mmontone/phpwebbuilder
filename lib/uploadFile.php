@@ -33,7 +33,7 @@ margin:0;
 	$app = & Application :: instance();
 	$ad =& new  ActionDispatcher;
 	$comp =& $ad->getComponent($_REQUEST["nodeid"], $app);
-	if($comp->loadFile($_FILES["fileelem"])){
+	if(!is_exception($ex =&$comp->loadFile($_FILES["fileelem"]))){
 
 ?>
 <script>
@@ -43,7 +43,7 @@ parwin.end_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$_FILES["fileelem"]["name"]
 <?} else {?>
 <script>
 var parwin = window.frameElement.ownerDocument.window;
-parwin.error_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$_FILES["fileelem"]["name"]?>");
+parwin.error_uploading("<?=$_REQUEST["nodeid"]?>", "<?=$ex->getMessage()?>");
 </script><?}
 }?></body>
 </html>
