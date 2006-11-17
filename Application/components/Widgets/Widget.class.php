@@ -127,6 +127,28 @@ class Widget extends Component {
 		), $target);
 	}
 
+	function onEnterClickOn(&$comp) {
+		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13) {
+			    var fireOnThis = document.getElementById('" . $this->getId() ."');
+			    var evObj = document.createEvent('HTMLEvents');
+				evObj.initEvent('change', true, true );
+				fireOnThis.dispatchEvent(evObj);
+				var fireOnThis = document.getElementById('" . $comp->getId() ."');
+				var evObj = document.createEvent('MouseEvents');
+				evObj.initEvent('click', true, true);
+				fireOnThis.dispatchEvent(evObj);}"));
+	}
+
+	function onEnterFocus(&$comp) {
+		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13) {
+			    var fireOnThis = document.getElementById('" . $this->getId() ."');
+			    var evObj = document.createEvent('HTMLEvents');
+				evObj.initEvent('change', true, true );
+				fireOnThis.dispatchEvent(evObj);
+				fireOnThis = document.getElementById('" . $comp->getId() ."');
+				fireOnThis.focus();}"));
+	}
+
 	function addInterestIn($event, & $event_callback) {
 		parent :: addInterestIn($event, & $event_callback);
 			switch ($event) {
