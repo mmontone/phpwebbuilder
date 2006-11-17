@@ -41,7 +41,6 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 
     function save(){
     	if ($this->obj->validateAll()) {
-    		$this->obj->commitChanges();
     		$this->callbackWith('object_edited', $this->obj);
     	} else {
     		$this->triggerEvent('invalid', $this->obj);

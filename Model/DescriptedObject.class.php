@@ -21,7 +21,7 @@ class DescriptedObject extends PWBObject {
 	 * If the object was modified. Defaults to true
 	 * (the object was modified, as it was created)
 	 */
-	var $modified = true;
+	var $modified = false;
 	/**
 	 * Validation errors for the object
 	 */
@@ -29,13 +29,24 @@ class DescriptedObject extends PWBObject {
 	/**
 	 * Commits the changes to each field.
 	 */
+
+
+	/*
+	function initializeInstance() {
+		foreach($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
+		}
+	}
+	*/
+
 	function commitChanges() {
 		//print_backtrace('Committing changes');
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->commitChanges();
 		}
-		$this->modified = false;
+		$this->setModified(false);
 		$this->triggerEvent('changes_committed', $this);
 	}
 
@@ -45,7 +56,7 @@ class DescriptedObject extends PWBObject {
 			$field =& $this->fieldNamed($f);
 			$field->primitiveCommitChanges();
 		}
-		$this->modified = false;
+		$this->setModified(false);
 		$this->triggerEvent('changes_committed', $this);
 	}
 	/**
@@ -64,13 +75,18 @@ class DescriptedObject extends PWBObject {
 			$field =& $this->fieldNamed($f);
 			$field->flushChanges();
 		}
-		$this->modified = false;
+		$this->setModified(false);
 	}
 	/**
 	 * Returns if the object was modified
 	 */
 	function isModified() {
 		return $this->modified;
+	}
+
+	function setModified($b) {
+		//print_backtrace(get_class($this) . '(' . $this->__instance_id . ') set modified: ' . $b);
+		$this->modified = $b;
 	}
 	/**
 	 * Initializes the default fields for the object
@@ -226,13 +242,14 @@ class DescriptedObject extends PWBObject {
 		}
 		$field->owner = & $this;
 
+		// Bad!! This doesn't work ($this is not appropiate)
 		$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
 	}
 	/**
 	 * Registers that the field was changed
 	 */
 	function fieldChanged(& $field) {
-		$this->modified = true;
+		$this->setModified(true);
 		$this->triggerEvent('changed', $this);
 	}
 	/**

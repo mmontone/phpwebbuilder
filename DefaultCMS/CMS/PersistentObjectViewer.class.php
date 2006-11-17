@@ -64,6 +64,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		}
 		else {
 			$db->commit();
+			$object->commitChanges();
 		}
 	}
 

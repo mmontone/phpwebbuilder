@@ -123,7 +123,7 @@ class DataField extends ValueModel {
 	function setValue($data) {
 		if ($data !== $this->buffered_value) {
 			$this->buffered_value =& $data;
-			$this->modified = true;
+			$this->setModified(true);
 			$this->triggerEvent('changed', $no_params = null);
 		}
 	}
@@ -140,9 +140,9 @@ class DataField extends ValueModel {
 	 * Commits the changes on the field
 	 */
 	function commitChanges() {
-		if ($this->modified) {
+		if ($this->isModified()) {
 			$this->primitiveCommitChanges();
-			$this->modified = false;
+			$this->setModified(false);
 			$this->triggerEvent('commited', $this);
 		}
 	}
@@ -150,9 +150,9 @@ class DataField extends ValueModel {
 	 * Reverts the changes
 	 */
 	function flushChanges() {
-		if ($this->modified) {
+		if ($this->isModified()) {
 			$this->primitiveFlushChanges();
-			$this->modified = false;
+			$this->setModified(false);
 			$this->triggerEvent('flushed', $this);
 			$this->triggerEvent('changed', $no_params = null);
 		}
@@ -169,6 +169,10 @@ class DataField extends ValueModel {
 	 */
 	function isModified() {
 		return $this->modified;
+	}
+
+	function setModified($b) {
+		$this->modified = $b;
 	}
 	/**
 	 * Loads the value from the record
