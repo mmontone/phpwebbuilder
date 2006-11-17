@@ -25,6 +25,10 @@ class DateTimeInput extends Component {
 		$this->addComponent(new Label(''), 'select');
 		$this->select->events->atPut('onclick', $a = array('onclick', 'displayCalendar(document.getElementById(\'' . $this->getId() . CHILD_SEPARATOR.'date\'),\'yyyy-mm-dd hh:ii\',this,true);'));
 	}
+
+	function onEnterClickOn(&$comp) {
+		$this->date->onEnterClickOn($comp);
+	}
 }
 
 ?>
