@@ -128,7 +128,7 @@ class Widget extends Component {
 	}
 
 	function onEnterClickOn(&$comp) {
-		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13) {
+		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13||event.keyCode==13) {
 			    var fireOnThis = document.getElementById('" . $this->getId() ."');
 			    var evObj = document.createEvent('HTMLEvents');
 				evObj.initEvent('change', true, true );
@@ -140,7 +140,7 @@ class Widget extends Component {
 	}
 
 	function onEnterFocus(&$comp) {
-		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13) {
+		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13||event.keyCode==13) {
 			    var fireOnThis = document.getElementById('" . $this->getId() ."');
 			    var evObj = document.createEvent('HTMLEvents');
 				evObj.initEvent('change', true, true );
