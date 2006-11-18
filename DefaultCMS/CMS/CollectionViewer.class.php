@@ -7,6 +7,7 @@ class CollectionViewer extends CollectionNavigator {
 		$u =& User::logged();
 		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null),'new');
 		parent::initialize();
+		$this->refresh();
 	}
 	function viewObject($params) {
 		$obj =& $params['object'];

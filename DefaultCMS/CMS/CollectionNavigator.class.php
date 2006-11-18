@@ -47,7 +47,6 @@ class CollectionNavigator extends Component {
 				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
 			}
 		}
-		$this->refresh();
 	}
 
 	function addNavigationButtons() {
@@ -93,7 +92,6 @@ class CollectionNavigator extends Component {
 		$this->redraw();
 		}
 	}
-
 	function checkAddingPermissionsFor(&$element) {
 		return true;
 	}
