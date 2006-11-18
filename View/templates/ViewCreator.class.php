@@ -48,8 +48,8 @@ class ViewCreator {
 	}
 
 	function loadTemplatesDir ($templatesdir){
-		$fs = getfilesrec($lam = lambda('$file','$v=substr($file, -4)=="'.$this->app->page_renderer->templateExtension().'"; return $v;', $a=array()), $templatesdir);
-		delete_lambda($lam);
+		$fs = getfilesrec(lambda('$file','$v=substr($file, -4)=="'.$this->app->page_renderer->templateExtension().'"; return $v;', $a=array()), $templatesdir);
+
 		$size = strlen(pwbdir);
 		if (pwbdir == substr ($templatesdir, 0, $size)){
 			$temp_url = pwb_url. substr ($templatesdir, $size);
@@ -134,10 +134,8 @@ class ViewCreator {
 		return $this->templateForClass($component);
 	}
 	function &templateForClass(&$component){
-		$ts =& $this->templates->filter($f = lambda(
+		$ts =& $this->templates->filter(lambda(
 				'&$t','$v=$t->isTemplateForClass($component);return $v;',get_defined_vars()));
-		delete_lambda($f);
-
 		if (!$ts->isEmpty()) {
 			$t = $ts->first();
 			$es = $ts->elements();

@@ -39,8 +39,7 @@ class CodeAnalyzer extends Component {
 
 		$files = array();
 		foreach($directories as $dir) {
-			$files = array_merge($files, $getfiles($lam = lambda('$file','return $v=substr($file, -4)==".php";', $a=array()),$dir));
-			delete_lambda($lam);
+			$files = array_merge($files, $getfiles(lambda('$file','return $v=substr($file, -4)==".php";', $a=array()),$dir));
 		}
 
 		$output = '';

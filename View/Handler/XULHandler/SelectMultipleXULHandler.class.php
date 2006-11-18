@@ -26,14 +26,13 @@ class SelectMultipleXULHandler extends SelectMultipleHTMLHandler{
 		$i=0;
 		$self =& $this;
 		$this->component->options->map(
-			$f = lambda('&$elem',
+			lambda('&$elem',
 			'$option =& new XMLNodeModificationsTracker(\'listitem\');
 			$option->setAttribute(\'value\', $i);
 			$option->setAttribute(\'label\',$self->component->displayElement($elem)));
 			$self->opts[$i] =& $option;
 			$view->appendChild($option);
 			$i++;', get_defined_vars()));
-		delete_lambda($f);
 	}
 
 }

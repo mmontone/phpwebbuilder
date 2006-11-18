@@ -81,10 +81,9 @@ function getfiles($pred, $dir) {
  * Includes all php files from a directory tree
  */
 function includefile(& $file) {
-		foreach (getfilesrec($lam = lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
+	foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
 		require_once ($f);
 	}
-	delete_lambda($lam);
 }
 /**
  * Includes a PWB Module
@@ -121,12 +120,11 @@ function trace_params() {
 /**
  * The array containing all classes and their subclasses
  */
-$PWBclasses = array ();
 /**
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
 function find_subclasses() {
-	global $PWBclasses;
+	$PWBclasses =& $_SESSION[sitename]['PWBclasses'];
 	$arr = get_declared_classes();
 	$ret = array ();
 	foreach ($arr as $o) {
@@ -144,7 +142,7 @@ function find_subclasses() {
  * Returns the subclasses of the specified class, in higher-to-lower order
  */
 function get_subclasses($str) {
-	global $PWBclasses;
+	$PWBclasses =& $_SESSION[sitename]['PWBclasses'];
 	if (count($PWBclasses) == 0)
 		find_subclasses();
 	return $PWBclasses[strtolower($str)];
@@ -153,7 +151,7 @@ function get_subclasses($str) {
  * Returns the subclasses of the specified class, in lower-to-higher order
  */
 function get_superclasses($str) {
-	global $PWBclasses;
+	$PWBclasses =& $_SESSION[sitename]['PWBclasses'];
 	$ret = array ();
 	$pc = get_parent_class($str);
 	while ($pc != '') {
@@ -266,11 +264,15 @@ function toAjax($s) {
  * and a context (an array of name=>variable to be used) and creates an
  * anonymous function. The context can be obtained with get_defined_vars()
  */
+
+$lambda_vars = array();
+
 function lambda($args, $code, $env = array ()) {
 	static $n = 0;
+	global $lambda_vars;
 	$functionName = sprintf('ref_lambda_%d', ++ $n);
-	$_SESSION['lambdas'][$functionName]['environment_vars'] = & $env;
-	$declaration = sprintf('function &%s(%s) {extract($_SESSION["lambdas"]["' . $functionName . '"]["environment_vars"],EXTR_REFS); ' /*.'trigger_error(backtrace_string(\''.str_replace('\'','\\\'',$code).'\'), E_USER_NOTICE);' */
+	$lambda_vars[$functionName]['environment_vars'] = & $env;
+	$declaration = sprintf('function &%s(%s) {global $lambda_vars;extract($lambda_vars["' . $functionName . '"]["environment_vars"],EXTR_REFS); ' /*.'trigger_error(backtrace_string(\''.str_replace('\'','\\\'',$code).'\'), E_USER_NOTICE);' */
 	 . '%s}', $functionName, $args, $code);
 	eval ($declaration);
 	return $functionName;
@@ -278,9 +280,7 @@ function lambda($args, $code, $env = array ()) {
 /**
  * Frees the space used for the variable's context
  */
-function delete_lambda($name) {
-	unset ($_SESSION['lambdas'][$name]);
-}
+function delete_lambda($name) {}
 
 /**
  * Checks if the variable references a PWB object

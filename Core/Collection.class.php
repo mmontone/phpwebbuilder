@@ -61,7 +61,6 @@ class Collection extends PWBObject {
 				return $k;
 			}
 		}
-		delete_lambda($f);
 		return -1;
 	}
 	/**
@@ -178,16 +177,14 @@ class Collection extends PWBObject {
 	 * each element
 	 */
 	function & map($func) {
-		$res = & $this->foldl(new Collection, $f = lambda('&$col,&$elem', '$col->add($func($elem)); return $col;', get_defined_vars()));
-		delete_lambda($f);
+		$res = & $this->foldl(new Collection, lambda('&$col,&$elem', '$col->add($func($elem)); return $col;', get_defined_vars()));
 		return $res;
 	}
 	/**
 	 *  Returns a collection of the elements that satisfy the predicate
 	 */
 	function & filter($pred) {
-		$res = & $this->foldl(new Collection, $f = lambda('&$col,&$elem', 'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
-		delete_lambda($f);
+		$res = & $this->foldl(new Collection,lambda('&$col,&$elem', 'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
 		return $res;
 	}
 	/**
@@ -223,8 +220,7 @@ class Collection extends PWBObject {
 	 *  See lib/basiclib.php/apply_messages() for further reference.
 	 */
 	function & collect($mess) {
-		$res = & $this->map($f = lambda('&$e', 'return apply_messages($e,$mess);', get_defined_vars()));
-		delete_lambda($f);
+		$res = & $this->map(lambda('&$e', 'return apply_messages($e,$mess);', get_defined_vars()));
 		return $res;
 	}
 	/**
@@ -245,8 +241,7 @@ class Collection extends PWBObject {
 
 	function addAllFromCollection(&$collection) {
 		$self =& $this;
-		$collection->for_each($f =& lambda('&$x', '$self->add($x);', get_defined_vars()));
-		delete_lambda($f);
+		$collection->for_each(lambda('&$x', '$self->add($x);', get_defined_vars()));
 	}
 
 	/**
@@ -261,8 +256,7 @@ class Collection extends PWBObject {
 
 	function removeAllFromCollection(&$collection) {
 		$self =& $this;
-		$collection->for_each($f =& lambda('&$x', '$self->remove($x);', get_defined_vars()));
-		delete_lambda($f);
+		$collection->for_each(lambda('&$x', '$self->remove($x);', get_defined_vars()));
 	}
 
 	/**
