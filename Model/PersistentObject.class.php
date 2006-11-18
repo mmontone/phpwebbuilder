@@ -315,6 +315,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function & getWithIndex($class, $indArray) {
 		$cs = & new PersistentCollection($class);
+		$cs->limit = 1;
 		foreach($indArray as $i=>$v){
 			$cs->setCondition($i,'=',$v);
 		}
