@@ -10,8 +10,8 @@ class FunctionObject
 
     function FunctionObject(&$target, $method_name, $params=array()) {
         $this->setTarget($target);
-        $this->method_name = $method_name;
-        $this->params = $params;
+        $this->method_name =& $method_name;
+        $this->params =& $params;
     }
 	function setTarget(&$target){
 		$this->target =& $target;

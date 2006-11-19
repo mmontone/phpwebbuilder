@@ -101,11 +101,12 @@ class PWBObject
 	 */
 
     function addInterestIn($event, &$function) {
-    	if (!isset($this->event_listeners[$event])) {
+    	/*if (!isset($this->event_listeners[$event])) {
 	        $this->event_listeners[$event] = array();
         }
     	$this->event_listeners[$event][$this->listener_handle] =& WeakFunctionObject::fromFunctionObject($function);
-       	$this->listener_handle++;
+       	$this->listener_handle++;*/
+       	$this->event_listeners[$event][] =& WeakFunctionObject::fromFunctionObject($function);
     }
 	/**
 	 * Registers a callback for the changed event

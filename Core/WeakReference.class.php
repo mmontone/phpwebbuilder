@@ -14,7 +14,7 @@ class WeakReference {
 	function &getTarget(){
 		global $allObjectsInMem;
 		$obj =& $allObjectsInMem[$this->refId];
-		if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}
+		//if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}
 		return $obj;
 	}
 	function isNotNull(){
