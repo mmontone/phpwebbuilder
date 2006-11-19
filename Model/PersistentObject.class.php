@@ -70,6 +70,8 @@ class PersistentObject extends DescriptedObject {
 	 * hierarchy that involves it)
 	 */
 	function getTables() {
+		$allObjectTables =& $_SESSION[sitename]['allObjectTables'];
+		if (!isset($allObjectTables[getClass($this)])){
 		$tns[] = $this->tableName();
 		$p0 = getClass($this);
 		$pcs = get_superclasses($p0);
@@ -91,8 +93,9 @@ class PersistentObject extends DescriptedObject {
 				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
 			}
 		}
-		$tn = array(implode(' ',$tns));
-		return $tn;
+		$allObjectTables[getClass($this)] = array(implode(' ',$tns));
+		}
+		return $allObjectTables[getClass($this)];
 	}
 
 	function tableNames(){

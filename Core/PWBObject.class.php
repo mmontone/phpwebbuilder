@@ -17,15 +17,15 @@ class PWBObject
 	 * Creation
 	 */
     function PWBObject($params=array()) {
-		if (!is_array($params)) {
+		/*if (!is_array($params)) {
 			print_backtrace_and_exit('Params is not and array');
-		}
+		}*/
 		PWBInstanceIdAssigner::assignIdTo($this);
 		$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->__wakeup();
-		if (!isset($params['dontCreateInstance'])){
+		//if (!isset($params['dontCreateInstance'])){
 			$this->createInstance($this->creationParams);
-		}
+		//}
 	}
 	/**
 	 * Comparing
