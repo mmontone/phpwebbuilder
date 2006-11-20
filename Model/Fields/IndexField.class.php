@@ -77,6 +77,7 @@ class IndexField extends NumField {
 
 	function setValue($value) {
 		parent::setValue($value);
+		//print_backtrace('Setting index field ' . $this->colName . $this->__instance_id .' value: ' . $value);
 		$n = null;
 		$this->buffered_target =& $n;
 	}
@@ -94,10 +95,15 @@ class IndexField extends NumField {
 		}
 	}
 
+	/*
 	function flushChanges() {
 		parent::flushChanges();
-		$this->buffered_target =& $this->target;
+		if ((is_object($this->buffered_target)) and (!($this->buffered_target->is($this->target)))) {
+			$this->buffered_target =& $this->target;
+			$this->triggerEvent('changed', $no_params = null);
+		}
 	}
+	*/
 
 	function commitChanges() {
 		parent::commitChanges();

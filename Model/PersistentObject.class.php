@@ -28,10 +28,10 @@ class PersistentObject extends DescriptedObject {
 		global $persistentObjects;
 		$o =& $persistentObjects[strtolower($class)][$id];
 		if ($o===null) {
-			echo "no encontrado $class $id";
+			//echo "no encontrado $class $id";
 			return $o;
 		} else {
-			echo "recuperando $class $id";
+			//echo "recuperando $class $id";
 			return $o->getRealChild();
 		}
 	}

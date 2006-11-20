@@ -51,7 +51,7 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function primitiveCommitChanges() {
-		//print_backtrace('Committing changes');
+		//print_backtrace('Primitive committing changes');
 		foreach($this->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->primitiveCommitChanges();

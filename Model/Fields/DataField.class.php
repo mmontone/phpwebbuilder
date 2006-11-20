@@ -154,15 +154,17 @@ class DataField extends ValueModel {
 			$this->primitiveFlushChanges();
 			$this->setModified(false);
 			$this->triggerEvent('flushed', $this);
-			$this->triggerEvent('changed', $no_params = null);
+			//$this->triggerEvent('changed', $no_params = null);
 		}
 	}
 
 	function primitiveCommitChanges() {
 		$this->value =& $this->buffered_value;
+		$this->setModified(false);
 	}
 	function primitiveFlushChanges() {
 		$this->setValue($this->value);
+		$this->setModified(false);
 	}
 	/**
 	 * Returns if the field was modified
@@ -172,6 +174,7 @@ class DataField extends ValueModel {
 	}
 
 	function setModified($b) {
+		//print_backtrace('Modified ' . $this->colName . $this->__instance_id . ': ' . $b);
 		$this->modified = $b;
 	}
 	/**
