@@ -9,6 +9,7 @@ class PersistentObject extends DescriptedObject {
 	 * If the object is new, or has been persisted
 	 */
 	var $existsObject;
+	var $idN;
 	/**
 	 * Sets the objec's ID, and notifies all the fields
 	 * (only the ones of this level)
@@ -17,12 +18,40 @@ class PersistentObject extends DescriptedObject {
 		foreach ($this->allFieldNamesThisLevel() as $field) {
 			$this->$field->setID($id);
 		}
+		$this->idN = $id;
+	}
+	function __wakeup(){
+		parent::__wakeup();
+		$this->registerGlobalObject();
+	}
+	function &findGlobalObject($class, $id){
+		global $persistentObjects;
+		$o =& $persistentObjects[strtolower($class)][$id];
+		if ($o===null) {
+			echo "no encontrado $class $id";
+			return $o;
+		} else {
+			echo "recuperando $class $id";
+			return $o->getRealChild();
+		}
+	}
+	function registerGlobalObject(){
+		global $persistentObjects;
+		$persistentObjects[getClass($this)][$this->getId()] =& $this;
+	}
+	function &getRealChild(){
+		if ($this->child===null) {
+			return $this;
+		} else {
+			return $this->child->getRealChild();
+		}
+
 	}
 	/**
 	 * Gets the ID of the object (Of the concrete class)
 	 */
 	function getID() {
-		return $this->id->getValue();
+		return $this->idN;
 	}
 	/**
 	 * Gets the ID of the object, of the specified class. If the object doesn't
@@ -30,7 +59,7 @@ class PersistentObject extends DescriptedObject {
 	 */
     function getIdOfClass($class){
     	if (strcasecmp(getClass($this), $class)==0) {
-    		return $this->id->getValue();
+    		return $this->getId();
     	} else {
     		if ($this->parent==null) print_backtrace(getClass($this).' doesn have parent '.$class);
     		return $this->parent->getIdOfClass($class);
@@ -253,6 +282,7 @@ class PersistentObject extends DescriptedObject {
 			$this->setParent(new $c);
 		}
 		$this->basicInitialize();
+		$this->registerGlobalObject();
 		return $this;
 	}
 	/**
@@ -261,6 +291,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function setParent(& $obj) {
 		$this->parent = & $obj;
+		$obj->child =& $this;
 		$arr = $this->parent->allFieldNames();
 		foreach ($arr as $name) {
 			if ($name != 'id' && $name != 'super')
@@ -297,6 +328,8 @@ class PersistentObject extends DescriptedObject {
 	 * Function for loading an object (class method)
 	 */
 	function & getWithId($class, $id) {
+		$o =&PersistentObject::findGlobalObject($class, $id);
+		if ($o!==null) return $o;
 		$obj = & new $class;
 		$obj = & $obj->loadFromId($id);
 		return $obj;
