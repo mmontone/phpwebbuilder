@@ -71,7 +71,7 @@ class XMLNode extends DOMXMLNode {
 			$this->attributes['id'] =  $id;
 			return $id;
 		} else {
-				if (!$this->parentNode) print_backtrace('');
+				if (!$this->parentNode) print_backtrace('no parent');
 				return $this->parentNode->getRealId();
 		}
 	}

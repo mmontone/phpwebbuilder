@@ -45,14 +45,14 @@ class PWBObject
 	function getInstanceId(){
 		/*if (is_null($this->__instance_id)) {
 			print_backtrace_and_exit(getClass($this) . ' has no assigned id!!!');
-		}*/
+		}//*/
 		return $this->__instance_id;
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
 		/*if (!$this->getInstanceId()) {
 			print_backtrace(getClass($this) . ' doesn\'t have id!!!');
-		}*/
+		}//*/
 		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**

@@ -11,23 +11,34 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function & instantiate() {
 		return $this;
 	}
-	function addChildMod(&$mod){
+	function addChildMod($pos,&$mod){
+		//echo "<br/>putting a ".getClass($mod)." in '$pos'";
+		/*if ($this->parentNode){
+			echo "<br/>". $this->getId() .' '. getClass($mod);
+			if ($mod->toFlush) echo "(".getClass($mod->toFlush->getTarget()).")";
+			echo "(in ".getClass($this->toFlush->getTarget()).")";
+		}*/
 		if ($this->willFlush()) {
 			$t =& $this->toFlush->getTarget();
-			$t->addChildMod($mod);
+			$t->addChildMod($pos,$mod);
 		} else {
 			$this->toFlush->setTarget($m=& new ChildModificationsXMLNodeModification($this));
-			$m->addChildMod($mod);
+			$m->addChildMod($pos,$mod);
 			if ($this->parentNode) {
-				$this->parentNode->addChildMod(&$m);
+				$this->parentNode->addChildMod($this->parentPosition,$this);
 			}
 		}
 	}
-	/*function flushModifications() {
+	function removeChildMod($pos){
+		$tf =& $this->toFlush->getTarget();
+		$tf->removeChildMod($pos);
+	}
+	function flushModifications() {
 		$n = null;
 		$a = array();
-		//$this->modifications =& $a;
-		//$this->toFlush->setTarget(new NullXMLNodeModification($this));
+		$this->modifications =& $a;
+		$this->toFlush->setTarget(new NullXMLNodeModification($this));
+		/*
 		$cn =& $this->childNodes;
 		foreach (array_keys($cn) as $key) {
 			if (!is_object($cn[$key])) {
@@ -35,8 +46,8 @@ class XMLNodeModificationsTracker extends XMLNode {
 				//var_dump($cn[$key]);
 			}
 			$cn[$key]->flushModifications();
-		}
-	}*/
+		}*/
+	}
 
 	function createElement($tag_name, & $controller) {
 		$element = & new XMLNodeModificationsTracker($tag_name);
@@ -48,42 +59,49 @@ class XMLNodeModificationsTracker extends XMLNode {
 		// I don't want modifications on the $child to be taken into account by the page renderer
 		//$child->flushModifications();
 		$child->toFlush->setTarget(new AppendChildXMLNodeModification($this, $child));
-
+		$ret = parent :: appendChild($child);
+		$this->addChildMod($child->parentPosition,$child);
 		// Tag the child as an appended  node. See what happens when a "append" modification is found in AjaxPageRenderer
-		return parent :: appendChild($child);
+		return $ret;
 	}
 	function willFlush(){
+		$t =& $this->toFlush->getTarget();
+		return $t!==null && getClass($t)!='nullxmlnodemodification';
+	}
+	function willFlushNode(){
 		$t =& $this->toFlush->getTarget();
 		return $t!==null && getClass($t)!='nullxmlnodemodification' && getClass($t)!='childmodificationsxmlnodemodification';
 	}
 	function replaceChild(& $new_child, & $old_child) {
 		// I don't want modifications on the $new_child to be taken into account by the page renderer
 		//$new_child->flushModifications();
-
-		if ($old_child->willFlush()) {
+		$ret = parent :: replaceChild($new_child, $old_child);
+		if ($old_child->willFlushNode()) {
 			$tf =& $old_child->toFlush->getTarget();
 			$tf->apply_replace($new_child);
 			$new_child->toFlush->setTarget($tf);
+			$this->addChildMod($new_child->parentPosition,$new_child);
 		} else {
 			$new_child->toFlush->setTarget(new ReplaceChildXMLNodeModification($new_child, $old_child, $this));
+			$this->addChildMod($new_child->parentPosition,$new_child);
 		}
-
-		return parent :: replaceChild($new_child, $old_child);
+		return $ret;
 	}
 
 	function removeChild(& $child) {
-		if ($child->willFlush()) {
+		if ($child->willFlushNode()) {
 			$tf =& $child->toFlush->getTarget();
 			if (getClass($tf) == 'replacechildxmlnodemodification'){
-				$old =& $tf->child;
-				$this->addChildMod(new RemoveChildXMLNodeModification($this, $old));
+				$this->addChildMod($child->parentPosition,new RemoveChildXMLNodeModification($this, $child));
+			} else {
+				$this->removeChildMod($child->parentPosition);
 			}
 		}
 		else {
 			$mod =& new RemoveChildXMLNodeModification($this, $child);
-			$this->modifications[$child->getId()] =& $mod;
+			$this->addChildMod($child->parentPosition,$mod);
 		}
-		return parent :: removeChild($child);
+		return parent :: removeChild($child);;
 	}
 
 
@@ -92,39 +110,34 @@ class XMLNodeModificationsTracker extends XMLNode {
 	}
 
 	function setAttribute($attribute, $value) {
-		$this->addChildMod(new SetAttributeXMLNodeModification($this, $attribute, $value));
+		$this->addChildMod($attribute,new SetAttributeXMLNodeModification($this, $attribute, $value));
 		return parent :: setAttribute($attribute, $value);
 	}
 
 	function removeAttribute($attribute) {
-		$this->addChildMod(new RemoveAttributeXMLNodeModification($this,$attribute));
+		$this->addChildMod($attribute,new RemoveAttributeXMLNodeModification($this,$attribute));
 		return parent::removeAttribute($attribute);
 	}
 
 	function insertBefore(&$old, &$new){
 		$new->toFlush->setTarget(new InsertBeforeXMLNodeModification($this, $old, $new));
-		return parent :: insertBefore($old, $new);
+		$ret = parent :: insertBefore($old, $new);
+		$this->addChildMod($new->parentPosition,$new);
+		return $ret;
 	}
-	function renderAjaxResponseCommands(& $node) {
-		if ($this->toFlush->isNotNull()) {
+	function renderAjaxResponseCommand() {
+		if ($this->willFlush()) {
 			$tf =& $this->toFlush->getTarget();
 			$xml = $tf->renderAjaxResponseCommand();
 		} else {
-			foreach (array_keys($this->childNodes) as $i) {
-				$xml .= $this->childNodes[$i]->renderAjaxResponseCommands();
-			}
-			return $xml;
+			$xml = '';
 		}
+		/*foreach (array_keys($this->childNodes) as $i) {
+			$xml .= $this->childNodes[$i]->renderAjaxResponseCommand();
+		}*/
+		//$this->flushModifications();
+		return $xml;
 	}
 }
-
-/*
- * A node is asked to render itself
- * If it has no rendering, then do nothing.
- * Modifications are weakreferences
- *
- * When modifying a node, ask the parent to remember to show the child's changes (recursively).
- *
- * */
 
 ?>

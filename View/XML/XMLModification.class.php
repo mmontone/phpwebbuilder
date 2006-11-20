@@ -13,7 +13,8 @@ class XMLNodeModification extends PWBObject{
 		return $visitor->$visit_selector($this, $params);
 	}
 	function willFlush(){return true;}
-	function addChildMod(&$mod){}
+	function addChildMod($pos,&$mod){}
+	function removeChildMod($pos){}
 }
 
 class ReplaceNodeXMLNodeModification extends XMLNodeModification {
@@ -80,9 +81,15 @@ class ChildModificationsXMLNodeModification extends XMLNodeModification {
 		}
 		return $xml;
 	}
-	function addChildMod(&$mod){
-		$this->modifications[] =& $mod;
+	function addChildMod($pos,&$mod){
+		//if ($this->modifications[$pos]) echo "replacing a ".getClass($this->modifications[$pos])." by ".getClass($mod). " in ".$pos; else echo "adding a ".getClass($mod). " in ".$pos;
+		$this->modifications[$pos] =& $mod;
 	}
+	function removeChildMod($pos){
+		//if ($this->modifications[$pos]) echo "removing a ".getClass($this->modifications[$pos])." in ".$pos;
+		unset($this->modifications[$pos]);
+	}
+
 }
 
 
