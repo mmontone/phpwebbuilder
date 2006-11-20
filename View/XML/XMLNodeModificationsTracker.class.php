@@ -75,17 +75,16 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function replaceChild(& $new_child, & $old_child) {
 		// I don't want modifications on the $new_child to be taken into account by the page renderer
 		//$new_child->flushModifications();
-		$ret = parent :: replaceChild($new_child, $old_child);
 		if ($old_child->willFlushNode()) {
 			$tf =& $old_child->toFlush->getTarget();
 			$tf->apply_replace($new_child);
 			$new_child->toFlush->setTarget($tf);
-			$this->addChildMod($new_child->parentPosition,$new_child);
+			$this->addChildMod($old_child->parentPosition,$new_child);
 		} else {
 			$new_child->toFlush->setTarget(new ReplaceChildXMLNodeModification($new_child, $old_child, $this));
-			$this->addChildMod($new_child->parentPosition,$new_child);
+			$this->addChildMod($old_child->parentPosition,$new_child);
 		}
-		return $ret;
+		return parent :: replaceChild($new_child, $old_child);
 	}
 
 	function removeChild(& $child) {
