@@ -62,7 +62,7 @@ class QuicKlick {
 		if (!$t->save()) {echo DBSession::lastError();}
 		$_SESSION['QKtest'] =& $t;
 		for($i=0; $i<$iters; $i++){
-			$this->app->component->view->flushModifications();
+			//$this->app->component->view->flushModifications();
 			$data = $this->getSendable($i);
 			$p =& new QKPass();
 			$p->number->setValue($i);

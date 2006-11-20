@@ -57,7 +57,7 @@ class Application extends ComponentHolder {
 		exit;
 	}
 	function redraw() {
-		$this->wholeView->flushModifications();
+		//$this->wholeView->flushModifications();
 		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
 	}
 	function & getInstanceOf($c) {

@@ -213,7 +213,7 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		$ret .= $page;
 		$ret .= '</body></html>';
 
-		$this->page->flushModifications();
+		//$this->page->flushModifications();
 
 		return $ret;
 	}
@@ -234,7 +234,7 @@ class DebugModificationsPageRenderer extends StandardPageRenderer {
 		header("Content-type: text/xml");
 		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		echo $this->page->printString();
-		$this->page->flushModifications();
+		//$this->page->flushModifications();
 		exit;
 	}
 }
@@ -244,7 +244,7 @@ class DebugPageRenderer extends StandardPageRenderer {
 		header("Content-type: text/xml");
 		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		echo $this->page->render();
-		$this->page->flushModifications();
+		//$this->page->flushModifications();
 		exit;
 	}
 }

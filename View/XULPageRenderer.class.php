@@ -65,7 +65,7 @@ class XULPageRenderer extends PageRenderer {
 		$page = $this->page->render();
 		$ret .= $page;
 		$ret .= '</window>';
-		$this->page->flushModifications();
+		//$this->page->flushModifications();
 
 		return $ret;
 	}

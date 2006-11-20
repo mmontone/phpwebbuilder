@@ -23,20 +23,20 @@ class XMLNodeModificationsTracker extends XMLNode {
 			}
 		}
 	}
-	function flushModifications() {
+	/*function flushModifications() {
 		$n = null;
 		$a = array();
 		//$this->modifications =& $a;
 		//$this->toFlush->setTarget(new NullXMLNodeModification($this));
 		$cn =& $this->childNodes;
 		foreach (array_keys($cn) as $key) {
-			/*if (!is_object($cn[$key])) {
+			if (!is_object($cn[$key])) {
 				print_backtrace($cn[$key]);
 				//var_dump($cn[$key]);
-			}*/
+			}
 			$cn[$key]->flushModifications();
 		}
-	}
+	}*/
 
 	function createElement($tag_name, & $controller) {
 		$element = & new XMLNodeModificationsTracker($tag_name);
@@ -46,7 +46,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 
 	function appendChild(& $child) {
 		// I don't want modifications on the $child to be taken into account by the page renderer
-		$child->flushModifications();
+		//$child->flushModifications();
 		$child->toFlush->setTarget(new AppendChildXMLNodeModification($this, $child));
 
 		// Tag the child as an appended  node. See what happens when a "append" modification is found in AjaxPageRenderer
@@ -58,7 +58,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 	}
 	function replaceChild(& $new_child, & $old_child) {
 		// I don't want modifications on the $new_child to be taken into account by the page renderer
-		$new_child->flushModifications();
+		//$new_child->flushModifications();
 
 		if ($old_child->willFlush()) {
 			$tf =& $old_child->toFlush->getTarget();
