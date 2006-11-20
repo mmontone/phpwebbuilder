@@ -267,11 +267,11 @@ class AjaxPageRenderer extends PageRenderer {
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
-		$xml .= $this->renderAjaxResponseCommands($this->page);
+		$xml .= $this->page->renderAjaxResponseCommands();
 		$xml .= $this->renderAjaxCommands();
 		$xml .= "</ajax>";
 
-		$this->page->flushModifications();
+		//$this->page->flushModifications();
 
 		return $xml;
 	}
@@ -288,17 +288,6 @@ class AjaxPageRenderer extends PageRenderer {
 		return $xml;
 	}
 
-	function renderAjaxResponseCommands(& $node) {
-		$xml = '';
-		$xml .=$node->toFlush->renderAjaxResponseCommand();
-		foreach (array_keys($node->modifications) as $i) {
-			$xml .= $node->modifications[$i]->renderAjaxResponseCommand();
-		}
-		foreach (array_keys($node->childNodes) as $i) {
-			$xml .= $this->renderAjaxResponseCommands($node->childNodes[$i]);
-		}
-		return $xml;
-	}
 	function toAjax($s) {
 		return $this->toXML($this->toHTML($s));
 	}

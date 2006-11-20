@@ -21,7 +21,7 @@ class Application extends ComponentHolder {
 		$rc = & $this->setRootComponent();
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
-		$rc->view->toFlush =& new ReplaceChildXMLNodeModification($rc->view, $this->component, $this->wholeView);
+		$rc->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($rc->view, $this->component, $this->wholeView));
 
 	}
 

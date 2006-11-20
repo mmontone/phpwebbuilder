@@ -35,8 +35,7 @@ class UrlManager extends PWBObject{
     function setUrl($url){
 		$this->prevUrl = $this->actUrl;
     	$this->actUrl = $url;
-    	$this->application->wholeView->toFlush = &
-    		new BookmarkXMLNodeModification($this->actUrl);
+    	$this->application->wholeView->toFlush->setTarget(new BookmarkXMLNodeModification($this->actUrl));
    		$this->application->wholeView->modifications['bookmark'] = & $this->application->wholeView->toFlush;
     }
     function navigate($bookmark, $params){

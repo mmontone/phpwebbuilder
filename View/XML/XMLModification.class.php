@@ -1,9 +1,10 @@
 <?php
 
-class XMLNodeModification {
+class XMLNodeModification extends PWBObject{
 	var $target;
 
 	function XMLNodeModification(&$target) {
+		parent::PWBObject();
 		$this->target =& $target;
 	}
 
@@ -12,6 +13,7 @@ class XMLNodeModification {
 		return $visitor->$visit_selector($this, $params);
 	}
 	function willFlush(){return true;}
+	function addChildMod(&$mod){}
 }
 
 class ReplaceNodeXMLNodeModification extends XMLNodeModification {
@@ -22,7 +24,7 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		$this->replacement = & $replacement;
 	}
 	function renderAjaxResponseCommand() {
-		$this->replacement->flushModifications();
+		//$this->replacement->flushModifications();
 		$xml = '<repn id="' . $this->target->getId() . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</repn>';
@@ -35,6 +37,7 @@ class BookmarkXMLNodeModification extends XMLNodeModification {
 	var $hash;
 
 	function BookmarkXMLNodeModification($hash) {
+		parent::XMLNodeModification($n=null);
 		$this->hash = $hash;
 	}
 	function renderAjaxResponseCommand() {
@@ -53,7 +56,7 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 		$this->replacement = & $replacement;
 	}
 	function renderAjaxResponseCommand() {
-		$this->replacement->flushModifications();
+		//$this->replacement->flushModifications();
 		$xml = '<repn id="' . $this->childId . '">';
 		$xml .= $this->replacement->render();
 		$xml .= '</repn>';
@@ -69,6 +72,21 @@ class NullXMLNodeModification extends XMLNodeModification {
 	function willFlush(){return false;}
 }
 
+class ChildModificationsXMLNodeModification extends XMLNodeModification {
+	var $modifications = array();
+	function renderAjaxResponseCommand() {
+		foreach (array_keys($this->modifications) as $i) {
+			$mod =& $this->modifications[$i];
+			$xml .= $mod->renderAjaxResponseCommand();
+		}
+		return $xml;
+	}
+	function addChildMod(&$mod){
+		$this->modifications[] =& $mod;
+	}
+}
+
+
 class InsertBeforeXMLNodeModification extends XMLNodeModification {
 	var $old;
 	var $new;
@@ -78,7 +96,7 @@ class InsertBeforeXMLNodeModification extends XMLNodeModification {
 		$this->new = & $new;
 	}
 	function renderAjaxResponseCommand() {
-		$this->new->flushModifications();
+		//$this->new->flushModifications();
 		$xml = '<insert id="' . $this->old->getId() . '">';
 		$xml .= $this->new->render();
 		$xml .= '</insert>';
@@ -96,7 +114,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 		$this->child = & $child;
 	}
 	function renderAjaxResponseCommand() {
-		$this->child->flushModifications();
+		//$this->child->flushModifications();
 		$xml = '<append id="' . $this->target->getId() . '">';
 		$xml .= $this->child->render();
 		$xml .= '</append>';
