@@ -81,6 +81,10 @@ class Report extends Collection{
 		$this->vars[$id] =& $class;
 	}
 
+	function freeVar($id, $class) {
+		$o =& new $class;
+		$this->vars[$id] =& $class;
+	}
 
 	function setPathCondition(&$condition) {
 		//$condition->applyTo($this);

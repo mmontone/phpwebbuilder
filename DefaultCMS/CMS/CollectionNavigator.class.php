@@ -84,16 +84,11 @@ class CollectionNavigator extends Component {
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {
 			$element =& $elements[$k];
-			if ($this->checkAddingPermissionsFor($element)) {
-				$fc =& $this->addLine($elements[$k]);
-				$this->objs->addComponent($fc);
-			}
+			$fc =& $this->addLine($elements[$k]);
+			$this->objs->addComponent($fc);
 		}
 		$this->redraw();
 		}
-	}
-	function checkAddingPermissionsFor(&$element) {
-		return true;
 	}
 
 	function getValue(){}
