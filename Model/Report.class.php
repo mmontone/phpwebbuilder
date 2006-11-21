@@ -76,13 +76,12 @@ class Report extends Collection{
 	}
 
 	function defineVar($id, $class) {
-		$o =& new $class;
+		$o =& new $class(array(),false);
 		$this->addTables($o->getTables());
 		$this->vars[$id] =& $class;
 	}
 
 	function freeVar($id, $class) {
-		$o =& new $class;
 		$this->vars[$id] =& $class;
 	}
 
@@ -182,7 +181,7 @@ class Report extends Collection{
 	  */
 	function &getObject(){
 		$dt = $this->getDataType();
-		$o  =& new $dt;
+		$o  =& new $dt(array(),false);
 		return $o;
 	}
 	/**
@@ -395,17 +394,18 @@ class Report extends Collection{
 
 	function &makeElement($data){
 		$dt = $this->getDataType();
-		$old =& PersistentObject::findGlobalObject($dt,$data[$this->getDataTypeSqlId()]);
+		$id = $data[$this->getDataTypeSqlId()];
+		$old =& PersistentObject::findGlobalObject($dt,$id);
 		if ($old!==null){
 			return $this->fillExtras($old, $data);
 		}
-		$obj =& new $dt;
+		$obj =& new $dt(array(),false);
 		return $this->fillExtras($obj->loadFromRec($data), $data);
 	}
 	function getDataTypeSqlId(){
 		if($this->dataTypeSqlId ===null){
 			$dt = $this->getDataType();
-			$obj =& new $dt;
+			$obj =& new $dt(array(),false);
 			$this->dataTypeSqlId =$obj->id->sqlName();
 		}
 		return $this->dataTypeSqlId;
@@ -675,11 +675,11 @@ class PathExpression extends Expression {
 			array_shift($pp);
 		}
 
-		$o =& new $datatype;
+		$o =& new $datatype(array(),false);
 
 		foreach ($pp as $index) {
 			$class =& $o->$index->getDataType();
-			$obj =& new $class;
+			$obj =& new $class(array(),false);
 			$report->addTables($obj->getTables());
 			$otable = $o->tableForField($index);
 			//echo 'Setting condition: ' . $otable. '.' . $index, '=', $obj->getTable() . '.id<br />';

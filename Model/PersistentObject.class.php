@@ -21,6 +21,10 @@ class PersistentObject extends DescriptedObject {
 		$this->idN = $id;
 		$this->registerGlobalObject();
 	}
+	function PersistentObject($parems=array(),$create=true){
+		parent::PWBObject($parems);
+		if ($create) $this->initializeObject();
+	}
 	function __wakeup(){
 		parent::__wakeup();
 		$this->registerGlobalObject();
@@ -38,7 +42,9 @@ class PersistentObject extends DescriptedObject {
 	}
 	function registerGlobalObject(){
 		global $persistentObjects;
-		$persistentObjects[getClass($this)][$this->getId()] =& $this;
+		$id = $this->getId();
+		if ($id!=0)
+			$persistentObjects[getClass($this)][$id] =& $this;
 	}
 	function &getRealChild(){
 		if ($this->child===null) {
@@ -77,7 +83,7 @@ class PersistentObject extends DescriptedObject {
 		$fs = array();
 		foreach($rcs as $rc){
 			if ($rc != 'persistentobject' && $rc != 'descriptedobject' && $rc != 'pwbobject') {
-				$o = new $rc;
+				$o = new $rc(array(),false);
 				$fs = array_merge($fs, $o->allSQLFields());
 			}
 		}
@@ -107,7 +113,7 @@ class PersistentObject extends DescriptedObject {
 		$pcs = get_superclasses($p0);
 		$o0 =& $this;
 		foreach($pcs as $pc){
-			$o1 =& new $pc;
+			$o1 =& new $pc(array(),false);
 			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
 				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o1->tableName().'.id = '.$o0->tableName().'.super';
 			}
@@ -116,9 +122,9 @@ class PersistentObject extends DescriptedObject {
 		}
 		$scs = get_subclasses(getClass($this));
 		foreach($scs as $sc){
-			$o1 =& new $sc;
+			$o1 =& new $sc(array(),false);
 			$pc = get_parent_class($sc);
-			$o2 =& new $pc;
+			$o2 =& new $pc(array(),false);
 			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
 				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
 			}
@@ -156,8 +162,8 @@ class PersistentObject extends DescriptedObject {
 		foreach($rcs as $rc){
 			$sup = get_parent_class($rc);
 			if ($sup != 'persistentobject' && $sup != 'descriptedobject' && $sup != 'pwbobject' && $sup != ''){
-				$o1 = new $rc;
-				$o2 = new $sup;
+				$o1 = new $rc(array(),false);
+				$o2 = new $sup(array(),false);
 				$rss[] = '('.$o2->tableName().'.id = '.$o1->tableName().'.super'.
 					' or '. $o1->tableName().'.super IS NULL)';
 			}
@@ -280,10 +286,13 @@ class PersistentObject extends DescriptedObject {
 	function & createInstance() {
 		if ($this->isNotTopClass($this)) {
 			$c = get_parent_class(getClass($this));
-			$this->setParent(new $c);
+			$this->setParent(new $c(array(),false));
 		}
 		$this->basicInitialize();
 		return $this;
+	}
+	function initializeObject(){
+		//print_backtrace(getClass($this));
 	}
 	/**
 	 * Setter for the parent of the object.
@@ -328,9 +337,10 @@ class PersistentObject extends DescriptedObject {
 	 * Function for loading an object (class method)
 	 */
 	function & getWithId($class, $id) {
+		if ($id==0) return $n=null;
 		$o =&PersistentObject::findGlobalObject($class, $id);
 		if ($o!==null) return $o;
-		$obj = & new $class;
+		$obj = & new $class(array(),false);
 		$obj = & $obj->loadFromId($id);
 		return $obj;
 	}
@@ -382,7 +392,7 @@ class PersistentObject extends DescriptedObject {
 		$rcss = get_subclasses($c);
 		$rcs = array_reverse($rcss);
 		foreach($rcs as $rc){
-			$o =& new $rc;
+			$o =& new $rc(array(),false);
 			if ($o->canBeLoaded($rec)){
 				return $o;
 			}
@@ -532,7 +542,7 @@ class PersistentObject extends DescriptedObject {
 		$p0 = getClass($this);
 		$pcs = get_superclasses($p0);
 		foreach($pcs as $pc){
-			$o1 =& new $pc;
+			$o1 =& new $pc(array(),false);
 			//echo 'Checking class ' . getClass($o1). ' field ' . $field . '<br />';
 			if (in_array($field, $o1->allFieldNamesThisLevel())) {
 				//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
