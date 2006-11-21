@@ -19,6 +19,7 @@ class PersistentObject extends DescriptedObject {
 			$this->$field->setID($id);
 		}
 		$this->idN = $id;
+		$this->registerGlobalObject();
 	}
 	function __wakeup(){
 		parent::__wakeup();
@@ -282,7 +283,6 @@ class PersistentObject extends DescriptedObject {
 			$this->setParent(new $c);
 		}
 		$this->basicInitialize();
-		$this->registerGlobalObject();
 		return $this;
 	}
 	/**

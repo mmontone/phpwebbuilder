@@ -65,8 +65,20 @@ class PersistentCollection extends Report{
 	/**
 	  * Creates an element, and fills it from the record
 	  */
+	function getDataTypeSqlId(){
+		if($this->dataTypeSqlId ===null){
+			$dt = $this->getDataType();
+			$obj =& new $dt;
+			$this->dataTypeSqlId =$obj->id->sqlName();
+		}
+		return $this->dataTypeSqlId;
+	}
 	function &makeElement($data){
 		$dt = $this->getDataType();
+		$old =& PersistentObject::findGlobalObject($dt,$data[$this->getDataTypeSqlId()]);
+		if ($old!==null){
+			return $old;
+		}
 		$obj =& new $dt;
 		return $obj->loadFromRec($data);
 	}
