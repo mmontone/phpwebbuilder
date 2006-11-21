@@ -24,7 +24,7 @@ class Report extends Collection{
 	 /**
 	 * The class of the elements to be returned
 	 */
-	 var $dataType = 'DescriptedObject';
+	 var $dataType = 'PersistentObject';
 	 /**
 	  * Adds a condition to filter the data
 	  */
@@ -394,15 +394,30 @@ class Report extends Collection{
 	  */
 
 	function &makeElement($data){
-		$obj =& $this->getObject();
+		$dt = $this->getDataType();
+		$old =& PersistentObject::findGlobalObject($dt,$data[$this->getDataTypeSqlId()]);
+		if ($old!==null){
+			return $this->fillExtras($old, $data);
+		}
+		$obj =& new $dt;
+		return $this->fillExtras($obj->loadFromRec($data), $data);
+	}
+	function getDataTypeSqlId(){
+		if($this->dataTypeSqlId ===null){
+			$dt = $this->getDataType();
+			$obj =& new $dt;
+			$this->dataTypeSqlId =$obj->id->sqlName();
+		}
+		return $this->dataTypeSqlId;
+	}
+	function &fillExtras($obj,$data){
 		$ret []= $obj->fieldNames('SELECT');
-		$o =& $obj->loadFromRec($data);
 	 	foreach($data as $n=>$m){
 	 		if (!isset($ret[$n])){
-	 			$o->$n =& new ValueHolder($m);
+	 			$obj->$n =& new ValueHolder($m);
 	 		}
 	 	}
-	 	return $o;
+	 	return $obj;
 	}
 }
 
@@ -625,13 +640,18 @@ class ValueExpression extends Expression {
 class ObjectExpression extends Expression {
 	var $object;
 
-	function ObjectExpression(&$object) {
+	function ObjectExpression(&$object,$class=null) {
 		$this->object =& $object;
+		$this->class = $class;
 		parent::Expression();
 	}
 
 	function evaluateIn(&$report) {
-		return $this->object->getId();
+		if ($this->class===null) {
+			return $this->object->getId();
+		} else {
+			return $this->object->getIdOfClass($this->class);
+		}
 	}
 }
 

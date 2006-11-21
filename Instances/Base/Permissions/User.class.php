@@ -75,6 +75,22 @@ class User extends PersistentObject {
 	}
 
 	function getPermissions() {
+		$r =& new Report();
+		$r->defineVar('u','UserRole');
+		$r->defineVar('p','RolePermission');
+
+		$c1 =& new EqualCondition(array('exp1' => new AttrPathExpression('u', 'role'),
+			                                'exp2' => new AttrPathExpression('p', 'role')));
+		$c2 =& new EqualCondition(array('exp1' => new AttrPathExpression('u', 'user'),
+			                                'exp2' => new ObjectExpression($this,'User')));
+
+		$r->setPathCondition($c1);
+		$r->setPathCondition($c2);
+		$r->select('permission');
+		foreach ($r->elements() as $p) {
+			$this->permissions[] = strtolower($p->permission->getValue());
+		}
+		/*
 		$db = & DBSession:: Instance();
 		$sql = implode(array (
 			'SELECT permission FROM ',
@@ -87,7 +103,7 @@ class User extends PersistentObject {
 		$ps = $db->queryDB($sql);
 		foreach ($ps as $p) {
 			$this->permissions[] = strtolower($p['permission']);
-		}
+		}*/
 	}
 	function hasPermission($permission) {
 		return in_array(strtolower($permission), $this->permissions);
