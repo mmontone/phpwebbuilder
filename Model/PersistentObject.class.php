@@ -390,6 +390,7 @@ class PersistentObject extends DescriptedObject {
 	function &loadFromRec(&$rec){
 		$obj =& $this->chooseSubclass($rec);
 		$obj->loadFrom($rec);
+		$obj->initializeObject();
 		return $obj;
 	}
 	/**
@@ -405,7 +406,7 @@ class PersistentObject extends DescriptedObject {
 				return $o;
 			}
 		}
-		return new $c;
+		return new $c(array(), false);
 	}
 	/**
 	 * Checks if the subclass can be loaded from the record
