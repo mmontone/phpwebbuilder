@@ -23,8 +23,16 @@ class PersistentObject extends DescriptedObject {
 	}
 	function PersistentObject($parems=array(),$create=true){
 		parent::PWBObject($parems);
-		if ($create) $this->initializeObject();
+		if ($create) {
+			foreach($this->allFieldNames() as $f) {
+				$field =& $this->fieldNamed($f);
+				$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
+			}
+
+			$this->initializeObject();
+		}
 	}
+
 	function __wakeup(){
 		parent::__wakeup();
 		$this->registerGlobalObject();

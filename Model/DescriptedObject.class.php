@@ -31,15 +31,6 @@ class DescriptedObject extends PWBObject {
 	 */
 
 
-	/*
-	function initializeInstance() {
-		foreach($this->allFieldNames() as $f) {
-			$field =& $this->fieldNamed($f);
-			$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
-		}
-	}
-	*/
-
 	function commitChanges() {
 		//print_backtrace('Committing changes');
 		foreach($this->allFieldNames() as $f) {
@@ -243,7 +234,7 @@ class DescriptedObject extends PWBObject {
 		$field->owner = & $this;
 
 		// Bad!! This doesn't work ($this is not appropiate)
-		$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
+		//$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
 	}
 	/**
 	 * Registers that the field was changed
