@@ -128,19 +128,17 @@ class Widget extends Component {
 	}
 
 	function onEnterClickOn(&$comp) {
-		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13||event.keyCode==13) {
-			    var fireOnThis = document.getElementById('" . $this->getId() ."');
-			    var evObj = document.createEvent('HTMLEvents');
-				evObj.initEvent('change', true, true );
-				fireOnThis.dispatchEvent(evObj);
-				var fireOnThis = document.getElementById('" . $comp->getId() ."');
-				var evObj = document.createEvent('MouseEvents');
-				evObj.initEvent('click', true, true);
-				fireOnThis.dispatchEvent(evObj);}"));
+		$class = getClass($this);
+		$onkeypress = "if(event.which==13||event.keyCode==13) {
+			   	enqueueChange(getEventTarget(event),{$class}GetValue);
+				componentClicked(document.getElementById('" . $comp->getId() . "'));}";
+
+		$this->events->atPut('onkeypress', $a = array('onkeypress',$onkeypress));
 	}
 
+	// TODO: fix onEnterFocus
 	function onEnterFocus(&$comp) {
-		$this->events->atPut('onkeypress', $a=array('onkeypress', "if(event.which==13||event.keyCode==13) {
+		$this->events->atPut('onkeypress', $a = array('onkeypress', "if(event.which==13||event.keyCode==13) {
 			    var fireOnThis = document.getElementById('" . $this->getId() ."');
 			    var evObj = document.createEvent('HTMLEvents');
 				evObj.initEvent('change', true, true );
