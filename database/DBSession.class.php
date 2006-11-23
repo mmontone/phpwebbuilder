@@ -22,6 +22,9 @@ class DBSession {
     }
 
     function addCommand(&$command) {
+    	if (defined('sql_echo')) {
+    		echo 'Adding command ' . getClass($command) . ' target: ' . getClass($command->object) . '<br />';
+    	}
     	$this->commands[] =& $command;
     }
 

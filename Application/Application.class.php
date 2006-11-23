@@ -161,14 +161,18 @@ class Application extends ComponentHolder {
  			return;
  		}
 
- 		if (!defined('templatesdir')) {
- 			$templatesdir= basedir . 'MyTemplates';
- 		}
- 		else {
- 			$templatesdir = templatesdir;
- 		}
+ 		$templatesdir = $this->getTemplatesDir();
 
  		$this->viewCreator->loadTemplatesDir($templatesdir);
+ 	}
+
+ 	function getTemplatesDir() {
+ 		if (!defined('templatesdir')) {
+ 			return constant('basedir') . 'MyTemplates';
+ 		}
+ 		else {
+ 			return constant('templatesdir');
+ 		}
  	}
 
 	function getId() {
