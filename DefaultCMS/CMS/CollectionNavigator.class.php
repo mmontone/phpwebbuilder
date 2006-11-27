@@ -83,7 +83,6 @@ class CollectionNavigator extends Component {
 		} else {
 		$ks = array_keys($elements);
 		foreach ($ks as $k) {
-			$element =& $elements[$k];
 			$fc =& $this->addLine($elements[$k]);
 			$this->objs->addComponent($fc);
 		}

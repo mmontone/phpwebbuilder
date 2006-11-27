@@ -5,6 +5,7 @@ class CollectionElementChooser extends CollectionNavigator {
 	function initialize() {
 		$this->addComponent(new ActionLink($this, 'newObject', 'New', $n = null), 'new');
 		parent::initialize();
+		$this->refresh();
 	}
 
 	function newObject(&$n) {

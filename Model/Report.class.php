@@ -397,6 +397,7 @@ class Report extends Collection{
 		$id = $data[$this->getDataTypeSqlId()];
 		$old =& PersistentObject::findGlobalObject($dt,$id);
 		if ($old!==null){
+			$old->loadFrom($data);
 			return $this->fillExtras($old, $data);
 		}
 		$obj =& new $dt(array(),false);
