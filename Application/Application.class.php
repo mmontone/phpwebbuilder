@@ -71,7 +71,7 @@ class Application extends ComponentHolder {
 		unset($_SESSION[sitename]);
 	}
 	function &instance(){
-		return Application::getInstanceOf(app_class);
+		return Application::getInstanceOf(constant('app_class'));
 	}
 	function initialRender() {
 		$this->page_renderer->firstRender=true;
@@ -162,7 +162,6 @@ class Application extends ComponentHolder {
  		}
 
  		$templatesdir = $this->getTemplatesDir();
-
  		$this->viewCreator->loadTemplatesDir($templatesdir);
  	}
 

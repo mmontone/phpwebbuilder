@@ -12,11 +12,31 @@ class Component extends PWBObject
 	var $configuration;
 	var $__children;
 	var $nextChildrenPosition = 0;
+	var $dyn_vars = array();
 
 	function Component($params=array()) {
 		parent::PWBObject($params);
 		$this->__children = array();
 		$this->listener =& new ChildCallbackHandler();
+	}
+
+	function setDynVar($name, &$value) {
+		$this->dyn_vars[$name] =& $value;
+	}
+
+	function &getDynVar($name) {
+		if (isset($this->dyn_vars[$name])) {
+			return $this->dyn_vars[$name];
+		}
+		else {
+			$parent =& $this->getParent();
+			if ($parent == null) {
+				print_backtrace_and_exit('Dynamic variable ' . $name . ' not defined');
+			}
+			else {
+				return $parent->getDynVar($name);
+			}
+		}
 	}
 	function initialize(){}
 	function start() {}
