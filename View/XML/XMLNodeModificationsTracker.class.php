@@ -100,7 +100,7 @@ class XMLNodeModificationsTracker extends XMLNode {
 			$mod =& new RemoveChildXMLNodeModification($this, $child);
 			$this->addChildMod($child->parentPosition,$mod);
 		}
-		return parent :: removeChild($child);;
+		return parent :: removeChild($child);
 	}
 
 
