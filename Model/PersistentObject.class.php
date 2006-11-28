@@ -114,7 +114,7 @@ class PersistentObject extends DescriptedObject {
 	 * hierarchy that involves it)
 	 */
 	function getTables() {
-		$allObjectTables =& $_SESSION[sitename]['allObjectTables'];
+		$allObjectTables =& $_SESSION['allObjectTables'];
 		if (!isset($allObjectTables[getClass($this)])){
 		$tns[] = $this->tableName();
 		$p0 = getClass($this);

@@ -3,11 +3,11 @@
 /*
 class TestsDB extends MySQLdb {
 	function setUp() {
-		$_SESSION[sitename]['DB'] = & new TestsDB;
+		$_SESSION['DB'] = & new TestsDB;
 	}
 
 	function release() {
-		unset($_SESSION[sitename]['DB']);
+		unset($_SESSION['DB']);
 	}
 
 	function LoginDB() {

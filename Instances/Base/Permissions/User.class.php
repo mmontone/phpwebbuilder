@@ -46,32 +46,32 @@ class User extends PersistentObject {
 		$usr = & User :: loadUser($user, $pass);
 
 		if ($usr) {
-			$_SESSION[sitename]["id"] = $usr->getUserId();
-			$_SESSION[sitename]["Username"] = $usr->user->getValue();
-			$_SESSION[sitename]["User"] = & $usr;
+			$_SESSION["id"] = $usr->getUserId();
+			$_SESSION["Username"] = $usr->user->getValue();
+			$_SESSION["User"] = & $usr;
 		}
 
 		return $usr;
 	}
 
 	function logout() {
-		unset($_SESSION[sitename]["User"]);
+		unset($_SESSION["User"]);
 	}
 
 	function & logged() {
-		if (!isset ($_SESSION[sitename]["User"])) {
+		if (!isset ($_SESSION["User"])) {
 			$usr =& User :: login('guest', 'guest');
 
 			if (!$usr) {
 				$usr = & new User();
 				$usr->user->setValue('guest');
-				$_SESSION[sitename]["id"] = $usr->getUserId();
-				$_SESSION[sitename]["Username"] = $usr->user->getValue();
-				$_SESSION[sitename]["User"] = & $usr;
+				$_SESSION["id"] = $usr->getUserId();
+				$_SESSION["Username"] = $usr->user->getValue();
+				$_SESSION["User"] = & $usr;
 			}
 		}
 
-		return $_SESSION[sitename]["User"];
+		return $_SESSION["User"];
 	}
 
 	function getPermissions() {

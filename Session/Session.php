@@ -28,8 +28,8 @@ if (isset($_REQUEST["restart"]) && isset($_COOKIE[session_name()])) {
   session_regenerate_id();
 }
 session_start();
-if (isset($_REQUEST["reset"]) && isset($_SESSION[sitename]) && isset($_SESSION[sitename][app_class])) {
-	unset($_SESSION[sitename][app_class]);
+if (isset($_REQUEST["reset"])) {
+	Application::restart();
 }
 
 ?>

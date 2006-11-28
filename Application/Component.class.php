@@ -259,7 +259,7 @@ class Component extends PWBObject
 	}
 
 	function noPermission ($form){ // The user has no permission
-		$err= $_SESSION[sitename]["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
+		$err= $_SESSION["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
 		trace($err);
 	}
 
@@ -318,11 +318,11 @@ class Component extends PWBObject
 	function &getParent() {
 		return $this->holder->parent;
 	}
-
+	function doNothing(){}
 	function addFieldComponent(& $component, $field_name, $text=null) {
-		if ($field_name == null) {
+		/*if ($field_name == null) {
 			print_backtrace();
-		}
+		}*/
 		if ($text == null) {
 			$text = $field_name;
 		}
@@ -333,4 +333,13 @@ class Component extends PWBObject
 	}
 }
 
+class FieldComponent extends Component{
+	function &getValue(){
+		return $this->component->getValue();
+	}
+	function setValue(&$value){
+		$this->component->setValue($value);
+	}
+
+}
 ?>

@@ -124,7 +124,7 @@ function trace_params() {
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
 function find_subclasses() {
-	$PWBclasses =& $_SESSION[sitename]['PWBclasses'];
+	$PWBclasses =& $_SESSION['PWBclasses'];
 	$arr = get_declared_classes();
 	$ret = array ();
 	foreach ($arr as $o) {
@@ -142,7 +142,7 @@ function find_subclasses() {
  * Returns the subclasses of the specified class, in higher-to-lower order
  */
 function get_subclasses($str) {
-	$PWBclasses =& $_SESSION[sitename]['PWBclasses'];
+	$PWBclasses =& $_SESSION['PWBclasses'];
 	if (count($PWBclasses) == 0)
 		find_subclasses();
 	return $PWBclasses[strtolower($str)];
@@ -151,7 +151,7 @@ function get_subclasses($str) {
  * Returns the subclasses of the specified class, in lower-to-higher order
  */
 function get_superclasses($str) {
-	$PWBclasses =& $_SESSION[sitename]['PWBclasses'];
+	$PWBclasses =& $_SESSION['PWBclasses'];
 	$ret = array ();
 	$pc = get_parent_class($str);
 	while ($pc != '') {
@@ -377,7 +377,7 @@ function fatal_error_handler($buffer) {
   		SessionHandler::setHooks();
   		session_regenerate_id();
 		session_start();
-		unset($_SESSION[sitename][app_class]);
+		unset($_SESSION[app_class]);
 
 		$app = & new BugNotifierApplication;
 		$app->setError($err);

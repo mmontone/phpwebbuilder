@@ -18,9 +18,9 @@ class PWBObject
 	 */
     function PWBObject($params=array()) {
 		/*if (!is_array($params)) {
-			print_backtrace_and_exit('Params is not and array');
-		}*/
-		PWBInstanceIdAssigner::assignIdTo($this);
+			print_backtrace_and_exit('Params is not an array');
+		}//*/
+		$this->__instance_id = ++$_SESSION['instance_id'];
 		$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->__wakeup();
 		//if (!isset($params['dontCreateInstance'])){
