@@ -21,11 +21,13 @@ class Component extends PWBObject
 	}
 
 	function setDynVar($name, &$value) {
+		//print_backtrace('Setting dyn var at: ' . $name . ' in ' . getClass($this));
 		$this->dyn_vars[$name] =& $value;
 	}
 
 	function &getDynVar($name) {
 		if (isset($this->dyn_vars[$name])) {
+			//print_backtrace('Returning dyn var at: ' . $name . ' in ' . getClass($this));
 			return $this->dyn_vars[$name];
 		}
 		else {
@@ -34,6 +36,7 @@ class Component extends PWBObject
 				print_backtrace_and_exit('Dynamic variable ' . $name . ' not defined');
 			}
 			else {
+				//print_backtrace('Dyn var at: ' . $name . ' not found in ' . getClass($this));
 				return $parent->getDynVar($name);
 			}
 		}
