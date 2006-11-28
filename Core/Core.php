@@ -4,7 +4,6 @@ require_once 'PWBObject.class.php';
 require_once 'Collection.class.php';
 require_once 'FunctionObject.class.php';
 require_once 'WeakReference.class.php';
-require_once 'PWBInstanceIdAssigner.class.php';
 require_once 'PWBFactory.class.php';
 require_once 'PWBException.class.php';
 require_once 'ValueModels/ValueModel.class.php';
