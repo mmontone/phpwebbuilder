@@ -330,7 +330,7 @@ class Component extends PWBObject
 			$text = $field_name;
 		}
 		$fc = & new FieldComponent;
-		$fc->addComponent(new Label(ucfirst(Translator :: Translate($text))), 'field_name');
+		$fc->addComponent(new Label(Translator :: Translate(ucfirst($text))), 'field_name');
 		$fc->addComponent($component, 'component');
 		$this->addComponent($fc, $field_name);
 	}

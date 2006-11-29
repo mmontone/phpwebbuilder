@@ -3,7 +3,11 @@
 class Label extends Text
 {
     function Label($string) {
-    	parent::Text(new ValueHolder($string));
+    	if (is_object($string)) {
+    		parent::Text($string);
+    	} else {
+    		parent::Text(new ValueHolder($string));
+    	}
     }
 	//TODO Why is this here?
 

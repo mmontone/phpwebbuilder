@@ -105,7 +105,7 @@ class MySQLDriver extends DBDriver {
     }
 
     function fetchrecord($res) {
-    	return mysql_fetch_assoc($res);
+    	return @mysql_fetch_assoc($res);
     }
     function openDatabase() {
     	if (!$this->conn){
