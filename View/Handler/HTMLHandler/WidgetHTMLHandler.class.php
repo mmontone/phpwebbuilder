@@ -56,6 +56,7 @@ class WidgetHTMLHandler extends HTMLHandler{
 		$this->updateInvalid($this->component->invalid);
 		$this->updateDisabled($this->component->disabled);
 		$this->updateEvents($this->component->events);
+		$this->updateClickable($this->component->clickable);
 	}
 	function initializeView(){}
 	function initializeDefaultView(){}
