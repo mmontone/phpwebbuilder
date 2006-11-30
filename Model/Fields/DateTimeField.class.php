@@ -22,6 +22,7 @@ class DateTimeField extends DataField {
         return $d3;
     }
 
+    /*
     function getValue() {
     	$v = parent::getValue();
         if ($v!=null) {
@@ -30,6 +31,7 @@ class DateTimeField extends DataField {
 			return $this->now();
         }
     }
+    */
 
     function validateDate($d) {
     	return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $d);
