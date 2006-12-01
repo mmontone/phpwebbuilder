@@ -1,6 +1,7 @@
 <?php
+$d = dirname(__FILE__);
 
-require_once 'BugNotifierApplication.class.php';
-require_once 'ApplicationErrorHandler.class.php';
+compile_once ($d.'/BugNotifierApplication.class.php');
+compile_once ($d.'/ApplicationErrorHandler.class.php');
 
 ?>

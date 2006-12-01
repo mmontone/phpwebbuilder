@@ -1,6 +1,6 @@
 <?php
-require_once 'SelectTest.class.php';
-require_once 'OptionalSelectTest.class.php';
+compile_once ('SelectTest.class.php');
+compile_once ('OptionalSelectTest.class.php');
 
 class WidgetsTests extends GroupTest {
 	function WidgetsTests() {

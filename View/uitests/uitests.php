@@ -1,4 +1,4 @@
 <?php
-require_once 'UITestsApplication.class.php';
-require_once 'UITests.class.php';
+compile_once ('UITestsApplication.class.php');
+compile_once ('UITests.class.php');
 ?>

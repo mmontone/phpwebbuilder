@@ -18,7 +18,7 @@ function includefile(&$file) {
 	} else {
 		if (substr($file, -4)=='.php') {
                   //echo "Including file: " . $file;
-                  echo "<br/>require_once \$d.'/".substr($file, $n)."';";
+                  echo "<br/>compile_once (\$d.'/".substr($file, $n)."');";
 		}
 	}
 }

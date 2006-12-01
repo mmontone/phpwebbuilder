@@ -1,12 +1,8 @@
 <?php
-/*
- * Created on 07/09/2006
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
-require_once 'QuicKlick.class.php';
-require_once 'InputCreator.class.php';
-require_once 'QKTest.class.php';
+$d = dirname(__FILE__);
+
+compile_once ($d.'/QuicKlick.class.php');
+compile_once ($d.'/InputCreator.class.php');
+compile_once ($d.'/QKTest.class.php');
 
 ?>

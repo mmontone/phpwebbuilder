@@ -7,6 +7,26 @@ require_once 'md.php';
  * Some basic functions.
  */
 
+function compile_once($file){
+	static $compiled = array();
+	if (defined('compile')) {
+		if (!in_array($file,$compiled)) {
+			$f= file_get_contents($file);
+			if (constant('compile')=='PRE_COND') {
+				$f = ereg_replace('//@check([^;]+);', 'assert(\\1);',$f);
+			}
+			$tmpname=tempnam(dirname($file), basename($file));
+			$fo = fopen($tmpname, 'w+');
+			fwrite($fo, $f);
+			fclose($fo);
+			//eval($f);
+			require_once($tmpname);
+		}
+	} else {;
+		require_once($file);
+	}
+}
+
 function includeAll() {
 
 	if (!defined('modules')) {

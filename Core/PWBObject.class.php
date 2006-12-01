@@ -17,15 +17,11 @@ class PWBObject
 	 * Creation
 	 */
     function PWBObject($params=array()) {
-		/*if (!is_array($params)) {
-			print_backtrace_and_exit('Params is not an array');
-		}//*/
+		//@check is_array($params);
 		$this->__instance_id = ++$_SESSION['instance_id'];
 		$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->__wakeup();
-		//if (!isset($params['dontCreateInstance'])){
-			$this->createInstance($this->creationParams);
-		//}
+		$this->createInstance($this->creationParams);
 	}
 	/**
 	 * Comparing
@@ -43,16 +39,13 @@ class PWBObject
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
 	function getInstanceId(){
-		/*if (is_null($this->__instance_id)) {
-			print_backtrace_and_exit(getClass($this) . ' has no assigned id!!!');
-		}//*/
+		//@check !is_null($this->__instance_id);
 		return $this->__instance_id;
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		/*if (!$this->getInstanceId()) {
-			print_backtrace(getClass($this) . ' doesn\'t have id!!!');
-		}//*/
+		//@check $this->getInstanceId();
+		//@check !isset($allObjectsInMem[$this->getInstanceId()]);
 		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**
@@ -83,10 +76,7 @@ class PWBObject
 	 */
 
     function &addEventListener($event_specs, &$listener) {
-        if (!is_array($event_specs)) {
-        	print_backtrace('Type error');
-        	exit;
-        }
+        //@check is_array($event_specs);
         $callback = array();
         $i = 1;
 
@@ -101,11 +91,6 @@ class PWBObject
 	 */
 
     function addInterestIn($event, &$function) {
-    	/*if (!isset($this->event_listeners[$event])) {
-	        $this->event_listeners[$event] = array();
-        }
-    	$this->event_listeners[$event][$this->listener_handle] =& WeakFunctionObject::fromFunctionObject($function);
-       	$this->listener_handle++;*/
        	$this->event_listeners[$event][] =& WeakFunctionObject::fromFunctionObject($function);
     }
 	/**
