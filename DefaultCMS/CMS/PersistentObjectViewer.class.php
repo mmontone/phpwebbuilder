@@ -84,9 +84,6 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 	function deleteObject($params) {
 		$obj =& $params['object'];
 		$translator = translator;
-		/*if (!$translator)
-			$translator = 'EnglishTranslator';
-		$translator =& new $translator;*/
 		$msg = Translator::translate('Are you sure that you want to delete the object?');
 		$this->call($qd =& QuestionDialog::create($msg));
 		$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$obj)), 'on_no' => new FunctionObject($this, 'deleteRejected')));

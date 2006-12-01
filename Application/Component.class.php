@@ -57,9 +57,9 @@ class Component extends PWBObject
 		}
 	}
 	function releaseView(){
+		 //@check $this->viewHandler!=null;
 		 $n = null;
 		 $this->view =& $n;
-		 if (!$this->viewHandler) print_backtrace(getClass($this));
 		 $this->viewHandler->release();
 		 $this->viewHandler =& $n;
 		foreach(array_keys($this->__children) as $c) {
@@ -98,7 +98,7 @@ class Component extends PWBObject
 	}
 
 	function linkToApp(&$app){
-		//if (isset($this->app)) print_backtrace_and_exit(getClass($this) . getClass($this->app));
+		//@notcheck (!isset($this->app));
 		// No se porque es necesaria la siguiente linea bajo las condiciones en que se esta llamando a linkToApp
 		// Pero si no esta, falla:
 		if ($this->app!==null) return;
@@ -110,7 +110,7 @@ class Component extends PWBObject
 
 		$this->start();
 		foreach(array_keys($this->__children) as $k){
-			//if (!is_a($cn[$k]->component, 'Component')) print_backtrace($k.' not a component, a '.getClass($cn[$k]->component));
+			//@check is_a($this->$k, 'Component');
 			$this->$k->linkToApp($app);
 		}
 	}
@@ -138,28 +138,18 @@ class Component extends PWBObject
     }
 	function &addComponent(&$component, $ind=null) {
 		//echo 'Adding component: ' . getClass($component) . '<br />';
-		/*if (!is_a($component, 'Component')) {
-			print_backtrace('Type error adding component: ' . getClass($component));
-			trigger_error('Type error adding component: ' . getClass($component),E_USER_ERROR);
-		}*/
-
+		//@check is_a($component, 'Component');
 		$res = $component->checkAddingPermissions();
 		if ($res == false){
-			//echo 'Denying add component to ' . $ind . '<br />';
 			return $f=false;
 		} else {
 			if (($ind !==null) and (isset($this->__children[$ind]))) {
-				//trigger_error('Setting child '.$ind.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->$ind->stopAndCall($component);
 			} else {
-				/*if (isset($this->$ind)) {
-					print_backtrace("Replacing variable $ind with component ".getClass($component));
-					trigger_error("Replacing variable $ind with component ".getClass($component),E_USER_ERROR);
-				}*/
+				//@check !isset($this->$ind);
 				if ($ind===null){
 					$ind = $this->nextChildrenPosition++;
 				}
-				//trigger_error('Adding child '.$index.' from '.$this->getId().' (a '.getClass($component).')',E_USER_NOTICE);
 				$this->__children[$ind] =& new ComponentHolder($component,$ind, $this);
 				if (isset($this->app)) {
 					$component->linkToApp($this->app);
@@ -323,9 +313,7 @@ class Component extends PWBObject
 	}
 	function doNothing(){}
 	function addFieldComponent(& $component, $field_name, $text=null) {
-		/*if ($field_name == null) {
-			print_backtrace();
-		}*/
+		//@check $field_name !== null;
 		if ($text == null) {
 			$text = $field_name;
 		}

@@ -29,7 +29,6 @@ compile_once ($d.'/components/Widgets/OptionalSelect.class.php');
 compile_once ($d.'/components/Widgets/NavigationLink.class.php');
 compile_once ($d.'/components/Widgets/GoBackLink.class.php');
 compile_once ($d.'/components/Widgets/Link.class.php');
-compile_once ($d.'/components/Widgets/PermissionChecker.class.php');
 compile_once ($d.'/components/Widgets/Password.class.php');
 compile_once ($d.'/components/Widgets/Filename.class.php');
 compile_once ($d.'/components/Widgets/Label.class.php');

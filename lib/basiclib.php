@@ -11,6 +11,7 @@ function compile_once($file){
 	static $compiled = array();
 	if (defined('compile')) {
 		if (!in_array($file,$compiled)) {
+			$compiled[]=$file;
 			$f= file_get_contents($file);
 			if (constant('compile')=='PRE_COND') {
 				$f = ereg_replace('//@check([^;]+);', 'assert(\\1);',$f);
@@ -19,7 +20,7 @@ function compile_once($file){
 			$fo = fopen($tmpname, 'w+');
 			fwrite($fo, $f);
 			fclose($fo);
-			//eval($f);
+			//echo($f);
 			require_once($tmpname);
 		}
 	} else {;
@@ -42,7 +43,6 @@ function includeAll() {
 	define('app', "MyInstances,MyComponents");
 	includeAllModules(basedir, app);
 	includeAllModules(pwbdir, 'Session');
-
 }
 function includeAllModules($prefix, $modules) {
 	foreach (explode(",", $modules) as $dir) {
@@ -102,7 +102,7 @@ function getfiles($pred, $dir) {
  */
 function includefile(& $file) {
 	foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
-		require_once ($f);
+		compile_once ($f);
 	}
 }
 /**

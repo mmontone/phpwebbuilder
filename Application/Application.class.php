@@ -57,7 +57,6 @@ class Application extends ComponentHolder {
 		exit;
 	}
 	function redraw() {
-		//$this->wholeView->flushModifications();
 		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
 	}
 	function & getInstanceOf($c) {
@@ -183,7 +182,6 @@ class Application extends ComponentHolder {
 	}
 
 	function needsView(& $comp) {
-		//$this->needView[$comp->getId()] = & $comp;
 		$this->viewCreator->createElemView($comp->parentView(),$comp);
 	}
 

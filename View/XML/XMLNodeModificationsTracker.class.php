@@ -12,12 +12,6 @@ class XMLNodeModificationsTracker extends XMLNode {
 		return $this;
 	}
 	function addChildMod($pos,&$mod){
-		//echo "<br/>putting a ".getClass($mod)." in '$pos'";
-		/*if ($this->parentNode){
-			echo "<br/>". $this->getId() .' '. getClass($mod);
-			if ($mod->toFlush) echo "(".getClass($mod->toFlush->getTarget()).")";
-			echo "(in ".getClass($this->toFlush->getTarget()).")";
-		}*/
 		if ($this->willFlush()) {
 			$t =& $this->toFlush->getTarget();
 			$t->addChildMod($pos,$mod);
