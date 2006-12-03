@@ -43,7 +43,9 @@ function defmdf($text) {
 	}
 	$rules['with'] = $pss;
 	$rules['do'] = $body;
-	compile_md_function($name, $rules);
+	//print_r($rules);
+	//echo '<br /><br />';
+	return compile_md_function($name, array($rules));
 }
 
 // Configuration
