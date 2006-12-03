@@ -51,10 +51,15 @@ function processMacro($matches) {
 	return $result;
 }
 
-$mixin = array();
+$mixins = array();
 
+/*@mixin MyMixin {
+	function mixedFunc() {
+		echo 'Hola';
+	}
+}*/
 function mixin($text) {
-	preg_match('/([[:alpha:]]*)\s*\{(.*)\}/', $text, $matches);
+	preg_match('/([[:alpha:]]*)\s*\{(.*)\}/s', $text, $matches);
 	$name = $matches[1];
 	//echo 'Mixin name: ' . $name . '<br/>';
 	$body = $matches[2];
@@ -63,16 +68,23 @@ function mixin($text) {
 	$mixins[$name] = $body;
 	return '';
 }
-
+//
+// class Mixed {
+// /*@use_mixin MyMixin, OtherMixin*/
+//
+// }
+// $m =& new Mixed;
+// $m->mixedFunc();
+//
 function use_mixin($text) {
 	$ms = explode(',',$text);
 	global $mixins;
-
 	$code = '';
 	foreach ($ms as $name) {
+		$name = str_replace(' ', '', $name);
 		$code = $code . $mixins[$name];
-		//echo 'Including code: ' . $mixins[$name];
 	}
+	$code .= "\n";
 
 	return $code;
 }
@@ -86,15 +98,35 @@ function sql_echo($text) {
 	}
 }
 
+/*@check true*/
 function check($text) {
 	if (defined('assertions')) {
-		return 'assert(' . $text . ');';
+		return "assert($text);\n";
 	}
 	else {
 		return '';
 	}
 }
 
+/*@typecheck $t : PWBObject, $s : Component*/
+function typecheck($text) {
+	if (defined('typechecking')) {
+		$code = '';
+		$params = explode(',', $text);
+		foreach($params as $param) {
+			$case = explode(':', $param);
+			$arg = str_replace(' ', '', $case[0]);
+			$type = str_replace(' ', '', $case[1]);
+			$code .= "assert(is_a($arg, '$type'));\n";
+		}
+		return $code;
+	}
+	else {
+		return '';
+	}
+}
+
+/*@lam $x,$y -> return $x + $y;*/
 function lam($text) {
 	//echo 'Trying to lam: ' . $text;
 	preg_match('/(.*)\s*\-\>\s*(.*)/s', $text, $matches);
@@ -104,7 +136,7 @@ function lam($text) {
 	return $t;
 }
 
-function defmacro($name, $params, $body) {
+function defmacro($text) {
 
 }
 
@@ -135,8 +167,7 @@ function compile_once($file){
 				fwrite($fo, $f);
 				fclose($fo);
 				//echo($f);
-				require_once($tmpname);
-				//compile_once($tmpname); // Ver como hacer para tener recursion
+				compile_once($tmpname); // Recursive call (macros generating code with macros)
 			}
 			else {
 				require_once($file);
