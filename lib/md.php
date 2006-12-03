@@ -4,6 +4,48 @@
 
 require_once 'spyc-0.2.3/spyc.php';
 
+// MD with macros:
+/* Example:
+/*@defmdf getListElement [ TrackedPersonsNavigator <- TrackedObjectsList ]
+                         (&$guest : TrackedPerson, &$state : InGuestState)
+     {
+           return new InGuestElement($guest);
+     }
+ */
+function defmdf($text) {
+	preg_match('/([[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*)\)[\s\t]*\{(.*)\}/s', $text, $matches);
+	//print_r($matches);
+	$name = $matches[1];
+	$context = $matches[2];
+	$params = $matches[3];
+	$body = $matches[4];
+	//echo 'Name: ' . $name;
+	//echo 'Context: ' . $context;
+	//echo 'Params: ' . $params;
+	//echo 'Body:' . $body;
+
+	$rules = array();
+	if ($context != '') {
+		$cs = explode('<-',$context);
+		foreach (array_keys($cs) as $i) {
+			$cs[$i] = str_replace(' ', '', $cs[$i]);
+		}
+		$rules['in'] = $cs;
+	}
+
+	$ps = explode(',', $params);
+	$pss = array();
+	foreach($ps as $p) {
+		$pp = explode(':', $p);
+		$arg = str_replace(' ', '', $pp[0]);
+		$type = str_replace(' ', '', $pp[1]);
+		$pss[$arg] = $type;
+	}
+	$rules['with'] = $pss;
+	$rules['do'] = $body;
+	compile_md_function($name, $rules);
+}
+
 // Configuration
 $mdc_dir = basedir . '/mdc';
 $md_dir = basedir . '/md';
@@ -20,6 +62,7 @@ if (defined('md') and constant('md')=='compiled') {
 	load_compiled_md_files($mdc_dir);
 }
 else {
+
 	load_md_files($md_dir);
 }
 

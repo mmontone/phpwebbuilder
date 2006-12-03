@@ -158,7 +158,7 @@ function compile_once($file){
 				//echo 'Processing file: ' . $file . '<br />';
 				// Notes: 's' makes '.' match 'newline'
  				//        '?' after '*' means no-greedy matching
-				$f = preg_replace_callback('/\/\*@([[:alpha:]|\_]+)\t*(.*?)\*\//s', 'processMacro', $f);
+				$f = preg_replace_callback('/\/\*@([[:alpha:]|\_]+)[\s\t]*(.*?)\*\//s', 'processMacro', $f);
 
 				//ereg('\/\*@[[:alpha:]]\s*(.*)\*\/', $f, $matches);
 				//print_r($matches);
