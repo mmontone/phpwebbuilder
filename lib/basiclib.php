@@ -7,8 +7,114 @@ require_once 'md.php';
  * Some basic functions.
  */
 
+/*@defmacro defmd*/
+function defmd($text) {
+	// We use template language to parse macros input??
+	$out =& parse_with('$string {name} "(" $params {params} ")"' .
+			           '$param = $string {arg_name} ":" $string {arg_type}' .
+			           '$params = $param' .
+			           '$params = $param "," $params');
+}
+
+$gensym = 0;
+function gensym() {
+	global $gensym;
+
+	return 'sym' . $gensym ++;
+}
+
+function sexp_parser($text) {
+
+}
+
+function yaml_parser($text) {
+	return Spyc::YAMLLoad($text);
+}
+
+function lambda_parser($text) {
+	return sexp_parser($text);
+}
+
+function processMacro($matches) {
+	//echo '<br/>Processing macro';
+
+	$macro = $matches[1];
+	$body = $matches[2];
+
+	//echo 'Macro: ' . $macro . '<br />';
+	//echo 'Body: ' . $body . '<br />';
+
+	$code = $macro . '(\''. ereg_replace('\'', '\\\'',$body) . '\');';
+	//echo 'Evaluating: ' . $code . '<br />';
+	eval('$result = ' . $code);
+	//echo 'Result: ' . $result . '<br />';
+	return $result;
+}
+
+$mixin = array();
+
+function mixin($text) {
+	preg_match('/([[:alpha:]]*)\s*\{(.*)\}/', $text, $matches);
+	$name = $matches[1];
+	//echo 'Mixin name: ' . $name . '<br/>';
+	$body = $matches[2];
+	//echo 'Mixin body: ' . $body . '<br/>';
+	global $mixins;
+	$mixins[$name] = $body;
+	return '';
+}
+
+function use_mixin($text) {
+	$ms = explode(',',$text);
+	global $mixins;
+
+	$code = '';
+	foreach ($ms as $name) {
+		$code = $code . $mixins[$name];
+		//echo 'Including code: ' . $mixins[$name];
+	}
+
+	return $code;
+}
+
+function sql_echo($text) {
+	if (defined('sql_echo')) {
+		return $text;
+	}
+	else {
+		return '';
+	}
+}
+
+function check($text) {
+	if (defined('assertions')) {
+		return 'assert(' . $text . ');';
+	}
+	else {
+		return '';
+	}
+}
+
+function lam($text) {
+	//echo 'Trying to lam: ' . $text;
+	preg_match('/(.*)\s*\-\>\s*(.*)/s', $text, $matches);
+	$params = $matches[1];
+	$body = $matches[2];
+	$t = "lambda('$params','$body', get_defined_vars());";
+	return $t;
+}
+
+function defmacro($name, $params, $body) {
+
+}
+
+function deprecated($text) {
+	return '';
+}
+
 function compile_once($file){
 	static $compiled = array();
+
 	if (defined('compile')) {
 		if (!in_array($file,$compiled)) {
 			$compiled[]=$file;
@@ -16,12 +122,25 @@ function compile_once($file){
 			if (constant('compile')=='PRE_COND') {
 				$f = ereg_replace('//@check([^;]+);', 'assert(\\1);',$f);
 			}
-			$tmpname=tempnam(dirname($file), basename($file));
-			$fo = fopen($tmpname, 'w+');
-			fwrite($fo, $f);
-			fclose($fo);
-			//echo($f);
-			require_once($tmpname);
+			if (preg_match('/\/\*@/', $f) > 0) {
+				//echo 'Processing file: ' . $file . '<br />';
+				// Notes: 's' makes '.' match 'newline'
+ 				//        '?' after '*' means no-greedy matching
+				$f = preg_replace_callback('/\/\*@([[:alpha:]|\_]+)\t*(.*?)\*\//s', 'processMacro', $f);
+
+				//ereg('\/\*@[[:alpha:]]\s*(.*)\*\/', $f, $matches);
+				//print_r($matches);
+				$tmpname=tempnam(dirname($file), basename($file));
+				$fo = fopen($tmpname, 'w+');
+				fwrite($fo, $f);
+				fclose($fo);
+				//echo($f);
+				require_once($tmpname);
+				//compile_once($tmpname); // Ver como hacer para tener recursion
+			}
+			else {
+				require_once($file);
+			}
 		}
 	} else {;
 		require_once($file);

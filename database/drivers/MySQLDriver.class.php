@@ -40,11 +40,6 @@ class MySQLDriver extends DBDriver {
         mysql_query ("START TRANSACTION;"); /* or
             die (print_backtrace(mysql_error() . ": $sql"));*/
         trigger_error("Starting transaction");
-        /*
-        if (defined('sql_echo') and constant('sql_echo') == 1) {
-   			echo 'Beggining transaction';
-   		}
-   		*/
         $this->closeDatabase();
     }
 
@@ -54,11 +49,6 @@ class MySQLDriver extends DBDriver {
         mysql_query ("COMMIT;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
         trigger_error("Comitting transaction");
-        /*
-        if (defined('sql_echo') and constant('sql_echo') == 1) {
-			echo 'Comitting transaction';
-   		}
-   		*/
         $this->closeDatabase();
     }
 
@@ -68,31 +58,20 @@ class MySQLDriver extends DBDriver {
         mysql_query ("ROLLBACK;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
         trigger_error("Rolling back transaction");
-        /*
-        if (defined('sql_echo') and constant('sql_echo') == 1) {
-   			echo 'Rolling back';
-   		}
-   		*/
         $this->closeDatabase();
     }
 
     function &query($sql) {
     	trace($sql. '<br/>');
-    	if (defined('sql_echo') and constant('sql_echo') == 1) {
-    		echo($sql. '<br/>');
-    	}
-		$this->openDatabase();
+    	/*@sql_echo	echo($sql. '<br/>');*/
+    	$this->openDatabase();
 		$this->setLastSQL($sql);
         $reg = mysql_query ($sql);
         $this->closeDatabase();
         if (!$reg) {
         	$error =& $this->registerDBError($sql);
-        	if (defined('sql_echo') and constant('sql_echo') == 1) {
-    			$lastError =& $this->getLastError();
-    			echo $lastError->printHtml() . '<br />';
-    		}
-
-        	return $error;
+        	/*@sql_echo $lastError =& $this->getLastError(); echo $lastError->printHtml() . '<br />';*/
+    		return $error;
         }
         return $reg;
     }
