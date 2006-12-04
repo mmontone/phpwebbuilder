@@ -17,7 +17,7 @@ class PWBObject
 	 * Creation
 	 */
     function PWBObject($params=array()) {
-		//@check is_array($params);
+		/*@check is_array($params)*/
 		$this->__instance_id = ++$_SESSION['instance_id'];
 		$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->__wakeup();
@@ -39,13 +39,12 @@ class PWBObject
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
 	function getInstanceId(){
-		//@check !is_null($this->__instance_id);
+		/*@check !is_null($this->__instance_id)*/
 		return $this->__instance_id;
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		//@check $this->getInstanceId();
-		//@check !isset($allObjectsInMem[$this->getInstanceId()]);
+		/*@check $this->getInstanceId() && !isset($allObjectsInMem[$this->getInstanceId()]) */
 		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**
@@ -76,7 +75,7 @@ class PWBObject
 	 */
 
     function &addEventListener($event_specs, &$listener) {
-        //@check is_array($event_specs);
+        /*@check is_array($event_specs)*/
         $callback = array();
         $i = 1;
 
