@@ -32,7 +32,7 @@ class Compiler {
 		if (!in_array($file, $this->compiled)) {
 			$this->compiled[] = $file;
 			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-			if (@ filemtime($tmpname) < @ filemtime($file)) {
+			if ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file)) {
 				//echo 'Compiling file: ' . $file . '<br />';
 				$f = file_get_contents($file);
 				$f = $this->compileString($f);
