@@ -1,5 +1,6 @@
 <?php
 require_once 'md.php';
+require_once 'Compiler.class.php';
 
 //require_once 'md2.php';
 
@@ -46,6 +47,7 @@ function processMacro($matches) {
 
 	$code = $macro . '(\''. ereg_replace('\'', '\\\'',$body) . '\');';
 	//echo 'Evaluating: ' . $code . '<br />';
+	$result=null;
 	eval('$result = ' . $code);
 	//echo 'Result: ' . $result . '<br />';
 	return $result;
@@ -110,7 +112,7 @@ function check($text) {
 
 /*@typecheck $t : PWBObject, $s : Component*/
 function typecheck($text) {
-	if (defined('typechecking')) {
+	if (Compiler::CompileOpt('typechecking')) {
 		$code = '';
 		$params = explode(',', $text);
 		foreach($params as $param) {
@@ -142,40 +144,6 @@ function defmacro($text) {
 
 function deprecated($text) {
 	return '';
-}
-
-function compile_once($file){
-	static $compiled = array();
-
-	if (defined('compile')) {
-		if (!in_array($file,$compiled)) {
-			$compiled[]=$file;
-			$f= file_get_contents($file);
-			if (constant('compile')=='PRE_COND') {
-				$f = ereg_replace('//@check([^;]+);', 'assert(\\1);',$f);
-			}
-			if (preg_match('/\/\*@/', $f) > 0) {
-				//echo 'Processing file: ' . $file . '<br />';
-				// Notes: 's' makes '.' match 'newline'
- 				//        '?' after '*' means no-greedy matching
-				$f = preg_replace_callback('/\/\*@([[:alpha:]|\_]+)[\s\t]*(.*?)\*\//s', 'processMacro', $f);
-
-				//ereg('\/\*@[[:alpha:]]\s*(.*)\*\/', $f, $matches);
-				//print_r($matches);
-				$tmpname=tempnam(dirname($file), basename($file));
-				$fo = fopen($tmpname, 'w+');
-				fwrite($fo, $f);
-				fclose($fo);
-				//echo($f);
-				compile_once($tmpname); // Recursive call (macros generating code with macros)
-			}
-			else {
-				require_once($file);
-			}
-		}
-	} else {;
-		require_once($file);
-	}
 }
 
 function includeAll() {
