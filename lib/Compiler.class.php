@@ -1,10 +1,14 @@
 <?php
-
-function compile_once($file) {
-	global $compilerInstance;
-	$compilerInstance->compile($file);
+if (defined('compile')) {
+	function compile_once($file) {
+		global $compilerInstance;
+		$compilerInstance->compile($file);
+	}
+} else {
+	function compile_once($file) {
+		require_once ($file);
+	}
 }
-
 function processMacro($matches) {
 	$macro = $matches[1];
 	$body = $matches[2];
@@ -13,10 +17,10 @@ function processMacro($matches) {
 	//echo 'Macro: ' . $macro . '<br />';
 	//echo 'Body: ' . $body . '<br />';
 
-	$code = $macro . '(\''. ereg_replace('\'', '\\\'',$body) . '\');';
+	$code = $macro . '(\'' . ereg_replace('\'', '\\\'', $body) . '\');';
 	//echo 'Evaluating: ' . $code . '<br />';
-	$result=null;
-	eval('$result = ' . $code);
+	$result = null;
+	eval ('$result = ' . $code);
 	//echo 'Result: ' . $result . '<br />';
 	return $result;
 }
@@ -25,34 +29,30 @@ class Compiler {
 	var $compiled = array ();
 	var $toCompile;
 	var $toCompileSuffix;
-	function Compiler(){
-		$this->toCompile = explode(',',constant('compile'));
-		$this->toCompileSuffix = implode('-',$this->toCompile);
+	function Compiler() {
+		$this->toCompile = explode(',', constant('compile'));
+		$this->toCompileSuffix = implode('-', $this->toCompile);
 	}
-	function CompileOpt($opt){
+	function CompileOpt($opt) {
 		global $compilerInstance;
-		return in_array($opt,$compilerInstance->toCompile);
+		return in_array($opt, $compilerInstance->toCompile);
 	}
 	function compile($file) {
-		if (defined('compile')) {
-			if (!in_array($file, $this->compiled)) {
-				$this->compiled[] = $file;
-				$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-				if (@filemtime($tmpname)< @filemtime($file)) {
-					//echo 'Compiling file: ' . $file . '<br />';
-					$f = file_get_contents($file);
-					$f = $this->compileString($f);
-					$fo = fopen($tmpname, 'w');
-					fwrite($fo, $f);
-					fclose($fo);
-				}
-				require_once $tmpname;
+		if (!in_array($file, $this->compiled)) {
+			$this->compiled[] = $file;
+			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
+			if (@ filemtime($tmpname) < @ filemtime($file)) {
+				//echo 'Compiling file: ' . $file . '<br />';
+				$f = file_get_contents($file);
+				$f = $this->compileString($f);
+				$fo = fopen($tmpname, 'w');
+				fwrite($fo, $f);
+				fclose($fo);
 			}
-		} else {
-			require_once ($file);
+			require_once $tmpname;
 		}
 	}
-	function compileString($str){
+	function compileString($str) {
 		if (preg_match('/\/\*@/', $str) > 0) {
 			//echo 'Compiling string: ' . $str;
 			// Notes: 's' makes '.' match 'newline'
@@ -69,18 +69,18 @@ class Compiler {
 
 	}
 	function getTempFile($file, $extra) {
-		return $this->getTempDir($file).'/'. basename($file, '.php') . '-'.$extra.'.php';
+		return $this->getTempDir($file) . '/' . basename($file, '.php') . '-' . $extra . '.php';
 	}
-	function getTempDir($file){
-		if ($this->tempdir===null) {
-			if (defined('compile_dir')){
+	function getTempDir($file) {
+		if ($this->tempdir === null) {
+			if (defined('compile_dir')) {
 				$this->tempdir = constant('compile_dir');
-			}else {
-				$this->tempdir=sys_get_temp_dir();
+			} else {
+				$this->tempdir = sys_get_temp_dir();
 			}
 		}
-		@mkdir($this->tempdir.dirname($file), 0700, true);
-		return $this->tempdir.dirname($file);
+		@ mkdir($this->tempdir . dirname($file), 0700, true);
+		return $this->tempdir . dirname($file);
 	}
 }
 
