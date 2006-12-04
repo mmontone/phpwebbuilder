@@ -96,6 +96,7 @@
 								<container id="error_message"/>
 							</div>
 						</template>
+						<input type="button" id="accept" value="Aceptar" />
 					</td>
 				</tr>
 			</tbody>

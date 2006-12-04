@@ -123,6 +123,56 @@ function lam($text) {
 	return $t;
 }
 
+$dyn_vars = array();
+
+function defdyn($var, &$value) {
+	global $dyn_vars;
+	if (!is_array($dyn_vars[$var])) {
+		$dyn_vars[$var] = array();
+	}
+
+	array_push($dyn_vars[$var], $value);
+}
+
+function undefdyn($var) {
+	global $dyn_vars;
+	array_pop($dyn_vars[$var]);
+}
+
+function &getdyn($var) {
+	global $dyn_vars;
+	return $dyn_vars[count($dyn_vars) - 1];
+}
+
+/*@dlet a=array(), c=& new MyObject
+  {
+	print_r(getdyn('c'));
+  }*/
+function dlet($text) {
+	preg_match('/(.)*[\s\t]*\{(.*)\}/s', $text, $matches);
+	$vars = $matches[1];
+	$body = $matches[2];
+
+	$code = '';
+	$vs = explode(',', $vars);
+	$vss = array();
+	foreach ($vs as $v) {
+		preg_match('/(.*)\s*=\&?\s*(.*)/', $v, $vmatches);
+		$var = trim($vmatches[1]);
+		$vss[] =& $var;
+		$value = trim($vmatches[2]);
+		$code .= "defdyn($var, $value);\n";
+	}
+
+	$code .= $body;
+
+	foreach ($vss as $v) {
+		$code .= "\nundefdyn($v);";
+	}
+
+	return $code;
+}
+
 function defmacro($text) {
 
 }

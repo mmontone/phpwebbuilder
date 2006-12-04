@@ -27,6 +27,15 @@ class ValidationErrorsDisplayer extends Component {
     function visitValidationException(&$ex) {
     	$this->addComponent(new ErrorMessage(array('error_message' => $ex->getMessage())));
     }
+
+    function accept() {
+		$this->callback('on_accept');
+	}
+
+	function onAccept(&$function) {
+		$this->registerCallback('on_accept', $function);
+		$this->addComponent(new CommandLink(array('text' => 'Accept', 'proceedFunction' => new FunctionObject($this, 'accept'))), 'accept');
+	}
 }
 
 class ErrorMessage extends Component {
