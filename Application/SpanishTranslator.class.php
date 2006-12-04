@@ -3,7 +3,7 @@
 class SpanishTranslator extends Translator
 {
     function getDictionaryFile(){
-    	return dirname(__FILE__).'/spanish.dic';
+    	return constant('pwbdir'). '/Application/spanish.dic';
     }
 
 }
