@@ -1,14 +1,5 @@
 <?php
-if (defined('compile')) {
-	function compile_once($file) {
-		global $compilerInstance;
-		$compilerInstance->compile($file);
-	}
-} else {
-	function compile_once($file) {
-		require_once ($file);
-	}
-}
+
 function processMacro($matches) {
 	$macro = $matches[1];
 	$body = $matches[2];
@@ -83,8 +74,17 @@ class Compiler {
 		return $this->tempdir . dirname($file);
 	}
 }
-
-$compilerInstance = new Compiler;
+if (defined('compile')) {
+	$compilerInstance = new Compiler;
+	function compile_once($file) {
+		global $compilerInstance;
+		$compilerInstance->compile($file);
+	}
+} else {
+	function compile_once($file) {
+		require_once ($file);
+	}
+}
 
 if (!function_exists('sys_get_temp_dir')) {
 	// Based on http://www.phpit.net/
