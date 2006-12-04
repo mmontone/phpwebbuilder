@@ -13,7 +13,6 @@ class Component extends PWBObject
 	var $__children;
 	var $nextChildrenPosition = 0;
 	var $dyn_vars = array();
-	var $dyn_event_handlers = array();
 
 	function Component($params=array()) {
 		parent::PWBObject($params);
@@ -24,10 +23,6 @@ class Component extends PWBObject
 	function setDynVar($name, &$value) {
 		//print_backtrace('Setting dyn var at: ' . $name . ' in ' . getClass($this));
 		$this->dyn_vars[$name] =& $value;
-	}
-
-	function setDynEventHandler($event, &$function) {
-
 	}
 
 	function &getDynVar($name) {
