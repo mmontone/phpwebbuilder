@@ -36,22 +36,7 @@ function lambda_parser($text) {
 	return sexp_parser($text);
 }
 
-function processMacro($matches) {
-	//echo '<br/>Processing macro';
 
-	$macro = $matches[1];
-	$body = $matches[2];
-
-	//echo 'Macro: ' . $macro . '<br />';
-	//echo 'Body: ' . $body . '<br />';
-
-	$code = $macro . '(\''. ereg_replace('\'', '\\\'',$body) . '\');';
-	//echo 'Evaluating: ' . $code . '<br />';
-	$result=null;
-	eval('$result = ' . $code);
-	//echo 'Result: ' . $result . '<br />';
-	return $result;
-}
 
 $mixins = array();
 
@@ -83,7 +68,7 @@ function use_mixin($text) {
 	global $mixins;
 	$code = '';
 	foreach ($ms as $name) {
-		$name = str_replace(' ', '', $name);
+		$name = trim($name);
 		$code = $code . $mixins[$name];
 	}
 	$code .= "\n";
@@ -117,8 +102,8 @@ function typecheck($text) {
 		$params = explode(',', $text);
 		foreach($params as $param) {
 			$case = explode(':', $param);
-			$arg = str_replace(' ', '', $case[0]);
-			$type = str_replace(' ', '', $case[1]);
+			$arg = trim($case[0]);
+			$type = trim($case[1]);
 			$code .= "assert(is_a($arg, '$type'));\n";
 		}
 		return $code;
@@ -164,7 +149,7 @@ function includeAll() {
 }
 function includeAllModules($prefix, $modules) {
 	foreach (explode(",", $modules) as $dir) {
-		includemodule($prefix . trim($dir));
+		includemodule($prefix . '/' . trim($dir));
 	}
 }
 

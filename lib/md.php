@@ -28,7 +28,7 @@ function defmdf($text) {
 	if ($context != '') {
 		$cs = explode('<-',$context);
 		foreach (array_keys($cs) as $i) {
-			$cs[$i] = str_replace(' ', '', $cs[$i]);
+			$cs[$i] = trim($cs[$i]);
 		}
 		$rules['in'] = $cs;
 	}
@@ -37,8 +37,8 @@ function defmdf($text) {
 	$pss = array();
 	foreach($ps as $p) {
 		$pp = explode(':', $p);
-		$arg = str_replace(' ', '', $pp[0]);
-		$type = str_replace(' ', '', $pp[1]);
+		$arg = trim($pp[0]);
+		$type = trim($pp[1]);
 		$pss[$arg] = $type;
 	}
 	$rules['with'] = $pss;
