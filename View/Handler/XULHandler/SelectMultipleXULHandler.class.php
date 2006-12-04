@@ -3,6 +3,7 @@
 class SelectMultipleXULHandler extends SelectMultipleHTMLHandler{
     function initializeDefaultView(&$view){
 		$view->setTagName('listbox');
+		$view->appendChild(new XMLNodeModificationsTracker('menupopup'));
 	}
 	function prepareToRender(){
 		WidgetHTMLHandler::prepareToRender();
@@ -25,13 +26,14 @@ class SelectMultipleXULHandler extends SelectMultipleHTMLHandler{
 	function appendOptions(&$view) {
 		$i=0;
 		$self =& $this;
+		$mp =& $view->first_child();
 		$this->component->options->map(
 			lambda('&$elem',
 			'$option =& new XMLNodeModificationsTracker(\'listitem\');
 			$option->setAttribute(\'value\', $i);
-			$option->setAttribute(\'label\',$self->component->displayElement($elem)));
+			$option->setAttribute(\'label\',$self->component->displayElement($elem));
 			$self->opts[$i] =& $option;
-			$view->appendChild($option);
+			$mp->appendChild($option);
 			$i++;', get_defined_vars()));
 	}
 
