@@ -13,6 +13,7 @@ class Component extends PWBObject
 	var $__children;
 	var $nextChildrenPosition = 0;
 	var $dyn_vars = array();
+	var $dyn_event_handlers = array();
 
 	function Component($params=array()) {
 		parent::PWBObject($params);
@@ -23,6 +24,10 @@ class Component extends PWBObject
 	function setDynVar($name, &$value) {
 		//print_backtrace('Setting dyn var at: ' . $name . ' in ' . getClass($this));
 		$this->dyn_vars[$name] =& $value;
+	}
+
+	function setDynEventHandler($event, &$function) {
+
 	}
 
 	function &getDynVar($name) {
@@ -236,6 +241,34 @@ class Component extends PWBObject
 		$callbackComponent->stopAndCall($this);
         if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
+		}
+	}
+
+	function dynCallback($callback=null) {
+		$this->dynCallbackWith($callback, $a = array());
+	}
+
+	function dynCallbackWith($callback, &$params) {
+		if ($this->listener === null) {
+			print_backtrace('Component constructor not being called??');
+		}
+		$this->listener->dynTakeControlOf($this, $callback, $params);
+	}
+
+	function dynTakeControlOf(&$callbackComponent, $callback, &$params) {
+		$n=null;
+		$callbackComponent->listener =& $n;
+		$callbackComponent->stopAndCall($this);
+        if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
+			$callbackComponent->registered_callbacks[$callback]->callWith($params);
+		}
+		else {
+			if ($this->listener == null) {
+				print_backtrace_and_exit(getClass($this) . ' cannot handle callback: ' . $callback);
+			}
+			else {
+				$this->listener->dynTakeControlOf($this, $callback, $params);
+			}
 		}
 	}
 
