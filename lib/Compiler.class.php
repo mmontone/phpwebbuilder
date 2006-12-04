@@ -31,7 +31,7 @@ class Compiler {
 					fwrite($fo, $f);
 					fclose($fo);
 				}
-				require_once ($tmpname);
+				require_once $tmpname;
 			}
 		} else {
 			require_once ($file);
@@ -48,7 +48,7 @@ class Compiler {
 			//echo($f);
 			return $this->compileString($f); // Recursive call (macros generating code with macros)
 		} else {
-			return ($str);
+			return $str;
 		}
 
 	}

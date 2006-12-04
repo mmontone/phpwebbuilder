@@ -27,10 +27,11 @@ class ConfigReader
     }
     function loadDir($value,$file_name){
     	if ((substr($value,0,1)=='/') or ereg('^[[:alpha:]]:', $value)){
-			return $value;
 		} else {
-			return dirname($file_name).'/'.$value;
+			$value= dirname($file_name).'/'.$value;
 		}
+		if (substr($value,-1)!=="/") $value.='/';
+
     }
     function load($file_name){
     	$conf = $this->readAct($file_name);
