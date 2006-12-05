@@ -4,12 +4,14 @@
 
 require_once 'spyc-0.2.3/spyc.php';
 
-// MD with macros:
+/* MD with macros:
 #defmdf getListElement [ TrackedPersonsNavigator <- TrackedObjectsList ] (&$guest : TrackedPerson, &$state : InGuestState)
      {
            return new InGuestElement($guest);
      }
  #*/
+
+
 function defmdf($text) {
 	preg_match('/([[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*)\)[\s\t]*\{(.*)\}/s', $text, $matches);
 	//print_r($matches);
