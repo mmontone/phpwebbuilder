@@ -295,10 +295,10 @@ class DescriptedObject extends PWBObject {
 		$this->validation_errors[] =& $error;
 	}
 
-	/*@deprecated*/
+	#deprecated
 	function check_not_null($fields, & $error_msgs) {
 		return $this->checkNotEmpty($fields);
-	}
+	}#
 	/**
 	 * Checks if at least one of the fields with these names is not empty
 	 */

@@ -63,14 +63,14 @@ class MySQLDriver extends DBDriver {
 
     function &query($sql) {
     	trace($sql. '<br/>');
-    	/*@sql_echo	echo($sql. '<br/>');*/
+    	#sql_echo	echo($sql. '<br/>');#
     	$this->openDatabase();
 		$this->setLastSQL($sql);
         $reg = mysql_query ($sql);
         $this->closeDatabase();
         if (!$reg) {
         	$error =& $this->registerDBError($sql);
-        	/*@sql_echo $lastError =& $this->getLastError(); echo $lastError->printHtml() . '<br />';*/
+        	#sql_echo $lastError =& $this->getLastError(); echo $lastError->printHtml() . '<br />';#
     		return $error;
         }
         return $reg;

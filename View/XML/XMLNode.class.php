@@ -96,7 +96,7 @@ class XMLNode extends DOMXMLNode {
 
 	function renderEcho() {
 		$id = $this->getId();
-		if ($this->getAttribute('id')!='' && !$this->controller) {
+		if ($id!=null && !$this->controller) {
 			if (defined('debugview') and constant('debugview')=='1') {
 				$this->addCSSclass('hiddencontainer');
 				$this->appendChild(new XMLTextNode($id));
@@ -125,7 +125,7 @@ class XMLNode extends DOMXMLNode {
 	function renderNonEcho() {
 		$out = '';
 		$id = $this->getId();
-		if ($this->getAttribute('id')!='' && !$this->controller) {
+		if ($id!=null && !$this->controller) {
 			if (defined('debugview') and constant('debugview')=='1') {
 				$this->addCSSclass('hiddencontainer');
 				$this->appendChild(new XMLTextNode($id));

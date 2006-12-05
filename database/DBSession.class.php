@@ -22,7 +22,7 @@ class DBSession {
     }
 
     function addCommand(&$command) {
-    	/*@sql_echo echo 'Adding command ' . getClass($command) . ' target: ' . getClass($command->object) . '<br/>'; */
+        #sql_echo echo 'Adding command ' . getClass($command) . ' target: ' . getClass($command->object) . '<br/>';#
     	$this->commands[] =& $command;
     }
 
@@ -55,21 +55,21 @@ class DBSession {
 			$this->driver->beginTransaction();
 		}
 
-		/*@sql_echo print_backtrace('Beggining transaction ('. $this->nesting . ')');*/
+		#sql_echo print_backtrace('Beggining transaction ('. $this->nesting . ')');#
 	}
 
 	function commit() {
 		if ($this->nesting == 1) {
 			if (!$this->rollback) {
-				/*@sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');*/
+				#sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');#
 				$this->commitTransaction();
 			}
 			else {
-				/*@sql_echo	print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');*/
+				#sql_echo	print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');#
 				$this->rollbackTransaction();
 			}
 		}
-		/*@sql_echo
+		#sql_echo
 		else {
 			if (!$this->rollback) {
 				print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');
@@ -77,19 +77,19 @@ class DBSession {
 			else {
 				print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');
 			}
-		}*/
+		}#
 
 		$this->nesting--;
 	}
 
 	function rollback() {
-		/*@sql_echo print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');*/
+		#sql_echo print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');#
 
 		if ($this->nesting == 1) {
 			$this->rollbackTransaction();
 		}
 		else {
-			/*@sql_echo print_backtrace('Setting rollback in true <br/>');*/
+			#@sql_echo print_backtrace('Setting rollback in true <br/>');#
 
 			$this->rollback=true;
 		}
@@ -234,13 +234,13 @@ class DBCommand {
 
 class CreateObjectDBCommand extends DBCommand {
 	function commit() {
-		/*@sql_echo 	echo 'Committing creation: ' . getClass($this->object) . '<br />';*/
+		#sql_echo 	echo 'Committing creation: ' . getClass($this->object) . '<br />';#
 
 		$this->object->commitMetaFields();
 	}
 
 	function rollback() {
-		/*@sql_echo echo 'Rolling back creation: ' . getClass($this->object) . '<br />';*/
+		#sql_echo echo 'Rolling back creation: ' . getClass($this->object) . '<br />';#
 
 		$this->object->flushInsert();
 	}
@@ -248,13 +248,13 @@ class CreateObjectDBCommand extends DBCommand {
 
 class UpdateObjectDBCommand extends DBCommand {
 	function commit() {
-		/*@sql_echo echo 'Committing update: ' . getClass($this->object) . '<br />';*/
+		#sql_echo echo 'Committing update: ' . getClass($this->object) . '<br />';#
 
 		$this->object->commitMetaFields();
 	}
 
 	function rollback() {
-		/*@sql_echo echo 'Rolling back update: ' . getClass($this->object) . '<br />';*/
+		#sql_echo echo 'Rolling back update: ' . getClass($this->object) . '<br />';#
 
 		$this->object->flushUpdate();
 	}
@@ -266,7 +266,7 @@ class DeleteObjectDBCommand extends DBCommand {
 	}
 
 	function rollback() {
-		/*@sql_echo  echo 'Rolling back delete: ' . getClass($this->object) . '<br />';*/
+		#sql_echo  echo 'Rolling back delete: ' . getClass($this->object) . '<br />';#
 
 		$this->object->existsObject=TRUE;
 	}

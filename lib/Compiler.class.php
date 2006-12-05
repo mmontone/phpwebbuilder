@@ -3,7 +3,7 @@
 function processMacro($matches) {
 	$macro = $matches[1];
 	$body = $matches[2];
-
+	//var_dump($matches);
 	//echo '<br/>Processing macro: ' . $macro . '<br />';
 	//echo 'Macro: ' . $macro . '<br />';
 	//echo 'Body: ' . $body . '<br />';
@@ -32,7 +32,7 @@ class Compiler {
 		if (!in_array($file, $this->compiled)) {
 			$this->compiled[] = $file;
 			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-			if ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file)) {
+			if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
 				//echo 'Compiling file: ' . $file . '<br />';
 				$f = file_get_contents($file);
 				$f = $this->compileString($f);
@@ -44,14 +44,21 @@ class Compiler {
 		}
 	}
 	function compileString($str) {
-		if (preg_match('/\/\*@/', $str) > 0) {
+		$pat = '/'.
+				'#'.//START_MACRO
+				'([[:alpha:]|\_]+)[\s\t]*' .
+				''.//START_PARAMS
+				'([^#]+)' .
+				'#'.//END_MACRO
+				'/s';
+		if (preg_match($pat, $str, $matches) > 0) {
 			//echo 'Compiling string: ' . $str;
 			// Notes: 's' makes '.' match 'newline'
 			//        '?' after '*' means no-greedy matching
-			$str = preg_replace_callback('/\/\*@([[:alpha:]|\_]+)[\s\t]*(.*?)\*\//s', 'processMacro', $str);
+			//var_dump($matches);
+			$str = preg_replace_callback($pat, 'processMacro', $str);
 			//ereg('\/\*@[[:alpha:]]\s*(.*)\*\/', $f, $matches);
-			//print_r($matches);
-			//echo($f);
+			//echo($str);
 			return $this->compileString($str); // Recursive call (macros generating code with macros)
 		} else {
 			//echo 'Compiled string: ' . $str . '<br />';
@@ -70,8 +77,9 @@ class Compiler {
 				$this->tempdir = sys_get_temp_dir();
 			}
 		}
-		@ mkdir($this->tempdir . dirname($file), 0700, true);
-		return $this->tempdir . dirname($file);
+		$dir = $this->tempdir . dirname($file);
+		@ mkdir($dir, 0700, true);
+		return $dir;
 	}
 }
 if (defined('compile')) {

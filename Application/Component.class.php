@@ -57,7 +57,7 @@ class Component extends PWBObject
 		}
 	}
 	function releaseView(){
-		 /*@check $this->viewHandler!=null*/
+		 #check $this->viewHandler!=null#
 		 $n = null;
 		 $this->view =& $n;
 		 $this->viewHandler->release();
@@ -110,7 +110,7 @@ class Component extends PWBObject
 
 		$this->start();
 		foreach(array_keys($this->__children) as $k){
-			/*@check is_a($this->$k, 'Component')*/
+			#check is_a($this->$k, 'Component')#
 			$this->$k->linkToApp($app);
 		}
 	}
@@ -137,8 +137,7 @@ class Component extends PWBObject
     	$this->registered_callbacks[$selector] =& $callback;
     }
 	function &addComponent(&$component, $ind=null) {
-		//echo 'Adding component: ' . getClass($component) . '<br />';
-		/*@check is_a($component, 'Component')*/
+		#check is_a($component, 'Component')#
 		$res = $component->checkAddingPermissions();
 		if ($res == false){
 			return $f=false;
@@ -146,7 +145,7 @@ class Component extends PWBObject
 			if (($ind !==null) and (isset($this->__children[$ind]))) {
 				$this->$ind->stopAndCall($component);
 			} else {
-				/*@check !isset($this->$ind)*/
+				#check !isset($this->$ind)#
 				if ($ind===null){
 					$ind = $this->nextChildrenPosition++;
 				}
@@ -341,7 +340,7 @@ class Component extends PWBObject
 	}
 	function doNothing(){}
 	function addFieldComponent(& $component, $field_name, $text=null) {
-		/*@check $field_name !== null*/
+		#check $field_name !== null#
 		if ($text == null) {
 			$text = $field_name;
 		}

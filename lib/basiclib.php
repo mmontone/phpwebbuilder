@@ -8,7 +8,7 @@ require_once 'Compiler.class.php';
  * Some basic functions.
  */
 
-/*@defmacro defmd*/
+#defmacro defmd#
 function defmd($text) {
 	// We use template language to parse macros input??
 	$out =& parse_with('$string {name} "(" $params {params} ")"' .
@@ -40,11 +40,12 @@ function lambda_parser($text) {
 
 $mixins = array();
 
-/*@mixin MyMixin {
+#mixin MyMixin
+{
 	function mixedFunc() {
 		echo 'Hola';
 	}
-}*/
+}#
 function mixin($text) {
 	preg_match('/([[:alpha:]]*)\s*\{(.*)\}/s', $text, $matches);
 	$name = $matches[1];
@@ -55,14 +56,15 @@ function mixin($text) {
 	$mixins[$name] = $body;
 	return '';
 }
-//
-// class Mixed {
-// /*@use_mixin MyMixin, OtherMixin*/
-//
-// }
-// $m =& new Mixed;
-// $m->mixedFunc();
-//
+/*
+ class Mixed {
+ #use_mixin MyMixin, OtherMixin#
+
+ }
+ $m =& new Mixed;
+ $m->mixedFunc();
+*/
+
 function use_mixin($text) {
 	$ms = explode(',',$text);
 	global $mixins;
@@ -85,9 +87,9 @@ function sql_echo($text) {
 	}
 }
 
-/*@check true*/
+#check $x>$y#
 function check($text) {
-	if (defined('assertions')) {
+	if (Compiler::CompileOpt('assertions')) {
 		return "assert($text);\n";
 	}
 	else {
@@ -95,7 +97,7 @@ function check($text) {
 	}
 }
 
-/*@typecheck $t : PWBObject, $s : Component*/
+#typecheck $t : PWBObject, $s : Component#
 function typecheck($text) {
 	if (Compiler::CompileOpt('typechecking')) {
 		$code = '';
@@ -113,13 +115,13 @@ function typecheck($text) {
 	}
 }
 
-/*@lam $x,$y -> return $x + $y;*/
+#lam $x,$y -> return $x + $y;#
 function lam($text) {
 	//echo 'Trying to lam: ' . $text;
 	preg_match('/(.*)\s*\-\>\s*(.*)/s', $text, $matches);
 	$params = $matches[1];
 	$body = $matches[2];
-	$t = "lambda('$params','$body', get_defined_vars());";
+	$t = "lambda('$params','$body', get_defined_vars())";
 	return $t;
 }
 
@@ -144,10 +146,10 @@ function &getdyn($var) {
 	return $dyn_vars[count($dyn_vars) - 1];
 }
 
-/*@dlet a=array(), c=& new MyObject
+#dlet a=array(), c=& new MyObject
   {
 	print_r(getdyn('c'));
-  }*/
+  }#
 function dlet($text) {
 	preg_match('/(.)*[\s\t]*\{(.*)\}/s', $text, $matches);
 	$vars = $matches[1];
@@ -573,7 +575,7 @@ function handle_error($errno, $errstr, $errfile, $errline) {
 	}
 }
 
-function print_n($obj, $n){
+function print_n($obj, $n=5){
 	if ($n!=0){
 		if (is_array($obj)) {
 			$ret = 'Array(';
