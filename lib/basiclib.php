@@ -206,7 +206,7 @@ function includeAll() {
 }
 function includeAllModules($prefix, $modules) {
 	foreach (explode(",", $modules) as $dir) {
-		includemodule($prefix . '/' . trim($dir));
+		includemodule($prefix . trim($dir));
 	}
 }
 

@@ -22,24 +22,17 @@ class Component extends PWBObject
 	}
 
 	function setDynVar($name, &$value) {
-		//print_backtrace('Setting dyn var at: ' . $name . ' in ' . getClass($this));
 		$this->dyn_vars[$name] =& $value;
 	}
 
 	function &getDynVar($name) {
 		if (isset($this->dyn_vars[$name])) {
-			//print_backtrace('Returning dyn var at: ' . $name . ' in ' . getClass($this));
 			return $this->dyn_vars[$name];
 		}
 		else {
 			$parent =& $this->getParent();
-			if ($parent == null) {
-				print_backtrace_and_exit('Dynamic variable ' . $name . ' not defined');
-			}
-			else {
-				//print_backtrace('Dyn var at: ' . $name . ' not found in ' . getClass($this));
-				return $parent->getDynVar($name);
-			}
+			#check $parent !== null#
+			return $parent->getDynVar($name);
 		}
 	}
 	function initialize(){}
@@ -100,8 +93,6 @@ class Component extends PWBObject
 
 	function linkToApp(&$app){
 		#check !isset($this->app)#
-		// No se porque es necesaria la siguiente linea bajo las condiciones en que se esta llamando a linkToApp
-		// Pero si no esta, falla:
 		$this->app =& $app;
 		$this->obtainView();
 		$this->initialize();
@@ -111,7 +102,6 @@ class Component extends PWBObject
 		foreach(array_keys($tl) as $k){
 			$comp =& $tl[$k];
 			#check is_a($comp, 'Component')#
-			//if ($comp->app===null)
 				$comp->linkToApp($app);
 		}
 		unset($this->toLink);
@@ -136,6 +126,7 @@ class Component extends PWBObject
     }
 	/** Registers a callback for the component */
     function registerCallback($selector, &$callback) {
+    	#typecheck $callback:FunctionObject#
     	$this->registered_callbacks[$selector] =& $callback;
     }
 	function &addComponent(&$component, $ind=null) {
@@ -164,7 +155,6 @@ class Component extends PWBObject
 
 	function deleteComponentAt($index){
 		$c =& $this->componentAt($index);
-		trigger_error('Removing child '.$index.' from '.$this->getId().' (a '.getClass($c).')',E_USER_NOTICE);
 		if ($c != false) $c->delete();
 	}
 
@@ -197,6 +187,7 @@ class Component extends PWBObject
 		}
 	}
 	function setChild($index, &$component){
+		#typecheck $component:Component#
 		$this->__children[$index]->hold($component);
 		$this->$index=&$this->__children[$index]->component;
 	}
@@ -211,7 +202,7 @@ class Component extends PWBObject
     	$this->releaseAll();
     }
     function basicCall(&$component) {
-    	//echo 'Calling component: ' . getClass($component) . '<br />';
+		#typecheck $component:Component#
     	$this->stopAll();
     	$this->replaceView($component);
     	$this->holder->hold($component);
@@ -227,13 +218,12 @@ class Component extends PWBObject
 	}
 
 	function callbackWith($callback, &$params) {
-		if ($this->listener === null) {
-			print_backtrace('Component constructor not being called??');
-		}
+		#check $this->listener !== null#
 		$this->listener->takeControlOf($this, $callback, $params);
 	}
 
 	function takeControlOf(&$callbackComponent, $callback, &$params) {
+		#typecheck $callbackComponent:Component#
 		$n=null;
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
@@ -247,13 +237,12 @@ class Component extends PWBObject
 	}
 
 	function dynCallbackWith($callback, &$params) {
-		if ($this->listener === null) {
-			print_backtrace('Component constructor not being called??');
-		}
+		#check $this->listener !== null#
 		$this->listener->dynTakeControlOf($this, $callback, $params);
 	}
 
 	function dynTakeControlOf(&$callbackComponent, $callback, &$params) {
+		#typecheck $callbackComponent:Component#
 		$n=null;
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
@@ -261,12 +250,8 @@ class Component extends PWBObject
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
 		else {
-			if ($this->listener == null) {
-				print_backtrace_and_exit(getClass($this) . ' cannot handle callback: ' . $callback);
-			}
-			else {
-				$this->listener->dynTakeControlOf($this, $callback, $params);
-			}
+			#check $this->listener !== null#
+			$this->listener->dynTakeControlOf($this, $callback, $params);
 		}
 	}
 
@@ -293,10 +278,12 @@ class Component extends PWBObject
 	function viewUpdated ($params){}
 	// TODO Remove View
 	function replaceView(&$other){
+
 		$other->takeView($this);
 	}
 
 	function takeView(&$comp) {
+		#typecheck $comp:Component#
 		if (isset($this->view)){
 			$pv =& $comp->view->parentNode;
 			$pv->replaceChild($this->view, $comp->view);
@@ -344,6 +331,7 @@ class Component extends PWBObject
 	}
 	function doNothing(){}
 	function addFieldComponent(& $component, $field_name, $text=null) {
+		#typecheck $component:Component#
 		#check $field_name !== null#
 		if ($text == null) {
 			$text = $field_name;

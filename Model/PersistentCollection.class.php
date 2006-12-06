@@ -4,14 +4,12 @@ class PersistentCollection extends Report{
 	 * A collection of persisted objects (of the same class)
 	 */
 	function PersistentCollection($dataType = "") {
+		#check class_exists($dataType)#
 		$this->setDataType($dataType);
 		parent::Report();
 	}
 
 	function setCondition($field, $comparator, $value){
-		//echo 'Persistent collection: Setting condition ' . $this->parseField($field) . $comparator . $value . '<br />';
-		/*
-		$this->conditions[$this->parseField($field)]=array($this->parseField($field),$comparator,$value);*/
 		$e1=&new ValueExpression('`' . $this->parseField($field) . '`');
 		$e2=&new ValueExpression($value);
 		$cond =& new Condition(array('exp1'=> &$e1,
@@ -29,6 +27,7 @@ class PersistentCollection extends Report{
 	 * Returns a PersistentCollection
 	 */
 	function &findMatches(&$object) {
+		#typecheck $object:PersistentObject#
 		$col =& $object->findMatches();
 		$this->conditions = $col->conditions;
 		return $this;

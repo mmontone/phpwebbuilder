@@ -19,6 +19,7 @@ class Application extends ComponentHolder {
 		$this->page_renderer =& PageRenderer::create($this);
 		$this->createView();
 		$rc = & $this->setRootComponent();
+		#typecheck $rc:Component#
 		parent :: ComponentHolder($rc, $index = 0, $n = null);
 		$rc->linkToApp($this);
 		$rc->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($rc->view, $this->component, $this->wholeView));
