@@ -113,9 +113,9 @@ if (!function_exists('sys_get_temp_dir')) {
 		else {
 			// Try to use system's temporary directory
 			// as random name shouldn't exist
-			$temp_file = tempnam(md5(uniqid(rand(), TRUE)), '');
+			$temp_file = tempnam('', '');
 			if ($temp_file) {
-				$temp_dir = realpath(dirname($temp_file));
+				$temp_dir = dirname($temp_file);
 				unlink($temp_file);
 				return $temp_dir;
 			} else {

@@ -31,7 +31,7 @@ class ConfigReader
 			$value= dirname($file_name).'/'.$value;
 		}
 		if (substr($value,-1)!=="/") $value.='/';
-
+		return $value;
     }
     function load($file_name){
     	$conf = $this->readAct($file_name);

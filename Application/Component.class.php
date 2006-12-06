@@ -11,6 +11,7 @@ class Component extends PWBObject
 	var $registered_callbacks = array();
 	var $configuration;
 	var $__children;
+	var $toLink = array();
 	var $nextChildrenPosition = 0;
 	var $dyn_vars = array();
 
@@ -98,21 +99,22 @@ class Component extends PWBObject
 	}
 
 	function linkToApp(&$app){
-		//@notcheck (!isset($this->app));
+		#check !isset($this->app)#
 		// No se porque es necesaria la siguiente linea bajo las condiciones en que se esta llamando a linkToApp
 		// Pero si no esta, falla:
-		if ($this->app!==null) return;
-
 		$this->app =& $app;
-
 		$this->obtainView();
 		$this->initialize();
 
 		$this->start();
-		foreach(array_keys($this->__children) as $k){
-			#check is_a($this->$k, 'Component')#
-			$this->$k->linkToApp($app);
+		$tl =&$this->toLink;
+		foreach(array_keys($tl) as $k){
+			$comp =& $tl[$k];
+			#check is_a($comp, 'Component')#
+			//if ($comp->app===null)
+				$comp->linkToApp($app);
 		}
+		unset($this->toLink);
 	}
 
 	function startAll() {
@@ -152,6 +154,8 @@ class Component extends PWBObject
 				$this->__children[$ind] =& new ComponentHolder($component,$ind, $this);
 				if (isset($this->app)) {
 					$component->linkToApp($this->app);
+				} else {
+					$this->toLink[]=&$component;
 				}
 			}
 			return $component;

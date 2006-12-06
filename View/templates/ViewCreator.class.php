@@ -70,18 +70,18 @@ class ViewCreator {
 		 * */
 		$parentView =& $pV;
 		$view  =& $component->view;
-		$debugging = defined('debugview') && (constant('debugview')=='1');
 		$hasView = $view!=null && strcasecmp(getClass($view),'NullView')!=0 && strcasecmp(getClass($view),'StdClass')!=0;
 		$id = $component->getSimpleId();
-		if ($parentView === null) print_backtrace('The component '.getClass($component).' '.$component->getId().' has no parent view');
+		//check $parentView !== null
 		$vid =& $parentView->childrenWithId($id);
-		$db = false;
+		#debugview $db = false;#
 		if ($vid!=null){
 			if (!$vid->isContainer()){
 				$vid->getTemplatesAndContainers();
 				$this->instantiateFor($vid,$component);
-				if ($debugging) {$vid->addCSSClass('containerWithId');}
-				$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');
+				#debugview
+					{$vid->addCSSClass('containerWithId');
+					$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');}#
 				$component->viewHandler->prepareToRender();
 				return $vid;
 			} else {
@@ -95,11 +95,13 @@ class ViewCreator {
 				$pos =& $ct->createCopy();
 				$parentView->insertBefore($ct, $pos);
 			} else {
-				if ($debugging) {
+				#debugview
+				{
 					$db = true;
 					$pos =& new HTMLContainer;
 					$parentView->appendChild($pos);
-				} else {
+				} if(false) #
+				{
 					$v =& new NullView;
 					$this->instantiateFor($v,$component);
 					return $v;
@@ -110,25 +112,21 @@ class ViewCreator {
 			$tp0 =& $parentView->templateForClass($component);
 			if ($tp0!=null){
 				$tp =& $this->instantiateFor($tp0,$component);
-				$this->addTemplateName($tp, 'Local:'.$tp0->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');
+				#debugview $this->addTemplateName($tp, 'Local:'.$tp0->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');#
 			} else {
 				$tp =& $this->createTemplate($component);
 			}
-			if ($debugging) {
-				$tp->addCSSClass('template');
-			}
+			#debugview $tp->addCSSClass('template');#
 			$view =& $tp;
 			$view->getTemplatesAndContainers();
-			if ($debugging && $db) $view->addCSSClass('debugging');
+			#debugview if ( $db) $view->addCSSClass('debugging');#
 		}
 		$parentView->replaceChild($view,$pos);
 		$component->viewHandler->prepareToRender();
 		return $view;
 	}
 	function addTemplateName(&$view, $name){
-		if (defined('debugview') and constant('debugview')=='1') {
-			$this->app->page_renderer->addTemplateName(&$view, $name);
-		}
+		$this->app->page_renderer->addTemplateName(&$view, $name);
 	}
 	function &createTemplate(&$component){
 		return $this->templateForClass($component);
@@ -146,7 +144,7 @@ class ViewCreator {
 				}
 			}
 			$v =& $this->instantiateFor($t,$component);
-			$this->addTemplateName($v, 'Global:'.$t->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');
+			#debugview $this->addTemplateName($v, 'Global:'.$t->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');#
 			return $v;
 		}
 		else {
@@ -155,7 +153,7 @@ class ViewCreator {
 	}
 	function &instantiateFor(&$template, &$component){
 		$h = $template->getAttribute('handler');
-		if ($h != '' && class_exists($h)){
+		if ($h != null && class_exists($h)){
 			$handler =& new $h;
 			$handler->setComponent($component);
 		} else {
@@ -168,7 +166,7 @@ class ViewCreator {
 		$vh =& $this->app->page_renderer->viewHandler();
 		$handler =& $vh->createFor($component);
 		$v =& $handler->defaultView();
-		$this->addTemplateName($v, 'Default:'.getClass($component).'('.$component->getSimpleId().')');
+		#debugview $this->addTemplateName($v, 'Default:'.getClass($component).'('.$component->getSimpleId().')');#
 		return $v;
 	}
 }

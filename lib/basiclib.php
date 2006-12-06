@@ -78,23 +78,28 @@ function use_mixin($text) {
 	return $code;
 }
 
-function sql_echo($text) {
-	if (defined('sql_echo')) {
-		return $text;
+function optionalCompile($tag, $code) {
+	if (Compiler::CompileOpt($tag) || defined($tag)) {
+		return $code;
 	}
 	else {
 		return '';
 	}
 }
 
+
+function debugview($text) {
+	return optionalCompile('debugview', $text);
+}
+
+
+function sql_echo($text) {
+	return optionalCompile('sql_echo', $text);
+}
+
 #check $x>$y#
 function check($text) {
-	if (Compiler::CompileOpt('assertions')) {
-		return "assert($text);\n";
-	}
-	else {
-		return '';
-	}
+	return optionalCompile('assertions',"assert($text);\n");
 }
 
 #typecheck $t : PWBObject, $s : Component#

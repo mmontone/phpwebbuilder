@@ -58,6 +58,7 @@ class DataField extends ValueModel {
 	 * Performs the needed actions to create a consistent instance
 	 */
 	function createInstance($ps) {
+		$ps= $this->creationParams = array_merge($this->defaultValues($ps),$ps);
 		$this->colName = $ps['fieldName'];
 		$this->isIndex = $ps['is_index'];
 		$this->displayString = $ps['display'];
