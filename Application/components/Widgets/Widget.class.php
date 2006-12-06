@@ -14,6 +14,7 @@ class Widget extends Component {
 			$this->value_model = & new ValueHolder($null = null);
 		}
 		else {
+			#typecheck $value_model:ValueModel#
 			$this->value_model = & $value_model;
 		}
 
