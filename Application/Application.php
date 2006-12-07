@@ -26,6 +26,7 @@ compile_once ($d.'/components/Widgets/Select.class.php');
 compile_once ($d.'/components/Widgets/SelectMultiple.class.php');
 compile_once ($d.'/components/Widgets/SubdomainSelect.class.php');
 compile_once ($d.'/components/Widgets/OptionalSelect.class.php');
+compile_once ($d.'/components/Widgets/CompositeSelect.class.php');
 compile_once ($d.'/components/Widgets/NavigationLink.class.php');
 compile_once ($d.'/components/Widgets/GoBackLink.class.php');
 compile_once ($d.'/components/Widgets/Link.class.php');

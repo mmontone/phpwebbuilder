@@ -7,6 +7,11 @@ class TextHTMLHandler extends WidgetHTMLHandler{
 	}
 	function prepareToRender(){
 		$text =& $this->component->value_model->getValue();
+
+		if (is_object($text)) {
+			$text =& $text->printString();
+		}
+
 		$this->view->removeChilds();
 		$this->view->appendChild(new XMLTextNode($text));
 	}
