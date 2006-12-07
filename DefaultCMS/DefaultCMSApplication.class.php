@@ -12,7 +12,11 @@ class DefaultCMSApplication extends Application{
  	}
  	function addStyleSheets(){
  		$this->addStyleSheet(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
+ 		$this->addStyleSheet(constant('site_url') .'/lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css');
  	}
+	function addScripts() {
+		$this->addScript(constant('site_url') .'/lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js');
+	}
  	function addAjaxRenderingSpecificScripts(){
  		parent::addAjaxRenderingSpecificScripts();
  		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');

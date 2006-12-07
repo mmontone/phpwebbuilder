@@ -19,5 +19,5 @@ compile_once ($d.'/ValueObjects/Number.class.php');
 compile_once ($d.'/ValueObjects/String.class.php');
 compile_once ($d.'/ValueObjects/Vector.class.php');
 compile_once ($d.'/conditions/PWBCondition.class.php');
-
+compile_once ($d.'/DateTime.class.php');
 ?>

@@ -104,7 +104,7 @@ function sql_echo($text) {
 
 #@check $x>$y@#
 function check($text) {
-	return optionalCompile('assertions',"assert($text);\n");
+	return optionalCompile('assertions',"assert('".addslashes($text)."');\n");
 }
 
 #@typecheck $t : PWBObject, $s : Component@#
@@ -116,7 +116,7 @@ function typecheck($text) {
 			$case = explode(':', $param);
 			$arg = trim($case[0]);
 			$type = trim($case[1]);
-			$code .= "assert(is_a($arg, '$type'));\n";
+			$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\''));\n";
 		}
 		return $code;
 	}

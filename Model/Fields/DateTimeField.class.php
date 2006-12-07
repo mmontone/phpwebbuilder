@@ -1,88 +1,43 @@
 <?php
 
 class DateTimeField extends DataField {
+    function createInstance($params){
+    	parent::createInstance($params);
+    	$this->setValue(new DateTime(''));
+    }
     function SQLvalue() {
-        return "'".$this->getValue()."'" . ", " ;
+        $d =& $this->getValue();
+        return "'".$d->printString()."'" . ", " ;
     }
-
-    function &dateArray () {
-        return getDate(strtotime($this->getValue()));
-    }
-
-    function setValueArr(&$arr){
-        $this->setValue($this->format($arr));
-    }
-
-    function dateDiff(&$datefield){
-        $d1 =& $this->dateArray();
-        $d2 =& $datefield->dateArray();
-        foreach ($d1 as $ind=>$val) {
-            $d3[$ind] = $val - $d2[$ind];
-        }
-        return $d3;
-    }
-
-    /*
-    function getValue() {
-    	$v = parent::getValue();
-        if ($v!=null) {
-            return $v;
-        } else {
-			return $this->now();
-        }
-    }
-    */
-
-    function validateDate($d) {
-    	return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})', $d);
-    }
-
+	function loadFrom($reg) {
+		$val = $reg[$this->sqlName()];
+		$this->setValue(new DateTime($val));
+	}
     function &validate() {
-    	$v = $this->getValue();
-    	if ((!$this->validateTime($v)) or (!$this->validateDate($v))) {
+    	$v =& $this->getValue();
+    	if ((!$v->validateTime()) or (!$v->validateDate())) {
     		return new ValidationException(array('message' => 'The time or date are invalid', 'content' => &$this));
     	}
     	return false;
+    }
 
-    }
-    function validateTime($t) {
-    	return ereg('([0-9]{2})((:([0-9]{1,2})){0,2})', $t);
-    }
-    function now(){
-        return $this->format(getDate());
-    }
 	function setNow(){
-		$this->setValue($this->now());
+		$this->setValue(DateTime::now());
 	}
-    function format ($date) {
-        return $this->dateFormat($date)." ".$this->timeFormat($date);
-    }
-
-    function timeformat ($date) {
-        return $date["hours"].":".$date["minutes"].":".$date["seconds"];
-    }
-
-    function dateformat ($date) {
-        return $date["year"]."-".$date["mon"]."-".$date["mday"];
-    }
-
-    function &visit(&$obj) {
-        return $obj->visitedDateTimeField($this);
-    }
+	function setValue(&$d){
+		$this->date =& $d;
+		$d->onChangeSend('changed',$this);
+		parent::setValue($d);
+	}
 }
 
 class DateField extends DateTimeField {
     function format ($date) {
-        return $this->dateFormat($date);
+        return DateTime::dateFormat($date);
     }
-
-    function &visit(&$obj) {
-        return $obj->visitedDateField($this);
-    }
-
     function &validate() {
-    	$v = $this->getValue();
-    	if (!$this->validateDate($v)) {
+    	$v =& $this->getValue();
+    	if (!$v->validateDate()) {
     		return new ValidationException(array('message' => 'The date is invalid', 'content' => &$this));
     	}
     	return false;
@@ -91,15 +46,11 @@ class DateField extends DateTimeField {
 
 class TimeField extends DateTimeField{
     function format ($date) {
-        return $this->timeFormat($date);
-    }
-
-    function &visit(&$obj) {
-        return $obj->visitedTimeField($this);
+        return DateTime::timeFormat($date);
     }
 	function &validate() {
-    	$v = $this->getValue();
-    	if (!$this->validateTime($v)) {
+    	$v =& $this->getValue();
+    	if (!$v->validateTime()) {
     		return new ValidationException(array('message' => 'The time is invalid', 'content' => &$this));
     	}
     	return false;

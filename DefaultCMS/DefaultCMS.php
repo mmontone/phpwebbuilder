@@ -26,6 +26,7 @@ compile_once ($d.'/CMS/PresentersFactory/Editors/VersionFieldEditorFactory.class
 compile_once ($d.'/CMS/PresentersFactory/Editors/IndexFieldEditorFactory.class.php');
 compile_once ($d.'/CMS/PresentersFactory/Editors/TextAreaEditorFactory.class.php');
 compile_once ($d.'/CMS/PresentersFactory/Editors/BoolFieldEditorFactory.class.php');
+compile_once ($d.'/CMS/PresentersFactory/Editors/DateTimeFieldEditorFactory.class.php');
 compile_once ($d.'/CMS/PresentersFactory/Searchers/SearcherFactory.class.php');
 compile_once ($d.'/CMS/PresentersFactory/Searchers/TextFieldSearcherFactory.class.php');
 compile_once ($d.'/CMS/PresentersFactory/Viewers/ViewerFactory.class.php');

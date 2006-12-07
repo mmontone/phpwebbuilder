@@ -106,7 +106,8 @@ class Component extends PWBObject
 			#@typecheck $comp: Component@#
 				$comp->linkToApp($app);
 		}
-		$this->toLink = array();
+		$null = array();
+		$this->toLink =& $null;
 	}
 
 	function startAll() {
@@ -157,7 +158,7 @@ class Component extends PWBObject
 
 	function deleteComponentAt($index){
 		$c =& $this->componentAt($index);
-		if ($c != false) $c->delete();
+		if ($c !== false) $c->delete();
 	}
 
 	function deleteChildren(){
