@@ -9,11 +9,13 @@ class TextHTMLHandler extends WidgetHTMLHandler{
 		$text =& $this->component->value_model->getValue();
 
 		if (is_object($text)) {
-			$text =& $text->printString();
+			$t =& $text->printString();
+		} else {
+			$t =& $text;
 		}
 
 		$this->view->removeChilds();
-		$this->view->appendChild(new XMLTextNode($text));
+		$this->view->appendChild(new XMLTextNode($t));
 	}
 	function valueChanged(& $value_model, &$params) {
 		if ($this->view){

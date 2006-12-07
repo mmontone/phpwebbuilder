@@ -7,6 +7,7 @@ class CompositeSelect extends Component {
     function CompositeSelect(&$value_model, &$navigator) {
 		$this->value_model =& $value_model;
 		$this->navigator =& $navigator;
+        parent::Component();
     }
 
     function initialize() {
@@ -16,7 +17,7 @@ class CompositeSelect extends Component {
     }
 
     function elementSelected(&$element) {
-    	$this->value_model->setValue($element);
+        $this->value_model->setValue($element);
     }
 }
 

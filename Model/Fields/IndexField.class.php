@@ -37,7 +37,8 @@ class IndexField extends NumField {
 	}
 
 	function setTarget(& $target) {
-		$this->buffered_target =& $target;
+		#@typecheck $target:PresistentObject@#
+        $this->buffered_target =& $target;
 		$n = null;
 		$this->buffered_value =& $n;
 		$this->triggerEvent('changed', $this);

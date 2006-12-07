@@ -37,4 +37,8 @@
 
 	 	</div>
 	</template>
+	<template class="CompositeSelect">
+		<container id="display" />
+		<container id="nav" />
+	</template>
 </templates>
