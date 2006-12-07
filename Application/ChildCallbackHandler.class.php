@@ -16,12 +16,8 @@ class ChildCallbackHandler {
 			}
 			else {
 				$p =& $callbackComponent->getParent();
-				if ($p == null) {
-					print_backtrace_and_exit('No parent');
-				}
-				else {
-					$p->dynCallbackWith($callback, $parameters);
-				}
+				#@typecheck $p:Component@#
+				$p->dynCallbackWith($callback, $parameters);
 			}
 		}
 	}
