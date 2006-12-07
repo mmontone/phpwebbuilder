@@ -163,7 +163,7 @@ class StandardPageRenderer extends HTMLPageRenderer {
 	}
 
 	function renderPage(&$app) {
-		#typecheck $app : Application#
+		#@typecheck $app : Application@#
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';

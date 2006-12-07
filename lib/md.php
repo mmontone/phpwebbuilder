@@ -5,11 +5,11 @@
 require_once 'spyc-0.2.3/spyc.php';
 
 /* MD with macros:
-#defmdf getListElement [ TrackedPersonsNavigator <- TrackedObjectsList ] (&$guest : TrackedPerson, &$state : InGuestState)
+#@defmdf getListElement [ TrackedPersonsNavigator <- TrackedObjectsList ] (&$guest : TrackedPerson, &$state : InGuestState)
      {
            return new InGuestElement($guest);
      }
- #*/
+ @#*/
 
 
 function defmdf($text) {

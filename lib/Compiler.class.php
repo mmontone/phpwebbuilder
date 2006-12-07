@@ -45,11 +45,11 @@ class Compiler {
 	}
 	function compileString($str) {
 		$pat = '/'.
-				'#'.//START_MACRO
+				'#@'.//START_MACRO
 				'([[:alpha:]|\_]+)[\s\t]*' .
 				''.//START_PARAMS
-				'([^#]+)' .
-				'#'.//END_MACRO
+				'([^#]+|(?R))' .
+				'@#'.//END_MACRO
 				'/s';
 		if (preg_match($pat, $str, $matches) > 0) {
 			//echo 'Compiling string: ' . $str;

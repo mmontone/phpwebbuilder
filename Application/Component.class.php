@@ -31,7 +31,7 @@ class Component extends PWBObject
 		}
 		else {
 			$parent =& $this->getParent();
-			#check $parent !== null#
+			#@check $parent !== null@#
 			return $parent->getDynVar($name);
 		}
 	}
@@ -51,7 +51,7 @@ class Component extends PWBObject
 		}
 	}
 	function releaseView(){
-		 #check $this->viewHandler!=null#
+		 #@check $this->viewHandler!=null@#
 		 $n = null;
 		 $this->view =& $n;
 		 $this->viewHandler->release();
@@ -92,19 +92,21 @@ class Component extends PWBObject
 	}
 
 	function linkToApp(&$app){
-		#check !isset($this->app)#
+		#@check !isset($this->app)@#
 		$this->app =& $app;
 		$this->obtainView();
 		$this->initialize();
 
 		$this->start();
 		$tl =&$this->toLink;
+		#@check is_array($this->toLink)@#
+		//if (!is_array($this->toLink)) echo getClass($this)
 		foreach(array_keys($tl) as $k){
 			$comp =& $tl[$k];
-			#check is_a($comp, 'Component')#
+			#@typecheck $comp: Component@#
 				$comp->linkToApp($app);
 		}
-		unset($this->toLink);
+		$this->toLink = array();
 	}
 
 	function startAll() {
@@ -126,11 +128,11 @@ class Component extends PWBObject
     }
 	/** Registers a callback for the component */
     function registerCallback($selector, &$callback) {
-    	#typecheck $callback:FunctionObject#
+    	#@typecheck $callback:FunctionObject@#
     	$this->registered_callbacks[$selector] =& $callback;
     }
 	function &addComponent(&$component, $ind=null) {
-		#check is_a($component, 'Component')#
+		#@check is_a($component, 'Component')@#
 		$res = $component->checkAddingPermissions();
 		if ($res == false){
 			return $f=false;
@@ -138,7 +140,7 @@ class Component extends PWBObject
 			if (($ind !==null) and (isset($this->__children[$ind]))) {
 				$this->$ind->stopAndCall($component);
 			} else {
-				#check !isset($this->$ind)#
+				#@check !isset($this->$ind)@#
 				if ($ind===null){
 					$ind = $this->nextChildrenPosition++;
 				}
@@ -187,7 +189,7 @@ class Component extends PWBObject
 		}
 	}
 	function setChild($index, &$component){
-		#typecheck $component:Component#
+		#@typecheck $component:Component@#
 		$this->__children[$index]->hold($component);
 		$this->$index=&$this->__children[$index]->component;
 	}
@@ -202,7 +204,7 @@ class Component extends PWBObject
     	$this->releaseAll();
     }
     function basicCall(&$component) {
-		#typecheck $component:Component#
+		#@typecheck $component:Component@#
     	$this->stopAll();
     	$this->replaceView($component);
     	$this->holder->hold($component);
@@ -218,12 +220,12 @@ class Component extends PWBObject
 	}
 
 	function callbackWith($callback, &$params) {
-		#check $this->listener !== null#
+		#@check $this->listener !== null@#
 		$this->listener->takeControlOf($this, $callback, $params);
 	}
 
 	function takeControlOf(&$callbackComponent, $callback, &$params) {
-		#typecheck $callbackComponent:Component#
+		#@typecheck $callbackComponent:Component@#
 		$n=null;
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
@@ -237,12 +239,12 @@ class Component extends PWBObject
 	}
 
 	function dynCallbackWith($callback, &$params) {
-		#check $this->listener !== null#
+		#@check $this->listener !== null@#
 		$this->listener->dynTakeControlOf($this, $callback, $params);
 	}
 
 	function dynTakeControlOf(&$callbackComponent, $callback, &$params) {
-		#typecheck $callbackComponent:Component#
+		#@typecheck $callbackComponent:Component@#
 		$n=null;
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
@@ -250,7 +252,7 @@ class Component extends PWBObject
 			$callbackComponent->registered_callbacks[$callback]->callWith($params);
 		}
 		else {
-			#check $this->listener !== null#
+			#@check $this->listener !== null@#
 			$this->listener->dynTakeControlOf($this, $callback, $params);
 		}
 	}
@@ -283,7 +285,7 @@ class Component extends PWBObject
 	}
 
 	function takeView(&$comp) {
-		#typecheck $comp:Component#
+		#@typecheck $comp:Component@#
 		if (isset($this->view)){
 			$pv =& $comp->view->parentNode;
 			$pv->replaceChild($this->view, $comp->view);
@@ -330,9 +332,13 @@ class Component extends PWBObject
 		return $this->holder->parent;
 	}
 	function doNothing(){}
+}
+
+#@mixin EditorComponent
+{
 	function addFieldComponent(& $component, $field_name, $text=null) {
-		#typecheck $component:Component#
-		#check $field_name !== null#
+		#@typecheck $component:Component@#
+		#@check $field_name !== null@#
 		if ($text == null) {
 			$text = $field_name;
 		}
@@ -341,7 +347,7 @@ class Component extends PWBObject
 		$fc->addComponent($component, 'component');
 		$this->addComponent($fc, $field_name);
 	}
-}
+}// @#
 
 class FieldComponent extends Component{
 	function &getValue(){

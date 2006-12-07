@@ -76,7 +76,7 @@ class PersistentObject extends DescriptedObject {
     	if (strcasecmp(getClass($this), $class)==0) {
     		return $this->getId();
     	} else {
-    		#check $this->parent!==null#
+    		#@check $this->parent!==null@#
     		return $this->parent->getIdOfClass($class);
     	}
     }

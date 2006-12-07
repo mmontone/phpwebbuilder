@@ -4,7 +4,7 @@ class PersistentCollection extends Report{
 	 * A collection of persisted objects (of the same class)
 	 */
 	function PersistentCollection($dataType = "") {
-		#check class_exists($dataType)#
+		#@check class_exists($dataType)@#
 		$this->setDataType($dataType);
 		parent::Report();
 	}
@@ -27,7 +27,7 @@ class PersistentCollection extends Report{
 	 * Returns a PersistentCollection
 	 */
 	function &findMatches(&$object) {
-		#typecheck $object:PersistentObject#
+		#@typecheck $object:PersistentObject@#
 		$col =& $object->findMatches();
 		$this->conditions = $col->conditions;
 		return $this;
