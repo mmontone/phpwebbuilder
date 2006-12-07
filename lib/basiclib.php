@@ -71,7 +71,12 @@ function use_mixin($text) {
 	$code = '';
 	foreach ($ms as $name) {
 		$name = trim($name);
-		$code = $code . $mixins[$name];
+		if (isset($mixins[$name])) {
+			$code = $code . $mixins[$name];
+		} else {
+			print_r($mixins);
+			print_backtrace_and_exit('Mixin '.$name .' not defined');
+		}
 	}
 	$code .= "\n";
 
