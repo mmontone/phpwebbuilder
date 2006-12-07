@@ -28,8 +28,8 @@ class DateTime extends PWBObject{
     	return $this->date;
     }
     function validateDate() {
-    	//return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',$this->date, $matches) && checkdate($matches[1], $matches[2], $matches[0]);
-    	return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',$this->date, $matches);
+    	return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',$this->date, $matches) && checkdate($matches[2], $matches[3], $matches[1]);
+    	//return ereg('([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})',$this->date, $matches);
     }
     function before($date){
     	#@typecheck $date: DateTime@#
