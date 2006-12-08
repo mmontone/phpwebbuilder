@@ -348,7 +348,7 @@ class Component extends PWBObject
 		$fc->addComponent($component, 'component');
 		$this->addComponent($fc, $field_name);
 	}
-}// @#
+}//@#
 
 class FieldComponent extends Component{
 	function &getValue(){

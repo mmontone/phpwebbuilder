@@ -37,7 +37,7 @@ class IndexField extends NumField {
 	}
 
 	function setTarget(& $target) {
-		#@typecheck $target:PresistentObject@#
+		#@typecheck $target:PersistentObject@#
         $this->buffered_target =& $target;
 		$n = null;
 		$this->buffered_value =& $n;

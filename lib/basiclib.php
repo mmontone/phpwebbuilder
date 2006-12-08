@@ -116,14 +116,20 @@ function typecheck($text) {
 			$case = explode(':', $param);
 			$arg = trim($case[0]);
 			$type = trim($case[1]);
-			$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\''));\n";
+			//$code .= "assert('is_a($arg, \'$type\')');\n";
+			$code .= "if (!is_a($arg, '$type')) {
+				print_backtrace('Type error. Argument: $arg. Type: ' . get_class($arg) . '. Expected: $type');
+			}";
 		}
+
 		return $code;
 	}
 	else {
 		return '';
 	}
+
 }
+
 
 #@lam $x,$y -> return $x + $y;@#
 function lam($text) {

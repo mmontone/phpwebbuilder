@@ -25,6 +25,7 @@ class DateTimeField extends DataField {
 		$this->setValue(DateTime::now());
 	}
 	function setValue(&$d){
+		#@typecheck $d : DateTime@#
 		$this->date =& $d;
 		$d->onChangeSend('changed',$this);
 		parent::setValue($d);

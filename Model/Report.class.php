@@ -313,7 +313,7 @@ class Report extends Collection{
 	  */
 
 	function limit() {
-		if ($this->limit != 0)
+		if ($this->getLimit() != 0)
 			return ' LIMIT ' . $this->getLimit() . $this->offset();
 	}
 
@@ -454,16 +454,23 @@ class CompositeReport extends Report {
 		return array_merge($this->order, $this->report->getOrder());
 	}
 
-	/*
 	function &getLimit() {
-		return array_merge($this->limit, $this->report->getLimit());
+		if ($this->limit == 0) {
+			return $this->report->getLimit();
+		}
+		else {
+			return $this->limit;
+		}
 	}
 
 	function &getOffset() {
-		if ($this->offset == 0)
-		return array_merge($this->offset, $this->report->getOffset());
+		if ($this->offset == 0) {
+			return $this->report->getOffset();
+		}
+		else {
+			return $this->offset;
+		}
 	}
-	*/
 
 	function &getFields() {
 		return array_merge($this->fields, $this->report->getFields());
@@ -708,6 +715,12 @@ class AttrPathExpression extends PathExpression {
 }
 
 class ObjectPathExpression extends PathExpression {
+	var $type;
+
+	function ObjectPathExpression($path, $type='') {
+		$this->type = $type;
+		parent::PathExpression($path);
+	}
 	function evaluateIn(&$report) {
 		$o =& $this->registerPath($report);
 		$attr = $o->getTable() . '.id';
