@@ -1,6 +1,10 @@
 <?php
 
 class DateTimeField extends DataField {
+    function DateTimeField($name, $isIndex=null) {
+   	  	parent::DataField($name, $isIndex);
+   	  	$this->setValue(DateTime::Now());
+    }
     function createInstance($params){
     	parent::createInstance($params);
     	$this->setValue(new DateTime(''));
@@ -26,7 +30,7 @@ class DateTimeField extends DataField {
 	}
 	function setValue(&$d){
 		#@typecheck $d : DateTime@#
-		$this->date =& $d;
+		$this->value =& $d;
 		$d->onChangeSend('changed',$this);
 		parent::setValue($d);
 	}
