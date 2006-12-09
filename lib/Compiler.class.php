@@ -8,11 +8,7 @@ function processMacro($matches) {
 	//echo 'Macro: ' . $macro . '<br />';
 	//echo 'Body: ' . $body . '<br />';
 
-
-	/*
-	$body = str_replace('\\\'', '[[xx]]', $body);
-	$body = str_replace('\'', '\\\'', $body);
-	$body = str_replace('[[xx]]', '\\\\\\\'', $body);*/
+	//$code = $macro . '(\'' . ereg_replace('([\\])*\'', '\1\1\\\'', $body) . '\');';
 	$body = addslashes($body);
 	$code = $macro . '(\'' . $body . '\');';
 	//echo 'Evaluating: ' . $code . '<br />';

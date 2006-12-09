@@ -43,7 +43,7 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 		return true;
 	}
 	function isContainerForClass(&$component){
-		return is_a($component, $this->getAttribute("class"));
+		return $component->hasType($this->getAttribute("class"));
 	}
 	function &createCopy(){
 		$c = new HTMLContainer();

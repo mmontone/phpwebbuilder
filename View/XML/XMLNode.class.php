@@ -246,6 +246,7 @@ class XMLNode extends DOMXMLNode {
 		return $n;*/
 		$templates =& new Collection();
 		$templates->addAll($this->templates);
+		//TODO Mixins and optimize order
 		$ts =& $templates->filter(lambda('&$template', 'return $template->isTemplateForClass($component);', get_defined_vars()));
 		if (!$ts->isEmpty()) {
 			$t = $ts->first();

@@ -72,7 +72,8 @@ function use_mixin($text) {
 	foreach ($ms as $name) {
 		$name = trim($name);
 		if (isset($mixins[$name])) {
-			$code = $code . $mixins[$name];
+			$code .= 'var $__use_mixin_'.$name. '=true;';
+			$code .= $mixins[$name];
 		} else {
 			print_r($mixins);
 			print_backtrace_and_exit('Mixin '.$name .' not defined');
@@ -116,20 +117,17 @@ function typecheck($text) {
 			$case = explode(':', $param);
 			$arg = trim($case[0]);
 			$type = trim($case[1]);
-			//$code .= "assert('is_a($arg, \'$type\')');\n";
+			//$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\')');\n";
 			$code .= "if (!is_a($arg, '$type')) {
 				print_backtrace('Type error. Argument: $arg. Type: ' . get_class($arg) . '. Expected: $type');
 			}";
 		}
-
 		return $code;
 	}
 	else {
 		return '';
 	}
-
 }
-
 
 #@lam $x,$y -> return $x + $y;@#
 function lam($text) {

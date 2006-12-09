@@ -5,14 +5,14 @@ class ViewCreator {
 	var $app;
 	function ViewCreator(&$app){
 		$this->app =& $app;
-		$this->templates =& new Collection;
+		$this->templates =& new XMLNode;
 	}
 	function reloadView(){
 		$app =& $this->app;
 		$v=&$app->component->view;
 		$app->wholeView->removeChild($v);
 		$app->component->releaseView();
-		$this->templates =& new Collection;
+		$this->templates =& new XMLNode;
 		$app->translators = array();
 		$app->loadTemplates();
 		$app->component->createViews();
@@ -60,7 +60,7 @@ class ViewCreator {
  	}
 
 	function addTemplates(&$templates){
-		$this->templates->addAll($templates);
+		$this->templates->addTemplatesAndContainers($templates, $a=array(), $b=array());
 	}
 	function &createElemView(&$pV, &$component){
 		/*
@@ -132,22 +132,12 @@ class ViewCreator {
 		return $this->templateForClass($component);
 	}
 	function &templateForClass(&$component){
-		$ts =& $this->templates->filter(lambda(
-				'&$t','$v=$t->isTemplateForClass($component);return $v;',get_defined_vars()));
-		if (!$ts->isEmpty()) {
-			$t = $ts->first();
-			$es = $ts->elements();
-			foreach(array_keys($es) as $k){
-				$tt =& $es[$k];
-				if (in_array($t->getClass(), get_superclasses($tt->getClass()))) {
-					$t = $tt;
-				}
-			}
+		$t =& $this->templates->templateForClass(&$component);
+		if ($t!==null) {
 			$v =& $this->instantiateFor($t,$component);
 			#@debugview $this->addTemplateName($v, 'Global:'.$t->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');@#
 			return $v;
-		}
-		else {
+		} else {
 			return $this->defaultTemplate($component);
 		}
 	}

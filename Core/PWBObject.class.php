@@ -32,6 +32,13 @@ class PWBObject
 	function isA($class) {
 		return is_a($this,$class);
 	}
+	function hasType($class) {
+		return $this->isA($class) || $this->hasMixin($class);
+	}
+	function hasMixin($mixin) {
+		$varname = '__use_mixin_'.$mixin;
+		return isset($this->$varname);
+	}
 	/**
 	 *  Returns if the object is the same as the parameter, or a copy
 	 */

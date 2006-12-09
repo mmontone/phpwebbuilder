@@ -64,10 +64,11 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		return $temp;
 	}
 	function isTemplateForClass(& $component) {
-		return is_a($component, $this->getAttribute("class"));
+		return $component->hasType($this->getAttribute("class"));
 	}
 	function isContainerForClass(& $component) {
-		return is_a($component, $this->getAttribute("class"));
+
+		return $component->hasType($this->getAttribute("class"));
 	}
 	function &createCopy() {
 		$c =& new HTMLContainer;
