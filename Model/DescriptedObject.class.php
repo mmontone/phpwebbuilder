@@ -225,7 +225,7 @@ class DescriptedObject extends PWBObject {
 	 * Adds a field to the object
 	 */
 	function addField(& $field) {
-		#@typecheck $comp:ValueModel@#
+		#@typecheck $field:ValueModel@#
 		$name = $field->colName;
 		$this-> $name = & $field;
 		$this->fieldNames[$name] = $name;
