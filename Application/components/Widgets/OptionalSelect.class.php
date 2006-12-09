@@ -8,12 +8,13 @@ class OptionalSelect extends Component {
 	var $noopts_msg;
 
 	function OptionalSelect(&$value_model, &$collection, $extra_params=array()) {
+		#@typecheck $value_model:ValueModel,$collection:Collection@#
 		$this->value_model =& $value_model;
 		$this->options =& $collection;
 		$this->displayF =& $extra_params['displayF'];
 		$this->noopts_msg =& $extra_params['noopts_msg'];
 		if ($this->noopts_msg == null) {
-			$this->noopts_msg = 'No hay objetos creados';
+			$this->noopts_msg = Translator::translate('No hay objetos creados');
 		}
 		$this->selectOption = false;
 
@@ -76,6 +77,7 @@ class OptionalComponent extends Component {
 	var $selectOption;
 
 	function OptionalComponent(&$comp) {
+		#@typecheck $comp:Component@#
 		$this->comp =& $comp;
 		$this->selectOption = false;
 

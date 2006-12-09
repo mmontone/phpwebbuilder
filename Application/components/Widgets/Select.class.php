@@ -7,6 +7,7 @@ class Select extends Widget {
 	var $size = 1;
 
     function Select(&$value_model, &$collection, $displayF=null) {
+    	#@typecheck $collection:Collection@#
     	parent::Widget($value_model);
 
     	$this->options =& $collection;
@@ -28,7 +29,6 @@ class Select extends Widget {
 
     function displayElement(&$e){
 		$f =& $this->displayF;
-		//return $f($e);
 		return $f->callWith($e);
 	}
 

@@ -3,6 +3,7 @@
 class WikiComponent extends Widget{
 	var $wikitext;
     function WikiComponent($text) {
+		#@typecheck $text:string@#
 		$this->wikitext = $text;
 		parent::Widget($vm='');
     }

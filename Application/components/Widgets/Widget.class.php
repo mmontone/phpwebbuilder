@@ -100,30 +100,35 @@ class Widget extends Component {
 		return $v;
 	}
 	function onChangeSend($selector, & $target) {
+		#@typecheck $selector:string, $target:object@#
 		$this->addEventListener(array (
 			'changed' => $selector
 		), $target);
 	}
 
 	function onFocusSend($selector, & $target) {
+		#@typecheck $selector:string, $target:object@#
 		$this->addEventListener(array (
 			'focus' => $selector
 		), $target);
 	}
 
 	function onBlurSend($selector, & $target) {
+		#@typecheck $selector:string, $target:object@#
 		$this->addEventListener(array (
 			'blur' => $selector
 		), $target);
 	}
 
 	function onClickSend($selector, & $target) {
+		#@typecheck $selector:string, $target:object@#
 		$this->addEventListener(array (
 			'click' => $selector
 		), $target);
 	}
 
 	function onEnterClickOn(&$comp) {
+		#@typecheck $comp:Component@#
 		$class = getClass($this);
 		$onkeypress = "if(event.which==13||event.keyCode==13) {
 			   	enqueueChange(getEventTarget(event),{$class}GetValue);
@@ -134,6 +139,7 @@ class Widget extends Component {
 
 	// TODO: fix onEnterFocus
 	function onEnterFocus(&$comp) {
+		#@typecheck $comp:Component@#
 		$this->events->atPut('onkeypress', $a = array('onkeypress', "if(event.which==13||event.keyCode==13) {
 			    var fireOnThis = document.getElementById('" . $this->getId() ."');
 			    var evObj = document.createEvent('HTMLEvents');

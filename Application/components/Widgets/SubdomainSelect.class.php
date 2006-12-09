@@ -11,6 +11,7 @@ class SubdomainSelect extends Component {
 	var $selected_source_items;
 
     function SubdomainSelect(&$target_items, &$source_items) {
+		#@typecheck $target_items:Collection, $source_items:Collection@#
 		$this->target_items =& $target_items;
 		$this->source_items =& $source_items;
 

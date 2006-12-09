@@ -6,12 +6,12 @@ class CommandLink extends Widget{
 	var $textv;
     function CommandLink($params) {
 		$this->proceed =& $params['proceedFunction'];
+		#@typecheck $this->proceed:FunctionObject#@
 		$this->revert =& $params['revertFunction'];
 		$this->textv =& $params['text'];
 		parent::Widget($vm = null);
     }
     function checkAddingPermissions(){
-		if (!$this->proceed) print_backtrace();
 		return $this->proceed->hasPermissions();
     }
 	function setEvents() {}

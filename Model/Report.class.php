@@ -426,6 +426,7 @@ class CompositeReport extends Report {
 	var $report;
 
 	function CompositeReport(&$report) {
+		#@typecheck $report:Report@#
 		$this->report =& $report;
 		parent::Report();
 	}

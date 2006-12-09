@@ -131,14 +131,15 @@ function typecheck($text) {
 
 function hasType($arg, $type){
 	if(is_object($arg)) {
+		if ($type=='object') return true;
 		if (method_exists($arg, 'hasType')) {
 			return $arg->hasType($type);
 		} else {
+
 			return is_a($arg,$type);
 		}
 	} else {
-		$f = 'is_'.$type;
-		return $f($arg);
+		return gettype($arg)==$type;
 	}
 }
 
