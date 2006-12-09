@@ -27,6 +27,7 @@ class Filename extends Input {
 			return $ex;
 		}
 		$this->fileuploaded=true;
+		$this->viewHandler->initializeDefaultView($this->view);
 		return true;
 	}
 

@@ -118,7 +118,7 @@ function typecheck($text) {
 			$arg = trim($case[0]);
 			$type = trim($case[1]);
 			//$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\')');\n";
-			$code .= "if (!is_a($arg, '$type')) {
+			$code .= "if (!$arg->hasType('$type')) {
 				print_backtrace('Type error. Argument: $arg. Type: ' . get_class($arg) . '. Expected: $type');
 			}";
 		}

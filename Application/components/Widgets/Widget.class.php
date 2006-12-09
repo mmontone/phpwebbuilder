@@ -25,11 +25,6 @@ class Widget extends Component {
 			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
 
-
-		/*
-		$this->value_model->addInterestIn('invalid', new FunctionObject($this, 'fieldInvalid'));
-		$this->value_model->addInterestIn('changed', new FunctionObject($this, 'valueChanged'));
-		*/
 		$this->invalid =& new ValueHolder($b1=false);
 		$this->disabled =& new ValueHolder($b2=false);
 		$this->clickable =& new ValueHolder($b3=false);
