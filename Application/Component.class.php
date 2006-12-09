@@ -129,7 +129,7 @@ class Component extends PWBObject
     }
 	/** Registers a callback for the component */
     function registerCallback($selector, &$callback) {
-    	#@typecheck $callback:FunctionObject@#
+    	#@typecheck $selector:string, $callback:FunctionObject@#
     	$this->registered_callbacks[$selector] =& $callback;
     }
 	function &addComponent(&$component, $ind=null) {
@@ -338,8 +338,7 @@ class Component extends PWBObject
 #@mixin EditorComponent
 {
 	function addFieldComponent(& $component, $field_name, $text=null) {
-		#@typecheck $component:Component@#
-		#@check $field_name !== null@#
+		#@typecheck $component:Component, $field_name:string@#
 		if ($text == null) {
 			$text = $field_name;
 		}

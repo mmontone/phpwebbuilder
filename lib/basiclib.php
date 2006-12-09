@@ -118,14 +118,35 @@ function typecheck($text) {
 			$arg = trim($case[0]);
 			$type = trim($case[1]);
 			//$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\')');\n";
-			$code .= "if (!$arg->hasType('$type')) {
-				print_backtrace('Type error. Argument: $arg. Type: ' . get_class($arg) . '. Expected: $type');
+			$code .= "if (!hasType($arg,'$type')) {
+				print_backtrace('Type error. Argument: $arg. Type: ' . getTypeOf($arg) . '. Expected: $type');
 			}";
 		}
 		return $code;
 	}
 	else {
 		return '';
+	}
+}
+
+function hasType($arg, $type){
+	if(is_object($arg)) {
+		if (method_exists($arg, 'hasType')) {
+			return $arg->hasType($type);
+		} else {
+			return is_a($arg,$type);
+		}
+	} else {
+		$f = 'is_'.$type;
+		return $f($arg);
+	}
+}
+
+function getTypeOf($arg){
+	if(is_object($arg)) {
+		return getClass($arg);
+	} else {
+		return gettype($arg);
 	}
 }
 
