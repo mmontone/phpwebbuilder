@@ -22,6 +22,8 @@ class Compiler {
 	var $compiled = array ();
 	var $toCompile;
 	var $toCompileSuffix;
+    var $tempdir;
+
 	function Compiler() {
 		$this->toCompile = explode(',', constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);

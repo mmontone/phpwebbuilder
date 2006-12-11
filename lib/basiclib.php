@@ -108,6 +108,10 @@ function check($text) {
 	return optionalCompile('assertions',"assert('".addslashes($text)."');\n");
 }
 
+function gencheck($text) {
+	return optionalCompile('assertions', $text);
+}
+
 #@typecheck $t : PWBObject, $s : Component@#
 function typecheck($text) {
 	if (Compiler::CompileOpt('typechecking')) {

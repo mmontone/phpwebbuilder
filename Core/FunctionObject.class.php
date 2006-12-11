@@ -9,7 +9,11 @@ class FunctionObject
     var $params;
 
     function FunctionObject(&$target, $method_name, $params=array()) {
-        #@check method_exists($target, $method_name)@#
+        #@gencheck if(!method_exists($target, $method_name))
+        {
+            print_backtrace('Method ' . $method_name . ' does not exist in ' . getClass($target));
+        }
+        //@#
         $this->setTarget($target);
         $this->method_name =& $method_name;
         $this->params =& $params;
