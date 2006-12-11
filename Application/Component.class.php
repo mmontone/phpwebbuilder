@@ -271,7 +271,7 @@ class Component extends PWBObject
 	}
 
 	function noPermission ($form){ // The user has no permission
-		$err= $_SESSION["Username"] ." needs ".print_r($this->permissionNeeded($form), TRUE);
+		$err= Session::getAttribute("Username") ." needs ".print_r($this->permissionNeeded($form), TRUE);
 		trace($err);
 	}
 

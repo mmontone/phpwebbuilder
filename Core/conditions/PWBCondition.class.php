@@ -88,7 +88,7 @@ class ActivationRecord {
 }
 
 function & get_activation_records() {
-	$records = & $_SESSION[constant('sitename')]['activation_records'];
+	$records = & Session::getAttribute('activation_records');
 	if ($records == null) {
 		$main_record = & new ActivationRecord;
 		$main_record->addConditionHandler('PWBCondition', new FunctionObject($n = null,'standard_condition_handler'));

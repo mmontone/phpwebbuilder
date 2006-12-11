@@ -13,7 +13,7 @@ class Application extends ComponentHolder {
 	var $ajaxCommands = array();
 
 	function Application() {
-		$_SESSION[getClass($this)] = & $this;
+		Session::setAttribute(getClass($this),$this);
 		$this->commands =& new Collection();
 		$this->urlManager =& new UrlManager($this);
 		$this->page_renderer =& PageRenderer::create($this);
@@ -62,13 +62,13 @@ class Application extends ComponentHolder {
 	}
 	function & getInstanceOf($c) {
 		$class = strtolower($c);
-		if (!isset ($_SESSION[$class])) {
-			$_SESSION[$class] = & new $class;
+		if (!Session::isSetAttribute($class)) {
+			Session::setAttribute($class,new $class);
 		}
-		return $_SESSION[$class];
+		return Session::getAttribute($class);;
 	}
 	function restart(){
-		$_SESSION = array();
+		Session::restart();
 	}
 	function &instance(){
 		return Application::getInstanceOf(constant('app_class'));

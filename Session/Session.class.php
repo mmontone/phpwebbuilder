@@ -8,6 +8,28 @@ class Session extends PersistentObject{
 		$this->addField(new DateTimeField('last_updated', FALSE));
 		$this->addField(new BlobField('session_data', FALSE));
 	}
+	function &getAttribute($name){
+		$s =& Session::get();
+		return $s[$name];
+	}
+	function &isSetAttribute($name){
+		$s =& Session::get();
+		return isset($s[$name]);
+	}
+	function restart(){
+		$_SESSION = array();
+	}
+	function setAttribute($name, &$value){
+		$s =& Session::get();
+		return $s[$name] =& $value;
+	}
+	function removeAttribute($name){
+		$s =& Session::get();
+		unset($s[$name]);
+	}
+	function &get(){
+		return $_SESSION;
+	}
 }
 
 ?>

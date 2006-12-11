@@ -99,7 +99,7 @@ class DBSession {
 
 	function &Instance(){
 		$slot = 'db_session';
-		if (!isset($_SESSION[constant('sitename')][$slot])){
+		if (!Session::isSetAttribute($slot)){
 			$dbsession_class = 'DBSession';
 			if (defined('dbsession_class')) {
 				$dbsession_class = constant('dbsession_class');
@@ -107,9 +107,9 @@ class DBSession {
 			$driver_class = constant('db_driver');
 			$dbsession =& new $dbsession_class;
 			$dbsession->driver =& new $driver_class($dbsession);
-			$_SESSION[constant('sitename')][$slot] =& $dbsession;
+			Session::setAttribute($slot,$dbsession);
 		}
-		return $_SESSION[constant('sitename')][$slot];
+		return Session::getAttribute($slot);
 	}
 
 	function lastError(){

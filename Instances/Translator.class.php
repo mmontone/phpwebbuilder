@@ -9,7 +9,8 @@ class Translator extends PersistentObject {
     }
 
     function &forLanguage($language) {
-    	if ($translator =& $_SESSION['translator'][$this->language->getValue()])
+    	$ts =& Session::getAttribute('translator');
+    	if ($translator =& $ts[$this->language->getValue()])
     		return $translator;
     	$translator =& new Translator;
     	$translator->language->setValue($language);
@@ -40,7 +41,8 @@ class Translator extends PersistentObject {
     function refresh() {
     	$n = null;
     	$this->dictionary =& $n;
-    	$_SESSION['translator'][$this->language->getValue()] =& $n;
+    	$ts =& Session::getAttribute('translator');
+    	$ts[$this->language->getValue()] =& $n;
     }
 }
 ?>

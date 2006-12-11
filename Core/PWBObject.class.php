@@ -17,7 +17,9 @@ class PWBObject
 	 */
     function PWBObject($params=array()) {
 		#@check is_array($params)@#
-		$this->__instance_id = ++$_SESSION['instance_id'];
+		$iid =& Session::getAttribute('instance_id');
+		$this->__instance_id = ++$iid;
+		//Session::setAttribute('instance_id', ++$iid);
 		//$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->creationParams =& $params;
 		$this->__wakeup();

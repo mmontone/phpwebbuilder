@@ -5,7 +5,7 @@ class QuicKlick {
 		$this->name = $name;
 		$this->iters = $clicks;
 		$dateFormat = 'Y-m-d H:i:s';
-		$_SESSION['QuicKlick']=&$this;
+		Session::setAttribute('QuicKlick',$this);
 		$loc =pwb_url.'/QuicKlick/runqk.php' .
 				'?app_class='. app_class.
 				'&basedir='.basedir .
@@ -31,7 +31,7 @@ class QuicKlick {
 			SessionHandler::setHooks();
 			$res =  file_get_contents($loc);
 			session_start();
-			$t =& $_SESSION['QKtest'];
+			$t =& Session::getAttribute('QKtest');
 			$t->function->setTarget($fun);
 			$t->save();
 			if (!$t->passed->getValue()){
@@ -60,7 +60,7 @@ class QuicKlick {
 		$t->totalPasses->setValue($iters);
 		$t->passed->setValue(false);
 		if (!$t->save()) {echo DBSession::lastError();}
-		$_SESSION['QKtest'] =& $t;
+		Session::setAttribute('QKtest',$t);
 		for($i=0; $i<$iters; $i++){
 			//$this->app->component->view->flushModifications();
 			$data = $this->getSendable($i);
@@ -106,7 +106,7 @@ class QuicKlick {
 
 class QuicKlickReprise extends QuicKlick{
 	function QuicKlickReprise(&$test){
-		$_SESSION['QuicKlick']=&$this;
+		Session::getAttribute('QuicKlick',$this);
 		$this->iters = $test->passes->collection->size();
 		$this->name = $test->name->getValue();
 		$this->test =& $test;
@@ -118,7 +118,7 @@ class QuicKlickReprise extends QuicKlick{
 		$fun =& $funOb->getFun();
 		$this->app=&$fun();
 		$this->check();
-		$t =& $_SESSION['QKtest'];
+		$t =& Session::getAttribute('QKtest');
 		if ($t===null) return;
 		if (!$t->passed->getValue()){
 			$p =& $t->lastPass();
