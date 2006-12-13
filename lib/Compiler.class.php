@@ -80,9 +80,11 @@ class Compiler {
 			} else {
 				$this->tempdir = sys_get_temp_dir();
 			}
+			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
 		}
+		if (substr($file,0,1)!=="/") $file=substr($file,1);
 		$dir = $this->tempdir . dirname($file);
-		@ mkdir($dir, 0700, true);
+		@ mkdir($dir, 0777, true);
 		return $dir;
 	}
 }
@@ -120,7 +122,6 @@ if (!function_exists('sys_get_temp_dir')) {
 			$temp_file = tempnam('', '');
 			if ($temp_file) {
 				$temp_dir = dirname($temp_file);
-				unlink($temp_file);
 				return $temp_dir;
 			} else {
 				return FALSE;
