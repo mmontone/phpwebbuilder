@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__) . "/../BaseDirExample/Configuration/ConfigReader.class.php";
+
 
 function handle_dberror(&$db) {
 	$db->rollback();
