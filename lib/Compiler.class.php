@@ -38,7 +38,7 @@ class Compiler {
 			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
 
 			if ((!defined('recompile') || constant('recompile')!='NEVER') and ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
-				echo 'Compiling file: ' . $file . '<br />';
+				//echo 'Compiling file: ' . $file . '<br />';
 				$f = file_get_contents($file);
 				$f = $this->compileString($f);
 				$fo = fopen($tmpname, 'w');
