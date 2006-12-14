@@ -53,7 +53,10 @@ class PWBObject
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		#@check $this->getInstanceId() && !isset($allObjectsInMem[$this->getInstanceId()])@#
+		#@gencheck (!($this->getInstanceId() && !isset($allObjectsInMem[$this->getInstanceId()])))
+        {
+		  print_backtrace(getClass($this) . ' does not have ID!!');
+		}//@#
 		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**
