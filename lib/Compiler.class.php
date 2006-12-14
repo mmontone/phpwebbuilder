@@ -36,8 +36,9 @@ class Compiler {
 		if (!in_array($file, $this->compiled)) {
 			$this->compiled[] = $file;
 			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-			if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
-				//echo 'Compiling file: ' . $file . '<br />';
+
+			if ((!defined('recompile') || constant('recompile')!='NEVER') and ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
+				echo 'Compiling file: ' . $file . '<br />';
 				$f = file_get_contents($file);
 				$f = $this->compileString($f);
 				$fo = fopen($tmpname, 'w');
@@ -80,16 +81,19 @@ class Compiler {
 			} else {
 				$this->tempdir = sys_get_temp_dir();
 			}
-			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
+			//if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
 		}
 		if (substr($file,0,1)!=="/") $file=substr($file,1);
 		$dir = $this->tempdir . dirname($file);
-		@ mkdir($dir, 0777, true);
+		if (!mkdir($dir, 0777, true)) {
+			print_backtrace_and_exit('Cannot make directory: ' . $dir);
+		}
+
 		return $dir;
 	}
 }
 if (defined('compile')) {
-	$compilerInstance = new Compiler;
+	$compilerInstance =& new Compiler;
 	function compile_once($file) {
 		global $compilerInstance;
 		$compilerInstance->compile($file);
