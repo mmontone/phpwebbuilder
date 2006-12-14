@@ -85,7 +85,13 @@ class Compiler {
 		}
 		if (substr($file,0,1)!=="/") $file=substr($file,1);
 		$dir = $this->tempdir . dirname($file);
-		if (!mkdir($dir, 0777, true)) {
+		if (version_compare(phpversion(), '5.0') < 0) {
+			$res = @mkdir_r($dir, 0777);
+		}
+		else {
+			$res = @mkdir($dir, 0777, true);
+		}
+		if (!$res) {
 			print_backtrace_and_exit('Cannot make directory: ' . $dir);
 		}
 
@@ -132,5 +138,21 @@ if (!function_exists('sys_get_temp_dir')) {
 			}
 		}
 	}
+}
+
+function mkdir_r($dirName, $rights=0777){
+   $dirs = explode('/', $dirName);
+   $dir='';
+   foreach ($dirs as $part) {
+       $dir.=$part.'/';
+       if (!is_dir($dir) && strlen($dir)>0) {
+			if (!@mkdir($dir, $rights)) {
+				return false;
+			}
+
+       }
+   }
+
+   return true;
 }
 ?>
