@@ -118,6 +118,15 @@ class IndexField extends NumField {
 	function &asValueModel() {
 		return new AspectAdaptor($this, 'Target');
 	}
+
+    #@gencheck
+    function SQLvalue() {
+        if ($this->getValue() == 0) {
+        	print_backtrace('Warning!!: Index field sql value is 0. Field name: ' . $this->colName);
+        }
+        return parent::SQLvalue();
+    }
+    //@#
 }
 
 ?>
