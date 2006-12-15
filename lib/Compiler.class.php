@@ -40,7 +40,16 @@ class Compiler {
 			if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
 				//echo 'Compiling file: ' . $file . '<br />';
 				$f = file_get_contents($file);
-				$f = $this->compileString($f);
+				$f = $this->compileString($f,$pat = '/'.'#@'.//START_MACRO
+									'([[:alpha:]|\_]+)[\s\t]*' .
+									''.//START_PARAMS
+									'([^#]+|(?R))' .
+									'@#'.//END_MACRO
+									'/s','processMacro'
+					);
+				$f = $this->compileString($f,$pat = '/__FILE__/s',
+					lambda('','return \'\\\''.$file.'\\\'\';'));
+
 				$fo = fopen($tmpname, 'w');
 				//echo "Compiling in $tmpname for $file";
 				if ($fo==null) print_backtrace($file." temp: ".$tmpname);
@@ -50,23 +59,16 @@ class Compiler {
 			require_once $tmpname;
 		}
 	}
-	function compileString($str) {
-		$pat = '/'.
-				'#@'.//START_MACRO
-				'([[:alpha:]|\_]+)[\s\t]*' .
-				''.//START_PARAMS
-				'([^#]+|(?R))' .
-				'@#'.//END_MACRO
-				'/s';
+	function compileString($str, $pat, $func) {
 		if (preg_match($pat, $str, $matches) > 0) {
 			//echo 'Compiling string: ' . $str;
 			// Notes: 's' makes '.' match 'newline'
 			//        '?' after '*' means no-greedy matching
 			//var_dump($matches);
-			$str = preg_replace_callback($pat, 'processMacro', $str);
+			$str = preg_replace_callback($pat, $func, $str);
 			//ereg('\/\*@[[:alpha:]]\s*(.*)\*\/', $f, $matches);
 			//echo($str);
-			return $this->compileString($str); // Recursive call (macros generating code with macros)
+			return $this->compileString($str,$pat, $func); // Recursive call (macros generating code with macros)
 		} else {
 			//echo 'Compiled string: ' . $str . '<br />';
 			return $str;
@@ -95,7 +97,7 @@ class Compiler {
 		}
 		$dir = $this->tempdir . $fd;
 		$res = @ mkdir_r($dir, 0777);
-		if (!$res) {
+		if (!file_exists($dir)) {
 			print_backtrace_and_exit('Cannot make directory: ' . $dir);
 		}
 		return $dir;

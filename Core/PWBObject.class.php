@@ -51,13 +51,14 @@ class PWBObject
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
 	function getInstanceId(){
-		#@check !is_null($this->__instance_id)@#
+		#@gencheck if($this->__instance_id===null) print_backtrace(getClass($this).' doesn\'t have an id');@#
 		return $this->__instance_id;
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		#@gencheck if (isset($allObjectsInMem[$this->getInstanceId()]) && $this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$this->getInstanceId()]->basicPrintString(). ' instead of a '.$this->basicPrintString());@#
-		$allObjectsInMem[$this->getInstanceId()] =& $this;
+		$id = $this->getInstanceId();
+		#@gencheck if (isset($allObjectsInMem[$id]) && $this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$id]->basicPrintString(). ' instead of a '.$this->basicPrintString());@#
+		$allObjectsInMem[$id] =& $this;
 	}
 	/**
 	 *  Returns if the object is the same as the parameter
