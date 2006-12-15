@@ -57,7 +57,7 @@ class PWBObject
 	function __wakeup() {
 		global $allObjectsInMem;
 		$id = $this->getInstanceId();
-		#@gencheck if (isset($allObjectsInMem[$id]) && $this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$id]->basicPrintString(). ' instead of a '.$this->basicPrintString());@#
+		#@gencheck if (isset($allObjectsInMem[$id]) && !$this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$id]->basicPrintString(). ' instead of a '.$this->basicPrintString());@#
 		$allObjectsInMem[$id] =& $this;
 	}
 	/**
