@@ -9,13 +9,16 @@ class XMLTextNode extends XMLNodeModificationsTracker
 	}
 
 	function renderEcho() {
-		echo toAjax($this->data);
+		echo $this->renderNonEcho();
 	}
 
 	function renderNonEcho() {
-		return toAjax($this->data);
+		if (is_object($this->data)) {
+			return toAjax($this->data->printString());
+		} else {
+			return toAjax($this->data);
+		}
 	}
-
 	function printString() {
 		return '<text>' . $this->data . '</text>';
 	}
@@ -31,11 +34,15 @@ class PlainTextNode extends XMLNodeModificationsTracker
 	}
 
 	function renderEcho() {
-		echo $this->data;
+		echo $this->renderNonEcho();
 	}
 
 	function renderNonEcho() {
-		return $this->data;
+		if (is_object($this->data)) {
+			return $this->data->printString();
+		} else {
+			return $this->data;
+		}
 	}
 
 	function printString() {
