@@ -5,8 +5,8 @@ class PersistentCollection extends Report{
 	 */
 	function PersistentCollection($dataType = "") {
 		#@check class_exists($dataType)@#
-		$this->setDataType($dataType);
 		parent::Report();
+		$this->setDataType($dataType);
 	}
 
 	function setCondition($field, $comparator, $value){
