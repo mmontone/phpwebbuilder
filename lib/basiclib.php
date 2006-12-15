@@ -1,4 +1,5 @@
 <?php
+
 require_once 'md.php';
 require_once 'Compiler.class.php';
 
@@ -315,6 +316,11 @@ function includemodule($module) {
 		trigger_error('Falling back to includefile for ' . $module, E_USER_NOTICE);
 		includefile($module);
 	}
+}
+/*returns the dir inside the pwbdir*/
+function getDirName($file){
+	//return pwbdir.substr(dirname($file), strlen(dirname(dirname(__FILE__)))+1);
+	return dirname($file);
 }
 
 /**

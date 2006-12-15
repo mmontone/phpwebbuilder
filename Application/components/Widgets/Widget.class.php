@@ -150,7 +150,7 @@ class Widget extends Component {
 	}
 
 	function addInterestIn($event, & $event_callback) {
-		parent :: addInterestIn($event, & $event_callback);
+		parent :: addInterestIn($event, $event_callback);
 			switch ($event) {
 				case 'changed' :
 					$this->setOnChangeEvent();

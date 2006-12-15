@@ -15,7 +15,7 @@ class CollectionFilterer extends PersistentObjectPresenter {
 		$this->addComponent(new ActionLink($this, 'filter','Search',$n=null));
 	}
 	function &addField(&$field){
-		$fc =& parent::addField(&$field);
+		$fc =& parent::addField($field);
 		$cs =& $this->col->getConditions();
 		$fc->value->setSearchValue($cs, $field->colName);
 		return $fc;

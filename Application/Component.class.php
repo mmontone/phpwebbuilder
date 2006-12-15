@@ -12,7 +12,7 @@ class Component extends PWBObject
 	var $configuration;
 	var $__children;
 	var $toLink = array();
-	var $nextChildrenPosition = 0;
+	var $nextChildrenPosition = 1;
 	var $dyn_vars = array();
 
 	function Component($params=array()) {
@@ -141,7 +141,7 @@ class Component extends PWBObject
 			if (($ind !==null) and (isset($this->__children[$ind]))) {
 				$this->$ind->stopAndCall($component);
 			} else {
-				#@check !isset($this->$ind)@#
+				#@gencheck if (isset($this->$ind)) {print_backtrace("There is a ".getClass($this->$ind)." in $ind on a ".getClass($this));} else {}@#
 				if ($ind===null){
 					$ind = $this->nextChildrenPosition++;
 				}

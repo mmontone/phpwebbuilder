@@ -1,5 +1,6 @@
 <?php
 
+
 function processMacro($matches) {
 	$macro = $matches[1];
 	$body = $matches[2];
@@ -8,9 +9,9 @@ function processMacro($matches) {
 	//echo 'Macro: ' . $macro . '<br />';
 	//echo 'Body: ' . $body . '<br />';
 
-	//$code = $macro . '(\'' . ereg_replace('([\\])*\'', '\1\1\\\'', $body) . '\');';
-	$body = addslashes($body);
-	$code = $macro . '(\'' . $body . '\');';
+	$code = $macro . '(\'' . ereg_replace('([\\])*\'', '\1\1\\\'', $body) . '\');';
+	//$body = addslashes($body);
+	//$code = $macro . '(\'' . $body . '\');';
 	//echo 'Evaluating: ' . $code . '<br />';
 	$result = null;
 	eval ('$result = ' . $code);
@@ -36,12 +37,13 @@ class Compiler {
 		if (!in_array($file, $this->compiled)) {
 			$this->compiled[] = $file;
 			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-
-			if ((!defined('recompile') || constant('recompile')!='NEVER') and ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
+			if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
 				//echo 'Compiling file: ' . $file . '<br />';
 				$f = file_get_contents($file);
 				$f = $this->compileString($f);
 				$fo = fopen($tmpname, 'w');
+				//echo "Compiling in $tmpname for $file";
+				if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 				fwrite($fo, $f);
 				fclose($fo);
 			}
@@ -81,20 +83,21 @@ class Compiler {
 			} else {
 				$this->tempdir = sys_get_temp_dir();
 			}
-			//if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
+			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
+			$this->pwbdir = dirname(dirname(__FILE__));
 		}
-		if (substr($file,0,1)!=="/") $file=substr($file,1);
-		$dir = $this->tempdir . dirname($file);
-		if (version_compare(phpversion(), '5.0') < 0) {
-			$res = @mkdir_r($dir, 0777);
+		if (substr($file, 0, strlen($this->pwbdir))==$this->pwbdir) {
+			//echo "$file in pwb";
+			//echo pwbdir;
+			$fd = substr(dirname($file),strlen($this->pwbdir));
+		}else{
+			$fd = substr(dirname($file),strlen(constant('basedir')));
 		}
-		else {
-			$res = @mkdir($dir, 0777, true);
-		}
+		$dir = $this->tempdir . $fd;
+		$res = @ mkdir_r($dir, 0777);
 		if (!$res) {
 			print_backtrace_and_exit('Cannot make directory: ' . $dir);
 		}
-
 		return $dir;
 	}
 }

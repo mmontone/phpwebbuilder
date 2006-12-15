@@ -60,7 +60,7 @@ class FileLoader extends Component{
 				$file->label->setValue($this->label_text->getValue());
 				$file->description->setValue($this->desc_text->getValue());
 
-				if ($this->saveFile(&$file)) {
+				if ($this->saveFile($file)) {
 					$this->uploadSuccessful();
 				} else {
 					$this->uploadFailed();

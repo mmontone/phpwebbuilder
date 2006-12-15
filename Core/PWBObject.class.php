@@ -1,4 +1,7 @@
 <?php
+
+$allObjectsInMem = array();
+
 class PWBObject
 {
     var $event_listeners = array();
@@ -53,10 +56,7 @@ class PWBObject
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		#@gencheck if (!$this->getInstanceId() or isset($allObjectsInMem[$this->getInstanceId()]))
-        {
-		  print_backtrace(getClass($this) . ' does not have ID!!');
-		}//@#
+		#@gencheck if (isset($allObjectsInMem[$this->getInstanceId()]) && $this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$this->getInstanceId()]->basicPrintString(). ' instead of a '.$this->basicPrintString());@#
 		$allObjectsInMem[$this->getInstanceId()] =& $this;
 	}
 	/**
@@ -214,7 +214,9 @@ class PWBObject
         debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
         exit;
     }
-
+	function basicPrintString(){
+		return getClass($this). ':'.$this->getInstanceId();
+	}
 
 }
 

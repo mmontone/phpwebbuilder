@@ -39,7 +39,7 @@ class QuicKlickComponent extends Component {
 
 class TestCollectionViewer extends CollectionViewer {
 	function &addLine(&$e){
-		$fc =& parent::addLine(&$e);
+		$fc =& parent::addLine($e);
 		$fc2 = & new FieldValueComponent;
 		$fc2->addComponent(new CommandLink(array (
 			'text' => 'Volver a Ejecutar',
