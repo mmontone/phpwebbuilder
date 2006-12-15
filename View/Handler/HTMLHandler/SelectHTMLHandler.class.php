@@ -17,7 +17,7 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 		$this->appendOptions($v);
 	}
 	function setComponent(&$component){
-	   	parent::setComponent(&$component);
+	   	parent::setComponent($component);
 	   	$component->options->addEventListener(array('changed'=>'updateFromCollection'), $this);
 	}
 	function valueChanged(&$value_model, &$params) {
@@ -44,7 +44,7 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 			$v->removeChild($cn[$k]);
 		}
 		$cn = array();
-		$this->initializeView(&$v);
+		$this->initializeView($v);
 		$this->redraw();
 	}
 	function appendOptions(&$view) {

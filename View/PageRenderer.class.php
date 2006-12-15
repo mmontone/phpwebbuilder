@@ -50,9 +50,9 @@ class PageRenderer // extends PWBObject
 	function initialRender(){}
 	function render(&$page){
 		if (isset($_REQUEST['ajax'])&&$_REQUEST['ajax']=='true'){
-			return $this->ajaxRenderPage(&$page);
+			return $this->ajaxRenderPage($page);
 		} else {
-			return $this->renderPage(&$page);
+			return $this->renderPage($page);
 		}
 	}
 	function ajaxRenderPage($app){

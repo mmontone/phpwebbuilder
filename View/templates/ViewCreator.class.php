@@ -126,13 +126,13 @@ class ViewCreator {
 		return $view;
 	}
 	function addTemplateName(&$view, $name){
-		$this->app->page_renderer->addTemplateName(&$view, $name);
+		$this->app->page_renderer->addTemplateName($view, $name);
 	}
 	function &createTemplate(&$component){
 		return $this->templateForClass($component);
 	}
 	function &templateForClass(&$component){
-		$t =& $this->templates->templateForClass(&$component);
+		$t =& $this->templates->templateForClass($component);
 		if ($t!==null) {
 			$v =& $this->instantiateFor($t,$component);
 			#@debugview $this->addTemplateName($v, 'Global:'.$t->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');@#

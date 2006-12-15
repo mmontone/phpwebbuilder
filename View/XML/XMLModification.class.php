@@ -21,7 +21,7 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 	var $replacement;
 
 	function ReplaceNodeXMLNodeModification(& $replacement, &$target) {
-		parent::XMLNodeModification(&$target);
+		parent::XMLNodeModification($target);
 		$this->replacement = & $replacement;
 	}
 	function renderAjaxResponseCommand() {
@@ -143,7 +143,7 @@ class RemoveNodeXMLNodeModification extends XMLNodeModification {
 class RemoveChildXMLNodeModification extends XMLNodeModification {
 	var $child;
 	function RemoveChildXMLNodeModification(&$target, & $child) {
-		parent::XMLNodeModification(&$target);
+		parent::XMLNodeModification($target);
 		$this->child = & $child;
 		$this->childId = $child->getId();
 	}
@@ -157,7 +157,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 	var $attribute;
 	var $value;
 	function SetAttributeXMLNodeModification(&$target, $attribute, $value) {
-		parent::XMLNodeModification(&$target);
+		parent::XMLNodeModification($target);
 		$this->attribute = $attribute;
 		$this->value = $value;
 	}
@@ -173,7 +173,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 class RemoveAttributeXMLNodeModification extends XMLNodeModification {
 	var $attribute;
 	function RemoveAttributeXMLNodeModification(&$target, $attribute) {
-		parent::XMLNodeModification(&$target);
+		parent::XMLNodeModification($target);
 		$this->attribute = $attribute;
 	}
 	function renderAjaxResponseCommand() {
