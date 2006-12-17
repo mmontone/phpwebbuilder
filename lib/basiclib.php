@@ -311,7 +311,7 @@ function includemodule($module) {
 		basename($module
 	), '.php'));
 	if (file_exists($modf)) {
-		require_once ($modf);
+		compile_once ($modf);
 	} else {
 		trigger_error('Falling back to includefile for ' . $module, E_USER_NOTICE);
 		includefile($module);

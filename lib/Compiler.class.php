@@ -33,12 +33,12 @@ class Compiler {
 		global $compilerInstance;
 		return in_array($opt, $compilerInstance->toCompile);
 	}
-	function compile($file) {
+	function compileFile($file){
+		$f='';
 		if (!in_array($file, $this->compiled)) {
-			$this->compiled[] = $file;
-			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-			if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
-				//echo 'Compiling file: ' . $file . '<br />';
+				$this->compiled[] = $file;
+
+				//echo 'Adding file: ' . $file . '<br />';
 				$f = file_get_contents($file);
 				$f = $this->compileString($f,$pat = '/'.'#@'.//START_MACRO
 									'([[:alpha:]|\_]+)[\s\t]*' .
@@ -49,15 +49,30 @@ class Compiler {
 					);
 				$f = $this->compileString($f,$pat = '/__FILE__/s',
 					lambda('','return \'\\\''.$file.'\\\'\';'));
-
-				$fo = fopen($tmpname, 'w');
-				//echo "Compiling in $tmpname for $file";
-				if ($fo==null) print_backtrace($file." temp: ".$tmpname);
-				fwrite($fo, $f);
-				fclose($fo);
-			}
-			require_once $tmpname;
+				if (Compiler::CompileOpt('recursive')) {
+					$self =& $this;
+					$f = $this->compileString($f,$pat = '/compile_once[\s\t]*\([\s\t]*([^)]*)[\s\t]*\);/s',
+					lambda('$matches','return $self->compileRecFile($file,$matches[1]);', get_defined_vars()));
+				}
+				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 		}
+		return $f;
+	}
+	function compileRecFile($outfile, $infile){
+		return $this->compileFile(preg_replace('/\$d[\s\t]*\.[\s\t]*\'([^\']*)\'/s',dirname($outfile).'\1',$infile));
+	}
+	function compile($file) {
+		if (in_array($file, $this->compiled)) return;
+		//echo 'compiling '.$file;
+		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
+		if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
+			$fo = fopen($tmpname, 'w');
+			$f = '<?php'.$this->compileFile($file).'?>';
+			if ($fo==null) print_backtrace($file." temp: ".$tmpname);
+			fwrite($fo, $f);
+			fclose($fo);
+		}
+		require_once $tmpname;
 	}
 	function compileString($str, $pat, $func) {
 		if (preg_match($pat, $str, $matches) > 0) {
@@ -92,7 +107,9 @@ class Compiler {
 			//echo "$file in pwb";
 			//echo pwbdir;
 			$fd = substr(dirname($file),strlen($this->pwbdir));
-		}else{
+		}else if (substr($file, 0, strlen(constant('pwbdir')))==constant('pwbdir')){
+			$fd = substr(dirname($file),strlen(constant('pwbdir')));
+		} else {
 			$fd = substr(dirname($file),strlen(constant('basedir')));
 		}
 		$dir = $this->tempdir . $fd;
