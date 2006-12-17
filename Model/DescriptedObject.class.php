@@ -291,7 +291,14 @@ class DescriptedObject extends PWBObject {
 			return false;
 		}
 	}
-
+	function checkEregField($field, $ereg, $message) {
+		if (is_exception($ex =& $this->$field->validate_ereg($ereg, $message))) {
+			$this->addValidationError($ex);
+			return $ex;
+		} else {
+			return false;
+		}
+	}
 	function addValidationError(&$error) {
 		$this->validation_errors[] =& $error;
 	}
