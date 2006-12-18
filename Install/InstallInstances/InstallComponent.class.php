@@ -109,10 +109,16 @@ class InstallComponent extends Component {
 		$configfile = $this->configfile->value->getValue();
 		$c = $conf->load($configfile);
 		$m = $c['modules']!=''?$c['modules']:"Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,CodeAnalyzer";
+		$m = implode(',',array_diff(explode(',',$m), explode(',',modules)));
 		$a = $c['app']!=''?$c['app']:"MyInstances,MyComponents";
-		includeAllModules(pwbdir, $m);
+		if ($c['compile_dir']) define('compile_dir', $c['compile_dir']);
+		$comp =& Compiler::instance();
+		$comp->tempdir=null;
+		$inc = includeAllModules(pwbdir, $m);
 		$bdir = $conf->loadDir($c['basedir'],$configfile);
-		includeAllModules($bdir, $a);
+		$comp->compile_path = array($bdir, pwbdir,dirname(dirname(dirname(__FILE__))).'/');
+		$inc .=	includeAllModules($bdir, $a);
+		eval($inc);
 	}
 	function do_install_database(){
 		$this->load_application();

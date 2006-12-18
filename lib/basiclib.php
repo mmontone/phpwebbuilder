@@ -225,7 +225,6 @@ function deprecated($text) {
 }
 
 function includeAll() {
-
 	if (!defined('modules')) {
 		define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,DrPHP,BugNotifier,Logging");
 	}
@@ -235,15 +234,30 @@ function includeAll() {
 
 	$modules = explode(",", modules);
 	$modules[] = 'Logging';
-	includeAllModules(pwbdir, modules);
+	$inc = includeAllModules(pwbdir, modules);
 	define('app', "MyInstances,MyComponents");
-	includeAllModules(basedir, app);
-	includeAllModules(pwbdir, 'Session');
+	$inc .= includeAllModules(basedir, app);
+	$inc .= includeAllModules(pwbdir, 'Session');
+	if (Compiler::CompileOpt('recursive')) {
+		$comp =& Compiler::Instance();
+		$file = $comp->getTempFile(constant('basedir').strtolower(constant('app_class')).'.php', 'includes');
+		if (!file_exists($file) || $_REQUEST['recompile'] == 'yes') {
+			$fo = fopen($file, 'w');
+			$f = '<?php '.$inc.' ?>';
+			fwrite($fo, $f);
+			fclose($fo);
+		}
+		$comp->compile($file);
+	} else {
+		eval($inc);
+	}
 }
+
 function includeAllModules($prefix, $modules) {
 	foreach (explode(",", $modules) as $dir) {
-		includemodule($prefix . trim($dir));
+		$ret .= includemodule($prefix . trim($dir));
 	}
+	return $ret;
 }
 
 /**
@@ -298,8 +312,9 @@ function getfiles($pred, $dir) {
  */
 function includefile(& $file) {
 	foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
-		compile_once ($f);
+		$ret .= "compile_once ('$f');";
 	}
+	return $ret;
 }
 /**
  * Includes a PWB Module
@@ -311,10 +326,10 @@ function includemodule($module) {
 		basename($module
 	), '.php'));
 	if (file_exists($modf)) {
-		compile_once ($modf);
+		return "compile_once ('$modf');";
 	} else {
 		trigger_error('Falling back to includefile for ' . $module, E_USER_NOTICE);
-		includefile($module);
+		return includefile($module);
 	}
 }
 /*returns the dir inside the pwbdir*/
@@ -495,7 +510,8 @@ function lambda($args, $code, $env = array ()) {
 	$lambda_vars[$functionName]['environment_vars'] = & $env;
 	$declaration = sprintf('function &%s(%s) {global $lambda_vars;extract($lambda_vars["' . $functionName . '"]["environment_vars"],EXTR_REFS); ' /*.'trigger_error(backtrace_string(\''.str_replace('\'','\\\'',$code).'\'), E_USER_NOTICE);' */
 	 . '%s}', $functionName, $args, $code);
-	eval ($declaration);
+	$ok = eval ($declaration);
+	if($ok===FALSE) echo $declaration;
 	return $functionName;
 }
 /**

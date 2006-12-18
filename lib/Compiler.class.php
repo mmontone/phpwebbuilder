@@ -28,6 +28,7 @@ class Compiler {
 	function Compiler() {
 		$this->toCompile = explode(',', constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
+		$this->compile_path = array(dirname(dirname(__FILE__)).'/',constant('pwbdir'),constant('basedir'));
 	}
 	function CompileOpt($opt) {
 		global $compilerInstance;
@@ -35,23 +36,25 @@ class Compiler {
 	}
 	function compileFile($file){
 		$f='';
+		$file = $this->getRealPath($file);
 		if (!in_array($file, $this->compiled)) {
 				$this->compiled[] = $file;
 
 				//echo 'Adding file: ' . $file . '<br />';
+
 				$f = file_get_contents($file);
-				$f = $this->compileString($f,$pat = '/'.'#@'.//START_MACRO
+				$f = $this->compileString($f,'/'.'#@'.//START_MACRO
 									'([[:alpha:]|\_]+)[\s\t]*' .
 									''.//START_PARAMS
 									'([^#]+|(?R))' .
 									'@#'.//END_MACRO
 									'/s','processMacro'
 					);
-				$f = $this->compileString($f,$pat = '/__FILE__/s',
+				$f = $this->compileString($f,'/__FILE__/s',
 					lambda('','return \'\\\''.$file.'\\\'\';'));
 				if (Compiler::CompileOpt('recursive')) {
 					$self =& $this;
-					$f = $this->compileString($f,$pat = '/compile_once[\s\t]*\([\s\t]*([^)]*)[\s\t]*\);/s',
+					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^)]*)[\s\t]*\);/s',
 					lambda('$matches','return $self->compileRecFile($file,$matches[1]);', get_defined_vars()));
 				}
 				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
@@ -59,16 +62,29 @@ class Compiler {
 		return $f;
 	}
 	function compileRecFile($outfile, $infile){
-		return $this->compileFile(preg_replace('/\$d[\s\t]*\.[\s\t]*\'([^\']*)\'/s',dirname($outfile).'\1',$infile));
+		return $this->compileFile(str_replace('\'','',preg_replace('/\$d[\s\t]*\.[\s\t]*\'([^\']*)\'/s',dirname($outfile).'\1',$infile)));
+	}
+	function getRealPath($file){
+	   $address = explode('/', $file);
+	   $keys = array_keys($address, '..');
+
+	   foreach($keys as $keypos => $key)
+	   {
+	       array_splice($address, $key - ($keypos * 2 + 1), 2);
+	   }
+
+	   $address = implode('/', $address);
+	   $address = str_replace('./', '', $address);
+	   return $address;
 	}
 	function compile($file) {
 		if (in_array($file, $this->compiled)) return;
-		//echo 'compiling '.$file;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-		if ((!defined('recompile') || constant('recompile')!='NEVER') && ($_REQUEST['recompile'] == 'yes' or @ filemtime($tmpname) < @ filemtime($file))) {
+		//echo 'compiling '.$file .' to '.$tmpname;
+		if ($_REQUEST['recompile'] == 'yes' or ((!defined('recompile') || constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
-			$f = '<?php'.$this->compileFile($file).'?>';
-			if ($fo==null) print_backtrace($file." temp: ".$tmpname);
+			$f = '<?php '.$this->compileFile($file).' ?>';
+			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 			fwrite($fo, $f);
 			fclose($fo);
 		}
@@ -90,8 +106,12 @@ class Compiler {
 		}
 
 	}
+	function &Instance() {
+		global $compilerInstance;
+		return $compilerInstance;
+	}
 	function getTempFile($file, $extra) {
-		return $this->getTempDir($file) . '/' . basename($file, '.php') . '-' . $extra . '.php';
+		return $this->getTempDir($file) . '/' . basename($file, '.php') . $extra . '.php';
 	}
 	function getTempDir($file) {
 		if ($this->tempdir === null) {
@@ -101,15 +121,14 @@ class Compiler {
 				$this->tempdir = sys_get_temp_dir();
 			}
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
-			$this->pwbdir = dirname(dirname(__FILE__));
 		}
-		if (substr($file, 0, strlen($this->pwbdir))==$this->pwbdir) {
-			//echo "$file in pwb";
-			//echo pwbdir;
-			$fd = substr(dirname($file),strlen($this->pwbdir));
-		}else if (substr($file, 0, strlen(constant('pwbdir')))==constant('pwbdir')){
-			$fd = substr(dirname($file),strlen(constant('pwbdir')));
-		} else {
+		foreach($this->compile_path as $p) {
+			if ($p!=''&&substr($file, 0, strlen($p))==$p) {
+				$fd = substr(dirname($file),strlen($p));
+				break;
+			}
+		}
+		if ($fd==null) {
 			$fd = substr(dirname($file),strlen(constant('basedir')));
 		}
 		$dir = $this->tempdir . $fd;
@@ -120,18 +139,19 @@ class Compiler {
 		return $dir;
 	}
 }
-if (defined('compile')) {
-	$compilerInstance =& new Compiler;
-	function compile_once($file) {
-		global $compilerInstance;
-		$compilerInstance->compile($file);
-	}
+if (defined('compile')){
+
+$compilerInstance =& new Compiler;
+function compile_once($file) {
+	$compilerInstance =& Compiler::instance();
+	$compilerInstance->compile($file);
+}
 } else {
-	function compile_once($file) {
-		require_once ($file);
-	}
+function compile_once($file) {
+	require_once($file);
 }
 
+}
 if (!function_exists('sys_get_temp_dir')) {
 	// Based on http://www.phpit.net/
 	// article/creating-zip-tar-archives-dynamically-php/2/
