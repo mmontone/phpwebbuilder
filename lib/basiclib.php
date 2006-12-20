@@ -231,17 +231,15 @@ function includeAll() {
 	if (!defined('app_class')) {
 		define('app_class', "DefaultCMSApplication");
 	}
-
-	$modules = explode(",", modules);
-	$modules[] = 'Logging';
-	$inc = includeAllModules(pwbdir, modules);
 	define('app', "MyInstances,MyComponents");
-	$inc .= includeAllModules(basedir, app);
-	$inc .= includeAllModules(pwbdir, 'Session');
+
 	if (Compiler::CompileOpt('recursive')) {
 		$comp =& Compiler::Instance();
 		$file = $comp->getTempFile(constant('basedir').strtolower(constant('app_class')).'.php', 'includes');
 		if (!file_exists($file) || $_REQUEST['recompile'] == 'yes') {
+			$inc = includeAllModules(pwbdir, modules);
+			$inc .= includeAllModules(basedir, app);
+			$inc .= includeAllModules(pwbdir, 'Session');
 			$fo = fopen($file, 'w');
 			$f = '<?php '.$inc.' ?>';
 			fwrite($fo, $f);
@@ -249,6 +247,9 @@ function includeAll() {
 		}
 		$comp->compile($file);
 	} else {
+		$inc = includeAllModules(pwbdir, modules);
+		$inc .= includeAllModules(basedir, app);
+		$inc .= includeAllModules(pwbdir, 'Session');
 		eval($inc);
 	}
 }

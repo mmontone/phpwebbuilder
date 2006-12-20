@@ -54,7 +54,7 @@ class Compiler {
 					lambda('','return \'\\\''.$file.'\\\'\';'));
 				if (Compiler::CompileOpt('recursive')) {
 					$self =& $this;
-					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^)]*)[\s\t]*\);/s',
+					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
 					lambda('$matches','return $self->compileRecFile($file,$matches[1]);', get_defined_vars()));
 				}
 				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
@@ -62,7 +62,8 @@ class Compiler {
 		return $f;
 	}
 	function compileRecFile($outfile, $infile){
-		return $this->compileFile(str_replace('\'','',preg_replace('/\$d[\s\t]*\.[\s\t]*\'([^\']*)\'/s',dirname($outfile).'\1',$infile)));
+		$x = eval('return '.$infile.';');
+		return $this->compileFile($x);
 	}
 	function getRealPath($file){
 	   $address = explode('/', $file);
@@ -80,7 +81,8 @@ class Compiler {
 	function compile($file) {
 		if (in_array($file, $this->compiled)) return;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-		//echo 'compiling '.$file .' to '.$tmpname;
+		//print_backtrace('compiling '.$file .' to '.$tmpname);
+
 		if ($_REQUEST['recompile'] == 'yes' or ((!defined('recompile') || constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
 			$f = '<?php '.$this->compileFile($file).' ?>';
@@ -111,7 +113,7 @@ class Compiler {
 		return $compilerInstance;
 	}
 	function getTempFile($file, $extra) {
-		return $this->getTempDir($file) . '/' . basename($file, '.php') . $extra . '.php';
+		return $this->getTempDir($file) .'/'. basename($file, '.php') . $extra . '.php';
 	}
 	function getTempDir($file) {
 		if ($this->tempdir === null) {
