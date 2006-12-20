@@ -1,14 +1,9 @@
 <?
-$t = time();
 xdebug_start_profiling();
 
 
 function showProfile(){
-	global $t;
-	echo "duration: ".time() - $t ;
-	xdebug_dump_function_profile(3);
-	echo "duration: ".time() - $t ;
-
+	xdebug_dump_function_profile(4);
 }
 
 register_shutdown_function('showProfile');

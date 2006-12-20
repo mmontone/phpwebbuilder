@@ -2,19 +2,19 @@
 
 $d = dirname(__FILE__);
 
-compile_once ($d.'/Base/Menu/MenuSection.class.php');
-compile_once ($d.'/Base/Menu/MenuItem.class.php');
-compile_once ($d.'/Base/Permissions/RolePermission.class.php');
-compile_once ($d.'/Base/Permissions/User.class.php');
-compile_once ($d.'/Base/Permissions/UserRole.class.php');
-compile_once ($d.'/Base/Permissions/Role.class.php');
-compile_once ($d.'/File.class.php');
-compile_once ($d.'/DBInfo.class.php');
-compile_once ($d.'/DBVersion.class.php');
+compile_once (dirname(__FILE__).'/Base/Menu/MenuSection.class.php');
+compile_once (dirname(__FILE__).'/Base/Menu/MenuItem.class.php');
+compile_once (dirname(__FILE__).'/Base/Permissions/RolePermission.class.php');
+compile_once (dirname(__FILE__).'/Base/Permissions/User.class.php');
+compile_once (dirname(__FILE__).'/Base/Permissions/UserRole.class.php');
+compile_once (dirname(__FILE__).'/Base/Permissions/Role.class.php');
+compile_once (dirname(__FILE__).'/File.class.php');
+compile_once (dirname(__FILE__).'/DBInfo.class.php');
+compile_once (dirname(__FILE__).'/DBVersion.class.php');
 
 /*
-compile_once ($d.'/Translator.class.php');
-compile_once ($d.'/Message.class.php');
-compile_once ($d.'/MessageTranslation.class.php');
+compile_once (dirname(__FILE__).'/Translator.class.php');
+compile_once (dirname(__FILE__).'/Message.class.php');
+compile_once (dirname(__FILE__).'/MessageTranslation.class.php');
 */
 ?>
