@@ -224,6 +224,15 @@ function deprecated($text) {
 	return '';
 }
 
+function getIncludes(){
+	$modules = eval('return modules;');
+	$app = eval('return app;');
+	$inc .= includeAllModules(pwbdir, $modules);
+	$inc .= includeAllModules(basedir, $app);
+	$inc .= includeAllModules(pwbdir, 'Session');
+	return $inc;
+}
+
 function includeAll() {
 	if (!defined('modules')) {
 		define('modules', "Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,DrPHP,BugNotifier,Logging");
@@ -237,20 +246,14 @@ function includeAll() {
 		$comp =& Compiler::Instance();
 		$file = $comp->getTempFile(constant('basedir').strtolower(constant('app_class')).'.php', 'includes');
 		if (!file_exists($file) || $_REQUEST['recompile'] == 'yes') {
-			$inc = includeAllModules(pwbdir, modules);
-			$inc .= includeAllModules(basedir, app);
-			$inc .= includeAllModules(pwbdir, 'Session');
 			$fo = fopen($file, 'w');
-			$f = '<?php '.$inc.' ?>';
+			$f = '<?php '.getIncludes().' ?>';
 			fwrite($fo, $f);
 			fclose($fo);
 		}
 		$comp->compile($file);
 	} else {
-		$inc = includeAllModules(pwbdir, modules);
-		$inc .= includeAllModules(basedir, app);
-		$inc .= includeAllModules(pwbdir, 'Session');
-		eval($inc);
+		eval(getIncludes());
 	}
 }
 
