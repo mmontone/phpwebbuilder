@@ -12,8 +12,9 @@ class PageRenderer // extends PWBObject
 	}
 	function &create(&$app){
 		$v = null;
-		if (isset($_REQUEST['render'])&&$_REQUEST['render']=='xul') {
-			$v =& new XULPageRenderer($app);
+		if (isset($_REQUEST['render'])) {
+			$class = $_REQUEST['render'].'PageRenderer';
+			$v =& new $class($app);
 		} else {
 			$page_renderer = constant('page_renderer');
 			$v =& new $page_renderer($app);

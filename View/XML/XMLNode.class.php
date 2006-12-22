@@ -81,17 +81,17 @@ class XMLNode extends DOMXMLNode {
 	}
 	function render(){
 
-		/*$ok = @ob_start();
+		$ok = @ob_start();
 		if ($ok) {
 			$this->renderEcho();
 			$s = ob_get_contents();
 			echo $s;
 			ob_end_clean();
 			return $s;
-		} else {*/
+		/*} else {*/
 			$out = $this->renderNonEcho();
 			return $out;
-		//}
+		}
 	}
 
 	function renderEcho() {
@@ -107,7 +107,7 @@ class XMLNode extends DOMXMLNode {
 		$cn =& $this->childNodes;
 		echo implode('',array('<',$this->tagName));
 		foreach ($this->attributes as $name => $val) {
-			echo implode('' , array(' ', $name , '="' , $val, '"'));
+			echo '' , ' ', $name , '="' , $val, '"';
 		}
 		if (count($cn) == 0) {
 			echo '/>';
@@ -118,7 +118,7 @@ class XMLNode extends DOMXMLNode {
 				$cn[$k]->renderEcho();
 			}
 			//echo implode(array("\n</".$this->tagName.'>'));
-			echo implode(array('</'.$this->tagName.'>'));
+			echo '</',$this->tagName,'>';
 		}
 	}
 
@@ -302,4 +302,5 @@ class XMLNode extends DOMXMLNode {
 		}
 	}
 }
+
 ?>

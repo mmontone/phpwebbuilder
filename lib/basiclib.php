@@ -244,7 +244,7 @@ function includeAll() {
 
 	if (Compiler::CompileOpt('recursive')) {
 		$comp =& Compiler::Instance();
-		$file = $comp->getTempFile(constant('basedir').strtolower(constant('app_class')).'.php', 'includes');
+		$file = $comp->getTempDir('').strtolower(constant('app_class')).'.php';
 		if (!file_exists($file) || $_REQUEST['recompile'] == 'yes') {
 			$fo = fopen($file, 'w');
 			$f = '<?php '.getIncludes().' ?>';
