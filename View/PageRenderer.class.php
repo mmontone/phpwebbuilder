@@ -185,7 +185,7 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		$ret .= '</head><body>';
 		if (defined('debugview')&&constant('debugview')=='1'){
 			$ret .='<div>' .
-						'<form action="'.site_url . '/Action.php" '.
+						'<form action="'.site_url . 'Action.php" '.
 							' method="post"'.
 							' enctype="multipart/form-data">' .
 							'<input type="hidden" name="app" value="'.getClass($app).'" />' .
