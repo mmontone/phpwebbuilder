@@ -1,7 +1,5 @@
 <?php
 
-$d = dirname(__FILE__);
-
 compile_once (dirname(__FILE__).'/DefaultCMS.class.php');
 compile_once (dirname(__FILE__).'/Administrator/RolesController.class.php');
 compile_once (dirname(__FILE__).'/Administrator/DBController.class.php');

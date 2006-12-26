@@ -16,9 +16,6 @@ compile_once (dirname(__FILE__).'/templates/HTMLContainer.class.php');
 compile_once (dirname(__FILE__).'/templates/HTMLTemplate.class.php');
 compile_once (dirname(__FILE__).'/NullView.class.php');
 compile_once (dirname(__FILE__).'/XML/XMLTextNode.class.php');
-compile_once (dirname(__FILE__).'/Handler/Handler.php');
-
-
 
 compile_once (dirname(__FILE__).'/Handler/ViewHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/HTMLHandler.class.php');

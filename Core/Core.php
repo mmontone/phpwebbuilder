@@ -1,7 +1,5 @@
 <?php
 
-$d = dirname(__FILE__);
-
 compile_once (dirname(__FILE__).'/PWBObject.class.php');
 compile_once (dirname(__FILE__).'/Collection.class.php');
 compile_once (dirname(__FILE__).'/FunctionObject.class.php');

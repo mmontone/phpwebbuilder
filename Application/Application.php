@@ -1,7 +1,5 @@
 <?php
 
-$d = dirname(__FILE__);
-
 compile_once (dirname(__FILE__).'/ComponentHolder.class.php');
 compile_once (dirname(__FILE__).'/ActionDispatcher.class.php');
 compile_once (dirname(__FILE__).'/UrlManager.class.php');
