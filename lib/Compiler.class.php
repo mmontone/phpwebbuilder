@@ -82,8 +82,7 @@ class Compiler {
 		if (in_array($file, $this->compiled)) return;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
 		//print_backtrace('compiling '.$file .' to '.$tmpname);
-
-		if ($_REQUEST['recompile'] == 'yes' or ((!defined('recompile') || constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
+		if (isset($_REQUEST['recompile']) or ((!defined('recompile') || constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
 			$f = '<?php '.$this->compileFile($file).' ?>';
 			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
@@ -113,7 +112,7 @@ class Compiler {
 		return $compilerInstance;
 	}
 	function getTempFile($file, $extra) {
-		return $this->getTempDir($file) .'/'. basename($file, '.php') . $extra . '.php';
+		return implode(array($this->getTempDir($file),'/', basename($file, '.php') , $extra , '.php'));
 	}
 	function getTempDir($file) {
 		if ($this->tempdir === null) {
@@ -135,7 +134,7 @@ class Compiler {
 		}
 		$dir = $this->tempdir . $fd;
 		$res = @ mkdir_r($dir, 0777);
-		if (!file_exists($dir)) {
+		if (!$res) {
 			print_backtrace_and_exit('Cannot make directory: ' . $dir);
 		}
 		return $dir;
@@ -185,18 +184,8 @@ if (!function_exists('sys_get_temp_dir')) {
 }
 
 function mkdir_r($dirName, $rights=0777){
-   $dirs = explode('/', $dirName);
-   $dir='';
-   foreach ($dirs as $part) {
-       $dir.=$part.'/';
-       if (!is_dir($dir) && strlen($dir)>0) {
-			if (!@mkdir($dir, $rights)) {
-				return false;
-			}
-
-       }
-   }
-
-   return true;
+   if (file_exists($dirName)) return true;
+   return mkdir_r(dirname($dirName), $rights) &&
+   		  @mkdir($dirName, $rights);
 }
 ?>

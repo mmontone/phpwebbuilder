@@ -1,18 +1,15 @@
 <?php
 
 class ViewCreator {
-	var $templates = array();
 	var $app;
 	function ViewCreator(&$app){
 		$this->app =& $app;
-		$this->templates =& new XMLNode;
 	}
 	function reloadView(){
 		$app =& $this->app;
 		$v=&$app->component->view;
 		$app->wholeView->removeChild($v);
 		$app->component->releaseView();
-		$this->templates =& new XMLNode;
 		$app->translators = array();
 		$app->loadTemplates();
 		$app->component->createViews();
@@ -60,7 +57,8 @@ class ViewCreator {
  	}
 
 	function addTemplates(&$templates){
-		$this->templates->addTemplatesAndContainers($templates, $a=array(), $b=array());
+		global $templates_xml;
+		$templates_xml->addTemplatesAndContainers($templates, $a=array(), $b=array());
 	}
 	function &createElemView(&$pV, &$component){
 		/*
@@ -131,8 +129,30 @@ class ViewCreator {
 	function &createTemplate(&$component){
 		return $this->templateForClass($component);
 	}
+	function getTemplatesFilename(){
+		$comp =& Compiler::Instance();
+		return $comp->getTempDir('').strtolower(constant('app_class')).'.templates.php';
+	}
+	function &getTemplates(){
+		global $templates_xml;
+		if ($templates_xml===null) {
+			$temp_file = $this->getTemplatesFilename();
+			if (!file_exists($temp_file)) {
+				$templates_xml = new XMLNode;
+				$this->app->loadTemplates();
+				$fo = fopen($temp_file, 'w');
+				fwrite($fo, serialize($templates_xml));
+				fclose($fo);
+			} else {
+				$templates_xml = unserialize(file_get_contents($temp_file));
+			}
+
+		}
+		return $templates_xml;
+	}
 	function &templateForClass(&$component){
-		$t =& $this->templates->templateForClass($component);
+		$ts =& $this->getTemplates();
+		$t =& $ts->templateForClass($component);
 		if ($t!==null) {
 			$v =& $this->instantiateFor($t,$component);
 			#@debugview $this->addTemplateName($v, 'Global:'.$t->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');@#

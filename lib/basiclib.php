@@ -227,6 +227,7 @@ function deprecated($text) {
 function getIncludes(){
 	$modules = eval('return modules;');
 	$app = eval('return app;');
+	$inc = '';
 	$inc .= includeAllModules(pwbdir, $modules);
 	$inc .= includeAllModules(basedir, $app);
 	$inc .= includeAllModules(pwbdir, 'Session');
@@ -245,7 +246,7 @@ function includeAll() {
 	if (Compiler::CompileOpt('recursive')) {
 		$comp =& Compiler::Instance();
 		$file = $comp->getTempDir('').strtolower(constant('app_class')).'.php';
-		if (!file_exists($file) || $_REQUEST['recompile'] == 'yes') {
+		if (!file_exists($file) || isset($_REQUEST['recompile'])) {
 			$fo = fopen($file, 'w');
 			$f = '<?php '.getIncludes().' ?>';
 			fwrite($fo, $f);
@@ -255,9 +256,14 @@ function includeAll() {
 	} else {
 		eval(getIncludes());
 	}
+	if (isset($_REQUEST['recompile'])) {
+		$temp_file = ViewCreator::getTemplatesFilename();
+		@unlink($temp_file);
+	}
 }
 
 function includeAllModules($prefix, $modules) {
+	$ret ='';
 	foreach (explode(",", $modules) as $dir) {
 		$ret .= includemodule($prefix . trim($dir));
 	}
