@@ -102,9 +102,8 @@ class Component extends PWBObject
 		#@check is_array($this->toLink)@#
 		//if (!is_array($this->toLink)) echo getClass($this)
 		foreach(array_keys($tl) as $k){
-			$comp =& $tl[$k];
-			#@typecheck $comp: Component@#
-				$comp->linkToApp($app);
+			#@typecheck $tl[$k]: Component@#
+				$tl[$k]->linkToApp($app);
 		}
 		$null = array();
 		$this->toLink =& $null;
@@ -135,8 +134,8 @@ class Component extends PWBObject
 	function &addComponent(&$component, $ind=null) {
 		#@check is_a($component, 'Component')@#
 		$res = $component->checkAddingPermissions();
-		if ($res == false){
-			return $f=false;
+		if ($res === false){
+			return $res;
 		} else {
 			if (($ind !==null) and (isset($this->__children[$ind]))) {
 				$this->$ind->stopAndCall($component);

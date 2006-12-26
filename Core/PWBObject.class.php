@@ -50,13 +50,13 @@ class PWBObject
 	function equalTo(&$other_pwb_object) {
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
-	function getInstanceId(){
+	function &getInstanceId(){
 		#@gencheck if($this->__instance_id===null) print_backtrace(getClass($this).' doesn\'t have an id');@#
 		return $this->__instance_id;
 	}
 	function __wakeup() {
 		global $allObjectsInMem;
-		$id = $this->getInstanceId();
+		$id =& $this->getInstanceId();
 		#@gencheck if (isset($allObjectsInMem[$id]) && !$this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$id]->basicPrintString(). ' instead of a '.$this->basicPrintString());@#
 		$allObjectsInMem[$id] =& $this;
 	}

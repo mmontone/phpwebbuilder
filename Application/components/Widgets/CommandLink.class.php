@@ -26,7 +26,7 @@ class CommandLink extends Widget{
 	function setOnClickEvent(){
 		parent::setOnClickEvent();
 		$oc = $this->events->at('onclick');
-		$this->events->atPut('onclick', $a=array('onclick', $oc[1].'var ev = getEvent(event); ev.returnValue=false;return false;'));
+		$this->events->atPut('onclick', $a=array('onclick', $oc[1].';return false;'));
 	}
 
 }
