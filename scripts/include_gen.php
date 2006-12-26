@@ -18,11 +18,10 @@ function includefile(&$file) {
 	} else {
 		if (substr($file, -4)=='.php') {
                   //echo "Including file: " . $file;
-                  echo "<br/>compile_once (\dirname(__FILE__).'/".substr($file, $n)."');";
+                  echo "<br/>compile_once (\dirname(__FILE__).'/",substr($file, $n),"');";
 		}
 	}
 }
-echo '$d = dirname(__FILE__);';
 includefile($d);
 
 ?>
