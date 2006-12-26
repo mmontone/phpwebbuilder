@@ -11,7 +11,6 @@ class ViewCreator {
 		$app->wholeView->removeChild($v);
 		$app->component->releaseView();
 		$app->translators = array();
-		$app->loadTemplates();
 		$app->component->createViews();
 	}
 	function parseTemplates ($files, $templatesdir){
@@ -137,7 +136,7 @@ class ViewCreator {
 		global $templates_xml;
 		if ($templates_xml===null) {
 			$temp_file = $this->getTemplatesFilename();
-			if (!file_exists($temp_file)) {
+			if (!file_exists($temp_file) || ! Compiler::CompileOpt('recursive')) {
 				$templates_xml = new XMLNode;
 				$this->app->loadTemplates();
 				$fo = fopen($temp_file, 'w');

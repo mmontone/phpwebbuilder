@@ -332,6 +332,10 @@ class Component extends PWBObject
 		return $this->holder->parent;
 	}
 	function doNothing(){}
+	function printString(){
+		return getClass($this). ':'.$this->getInstanceId() . '('.$this->getId().')';
+	}
+
 }
 
 #@mixin EditorComponent

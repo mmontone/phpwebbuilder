@@ -420,6 +420,9 @@ class Report extends Collection{
 	 	}
 	 	return $obj;
 	}
+	function printString(){
+		return getClass($this). ':'.$this->getInstanceId() . '('.$this->getDataType().')';
+	}
 }
 
 class CompositeReport extends Report {
