@@ -66,21 +66,26 @@ class XMLNode extends DOMXMLNode {
 		}
 	}
 	function getRealId() {
-		if (($this->controller != null)) {
+		if ($this->controller!=null){
+			return $this->attributes['id'];
+		} else {
+			//echo 'going up for id';
+			return $this->parentNode->getRealId();
+		}
+		/*if (($this->controller != null)) {
 			$id = $this->controller->getId();
 			$this->attributes['id'] =  $id;
 			return $id;
 		} else {
+				echo 'going up for id';
 				if (!$this->parentNode) print_backtrace('no parent');
 				return $this->parentNode->getRealId();
-		}
+		}*/
 	}
-	function getId(){
-		$this->getRealId();
+	function &getId(){
 		return $this->getAttribute('id');
 	}
 	function render(){
-
 		$ok = @ob_start();
 		if ($ok) {
 			$this->renderEcho();
@@ -95,30 +100,29 @@ class XMLNode extends DOMXMLNode {
 	}
 
 	function renderEcho() {
-		$id = $this->getId();
-		if ($id!=null && !$this->controller) {
-			if (defined('debugview') and constant('debugview')=='1') {
+		$id =& $this->getId();
+		if ($id!=null && !isset($this->controller)) {
+			#@debugview
+			{
 				$this->addCSSclass('hiddencontainer');
 				$this->appendChild(new XMLTextNode($id));
-			} else {
+			} if (false) //@#
 				return;
-			}
 		}
 		$cn =& $this->childNodes;
-		echo implode('',array('<',$this->tagName));
+		$tn =& $this->tagName;
+		echo '<',$tn;
 		foreach ($this->attributes as $name => $val) {
-			echo '' , ' ', $name , '="' , $val, '"';
+			echo ' ', $name , '="' , $val, '"';
 		}
-		if (count($cn) == 0) {
-			echo '/>';
+		if (!isset($cn[0])) {
+			echo ' />';
 		} else {
-			echo '>';
-			$ks = array_keys($cn);
-			foreach ($ks as $k) {
+			echo ' >';
+			foreach (array_keys($cn) as $k) {
 				$cn[$k]->renderEcho();
 			}
-			//echo implode(array("\n</".$this->tagName.'>'));
-			echo '</',$this->tagName,'>';
+			echo '</',$tn,'>';
 		}
 	}
 

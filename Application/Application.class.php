@@ -78,17 +78,18 @@ class Application extends ComponentHolder {
 		$this->render();
 	}
 	function render() {
-		$out = $this->page_renderer->render($this);
-		echo $out;
-		session_write_close();
-		return $out;
+		echo $this->page_renderer->render($this);
+		//echo $out;
+		//session_write_close();
+		//return $out;
 	}
 
 	function createView() {
 		if (!$this->viewCreator) {
 			$this->viewCreator = & new ViewCreator($this);
-			$this->loadTemplates();
+			//$this->loadTemplates();
 			$this->wholeView = & new XMLNodeModificationsTracker;
+			$this->wholeView->setAttribute('id', $this->getId());
 			$tc =& new HTMLContainer('',array());
 			$tc->setAttribute('class','Component');
 			$this->wholeView->appendChild($tc);

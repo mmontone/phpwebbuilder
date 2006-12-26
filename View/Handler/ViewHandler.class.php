@@ -34,6 +34,7 @@ class ViewHandler extends PWBFactory{
 		$this->component->view =& $view;
 		$view->controller =& $this->component;
 		$this->view =& $view;
+		$view->attributes['id'] = $this->component->getId();
 	}
 
 	function &getView() {
