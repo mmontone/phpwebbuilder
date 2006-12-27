@@ -119,7 +119,8 @@ class XMLNodeModificationsTracker extends XMLNode {
 		return $ret;
 	}
 	function printTree(){
-		return getClass($this) .'('.$this->getId().')'.  '{'.$this->toFlush->getTarget()->printTree().'}';
+		$tg =& $this->toFlush->getTarget();
+		return getClass($this) .'('.$this->getId().')'.  '{'.$tg->printTree().'}';
 	}
 	function renderAjaxResponseCommand() {
 		if ($this->willFlush()) {
