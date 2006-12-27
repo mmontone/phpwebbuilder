@@ -15,6 +15,9 @@ class XMLNodeModification extends PWBObject{
 	function willFlush(){return true;}
 	function addChildMod($pos,&$mod){}
 	function removeChildMod($pos){}
+	function printTree(){
+		return getClass($this);
+	}
 }
 
 class ReplaceNodeXMLNodeModification extends XMLNodeModification {
@@ -88,6 +91,13 @@ class ChildModificationsXMLNodeModification extends XMLNodeModification {
 	function removeChildMod($pos){
 		//if ($this->modifications[$pos]) echo "removing a ".getClass($this->modifications[$pos])." in ".$pos;
 		unset($this->modifications[$pos]);
+	}
+	function printTree(){
+		$ret = getClass($this) . '{';
+		foreach($this->modifications as $k=>$m){
+			$ret .= $k.':'.$m->printTree();
+		}
+		return $ret.'}';
 	}
 
 }

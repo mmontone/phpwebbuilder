@@ -5,13 +5,12 @@ class DOMXMLNode {
 	var $tagName;
 	var $attributes;
 	var $parentPosition = null;
-	var $nextNode;
+	var $nextNode = 0;
 
 	function DOMXMLNode($tag_name = null, $attributes = array ()) {
 		if ($tag_name===null)$tag_name=Application::defaultTag();
 		$this->tagName = $tag_name;
 		$this->attributes = $attributes;
-		$this->nextNode = 0;
 	}
 
 	function release() {
@@ -67,20 +66,21 @@ class DOMXMLNode {
 	function removeChild(& $old) {
 		$pos = $old->parentPosition;
 
-		if (!isset ($this->childNodes[$pos])) {
+		#@gencheck if (!isset ($this->childNodes[$pos]))
+		{
 			print_backtrace('Error removing child');
 			echo $this->printString();
 			exit;
-		}
+		}//@#
 
 		unset ($this->childNodes[$pos]);
 		$old->release();
 	}
 
 	function removeChilds() {
-		foreach(array_keys($this->childNodes) as $c) {
-			$child =& $this->childNodes[$c];
-			$child->release();
+		$cn =& $this->childNodes;
+		foreach(array_keys($cn) as $c) {
+			$cn[$c]->release();
 		}
 
 		$temp = array ();
@@ -106,12 +106,7 @@ class DOMXMLNode {
 		$this->attributes[$name] = $val;
 	}
 	function getAttribute($attribute) {
-		if (isset ($this->attributes[$attribute])) {
-			return $this->attributes[$attribute];
-		}
-		else {
-			return '';
-		}
+		return $this->attributes[$attribute];
 	}
 
 	function removeAttribute($attr) {

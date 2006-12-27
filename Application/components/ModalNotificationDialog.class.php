@@ -10,6 +10,13 @@ class AjaxComponent extends Component{
     function stopAndCall(&$component) {
 		$this->basicCall($component);
     }
+    function renderMessage() {
+		if (is_object($this->message)) {
+			return toAjax($this->message->printString());
+		} else {
+			return toAjax($this->message);
+		}
+	}
 }
 
 class ModalNotificationDialog extends AjaxComponent {
@@ -23,7 +30,7 @@ class ModalNotificationDialog extends AjaxComponent {
 
 	function start() {
     	$app =& Application::instance();
-    	$app->addAjaxCommand(new AjaxCommand('openNotificationDialog', array(toAjax($this->message), $this->getId(), constant('pwb_url'))));
+    	$app->addAjaxCommand(new AjaxCommand('openNotificationDialog', array($this->renderMessage(), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
     }
 
@@ -52,7 +59,7 @@ class ModalPromptDialog extends AjaxComponent {
 
 	function start() {
     	$app =& Application::instance();
-    	$app->addAjaxCommand(new AjaxCommand('openPromptDialog', array(toAjax($this->message), toAjax($this->text->getValue()), $this->getId(), constant('pwb_url'))));
+    	$app->addAjaxCommand(new AjaxCommand('openPromptDialog', array($this->renderMessage(), toAjax($this->text->getValue()), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
     	$this->addInterestIn('cancel', new FunctionObject($this, 'cancel'));
     }
@@ -97,7 +104,7 @@ class ModalErrorDialog extends AjaxComponent {
 
 	function start() {
     	$app =& Application::instance();
-    	$app->addAjaxCommand(new AjaxCommand('openErrorDialog', array(toAjax($this->message), $this->getId(), constant('pwb_url'))));
+    	$app->addAjaxCommand(new AjaxCommand('openErrorDialog', array($this->renderMessage(), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
     }
 
@@ -124,7 +131,7 @@ class ModalQuestionDialog extends AjaxComponent {
 
 	function start() {
     	$app =& Application::instance();
-    	$app->addAjaxCommand(new AjaxCommand('openQuestionDialog', array(toAjax($this->message), $this->getId(), constant('pwb_url'))));
+    	$app->addAjaxCommand(new AjaxCommand('openQuestionDialog', array($this->renderMessage(), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('yes', new FunctionObject($this, 'yes'));
     	$this->addInterestIn('no', new FunctionObject($this, 'no'));
     }
@@ -161,7 +168,7 @@ class ModalQuestionDialog2 extends Component {
 
 	function start() {
     	$app =& Application::instance();
-    	$app->addAjaxCommand(new AjaxCommand('openQuestionDialog', array('message' => $this->message, 'callback_comp' => $this->getId())));
+    	$app->addAjaxCommand(new AjaxCommand('openQuestionDialog', array('message' => $this->renderMessage(), 'callback_comp' => $this->getId())));
     	$this->addEventListener('yes', new FunctionObject($this, 'yes'));
     	$this->addEventListener('no', new FunctionObject($this, 'no'));
     }
