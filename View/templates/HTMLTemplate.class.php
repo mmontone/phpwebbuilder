@@ -16,7 +16,8 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 
 
 	function renderEcho() {
-		$tag_name=Application::defaultTag();
+		$fc =& $this->first_child();
+		$tag_name= $fc->tagName;
 		$this->getRealId();
 		$fid = $this->getAttribute('fakeid');
 		echo "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";

@@ -7,7 +7,11 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 		$this->attributes['simpleId'] = $id;
 	}
 	function renderEcho() {
-			$tag_name=Application::defaultTag();
+			if (isset($this->attributes['tagname'])) {
+				$tag_name=$this->attributes['tagname'];
+			} else {
+				$tag_name=Application::defaultTag();
+			}
 			$fid = $this->getId();
 			if (defined('debugview') and constant('debugview')=='1') {
 				echo "<$tag_name class=\"hiddencontainer\" id=\"$fid\">".$this->attributes['class'].':'.$this->attributes['simpleId']."</$tag_name>";
@@ -18,7 +22,11 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 	}
 
 	function renderNonEcho() {
-			$tag_name=Application::defaultTag();
+			if (isset($this->attributes['tagname'])) {
+				$tag_name=$this->attributes['tagname'];
+			} else {
+				$tag_name=Application::defaultTag();
+			}
 			$fid = $this->getId();
 			if (defined('debugview') and constant('debugview')=='1') {
 				return "<$tag_name class=\"hiddencontainer\" id=\"$fid\">".$this->attributes['class'].':'.$this->attributes['simpleId']."</$tag_name>";
