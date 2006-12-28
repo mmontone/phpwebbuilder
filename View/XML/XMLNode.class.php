@@ -115,7 +115,7 @@ class XMLNode extends DOMXMLNode {
 		foreach ($this->attributes as $name => $val) {
 			echo ' ', $name , '="' , $val, '"';
 		}
-		if (!isset($cn[0])) {
+		if (count($cn)==0) {
 			echo ' />';
 		} else {
 			echo ' >';
