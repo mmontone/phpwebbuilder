@@ -134,7 +134,7 @@ class Component extends PWBObject
 	function &addComponent(&$component, $ind=null) {
 		#@check is_a($component, 'Component')@#
 		$res = $component->checkAddingPermissions();
-		if ($res === false){
+		if ($res == false){
 			return $res;
 		} else {
 			if (($ind !==null) and (isset($this->__children[$ind]))) {
