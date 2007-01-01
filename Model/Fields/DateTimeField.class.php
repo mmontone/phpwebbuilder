@@ -32,7 +32,17 @@ class DateTimeField extends DataField {
 		#@typecheck $d : DateTime@#
 		$this->value =& $d;
 		$d->onChangeSend('changed',$this);
-		parent::setValue($d);
+		if ($d !== $this->buffered_value) {
+			$this->buffered_value =& $d;
+			$this->setModified(true);
+			$this->triggerEvent('changed', $no_params = null);
+		}
+	}
+	function &getValue() {
+		if ($this->buffered_value !== null)
+			return $this->buffered_value;
+		else
+			return $this->value;
 	}
 }
 

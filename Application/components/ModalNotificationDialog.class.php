@@ -113,7 +113,7 @@ class ModalErrorDialog extends AjaxComponent {
     }
 
     function onAccept(&$function) {
-		$this->registerCallback('accept', $function);
+		$this->registerCallback('on_accept', $function);
     }
 }
 

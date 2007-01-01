@@ -24,6 +24,7 @@ class DateTimeInput extends Component {
 	var $value_model;
 
 	function DateTimeInput(&$value_model) {
+		#@typecheck $value_model:DateTime@#
 		$this->value_model =& $value_model;
 		parent::Component();
 	}

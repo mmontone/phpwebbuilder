@@ -159,9 +159,10 @@ function getTypeOf($arg){
 #@lam $x,$y -> return $x + $y;@#
 function lam($text) {
 	//echo 'Trying to lam: ' . $text;
-	preg_match('/(.*)\s*\-\>\s*(.*)/s', $text, $matches);
-	$params = $matches[1];
-	$body = $matches[2];
+
+	$matches = explode('->',$text, 2);
+	$params = $matches[0];
+	$body = $matches[1];
 	$t = "lambda('$params','$body', get_defined_vars())";
 	return $t;
 }

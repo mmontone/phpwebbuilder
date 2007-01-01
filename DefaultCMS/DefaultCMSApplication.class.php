@@ -7,19 +7,19 @@ class DefaultCMSApplication extends Application{
  	}
 
  	function loadTemplates (){
- 		$this->viewCreator->loadTemplatesDir(pwbdir . "/DefaultCMS/Templates/".$this->templateName);
- 		$this->viewCreator->loadTemplatesDir(basedir . "/MyTemplates/");
+ 		$this->viewCreator->loadTemplatesDir(pwbdir . "DefaultCMS/Templates/".$this->templateName);
+ 		$this->viewCreator->loadTemplatesDir(basedir . "MyTemplates/");
  	}
  	function addStyleSheets(){
- 		$this->addStyleSheet(pwb_url."/DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
- 		$this->addStyleSheet(constant('site_url') .'/lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css');
+ 		$this->addStyleSheet(pwb_url."DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
+ 		$this->addStyleSheet(constant('pwb_url') .'lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css');
  	}
 	function addScripts() {
-		$this->addScript(constant('site_url') .'/lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js');
+		$this->addScript(constant('pwb_url') .'lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js');
 	}
  	function addAjaxRenderingSpecificScripts(){
  		parent::addAjaxRenderingSpecificScripts();
- 		$this->addScript(pwb_url.'/DefaultCMS/Templates/Default/loading.js');
+ 		$this->addScript(pwb_url.'DefaultCMS/Templates/Default/loading.js');
  	}
  	function getTitle(){return sitename.'\'s Content Management System';}
  	function renderExtraHeaderContent() {
