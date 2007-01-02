@@ -109,9 +109,9 @@ class Application extends ComponentHolder {
 	function getTitle(){}
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
-		$this->addStyleSheet(pwb_url . '/View/common.css');
-		$this->addStyleSheet(pwb_url . '/View/debug.css', false);
- 		$this->addStyleSheet(pwb_url.'/lib/modal-message/css/modal-message.css');
+		$this->addStyleSheet(pwb_url . 'View/common.css');
+		$this->addStyleSheet(pwb_url . 'View/debug.css', false);
+ 		$this->addStyleSheet(pwb_url.'lib/modal-message/css/modal-message.css');
 
 		$this->addStyleSheets();
 	}
