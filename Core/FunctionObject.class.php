@@ -51,27 +51,15 @@ class FunctionObject
     function callWith(&$params) {
 		$method_name = $this->method_name;
 		$ret ='';
-        if (empty($this->params)) {
-        	eval($this->callString($method_name) . '($params);');
-        	return $ret;
-        }
-        else {
-        	eval($this->callString($method_name) . '($params, $this->params);');
-        	return $ret;
-        }
+    	eval($this->callString($method_name) . '($params, $this->params);');
+    	return $ret;
     }
 
     function callWithWith(&$param1, &$param2) {
     	$method_name = $this->method_name;
     	$ret ='';
-    	if (empty($this->params)) {
-        	eval($this->callString($method_name) . '($param1, $param2);');
-        	return $ret;
-    	}
-        else {
-        	eval($this->callString($method_name) . '($param1, $param2, $this->params);');
-        	return $ret;
-        }
+    	eval($this->callString($method_name) . '($param1, $param2, $this->params);');
+    	return $ret;
     }
 
     /* We may want to use function objects as ValueHolders. Similar to Aspect adaptors */
