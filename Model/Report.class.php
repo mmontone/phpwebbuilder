@@ -411,8 +411,8 @@ class Report extends Collection{
 		}
 		return $this->dataTypeSqlId;
 	}
-	function &fillExtras($obj,$data){
-		$ret []= $obj->fieldNames('SELECT');
+	function &fillExtras(&$obj,$data){
+		$ret = $obj->fieldNames('SELECT');
 	 	foreach($data as $n=>$m){
 	 		if (!isset($ret[$n])){
 	 			$obj->$n =& new ValueHolder($m);
