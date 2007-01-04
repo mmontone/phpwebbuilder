@@ -3,6 +3,7 @@
 class Label extends Text
 {
     function Label($string) {
+    	#@typecheck $string:String@#
     	if (is_object($string)) {
     		parent::Text($string);
     	} else {

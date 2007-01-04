@@ -8,7 +8,12 @@ class CommandLink extends Widget{
 		$this->proceed =& $params['proceedFunction'];
 		#@typecheck $this->proceed:FunctionObject#@
 		$this->revert =& $params['revertFunction'];
-		$this->textv =& $params['text'];
+		if (is_object($params['text'])) {
+			$this->textv =& $params['text'];
+		} else {
+			$this->textv =& new ValueHolder($params['text']);
+		}
+
 		parent::Widget($vm = null);
     }
     function checkAddingPermissions(){
@@ -16,7 +21,7 @@ class CommandLink extends Widget{
     }
 	function setEvents() {}
     function initialize(){
-		$this->addComponent(new Label($this->textv), 'linkName');
+		$this->addComponent(new Text($this->textv), 'linkName');
 		$this->onClickSend('execute', $this);
     }
 	function execute(){
