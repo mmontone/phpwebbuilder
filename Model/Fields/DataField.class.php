@@ -229,6 +229,9 @@ class DataField extends ValueModel {
 	function isEmpty() {
 		return $this->getValue() == '';
 	}
+	function printString(){
+		return '('.getClass($this).')'.$this->owner->printString().':'.$this->displayString;
+	}
 }
 
 ?>
