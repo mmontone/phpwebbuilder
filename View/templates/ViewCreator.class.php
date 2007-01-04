@@ -130,18 +130,20 @@ class ViewCreator {
 	}
 	function getTemplatesFilename(){
 		$comp =& Compiler::Instance();
-		return $comp->getTempDir('').strtolower(constant('app_class')).'.templates.php';
+		return $comp->getTempDir('').strtolower(constant('app_class')).'-templates.php';
 	}
 	function &getTemplates(){
 		global $templates_xml;
 		if ($templates_xml===null) {
 			$temp_file = $this->getTemplatesFilename();
-			if (!file_exists($temp_file) || ! Compiler::CompileOpt('recursive')) {
+			if (!file_exists($temp_file) || Constant::get('templates')=='recompile' ||! Compiler::CompileOpt('recursive')) {
 				$templates_xml = new XMLNode;
 				$this->app->loadTemplates();
-				$fo = fopen($temp_file, 'w');
-				fwrite($fo, serialize($templates_xml));
-				fclose($fo);
+				if (!Constant::get('templates')=='recompile'){
+					$fo = fopen($temp_file, 'w');
+					fwrite($fo, serialize($templates_xml));
+					fclose($fo);
+				}
 			} else {
 				$templates_xml = unserialize(file_get_contents($temp_file));
 			}

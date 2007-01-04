@@ -40,7 +40,7 @@ function lambda_parser($text) {
 
 
 $mixins = array();
-
+$_mixin_file=array();
 #@mixin MyMixin
 {
 	function mixedFunc() {
@@ -55,7 +55,7 @@ function mixin($text) {
 	//echo 'Mixin body: ' . $body . '<br/>';
 	global $mixins;
 	$mixins[$name] = $body;
-	return '';
+	return 'global $_mixin_file;$_mixin_file['.$name.']=__FILE__;';
 }
 /*
  class Mixed {
@@ -76,6 +76,10 @@ function use_mixin($text) {
 			$code .= 'var $__use_mixin_'.$name. '=true;';
 			$code .= $mixins[$name];
 		} else {
+			global $_mixin_file;
+			$comp =& Compiler::instance();
+			$comp->compileFile($_mixin_file[$name]);
+			if (isset($mixins[$name])) $code.=use_mixin($name); break;
 			print_r($mixins);
 			print_backtrace_and_exit('Mixin '.$name .' not defined');
 		}
@@ -458,7 +462,6 @@ function backtrace_string($error) {
 	$ret = "<h1>$error</h1>";
 	foreach ($back_trace as $trace) {
 		$ret .= "<br/><b> {$trace['file']}: {$trace['line']} ({$trace['function']})</b>";
-		//$ret .= print_r($trace['args'], TRUE);
 	}
 	return $ret;
 }

@@ -112,7 +112,7 @@ class Compiler {
 		return $compilerInstance;
 	}
 	function getTempFile($file, $extra) {
-		return implode(array($this->getTempDir($file),'/', basename($file, '.php') , $extra , '.php'));
+		return implode(array($this->getTempDir($file),basename($file, '.php') , $extra , '.php'));
 	}
 	function getTempDir($file) {
 		if ($this->tempdir === null) {
@@ -133,6 +133,7 @@ class Compiler {
 			$fd = substr(dirname($file),strlen(constant('basedir')));
 		}
 		$dir = $this->tempdir . $fd;
+		if (substr($dir,-1)!=="/") $dir.='/';
 		$res = @ mkdir_r($dir, 0777);
 		if (!$res) {
 			print_backtrace_and_exit('Cannot make directory: ' . $dir);
