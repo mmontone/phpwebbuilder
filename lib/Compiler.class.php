@@ -66,7 +66,7 @@ class Compiler {
 		return $this->compileFile($x);
 	}
 	function getRealPath($file){
-	   $address = explode('/', $file);
+	   $address = split('(/|\\\\)', $file);
 	   $keys = array_keys($address, '..');
 
 	   foreach($keys as $keypos => $key)
@@ -76,6 +76,7 @@ class Compiler {
 
 	   $address = implode('/', $address);
 	   $address = str_replace('./', '', $address);
+	   //echo 'from '.$file.' to '.$address;
 	   return $address;
 	}
 	function compile($file) {
