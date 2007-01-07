@@ -414,7 +414,7 @@ class Report extends Collection{
 	function &fillExtras(&$obj,$data){
 		$ret = $obj->fieldNames('SELECT');
 	 	foreach($data as $n=>$m){
-	 		if (!isset($ret[$n])){
+	 		if (!is_a($obj->$n, 'DataField')){
 	 			$obj->$n =& new ValueHolder($m);
 	 		}
 	 	}
@@ -522,6 +522,7 @@ class Condition extends Expression {
 	var $evaluated_e2;
 
 	function Condition($params=array()) {
+		#@typecheck $params['operation']:String,$params['exp2']:Expression,$params['exp2']:Expression@#
 		$this->exp1 =& $params['exp1'];
 		$this->exp2 =& $params['exp2'];
 		$this->operation = $params['operation'];
