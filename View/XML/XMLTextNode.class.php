@@ -11,12 +11,15 @@ class XMLTextNode extends XMLNodeModificationsTracker
 	function renderEcho() {
 		echo $this->renderNonEcho();
 	}
-
+	function &getApp(){
+		return $this->parentNode->getApp();
+	}
 	function renderNonEcho() {
+		$app =& $this->getApp();
 		if (is_object($this->data)) {
-			return toAjax($this->data->printString());
+			return $app->toAjax($this->data->printString());
 		} else {
-			return toAjax($this->data);
+			return $app->toAjax($this->data);
 		}
 	}
 	function printString() {

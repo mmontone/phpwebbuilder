@@ -87,16 +87,16 @@ class XMLNode extends DOMXMLNode {
 	}
 	function render(){
 		$ok = @ob_start();
-		if ($ok) {
+		/*if ($ok) {
 			$this->renderEcho();
 			$s = ob_get_contents();
 			echo $s;
 			ob_end_clean();
 			return $s;
-		/*} else {*/
+		} else {*/
 			$out = $this->renderNonEcho();
 			return $out;
-		}
+		//}
 	}
 
 	function renderEcho() {
@@ -130,12 +130,12 @@ class XMLNode extends DOMXMLNode {
 		$out = '';
 		$id = $this->getId();
 		if ($id!=null && !$this->controller) {
-			if (defined('debugview') and constant('debugview')=='1') {
+			#@debugview
+			{
 				$this->addCSSclass('hiddencontainer');
 				$this->appendChild(new XMLTextNode($id));
-			} else {
+			} if (false) //@#
 				return;
-			}
 		}
 		$out .= implode('',array('<',$this->tagName));
 

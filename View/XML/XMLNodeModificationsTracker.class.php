@@ -7,7 +7,10 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$this->toFlush =& new WeakReference(new NullXMLNodeModification($this));
 		parent :: XMLNode($tag_name, $attributes);
 	}
-
+	function &getApp(){
+		if (!$this->controller->app) return $this->parentNode->getApp();
+		return $this->controller->app;
+	}
 	function & instantiate() {
 		return $this;
 	}
