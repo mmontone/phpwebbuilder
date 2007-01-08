@@ -8,9 +8,6 @@ class XULPageRenderer extends PageRenderer {
 		$app->addXULRenderingSpecificScripts();
 		//$app->addAjaxRenderingSpecificScripts();
 	}
-	function setDefaultViewFactory(){
-		$this->defaultViewFactory =& new XULDefaultView;
-	}
 	function setPage(&$app, &$view){
 		$this->page=&$view;
 		$view->setTagName('box');

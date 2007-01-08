@@ -10,8 +10,6 @@ compile_once (dirname(__FILE__).'/XML/DOMXMLNode.class.php');
 compile_once (dirname(__FILE__).'/XML/XMLModification.class.php');
 compile_once (dirname(__FILE__).'/XML/XMLNode.class.php');
 compile_once (dirname(__FILE__).'/XML/XMLNodeModificationsTracker.class.php');
-compile_once (dirname(__FILE__).'/DefaultViews/HTML/HTMLDefaultView.class.php');
-compile_once (dirname(__FILE__).'/DefaultViews/XUL/XULDefaultView.class.php');
 compile_once (dirname(__FILE__).'/templates/HTMLContainer.class.php');
 compile_once (dirname(__FILE__).'/templates/HTMLTemplate.class.php');
 compile_once (dirname(__FILE__).'/NullView.class.php');

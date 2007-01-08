@@ -7,7 +7,6 @@ class PageRenderer // extends PWBObject
 	var $app;
 
 	function PageRenderer(&$app){
-		$this->setDefaultViewFactory();
 		$this->app =& $app;
 	}
 	function &create(&$app){
@@ -20,9 +19,6 @@ class PageRenderer // extends PWBObject
 			$v =& new $page_renderer($app);
 		}
 		return $v;
-	}
-	function setDefaultViewFactory(){
-		$this->defaultViewFactory =& new HTMLDefaultView;
 	}
 	function setPage(&$app, &$view){
 		$this->page=&$view;
