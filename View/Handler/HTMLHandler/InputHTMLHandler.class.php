@@ -10,7 +10,8 @@ class InputHTMLHandler extends WidgetHTMLHandler{
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
-			$this->view->setAttribute('value', $this->component->printValue());
+			$app =& $this->getApp();
+			$this->view->setAttribute('value', $app->toAjax($this->component->printValue()));
 		}
 	}
 }

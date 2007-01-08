@@ -65,10 +65,16 @@ class Application extends ComponentHolder {
 		if (!Session::isSetAttribute($class)) {
 			Session::setAttribute($class,new $class);
 		}
-		return Session::getAttribute($class);;
+		return Session::getAttribute($class);
 	}
 	function restart(){
 		Session::restart();
+	}
+	/**
+	 * Encodes the string una ajax suitable manner
+	 */
+	function toAjax($s) {
+		return $this->page_renderer->toAjax($s);
 	}
 	function &instance(){
 		return Application::getInstanceOf(constant('app_class'));
@@ -79,15 +85,11 @@ class Application extends ComponentHolder {
 	}
 	function render() {
 		echo $this->page_renderer->render($this);
-		//echo $out;
-		//session_write_close();
-		//return $out;
 	}
 
 	function createView() {
 		if (!$this->viewCreator) {
 			$this->viewCreator = & new ViewCreator($this);
-			//$this->loadTemplates();
 			$this->wholeView = & new XMLNodeModificationsTracker;
 			$this->wholeView->setAttribute('id', $this->getId());
 			$tc =& new HTMLContainer('',array());
@@ -168,7 +170,7 @@ class Application extends ComponentHolder {
 
  	function getTemplatesDir() {
  		if (!defined('templatesdir')) {
- 			return constant('basedir') . 'MyTemplates';
+ 			return constant('basedir') . 'MyTemplates/';
  		}
  		else {
  			return constant('templatesdir');
