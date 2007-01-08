@@ -11,7 +11,7 @@ class DefaultCMSApplication extends Application{
  		$this->viewCreator->loadTemplatesDir(basedir . "MyTemplates/");
  	}
  	function addStyleSheets(){
- 		$this->addStyleSheet(pwb_url."DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
+ 		$this->addStyleSheet(constant('pwb_url') . "DefaultCMS/Templates/".$this->templateName.'/'.$this->templateName.'.css');
  		$this->addStyleSheet(constant('pwb_url') .'lib/calendar/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css');
  	}
 	function addScripts() {

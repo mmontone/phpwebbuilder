@@ -5,8 +5,8 @@ class XULPageRenderer extends PageRenderer {
 		return 'box';
 	}
 	function initializeScripts(&$app) {
-		//$app->addXULRenderingSpecificScripts();
-		$app->addAjaxRenderingSpecificScripts();
+		$app->addXULRenderingSpecificScripts();
+		//$app->addAjaxRenderingSpecificScripts();
 	}
 	function setDefaultViewFactory(){
 		$this->defaultViewFactory =& new XULDefaultView;

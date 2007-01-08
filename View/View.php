@@ -48,5 +48,6 @@ compile_once (dirname(__FILE__).'/Handler/XULHandler/CheckBoxXULHandler.class.ph
 compile_once (dirname(__FILE__).'/Handler/XULHandler/TextXULHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/XULHandler/TextAreaComponentXULHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/XULHandler/InputXULHandler.class.php');
+compile_once (dirname(__FILE__).'/Handler/XULHandler/ToolbarButtonHandler.class.php');
 
 ?>
