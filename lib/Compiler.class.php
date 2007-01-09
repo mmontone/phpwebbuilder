@@ -82,9 +82,10 @@ class Compiler {
 	function compile($file) {
 		if (in_array($file, $this->compiled)) return;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-		//print_backtrace('compiling '.$file .' to '.$tmpname);
-		if (isset($_REQUEST['recompile']) or ((!defined('recompile') || constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
-			$fo = fopen($tmpname, 'w');
+
+        if (isset($_REQUEST['recompile']) or (@ filemtime($tmpname) < @ filemtime($file))) {
+            //print_backtrace('compiling '.$file .' to '.$tmpname);
+            $fo = fopen($tmpname, 'w');
 			$f = '<?php '.$this->compileFile($file).' ?>';
 			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 			fwrite($fo, $f);
