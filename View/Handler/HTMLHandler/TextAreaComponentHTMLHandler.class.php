@@ -17,7 +17,7 @@ class TextAreaComponentHTMLHandler extends WidgetHTMLHandler{
 		}
 	}
 	function valueChanged(&$value_model, &$params) {
-		$text = & $this->component->printValue();
+		$text = $this->component->printValue();
 		$this->view->replaceChild(new XMLTextNode($text), $this->view->first_child());
 		$this->redraw();
 	}

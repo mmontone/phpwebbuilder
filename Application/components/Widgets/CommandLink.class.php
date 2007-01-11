@@ -25,7 +25,7 @@ class CommandLink extends Widget{
 		$this->onClickSend('execute', $this);
     }
 	function execute(){
-		$this->proceed->call();
+		$this->proceed->execute();
 	}
 	//TODO Remove view
 	function setOnClickEvent(){

@@ -141,7 +141,7 @@ class PWBObject
         foreach(array_keys($listeners) as $l) {
         	$listener =& $listeners[$l];
         	if ($listener->isNotNull()) {
-        		$listener->callWithWith($this, $params);
+        		$listener->executeWithWith($this, $params);
         	} else {
 				unset($listeners[$l]);
         	}

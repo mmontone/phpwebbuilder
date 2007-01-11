@@ -79,8 +79,8 @@ class Widget extends Component {
 	}
 
 	function viewUpdated($params) {
-		$new_value = & $this->valueFromForm($params);
-		$value = & $this->getValue();
+		$new_value =  $this->valueFromForm($params);
+		$value = $this->getValue();
 
 		if ($new_value != $value) {
 			$this->setValue($new_value);
@@ -91,12 +91,12 @@ class Widget extends Component {
 		return $params;
 	}
 
-	function setValue(& $value) {
+	function setValue($value) {
 		$this->value_model->setValue($value);
 	}
 
-	function & getValue() {
-		$v =& $this->value_model->getValue();
+	function getValue() {
+		$v = $this->value_model->getValue();
 		return $v;
 	}
 	function onChangeSend($selector, & $target) {

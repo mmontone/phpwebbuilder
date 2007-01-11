@@ -20,11 +20,24 @@ class FunctionObject
 	function &getTarget(){
 		return $this->target;
 	}
-    function call() {
+    function &call() {
       	$method_name = $this->method_name;
       	$ret = '';
        	eval($this->callString($method_name) . '($this->params);');
        	return $ret;
+    }
+	function execute() {
+      	$method_name = $this->method_name;
+       	eval($this->executeString($method_name) . '($this->params);');
+    }
+	function executeWith(&$params) {
+      	$method_name = $this->method_name;
+       	eval($this->executeString($method_name) . '($params, $this->params);');
+    }
+
+	function executeWithWith(&$param1, &$param2) {
+      	$method_name = $this->method_name;
+       	eval($this->executeString($method_name) . '($param1, $param2, $this->params);');
     }
 
     function callString($method) {
@@ -33,6 +46,14 @@ class FunctionObject
     	}
     	else {
        		return '$t =& $this->getTarget(); $ret =& $t->' . $method;
+    	}
+    }
+    function executeString($method) {
+    	if ($this->target == null) {
+    		return $method;
+    	}
+    	else {
+       		return '$t =& $this->getTarget(); $t->' . $method;
     	}
     }
 	/**
@@ -48,14 +69,14 @@ class FunctionObject
 		}
 	}
 
-    function callWith(&$params) {
+    function &callWith(&$params) {
 		$method_name = $this->method_name;
 		$ret ='';
     	eval($this->callString($method_name) . '($params, $this->params);');
     	return $ret;
     }
 
-    function callWithWith(&$param1, &$param2) {
+    function &callWithWith(&$param1, &$param2) {
     	$method_name = $this->method_name;
     	$ret ='';
     	eval($this->callString($method_name) . '($param1, $param2, $this->params);');

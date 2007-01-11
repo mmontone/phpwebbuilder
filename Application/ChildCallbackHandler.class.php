@@ -4,7 +4,7 @@ class ChildCallbackHandler {
     function takeControlOf(&$callbackComponent, $callback, &$parameters) {
 		if ($callback != null) {
 			if ($callbackComponent->registered_callbacks[$callback] != null) {
-				$callbackComponent->registered_callbacks[$callback]->callWith($parameters);
+				$callbackComponent->registered_callbacks[$callback]->executeWith($parameters);
 			}
 		}
 	}
@@ -12,7 +12,7 @@ class ChildCallbackHandler {
 	function dynTakeControlOf(&$callbackComponent, $callback, &$parameters) {
 		if ($callback != null) {
 			if ($callbackComponent->registered_callbacks[$callback] != null) {
-				$callbackComponent->registered_callbacks[$callback]->callWith($parameters);
+				$callbackComponent->registered_callbacks[$callback]->executeWith($parameters);
 			}
 			else {
 				$p =& $callbackComponent->getParent();

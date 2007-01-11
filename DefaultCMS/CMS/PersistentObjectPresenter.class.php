@@ -7,9 +7,9 @@ class PersistentObjectPresenter extends Component {
 
     function PersistentObjectPresenter(&$object, $fields=null) {
 		$this->obj =& $object;
-		$this->classN =& getClass($object);
+		$this->classN = getClass($object);
 		if ($fields===null) {
-    		$this->fieldNames =& $this->obj->allFieldNames();
+    		$this->fieldNames = $this->obj->allFieldNames();
 		} else {
 			$ks = array_keys($fields);
 			if (is_object($fields[$ks[0]]) && is_subclass_of($fields[$ks[0]],'DataField')){
