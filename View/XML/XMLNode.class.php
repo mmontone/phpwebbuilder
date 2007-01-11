@@ -24,8 +24,7 @@ class XMLNode extends DOMXMLNode {
 	function addCSSClasses(){
 		$c = $this->getAttribute('class');
 		if ($c!=''){
-			$csss = explode(' ',$c);
-			foreach($csss as $css){
+			foreach(explode(' ',$c) as $css){
 				$this->addCSSClass($css);
 			}
 		}
@@ -82,12 +81,12 @@ class XMLNode extends DOMXMLNode {
 				return $this->parentNode->getRealId();
 		}*/
 	}
-	function &getId(){
+	function getId(){
 		return $this->getAttribute('id');
 	}
 	function render(){
-		$ok = @ob_start();
 		/*if ($ok) {
+			$ok = @ob_start();
 			$this->renderEcho();
 			$s = ob_get_contents();
 			echo $s;
@@ -251,7 +250,7 @@ class XMLNode extends DOMXMLNode {
 		$templates =& new Collection();
 		$templates->addAll($this->templates);
 		//TODO Mixins and optimize order
-		$ts =& $templates->filter(lambda('&$template', 'return $template->isTemplateForClass($component);', get_defined_vars()));
+		$ts =& $templates->filter(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
 		if (!$ts->isEmpty()) {
 			$t = $ts->first();
 			$es =& $ts->elements();

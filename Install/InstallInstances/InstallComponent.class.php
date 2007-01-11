@@ -51,7 +51,7 @@ class InstallComponent extends Component {
 		$default["translator"] = "EnglishTranslator";
 
 		foreach ($this->datas as $data => $name) {
-			$this->addPrompt("$name:",$data, $default[$data]);
+			$this->addPrompt("$name:",$data, @$default[$data]);
 		}
 		$this->addComp("Erase data from previous installation:", 'execEliminar',new CheckBox(new ValueHolder($vh='')));
 		$this->addComponent(new ActionLink($this, 'do_install_config', 'Create config file', $n=null), 'install');
@@ -108,14 +108,15 @@ class InstallComponent extends Component {
 		$conf =& new ConfigReader;
 		$configfile = $this->configfile->value->getValue();
 		$c = $conf->load($configfile);
-		$m = $c['modules']!=''?$c['modules']:"Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,CodeAnalyzer";
+		$m = isset($c['modules'])?$c['modules']:"Core,Application,Model,Instances,View,database,DefaultCMS,QuicKlick,CodeAnalyzer";
 		$m = implode(',',array_diff(explode(',',$m), explode(',',modules)));
-		$a = $c['app']!=''?$c['app']:"MyInstances,MyComponents";
-		if ($c['compile_dir']) define('compile_dir', $c['compile_dir']);
+		$a = isset($c['app'])?$c['app']:"MyInstances,MyComponents";
+		if (isset($c['compile_dir'])) define('compile_dir', $c['compile_dir']);
+		if (isset($c['compile'])) define('compile', $c['compile']);
 		$comp =& Compiler::instance();
 		$comp->tempdir=null;
 		$inc = includeAllModules(pwbdir, $m);
-		$bdir = $conf->loadDir($c['basedir'],$configfile);
+		$bdir = $conf->loadDir(@$c['basedir'],$configfile);
 		$comp->compile_path = array($bdir, pwbdir,dirname(dirname(dirname(__FILE__))).'/');
 		$inc .=	includeAllModules($bdir, $a);
 		eval($inc);
