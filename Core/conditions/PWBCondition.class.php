@@ -69,7 +69,7 @@ class ActivationRecord {
 		foreach (array_keys($this->restarters) as $r) {
 			$restarter =& $this->restarters[$r];
 			if ($restarter->matches($cond)) {
-				$restarter->callWith($cond);
+				$restarter->executeWith($cond);
 				return $restarter;
 			}
 		}
@@ -78,7 +78,7 @@ class ActivationRecord {
 			$handler =& $this->handlers[$r];
 			if ($handler->matches($cond)) {
 				//print_backtrace('Handler match!!');
-				$handler->callWith($cond);
+				$handler->executeWith($cond);
 				return $handler;
 			}
 		}
@@ -188,7 +188,7 @@ class PWBConditionHandler extends PWBObject {
 	}
 
 	function callWith(& $cond) {
-		$this->func->callWith($cond);
+		$this->func->executeWith($cond);
 	}
 }
 
@@ -207,7 +207,7 @@ class PWBConditionRestarter extends PWBObject {
 	}
 
 	function callWith(& $cond) {
-		$this->func->callWith($cond);
+		$this->func->executeWith($cond);
 	}
 }
 
