@@ -26,7 +26,7 @@ class Compiler {
     var $tempdir;
 
 	function Compiler() {
-		$this->toCompile = explode(',', constant('compile'));
+		$this->toCompile = explode(',', @constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
 		$this->compile_path = array(dirname(dirname(__FILE__)).'/',constant('pwbdir'),constant('basedir'));
 	}
@@ -82,10 +82,9 @@ class Compiler {
 	function compile($file) {
 		if (in_array($file, $this->compiled)) return;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-
-        if (isset($_REQUEST['recompile']) or (@ filemtime($tmpname) < @ filemtime($file))) {
-            //print_backtrace('compiling '.$file .' to '.$tmpname);
-            $fo = fopen($tmpname, 'w');
+		//print_backtrace('compiling '.$file .' to '.$tmpname);
+		if (isset($_REQUEST['recompile']) or ((@constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
+			$fo = fopen($tmpname, 'w');
 			$f = '<?php '.$this->compileFile($file).' ?>';
 			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 			fwrite($fo, $f);
@@ -114,7 +113,7 @@ class Compiler {
 		return $compilerInstance;
 	}
 	function getTempFile($file, $extra) {
-		return implode(array($this->getTempDir($file),basename($file, '.php') , $extra , '.php'));
+		return $this->getRealPath(implode(array($this->getTempDir($file),basename($file, '.php') , $extra , '.php')));
 	}
 	function getTempDir($file) {
 		if ($this->tempdir === null) {
@@ -143,18 +142,16 @@ class Compiler {
 		return $dir;
 	}
 }
-if (defined('compile')){
-
 $compilerInstance =& new Compiler;
-function compile_once($file) {
-	$compilerInstance =& Compiler::instance();
-	$compilerInstance->compile($file);
-}
+if (defined('compile')){
+	function compile_once($file) {
+		$compilerInstance =& Compiler::instance();
+		$compilerInstance->compile($file);
+	}
 } else {
-function compile_once($file) {
-	require_once($file);
-}
-
+	function compile_once($file) {
+		require_once($file);
+	}
 }
 if (!function_exists('sys_get_temp_dir')) {
 	// Based on http://www.phpit.net/

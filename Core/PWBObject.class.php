@@ -87,7 +87,7 @@ class PWBObject
 	 * for the specified listener
 	 */
 
-    function &addEventListener($event_specs, &$listener) {
+    function addEventListener($event_specs, &$listener) {
         #@check is_array($event_specs)@#
         $callback = array();
         $i = 1;

@@ -85,7 +85,7 @@ class IndexField extends NumField {
 
 	function getValue() {
 		if ($this->buffered_target != null) {
-			$this->buffered_value =& $this->getTargetId();
+			$this->buffered_value = $this->getTargetId();
 		}
 
 		$v = parent::getValue();

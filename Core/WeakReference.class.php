@@ -25,7 +25,8 @@ class WeakReference {
 
 class WeakFunctionObject extends FunctionObject{
 	function &fromFunctionObject(&$fo){
-		return new WeakFunctionObject($fo->getTarget(), $fo->method_name, $fo->params);
+		$wr =& new WeakFunctionObject($fo->getTarget(), $fo->method_name, $fo->params);
+		return $wr;
 	}
 	function setTarget(&$target){
 		$this->target =& new WeakReference($target);

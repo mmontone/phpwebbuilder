@@ -230,7 +230,7 @@ class Report extends Collection{
 		return implode(',', $this->getTables());
 	}
 
-	function &getTables() {
+	function getTables() {
 		return $this->tables;
 	}
 	/**
@@ -676,7 +676,7 @@ class PathExpression extends Expression {
 		parent::Expression();
 	}
 
-	function registerPath(&$report) {
+	function &registerPath(&$report) {
 		$pp = explode('.', $this->path);
 		$target = $pp[0];
 		if (!isset($report->vars[$target])) {

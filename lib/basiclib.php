@@ -328,6 +328,7 @@ function getfiles($pred, $dir) {
  * Includes all php files from a directory tree
  */
 function includefile(& $file) {
+	$ret = '';
 	foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
 		$ret .= "compile_once ('$f');";
 	}
@@ -345,7 +346,7 @@ function includemodule($module) {
 	if (file_exists($modf)) {
 		return "compile_once ('$modf');";
 	} else {
-		trigger_error('Falling back to includefile for ' . $module, E_USER_NOTICE);
+		//trigger_error('Falling back to includefile for ' . $module, E_USER_NOTICE);
 		return includefile($module);
 	}
 }
@@ -460,14 +461,25 @@ function print_backtrace_and_exit($error) {
  * Creates a text representation of the backtrace
  */
 function backtrace_string($error) {
-	$back_trace = debug_backtrace();
 	$ret = "<h1>$error</h1>";
-	foreach ($back_trace as $trace) {
+	foreach (debug_backtrace() as $trace) {
 		$ret .= "<br/><b> {$trace['file']}: {$trace['line']} ({$trace['function']})</b>";
 	}
 	return $ret;
 }
+function get_global_debug(){
+	echo '<h1>'.
+			'trace size: '.count(debug_backtrace()).
+			'memory size: '.memory_get_usage().
+		'</h1>';
 
+	print_backtrace('');
+   /*foreach (array('allObjectsInMem','lambda_vars') as $key) {
+        echo "$key=";
+        echo strlen(serialize($GLOBALS[$key]));
+    }*/
+
+}
 function backtrace_plain_string($error) {
 	$back_trace = debug_backtrace();
 	$ret = "Error: $error\n";
@@ -527,7 +539,11 @@ function lambda($args, $code, $env = array ()) {
 	$declaration = sprintf('function &%s(%s) {global $lambda_vars;extract($lambda_vars["' . $functionName . '"]["environment_vars"],EXTR_REFS); ' /*.'trigger_error(backtrace_string(\''.str_replace('\'','\\\'',$code).'\'), E_USER_NOTICE);' */
 	 . '%s}', $functionName, $args, $code);
 	$ok = eval ($declaration);
-	if($ok===FALSE) echo $declaration;
+   	global $last_lambda;
+   	$last_lambda []= $args.'==>'.$code;
+
+	if($ok===FALSE /* or ! preg_match('/return(\s)*\$\w+;/s',$code)*/)
+		print_backtrace($args.'==>'.$code);
 	return $functionName;
 }
 /**
@@ -644,14 +660,23 @@ function fatal_error_handler($buffer) {
 function handle_error($errno, $errstr, $errfile, $errline) {
 	//error_log("$errstr in $errfile on line $errline");
 	//print_backtrace($errno);
-	if ($errno == 'FATAL' || $errno == 'ERROR') {
+	if (($errno === E_NOTICE) && (strpos($errstr,'Only variables')!==FALSE)) {
+	    global $last_lambda;
+		//print_r(array_slice($last_lambda, -10));
+		print_backtrace('REFERENCE ERROR!'.$errstr);
+	}
+	if ($errno == E_ERROR) {
 		echo "error</b>:<br/>";
 		print_backtrace();
 		ob_end_flush();
 		echo "ERROR CAUGHT check log file";
 		exit (0);
+	} else if (ini_get('error_reporting') & $errno) {
+		print_backtrace($errno.$errstr);
 	}
 }
+
+set_error_handler('handle_error');
 
 function print_n($obj, $n=5){
 	if ($n!=0){

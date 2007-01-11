@@ -17,11 +17,11 @@ class ValueHolder extends ValueModel
     }
 
 	function setValue($value) {
-		$old_value =& $this->getValue();
+		$old_value = $this->getValue();
 		$this->primitiveSetValue($value);
 		$params = array();
-		$params['value'] =& $this->getValue();
-		$params['old_value'] =& $old_value;
+		$params['value'] = $this->getValue();
+		$params['old_value'] = $old_value;
 		$this->triggerEvent('changed', $params);
 	}
 

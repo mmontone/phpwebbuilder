@@ -12,7 +12,7 @@ class Session extends PersistentObject{
 		$s =& Session::get();
 		return $s[$name];
 	}
-	function &isSetAttribute($name){
+	function isSetAttribute($name){
 		$s =& Session::get();
 		return isset($s[$name]);
 	}

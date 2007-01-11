@@ -11,11 +11,8 @@ class XMLTextNode extends XMLNodeModificationsTracker
 	function renderEcho() {
 		echo $this->renderNonEcho();
 	}
-	function &getApp(){
-		return $this->parentNode->getApp();
-	}
 	function renderNonEcho() {
-		$app =& $this->getApp();
+		$app =& Application::instance();
 		if (is_object($this->data)) {
 			return $app->toAjax($this->data->printString());
 		} else {

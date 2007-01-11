@@ -13,7 +13,7 @@ class PersistentObjectTableCheckView {
 			$ret[$field->colName]=& $showField->showMap($this);*/
 			$c =& new TableCheckAction;
 			$showField =& $c->viewFor($field);
-			$ret[$field->colName] =& $showField->showMap($this);
+			$ret[$field->colName] = $showField->showMap($this);
 		}
 		return $ret;
  	}

@@ -6,7 +6,7 @@ class HTMLHTMLHandler extends WidgetHTMLHandler{
 		return $t;
 	}
 	function prepareToRender(){
-		$text =& $this->component->value_model->getValue();
+		$text = $this->component->value_model->getValue();
 		$this->view->removeChilds();
 		$this->view->appendChild(new PlainTextNode($text));
 	}

@@ -202,7 +202,7 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Inserts this level of the object
 	 */
-	function basicInsert() {
+	function &basicInsert() {
 		$values = '';
 		$this->PWBversion->setValue(0);
 		$this->PWBversion->primitiveCommitChanges();

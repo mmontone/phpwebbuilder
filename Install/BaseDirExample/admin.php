@@ -1,5 +1,5 @@
 <?php
-define('app_class',"DefaultCMSApplication");
+$_REQUEST["app"]="DefaultCMSApplication";
 
 $_REQUEST["restart"]="yes";
 

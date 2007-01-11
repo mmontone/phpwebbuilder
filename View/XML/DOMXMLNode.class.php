@@ -106,7 +106,7 @@ class DOMXMLNode {
 		$this->attributes[$name] = $val;
 	}
 	function getAttribute($attribute) {
-		return $this->attributes[$attribute];
+		return @$this->attributes[$attribute];
 	}
 
 	function removeAttribute($attr) {

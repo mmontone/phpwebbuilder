@@ -43,7 +43,7 @@ class PersistentCollection extends Report{
 	}*/
 
 	function getTables() {
-		$datatype =& $this->getDataType();
+		$datatype = $this->getDataType();
 		$obj = new $datatype(array(),false);
 		return $obj->getTables();
 	}

@@ -13,7 +13,7 @@ class CollectionNavigator extends Component {
 		$this->classN = $col->getDataType();
 
 		if ($fields==null){
-			$this->fields = & $col->allFields();
+			$this->fields = $col->allFields();
 		} else {
 			$this->fields =& $fields;
 		}

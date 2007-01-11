@@ -63,7 +63,7 @@ class PageRenderer // extends PWBObject
 	function defaultTag(){
 		return 'div';
 	}
-	function viewHandler(){
+	function &viewHandler(){
 		return new HTMLHandler;
 	}
 	function addTemplateName(&$view, $name){

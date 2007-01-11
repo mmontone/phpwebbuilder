@@ -69,7 +69,7 @@ else {
 }
 
 function load_md_files($dir) {
-	foreach(getfilesrec(lambda('$file','return $v=substr($file, -3)==".md";', $a=array()), $dir) as $f){
+	foreach(getfilesrec(lambda('$file','$v=substr($file, -3)==".md";return $v;', $a=array()), $dir) as $f){
         load_md_file($f);
  	}
 }
