@@ -5,7 +5,7 @@
  * Reads an ini file, and defines each constant.
  */
 
-if(isset($_REQUEST["app"])) Constant::set('app_class',$_REQUEST["app"]);
+if(isset($_REQUEST["app"])) define('app_class',$_REQUEST["app"]);
 
 class ConfigReader
 {
