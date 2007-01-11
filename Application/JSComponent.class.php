@@ -50,7 +50,7 @@ class JSComponent extends Component {
 
 	function callback($callback=null, $params=array()) {
 		if (($callback != null) and ($this->registered_callbacks[$callback] != null)) {
-			$this->registered_callbacks[$callback]->callWith($params);
+			$this->registered_callbacks[$callback]->executeWith($params);
 		}
 	}
 }

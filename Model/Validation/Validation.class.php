@@ -20,7 +20,7 @@ class Validation {
     }
 
     function triggerValidationError(&$error_handler, $msg) {
-    	$error_handler->callWith($msg);
+    	$error_handler->executeWith($msg);
     }
 }
 

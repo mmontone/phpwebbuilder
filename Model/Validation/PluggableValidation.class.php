@@ -10,7 +10,7 @@ class PluggableValidation extends Validation {
     }
 
     function validate(&$error_handler) {
-    	$this->validation_function->callWith(array(&$this->value_model, &$error_handler));
+    	$this->validation_function->executeWith(array(&$this->value_model, &$error_handler));
     }
 }
 ?>

@@ -12,7 +12,7 @@ class PWBException extends PWBObject {
 	}
 
     function raise(&$handler) {
-    	$handler->callWith($this);
+    	$handler->executeWith($this);
     }
 
     function getMessage() {
