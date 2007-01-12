@@ -28,7 +28,7 @@ class NumField extends DataField {
 
     }
 
-    function validate() {
+    function &validate() {
         return $this->validate_ereg("[0-9]+(\.[0-9]*)?",$this->displayString . ' is not a number');
     }
 }

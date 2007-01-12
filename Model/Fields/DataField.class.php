@@ -188,9 +188,10 @@ class DataField extends ValueModel {
 	/**
 	 * Validates, and returns false
 	 */
-	function validate() {
+	function &validate() {
 		$this->validated();
-		return false;
+		$f = false;
+		return $f;
 	}
 	/**
 	 * Triggers a validated event

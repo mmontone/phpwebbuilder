@@ -22,7 +22,8 @@ class DateTimeField extends DataField {
     	if ((!$v->validateTime()) or (!$v->validateDate())) {
     		return new ValidationException(array('message' => 'The time or date are invalid', 'content' => &$this));
     	}
-    	return false;
+    	$f = false;
+    	return $f;
     }
 
 	function setNow(){
@@ -55,7 +56,8 @@ class DateField extends DateTimeField {
     	if (!$v->validateDate()) {
     		return new ValidationException(array('message' => 'The date is invalid', 'content' => &$this));
     	}
-    	return false;
+    	$f = false;
+    	return $f;
     }
 }
 
@@ -68,7 +70,8 @@ class TimeField extends DateTimeField{
     	if (!$v->validateTime()) {
     		return new ValidationException(array('message' => 'The time is invalid', 'content' => &$this));
     	}
-    	return false;
+    	$f = false;
+    	return $f;
     }
 }
 

@@ -8,7 +8,7 @@ class EmailField extends TextField {
 	function SQLvalue() {
 		return "'" . $this->getValue() . "'" . ", ";
 	}
-	function validate() {
+	function &validate() {
 		$atom = '[-A-Za-z0-9!#$%&\'*+/=?^_`{|}~]'; // allowed characters for part before "at" character
 		$domain = '([A-Za-z]([-A-Za-z0-9]*[A-Za-z0-9]+)?)'; // allowed characters for part after "at" character
 			$regex = '^' . $atom . '+' . // One or more atom characters.

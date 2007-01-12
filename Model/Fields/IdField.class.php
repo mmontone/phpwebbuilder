@@ -26,8 +26,9 @@ class IdField extends NumField {
     	$this->buffered_value =& $value;
     }
 
-    function validate() {
-    	return false;
+    function &validate() {
+    	$f = false;
+    	return $f;
     }
 
 	function flushChanges() {
