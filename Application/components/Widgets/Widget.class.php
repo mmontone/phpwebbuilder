@@ -60,18 +60,18 @@ class Widget extends Component {
 	}
 
 	function setOnBlurEvent() {
-		$this->events->atPut('onblur', $a=array('onblur', "componentBlur(getEventTarget(event))"));
+		$this->events->atPut('onblur', $a=array('onblur', "return componentBlur(getEventTarget(event));"));
 	}
 
 	function setOnFocusEvent() {
-		$this->events->atPut('onfocus', $a=array('onfocus', "componentFocus(getEventTarget(event))"));
+		$this->events->atPut('onfocus', $a=array('onfocus', "return componentFocus(getEventTarget(event));"));
 	}
 	function setEvent($event,  $function){
 		$this->events->atPut($event, $a=array($event, $function));
 	}
 	function setOnClickEvent() {
 		$this->clickable->setValue($v=true);
-		$this->events->atPut('onclick', $a=array('onclick', $this->componentClickedJSFunction() . '(getEventTarget(event));'));
+		$this->events->atPut('onclick', $a=array('onclick', 'return '.$this->componentClickedJSFunction() . '(getEventTarget(event));'));
 	}
 
 	function componentClickedJSFunction() {

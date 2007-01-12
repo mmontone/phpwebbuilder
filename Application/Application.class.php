@@ -135,8 +135,8 @@ class Application extends ComponentHolder {
 
 	function addAjaxRenderingSpecificScripts() {
 		$this->addScript(pwb_url . '/lib/dhtmlHistory.js');
-		$this->addScript(pwb_url . '/lib/history.js');
 		$this->addScript(pwb_url . '/lib/ajax.js');
+		$this->addScript(pwb_url . '/lib/history.js');
 	}
 	function addXULRenderingSpecificScripts() {
 		$this->addScript(pwb_url . '/lib/ajax.js');

@@ -27,12 +27,5 @@ class CommandLink extends Widget{
 	function execute(){
 		$this->proceed->execute();
 	}
-	//TODO Remove view
-	function setOnClickEvent(){
-		parent::setOnClickEvent();
-		$oc = $this->events->at('onclick');
-		$this->events->atPut('onclick', $a=array('onclick', $oc[1].';return false;'));
-	}
-
 }
 ?>

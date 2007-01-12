@@ -16,6 +16,8 @@ class NavigationLink extends CommandLink{
 		$app =& Application::instance();
 		$app->navigate($this->bookmark, $this->params);
 	}
-	function setOnClickEvent(){}
+	function componentClickedJSFunction(){
+		return 	'navigateClicked';
+	}
 }
 ?>
