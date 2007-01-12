@@ -10,9 +10,9 @@ class LinkXULHandler extends WidgetXULHandler{
 	function prepareToRender(){
 		parent::prepareToRender();
 		if (!$this->component->targetFrame){
-			$this->view->setAttribute('onclick', 'window.location="'.toAjax($this->component->target).'";');
+			$this->view->setAttribute('onclick', 'window.location=\''.toAjax($this->component->target).'\';');
 		} else {
-			$this->view->setAttribute('onclick', 'window.open("'.toAjax($this->component->target).'","'.toAjax($this->component->targetFrame).'", "");');
+			$this->view->setAttribute('onclick', 'window.open(\''.toAjax($this->component->target).'\','. toAjax($this->component->targetFrame).');');
 		}
 		$this->view->addCSSClass('clickable');
 	}

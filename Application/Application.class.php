@@ -111,20 +111,20 @@ class Application extends ComponentHolder {
 	function getTitle(){}
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
-		$this->addStyleSheet(pwb_url . 'View/common.css');
-		$this->addStyleSheet(pwb_url . 'View/debug.css', false);
- 		$this->addStyleSheet(pwb_url.'lib/modal-message/css/modal-message.css');
+		$this->addStyleSheet(constant('pwb_url') . 'View/common.css');
+		$this->addStyleSheet(constant('pwb_url') . 'View/debug.css', false);
+ 		$this->addStyleSheet(constant('pwb_url').'lib/modal-message/css/modal-message.css');
 
 		$this->addStyleSheets();
 	}
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array ();
-		$this->addScript(pwb_url . '/lib/common.js');
-		$this->addScript(pwb_url . '/lib/modal-message/pwb/dialogs.js');
-		$this->addScript(pwb_url . '/lib/modal-message/js/ajax.js');
-		$this->addScript(pwb_url . '/lib/modal-message/js/modal-message.js');
-		$this->addScript(pwb_url . '/lib/modal-message/js/ajax-dynamic-content.js');
+		$this->addScript(constant('pwb_url') . '/lib/common.js');
+		$this->addScript(constant('pwb_url') . '/lib/modal-message/pwb/dialogs.js');
+		$this->addScript(constant('pwb_url') . '/lib/modal-message/js/ajax.js');
+		$this->addScript(constant('pwb_url') . '/lib/modal-message/js/modal-message.js');
+		$this->addScript(constant('pwb_url') . '/lib/modal-message/js/ajax-dynamic-content.js');
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}
@@ -134,15 +134,16 @@ class Application extends ComponentHolder {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
-		$this->addScript(pwb_url . '/lib/dhtmlHistory.js');
-		$this->addScript(pwb_url . '/lib/ajax.js');
-		$this->addScript(pwb_url . '/lib/history.js');
+		$this->addScript(constant('pwb_url') . '/lib/dhtmlHistory.js');
+		$this->addScript(constant('pwb_url') . '/lib/history.js');
+		$this->addScript(constant('pwb_url') . '/lib/ajax.js');
 	}
 	function addXULRenderingSpecificScripts() {
-		$this->addScript(pwb_url . '/lib/ajax.js');
+		$this->addScript(constant('pwb_url') . '/lib/ajax.js');
+        $this->addScript(constant('pwb_url') . '/lib/xul.js');
 	}
 	function addStdRenderingSpecificScripts() {
-		$this->addScript(pwb_url . '/lib/std.js');
+		$this->addScript(constant('pwb_url') . '/lib/std.js');
 	}
 
 	function addScript($url) {
