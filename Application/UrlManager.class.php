@@ -17,7 +17,7 @@ class UrlManager extends PWBObject{
     }
     function goToUrl($url){
     	$pms = $this->getBookmarkAndParams($url);
-    	$this->navigate($pms['bookmark'], $pms['params']);
+    	$this->navigate($pms['bm'], $pms['params']);
     }
     function getBookmarkAndParams($url){
     	$urls = explode('|', $url);
@@ -28,14 +28,14 @@ class UrlManager extends PWBObject{
     		$temp = explode('=', $u,2);
     		$params [$temp[0]] = $temp[1];
     	}
-    	$ret ['bookmark'] = $bm;
+    	$ret ['bm'] = $bm;
     	$ret ['params'] = $params;
     	return $ret;
     }
     function setUrl($url){
 		$this->prevUrl = $this->actUrl;
     	$this->actUrl = $url;
-    	$this->application->wholeView->addChildMod('bookmark', new BookmarkXMLNodeModification($this->actUrl));
+    	$this->application->wholeView->addChildMod('bm', new BookmarkXMLNodeModification($this->actUrl));
     }
     function navigate($bookmark, $params){
     	$this->setUrl($this->setBookmarkTarget($bookmark, $params));
@@ -48,7 +48,7 @@ class UrlManager extends PWBObject{
     	}
     }
 	function setLinkTarget($bookmark, $params){
-		return 'Action.php?app='.getClass($this->application).'&bookmark='.$this->setBookmarkTarget($bookmark, $params);
+		return 'Action.php?'.(isset($_REQUEST['app'])?'app='.$_REQUEST['app']:'').'&bm='.$this->setBookmarkTarget($bookmark, $params);
 	}
 
 	function setBookmarkTarget($bookmark, $params=array()){

@@ -183,14 +183,16 @@ class StandardPageRenderer extends HTMLPageRenderer {
 			$ret .='<div>' .
 						'<form action="'.site_url . 'Action.php" '.
 							' method="post"'.
-							' enctype="multipart/form-data">' .
-							'<input type="hidden" name="app" value="'.getClass($app).'" />' .
-							'<input type="hidden" name="event_target" value="app" />' .
+							' enctype="multipart/form-data">';
+			if(isset($_REQUEST['app'])) {
+				$ret .=		'<input type="hidden" name="app" value="'.$_REQUEST['app'].'" />';
+			}
+			$ret .=			'<input type="hidden" name="event_target" value="app" />' .
 							'<input type="hidden" name="event" value="reset_templates" />' .
 							'Debug View ' .
 							'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
 							'<input type="submit" value="Reload Templates"/>' .
-							'<a href="Action.php?restart=yes&app='.getClass($app).'">Restart application</a>' .
+							'<a href="Action.php?restart=yes'.(isset($_REQUEST['app'])?'&app='.getClass($app):'').'">Restart application</a>' .
 						'</form>'.
 						'</div>';
 

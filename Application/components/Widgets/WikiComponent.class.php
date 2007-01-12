@@ -54,7 +54,7 @@ class WikiComponent extends Widget{
 		} else {
     		$app =& Application::instance();
     		$pms = $app->urlManager->getBookmarkAndParams($bookmark);
-    		$nl =& new NavigationLink($pms['bookmark'], $name, $pms['params']);
+    		$nl =& new NavigationLink($pms['bm'], $name, $pms['params']);
     		if ($nl->checkAddingPermissions()) {
     			return $nl;
     		} else {

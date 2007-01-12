@@ -32,7 +32,7 @@ class ActionDispatcher {
 		}
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
-		if (isset($form['bookmarkchange']))$app->goToUrl($form['bookmarkchange']);
+		if (isset($form['bm'])) {$app->goToUrl($form['bm']);}
 		return $app;
 	}
 	function updateViews(& $updates) {
