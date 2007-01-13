@@ -114,7 +114,8 @@ class PageRenderer // extends PWBObject
 
 	function toXML($s) {
 		$s = str_replace('&', '&amp;', $s);
-		$s = ereg_replace('&(amp;|&amp;)+(([A-Za-z0-9#]+);)', '&\\2', $s);
+		//$s = ereg_replace('&([A-Za-z0-9]+);', '&#38;\\1;', $s);
+		$s = ereg_replace('&(amp;|&amp;|#38;|&#38;)+([A-Za-z0-9#]+;)', '&\\2', $s);
 		$s = str_replace('>', '&#62;', $s);
 		$s = str_replace('&gt;', '&#62;', $s);
 		$s = str_replace('<', '&#60;', $s);
@@ -141,7 +142,6 @@ class PageRenderer // extends PWBObject
 		$s = str_replace('&nbsp;', '&#160;', $s);
 		$s = str_replace('&ordm;', '&#186;', $s);
 		$s = str_replace('&ordf;', '&#170;', $s);
-		$s = ereg_replace('&([A-Za-z0-9]+);', '&#38;\\1;', $s);
 		return $s;
 	}
 	function toAjax($s) {
@@ -179,7 +179,7 @@ class StandardPageRenderer extends HTMLPageRenderer {
 
 
 		$ret .= '</head><body>';
-		if (defined('debugview')&&constant('debugview')=='1'){
+		if (Compiler::CompileOpt('debugview') || defined('debugview')){
 			$ret .='<div>' .
 						'<form action="'.site_url . 'Action.php" '.
 							' method="post"'.
