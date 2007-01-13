@@ -120,11 +120,11 @@ class Application extends ComponentHolder {
 
 	function initializeScripts() {
 		$this->wholeView->scripts = array ();
-		$this->addScript(constant('pwb_url') . '/lib/common.js');
-		$this->addScript(constant('pwb_url') . '/lib/modal-message/pwb/dialogs.js');
-		$this->addScript(constant('pwb_url') . '/lib/modal-message/js/ajax.js');
-		$this->addScript(constant('pwb_url') . '/lib/modal-message/js/modal-message.js');
-		$this->addScript(constant('pwb_url') . '/lib/modal-message/js/ajax-dynamic-content.js');
+		$this->addScript(constant('pwb_url') . 'lib/common.js');
+		$this->addScript(constant('pwb_url') . 'lib/modal-message/pwb/dialogs.js');
+		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax.js');
+		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/modal-message.js');
+		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax-dynamic-content.js');
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}
@@ -134,16 +134,16 @@ class Application extends ComponentHolder {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
-		$this->addScript(constant('pwb_url') . '/lib/dhtmlHistory.js');
-		$this->addScript(constant('pwb_url') . '/lib/history.js');
-		$this->addScript(constant('pwb_url') . '/lib/ajax.js');
+		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
+		$this->addScript(constant('pwb_url') . 'lib/history.js');
+		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
 	}
 	function addXULRenderingSpecificScripts() {
-		$this->addScript(constant('pwb_url') . '/lib/ajax.js');
-        $this->addScript(constant('pwb_url') . '/lib/xul.js');
+		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
+        $this->addScript(constant('pwb_url') . 'lib/xul.js');
 	}
 	function addStdRenderingSpecificScripts() {
-		$this->addScript(constant('pwb_url') . '/lib/std.js');
+		$this->addScript(constant('pwb_url') . 'lib/std.js');
 	}
 
 	function addScript($url) {
