@@ -128,9 +128,8 @@ function typecheck($text) {
 			$type = trim($case[1]);
 			//$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\')');\n";
 			$escaped_arg = addslashes($arg);
-            $code .= "if (!hasType($arg,'$type')) {
-				print_backtrace('Type error. Argument: $escaped_arg. Type: ' . getTypeOf($arg) . '. Expected: $type');
-			}";
+            $code .= "if (!hasType($arg,'$type')) {"
+				."print_backtrace('Type error. Argument: $escaped_arg. Type: ' . getTypeOf($arg) . '. Expected: $type');}";
 		}
 		return $code;
 	}
@@ -146,7 +145,6 @@ function hasType($arg, $type){
 		if (method_exists($arg, 'hasType')) {
 			return $arg->hasType($type);
 		} else {
-
 			return is_a($arg,$type);
 		}
 	} else {

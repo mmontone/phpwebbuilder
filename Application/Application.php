@@ -1,6 +1,7 @@
 <?php
 
 compile_once (dirname(__FILE__).'/ComponentHolder.class.php');
+compile_once (dirname(__FILE__).'/Window.class.php');
 compile_once (dirname(__FILE__).'/ActionDispatcher.class.php');
 compile_once (dirname(__FILE__).'/UrlManager.class.php');
 compile_once (dirname(__FILE__).'/Bookmark.class.php');

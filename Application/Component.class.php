@@ -108,7 +108,9 @@ class Component extends PWBObject
 		$null = array();
 		$this->toLink =& $null;
 	}
-
+	function &getWindow(){
+		return $this->holder->getWindow();
+	}
 	function startAll() {
 		$this->start();
 		foreach(array_keys($this->__children) as $k){

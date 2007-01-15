@@ -1,7 +1,6 @@
 <?php
 
-class Application extends ComponentHolder {
-	var $wholeView;
+class Application {
 	var $viewCreator;
 	var $page_renderer;
 	var $needView = array ();
@@ -9,34 +8,31 @@ class Application extends ComponentHolder {
 	var $config;
 	var $translators = array();
 	var $commands;
-	var $urlManager;
-	var $ajaxCommands = array();
+
 
 	function Application() {
 		Session::setAttribute(getClass($this),$this);
 		$this->commands =& new Collection();
-		$this->urlManager =& new UrlManager($this);
-		$this->page_renderer =& PageRenderer::create($this);
-		$this->createView();
 		$rc = & $this->setRootComponent();
 		#@typecheck $rc:Component@#
-		parent :: ComponentHolder($rc, $index = 0, $n = null);
-		$rc->linkToApp($this);
-		$rc->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($rc->view, $this->component, $this->wholeView));
-
+		$this->createView();
+		$this->addWindow($rc,'root');
 	}
-
+	function addWindow(&$rc, $pos=null){
+		$this->windows[$pos]=&new Window($rc,  $pos, $this);
+		$this->windows[$pos]->createView();
+	}
+	function createView(){
+		$this->page_renderer =& PageRenderer::create($this);
+		if (!$this->viewCreator) {
+			$this->viewCreator = & new ViewCreator($this);
+		}
+		$this->initializeStyleSheets();
+		$this->initializeScripts();
+	}
 	function Install() {
 		// Return an exception if something goes wrong
  		return false;
-	}
-
-	function addAjaxCommand(&$cmd) {
-		$this->ajaxCommands[] =& $cmd;
-	}
-
-	function &getAjaxCommands() {
-		return $this->ajaxCommands;
 	}
 
 	function getName() {
@@ -56,9 +52,6 @@ class Application extends ComponentHolder {
 	function &setRootComponent(){
 		trigger_error("Subclass responsibility");
 		exit;
-	}
-	function redraw() {
-		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
 	}
 	function & getInstanceOf($c) {
 		$class = strtolower($c);
@@ -83,32 +76,11 @@ class Application extends ComponentHolder {
 		$this->page_renderer->firstRender=true;
 		$this->render();
 	}
-	function render() {
-		echo $this->page_renderer->render($this);
+	function setTitle($title){
+		$this->windows['root']->setTitle($title);
 	}
 
-	function createView() {
-		if (!$this->viewCreator) {
-			$this->viewCreator = & new ViewCreator($this);
-			$this->wholeView = & new XMLNodeModificationsTracker;
-			$this->wholeView->setAttribute('id', $this->getId());
-			$tc =& new HTMLContainer('',array());
-			$tc->setAttribute('class','Component');
-			$this->wholeView->appendChild($tc);
-			$this->wholeView->controller = & $this;
-			$this->wholeView->getTemplatesAndContainers();
-			$this->wholeView->jsscripts = array();
-			$this->setTitle($this->getTitle());
-			$this->initializeStyleSheets();
-			$this->initializeScripts();
-			$this->page_renderer->setPage($this, $this->wholeView);
-			$this->page_renderer->initialRender();
-		}
-	}
-	function setTitle($title){
-		$this->wholeView->title=$title;
-	}
-	function getTitle(){}
+	function getTitle(){return '';}
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
 		$this->addStyleSheet(constant('pwb_url') . 'View/common.css');
@@ -119,7 +91,8 @@ class Application extends ComponentHolder {
 	}
 
 	function initializeScripts() {
-		$this->wholeView->scripts = array ();
+		$this->scripts = array ();
+		$this->jsscripts = array();
 		$this->addScript(constant('pwb_url') . 'lib/common.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/pwb/dialogs.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax.js');
@@ -147,18 +120,14 @@ class Application extends ComponentHolder {
 	}
 
 	function addScript($url) {
-		$this->wholeView->scripts[] = & $url;
+		$this->scripts[] = & $url;
 	}
 
 	function addStyleSheet($url, $enabled=true) {
-		$this->wholeView->style_sheets[] = array($url,$enabled);
+		$this->style_sheets[] = array($url,$enabled);
 	}
 
 	function renderExtraHeaderContent() {}
-
-	function & view() {
-		return $this->wholeView;
-	}
 
 	function loadTemplates () {
  		if (defined('templates') and constant('templates') == 'disabled') {
@@ -178,12 +147,8 @@ class Application extends ComponentHolder {
  		}
  	}
 
-	function getId() {
-		return "app";
-	}
-
 	function getRealId() {
-		return "app".CHILD_SEPARATOR . getClass($this) . CHILD_SEPARATOR."main";
+		return "app".CHILD_SEPARATOR . getClass($this);
 	}
 
 	function needsView(& $comp) {
@@ -195,8 +160,8 @@ class Application extends ComponentHolder {
 	}
 	function launch() {
 		$ad =& new ActionDispatcher();
-		$app =& $ad->dispatch();
-		return $app->render();
+		$window =& $ad->dispatch();
+		return $window->render();
 	}
 	function &getWidgets(){
 		$ws=array();
@@ -204,19 +169,7 @@ class Application extends ComponentHolder {
 		return $ws;
 	}
 	function setLinkTarget($bookmark, $params){
-		return $this->urlManager->setLinkTarget($bookmark, $params);
-	}
-	function navigate($bookmark, $params){
-		$this->urlManager->navigate($bookmark, $params);
-	}
-	function goToUrl($url){
-		$this->urlManager->goToUrl($url);
-	}
-	function resetUrl(){
-		$this->urlManager->resetUrl();
-	}
-	function badUrl($bm, $params){
-		$this->resetUrl();
+		return UrlManager::setLinkTarget($bookmark, $params);
 	}
 
 	function &getRootComponent() {

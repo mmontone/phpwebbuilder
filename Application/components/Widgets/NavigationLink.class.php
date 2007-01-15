@@ -13,7 +13,7 @@ class NavigationLink extends CommandLink{
 		return $b->checkPermissions($this->params);
 	}
 	function navigate(){
-		$app =& Application::instance();
+		$app =& $this->getWindow();
 		$app->navigate($this->bookmark, $this->params);
 	}
 	function componentClickedJSFunction(){

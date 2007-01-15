@@ -52,7 +52,7 @@ class WikiComponent extends Widget{
 		} else if (strcasecmp('mailto:',substr($bookmark,0,7))==0){
 			return new Link($bookmark, $name);
 		} else {
-    		$app =& Application::instance();
+    		$app =& Window::getActiveInstance();
     		$pms = $app->urlManager->getBookmarkAndParams($bookmark);
     		$nl =& new NavigationLink($pms['bm'], $name, $pms['params']);
     		if ($nl->checkAddingPermissions()) {

@@ -9,6 +9,7 @@ class ActionDispatcher {
 		$view_updates = array ();
 		$de = 0;
 		$app = & Application::instance();
+		$event['window'] =&$app->windows['root'];
 		$event['app'] = & $app;
 		foreach ($form as $dir => $param) {
 			switch ($dir) {
@@ -20,6 +21,9 @@ class ActionDispatcher {
 					break;
 				case 'app' :
 					break;
+				case 'window':
+					$event['window'] =& $app->windows[$param];
+					break;
 				default :
 					$c = & $this->getComponent($dir, $app);
 					if ($c != null) {
@@ -30,10 +34,11 @@ class ActionDispatcher {
 					}
 			}
 		}
+		Window::setActiveInstance($event['window']);
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
-		if (isset($form['bm'])) {$app->goToUrl($form['bm']);}
-		return $app;
+		if (isset($form['bm'])) {$event['window']->goToUrl($form['bm']);}
+		return $event['window'];
 	}
 	function updateViews(& $updates) {
 		$ks = array_keys($updates);
@@ -54,7 +59,7 @@ class ActionDispatcher {
 		if ($path=='app') return $app;
 		$path = explode(CHILD_SEPARATOR, $path);
 		if ($path[0] == "app") { // Maybe the parameter wasn't for us'
-			$comp = & $app->component;
+			$comp = & $app->windows[$path[2]]->component;
 			array_shift($path);
 			array_shift($path);
 			array_shift($path);

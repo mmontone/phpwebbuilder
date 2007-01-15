@@ -4,12 +4,12 @@ class UrlManager extends PWBObject{
 	var $actUrl='Home';
 	var $prevUrl='Home';
 	var $application;
-    function UrlManager(&$app) {
+    function UrlManager(&$window) {
     	parent::PWBObject();
-    	$this->application =& $app;
+    	$this->window =& $window;
     }
     function goBack(){
-    	$c =& $this->application->commands->pop();
+    	$c =& $this->window->commands->pop();
     	$c->revert();
     }
     function resetUrl(){
@@ -35,20 +35,20 @@ class UrlManager extends PWBObject{
     function setUrl($url){
 		$this->prevUrl = $this->actUrl;
     	$this->actUrl = $url;
-    	$this->application->wholeView->addChildMod('bm', new BookmarkXMLNodeModification($this->actUrl));
+    	$this->window->wholeView->addChildMod('bm', new BookmarkXMLNodeModification($this->actUrl));
     }
     function navigate($bookmark, $params){
     	$this->setUrl($this->setBookmarkTarget($bookmark, $params));
     	$bmc = $bookmark.'Bookmark';
     	if (class_exists($bmc)){
 	    	$bm =& new $bmc;
-	    	$bm->launch($params);
+	    	$bm->launch($this->window, $params);
     	} else {
-    		$this->application->badUrl($bookmark, $params);
+    		$this->window->badUrl($bookmark, $params);
     	}
     }
 	function setLinkTarget($bookmark, $params){
-		return 'Action.php?'.(isset($_REQUEST['app'])?'app='.$_REQUEST['app']:'').'&bm='.$this->setBookmarkTarget($bookmark, $params);
+		return 'Action.php?'.(isset($_REQUEST['app'])?'app='.$_REQUEST['app']:'').'&bm='.UrlManager::setBookmarkTarget($bookmark, $params);
 	}
 
 	function setBookmarkTarget($bookmark, $params=array()){

@@ -13,19 +13,19 @@ class JSComponent extends Component {
 	}
 
 	function &getRenderingArea() {
-		$app =& Application::Instance();
-		return $app->wholeView->jsscripts[$this->getId()];
+		$app =& Window::getActiveInstance();
+		return $app->jsscripts[$this->getId()];
 	}
 
 	function start() {
-		$app =& Application::Instance();
-		$app->wholeView->jsscripts[$this->getId()] = '';
+		$app =& Window::getActiveInstance();
+		$app->jsscripts[$this->getId()] = '';
 		$this->render();
 	}
 
 	function stop() {
-		$app =& Application::Instance();
-		unset($app->wholeView->jsscripts[$this->getId()]);
+		$app =& Window::getActiveInstance();
+		unset($app->jsscripts[$this->getId()]);
 	}
 
 	function render() {

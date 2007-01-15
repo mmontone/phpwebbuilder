@@ -7,55 +7,57 @@ class PageRenderer // extends PWBObject
 	var $app;
 
 	function PageRenderer(&$app){
+		#@typecheck $app:Application@#
 		$this->app =& $app;
 	}
 	function &create(&$app){
 		$v = null;
 		if (isset($_REQUEST['render'])) {
-			$class = $_REQUEST['render'].'PageRenderer';
-			$v =& new $class($app);
+			$page_renderer= $_REQUEST['render'].'PageRenderer';
 		} else {
 			$page_renderer = constant('page_renderer');
-			$v =& new $page_renderer($app);
 		}
+		$v =& new $page_renderer($app);
 		return $v;
 	}
-	function setPage(&$app, &$view){
-		$this->page=&$view;
+	function initPage(&$win, &$view){
+		#@typecheck $win:Window,$view:XMLNode@#
 		$view->tagName = 'form';
 		$view->setAttribute('action', site_url . 'Action.php');
 		$view->setAttribute('method', 'post');
 		$view->setAttribute('enctype', 'multipart/form-data');
-		$this->addVariable('app_class', getClass($app));
-		$this->addVariable('bookmark', $app->urlManager->actUrl);
-		$this->addVariable('basedir', basedir);
-		$this->addVariable('pwb_url', pwb_url);
+		$this->addVariable($view,'app_class', getClass($win->parent));
+		$this->addVariable($view,'bookmark', $win->urlManager->actUrl);
+		$this->addVariable($view,'basedir', basedir);
+		$this->addVariable($view,'pwb_url', pwb_url);
+		$this->addVariable($view,'window', $win->owner_index());
 	}
-	function addVariable($name, $val){
+	function addVariable($view,$name, $val){
 		$n =& new XMLVariable('input', $a=array());
 		$n->setAttribute('type', 'hidden');
 		$n->setAttribute('id', $name);
 		$n->setAttribute('value', $val);
 		$n->controller = 1;
-		$this->page->appendChild($n);
+		$view->appendChild($n);
 	}
-	function initialPageRenderPage(&$app){
-		$initial_page_renderer = & new StandardPageRenderer($app);
-		$initial_page_renderer->page=&$app->wholeView;
-		echo $initial_page_renderer->renderPage($app);
+	function initialPageRenderPage(&$win, &$view){
+		#@typecheck $view:XMLNode,$win:Window@#
+		$initial_page_renderer = & new StandardPageRenderer(Application::Instance());
+		return $initial_page_renderer->renderPage($win, $view);
 	}
 	function initialRender(){}
-	function render(&$page){
+	function render(&$win, &$view){
+		#@typecheck $view:XMLNode,$win:Window@#
 		if (isset($_REQUEST['ajax'])&&$_REQUEST['ajax']=='true'){
-			return $this->ajaxRenderPage($page);
+			return $this->ajaxRenderPage($win, $view);
 		} else {
-			return $this->renderPage($page);
+			return $this->renderPage($win, $view);
 		}
 	}
-	function ajaxRenderPage($app){
-		$initial_page_renderer = & new AjaxPageRenderer($app);
-		$initial_page_renderer->page=&$app->wholeView;
-		echo $initial_page_renderer->ajaxRenderPage($app);
+	function ajaxRenderPage(&$win, &$view){
+		#@typecheck $view:XMLNode,$win:Window@#
+		$initial_page_renderer = & new AjaxPageRenderer(Application::Instance());
+		return $initial_page_renderer->renderPage($win, $view);
 	}
 	function templateExtension(){
 		return '.xml';
@@ -114,7 +116,6 @@ class PageRenderer // extends PWBObject
 
 	function toXML($s) {
 		$s = str_replace('&', '&amp;', $s);
-		//$s = ereg_replace('&([A-Za-z0-9]+);', '&#38;\\1;', $s);
 		$s = ereg_replace('&(amp;|&amp;|#38;|&#38;)+([A-Za-z0-9#]+;)', '&\\2', $s);
 		$s = str_replace('>', '&#62;', $s);
 		$s = str_replace('&gt;', '&#62;', $s);
@@ -142,6 +143,7 @@ class PageRenderer // extends PWBObject
 		$s = str_replace('&nbsp;', '&#160;', $s);
 		$s = str_replace('&ordm;', '&#186;', $s);
 		$s = str_replace('&ordf;', '&#170;', $s);
+		$s = ereg_replace('&([A-Za-z0-9]+);', '&#38;\\1;', $s);
 		return $s;
 	}
 	function toAjax($s) {
@@ -159,18 +161,18 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		$app->addStdRenderingSpecificScripts();
 	}
 
-	function renderPage(&$app) {
-		#@typecheck $app : Application@#
+	function renderPage(&$win, &$view){
+		#@typecheck $view:XMLNode,$win:Window@#
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 
 
 	//	$ret = '';
-		$ret .= "<html>\n<head><title>" .$this->page->title .	"</title>";
-		$ret .= $app->renderExtraHeaderContent();
+		$ret .= "<html>\n<head><title>" .$view->title .	"</title>";
+		$ret .= $this->app->renderExtraHeaderContent();
 
-		foreach ($this->page->style_sheets as $c) {
+		foreach ($this->app->style_sheets as $c) {
 			$ss = $c[0];
 			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $ss ;
 			if (!$c[1]) {$ret .= '" disabled="disabled';}
@@ -192,24 +194,23 @@ class StandardPageRenderer extends HTMLPageRenderer {
 							'Debug View ' .
 							'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
 							'<input type="submit" value="Reload Templates"/>' .
-							'<a href="Action.php?restart=yes'.(isset($_REQUEST['app'])?'&app='.getClass($app):'').'">Restart application</a>' .
+							'<a href="Action.php?restart=yes'.(isset($_REQUEST['app'])?'&app='.getClass($this->app):'').'">Restart application</a>' .
 						'</form>'.
 						'</div>';
 
 		}
-		foreach ($this->page->scripts as $s) {
+		foreach ($this->app->scripts as $s) {
 			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
 		}
 
 		$ret .= "\n<script type=\"text/javascript\">";
 
-		foreach ($this->page->jsscripts as $s) {
+		foreach ($this->app->jsscripts as $s) {
 			  $ret .= $s;
 		}
 		$ret .= "</script>";
 
-		$page = $this->page->render();
-		$ret .= $page;
+		$ret .= $view->render();
 		$ret .= '</body></html>';
 
 		//$this->page->flushModifications();
@@ -249,25 +250,27 @@ class DebugPageRenderer extends StandardPageRenderer {
 }
 
 class AjaxPageRenderer extends PageRenderer {
-	function setPage(&$app, &$page){
-		parent::setPage($app, $page);
-		$page->setAttribute('onsubmit','postInAjax();');
+	function initPage(&$win, &$view){
+		parent::initPage($win, $view);
+		$view->setAttribute('onsubmit','postInAjax();');
 	}
-	function initialRender(){
-		$this->app->redraw();
+	function initialRender(&$win){
+		$win->redraw();
 	}
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();
 	}
-	function renderPage(&$page) {
-		$this->initialPageRenderPage($page);
+	function renderPage(&$win, &$view){
+		#@typecheck $view:XMLNode,$win:Window@#
+		return $this->initialPageRenderPage($win, $view);
 	}
-	function ajaxRenderPage(&$page) {
+	function ajaxRenderPage(&$win, &$view){
+		#@typecheck $view:XMLNode,$win:Window@#
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
-		$xml .= $this->page->renderAjaxResponseCommand();
-		$xml .= $this->renderAjaxCommands();
+		$xml .= $view->renderAjaxResponseCommand();
+		$xml .= $this->renderAjaxCommands($win);
 		$xml .= "</ajax>";
 
 		//$this->page->flushModifications();
@@ -275,14 +278,14 @@ class AjaxPageRenderer extends PageRenderer {
 		return $xml;
 	}
 
-	function renderAjaxCommands() {
+	function renderAjaxCommands(&$window) {
 		$xml = '';
-		foreach (array_keys($this->app->ajaxCommands) as $i) {
-			$xml .= $this->app->ajaxCommands[$i]->renderAjaxResponseCommand();
+		foreach (array_keys($window->ajaxCommands) as $i) {
+			$xml .= $window->ajaxCommands[$i]->renderAjaxResponseCommand();
 		}
 
 		$a = array();
-		$this->app->ajaxCommands =& $a;
+		$window->ajaxCommands =& $a;
 
 		return $xml;
 	}

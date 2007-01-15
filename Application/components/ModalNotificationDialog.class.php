@@ -29,7 +29,7 @@ class ModalNotificationDialog extends AjaxComponent {
 
 
 	function start() {
-    	$app =& Application::instance();
+    	$app =& Window::getActiveInstance();
     	$app->addAjaxCommand(new AjaxCommand('openNotificationDialog', array($this->renderMessage(), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
     }
@@ -58,7 +58,7 @@ class ModalPromptDialog extends AjaxComponent {
     }
 
 	function start() {
-    	$app =& Application::instance();
+    	$app =& Window::getActiveInstance();
     	$app->addAjaxCommand(new AjaxCommand('openPromptDialog', array($this->renderMessage(), toAjax($this->text->getValue()), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
     	$this->addInterestIn('cancel', new FunctionObject($this, 'cancel'));
@@ -103,7 +103,7 @@ class ModalErrorDialog extends AjaxComponent {
 
 
 	function start() {
-    	$app =& Application::instance();
+    	$app =& Window::getActiveInstance();
     	$app->addAjaxCommand(new AjaxCommand('openErrorDialog', array($this->renderMessage(), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('accept', new FunctionObject($this, 'accept'));
     }

@@ -2,12 +2,11 @@
 
 class Bookmark {
 	function launchIn(&$app, $params){}
-	function launch($params){
-		$app =& Application::instance();
+	function launch(&$win,$params){
 		if ($this->checkPermissions($params)){
-			$this->launchIn($app, $params);
+			$this->launchIn($win, $params);
 		} else {
-			$app->badUrl(substr(getClass($this),0,-8),$params);
+			$win->badUrl(substr(getClass($this),0,-8),$params);
 		}
 	}
 	function checkPermissions($params){return true;}
