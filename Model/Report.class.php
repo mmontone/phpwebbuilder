@@ -57,11 +57,9 @@ class Report extends Collection{
 
 	function setCondition($field, $comparator, $value) {
 		//echo 'Report: Setting condition: ' . $field . $comparator . $value . '<br />';
-		$cond =& new Condition;
-		$cond->operation = $comparator;
-		//$cond->exp1 =& new ValueExpression($this->parseField($field));
-		$cond->exp1 =& new ValueExpression('`' . $this->parseField($field) . '`');
-		$cond->exp2 =& new ValueExpression($value);
+		$cond =& new Condition(array('operation'=> $comparator,
+				'exp1' => new ValueExpression('`' . $this->parseField($field) . '`'),
+				'exp2'=> new ValueExpression($value)));
 		$cond->evaluateIn($this);
 		$this->select_exp->addExpression($cond);
 		//$this->conditions[]=array($this->parseField($field),$comparator,$value);
