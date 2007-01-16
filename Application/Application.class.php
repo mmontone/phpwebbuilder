@@ -16,11 +16,17 @@ class Application {
 		$rc = & $this->setRootComponent();
 		#@typecheck $rc:Component@#
 		$this->createView();
-		$this->addWindow($rc,'root');
+		$this->windows['root']=&new Window($rc,  $pos='root', $this);
+		Window::setActiveInstance($this->windows['root']);
+		$this->windows[$pos]->createView();
 	}
-	function addWindow(&$rc, $pos=null){
+	function addWindow(&$rc, $pos, $open=true){
 		$this->windows[$pos]=&new Window($rc,  $pos, $this);
 		$this->windows[$pos]->createView();
+		if($open){
+			$w =& Window::getActiveInstance();
+			$w->addAjaxCommand(new AjaxCommand('window.open',array('Action.php?window='.$pos,$pos)));
+		}
 	}
 	function createView(){
 		$this->page_renderer =& PageRenderer::create($this);

@@ -200,6 +200,11 @@ class AjaxCommand {
 		$xml .='</ps></call>';
 		return $xml;
 	}
+	function renderStdResponseCommand() {
+		$xml =  $this->command . '("'.
+			implode('","',$this->params) . '")';
+		return $xml;
+	}
 }
 
 ?>

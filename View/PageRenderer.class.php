@@ -20,10 +20,11 @@ class PageRenderer // extends PWBObject
 		$v =& new $page_renderer($app);
 		return $v;
 	}
-	function initPage(&$win, &$view){
-		#@typecheck $win:Window,$view:XMLNode@#
+	function initPage(&$win){
+		#@typecheck $win:Window@#
+		$view =& $win->wholeView;
 		$view->tagName = 'form';
-		$view->setAttribute('action', site_url . 'Action.php');
+		$view->setAttribute('action', site_url . 'Action.php?'.SID);
 		$view->setAttribute('method', 'post');
 		$view->setAttribute('enctype', 'multipart/form-data');
 		$this->addVariable($view,'app_class', getClass($win->parent));
@@ -40,24 +41,24 @@ class PageRenderer // extends PWBObject
 		$n->controller = 1;
 		$view->appendChild($n);
 	}
-	function initialPageRenderPage(&$win, &$view){
-		#@typecheck $view:XMLNode,$win:Window@#
+	function initialPageRenderPage(&$win){
+		#@typecheck $win:Window@#
 		$initial_page_renderer = & new StandardPageRenderer(Application::Instance());
-		return $initial_page_renderer->renderPage($win, $view);
+		return $initial_page_renderer->renderPage($win);
 	}
 	function initialRender(){}
-	function render(&$win, &$view){
-		#@typecheck $view:XMLNode,$win:Window@#
+	function render(&$win){
+		#@typecheck $win:Window@#
 		if (isset($_REQUEST['ajax'])&&$_REQUEST['ajax']=='true'){
-			return $this->ajaxRenderPage($win, $view);
+			return $this->ajaxRenderPage($win);
 		} else {
-			return $this->renderPage($win, $view);
+			return $this->renderPage($win);
 		}
 	}
-	function ajaxRenderPage(&$win, &$view){
-		#@typecheck $view:XMLNode,$win:Window@#
+	function ajaxRenderPage(&$win){
+		#@typecheck $win:Window@#
 		$initial_page_renderer = & new AjaxPageRenderer(Application::Instance());
-		return $initial_page_renderer->renderPage($win, $view);
+		return $initial_page_renderer->renderPage($win);
 	}
 	function templateExtension(){
 		return '.xml';
@@ -160,9 +161,18 @@ class StandardPageRenderer extends HTMLPageRenderer {
 	function initializeScripts(&$app) {
 		$app->addStdRenderingSpecificScripts();
 	}
+	function renderJSCommands(&$window) {
+		$xml = '';
+		foreach (array_keys($window->ajaxCommands) as $i) {
+			$xml .= $window->ajaxCommands[$i]->renderStdResponseCommand();
+		}
+		$a = array();
+		$window->ajaxCommands =& $a;
 
-	function renderPage(&$win, &$view){
-		#@typecheck $view:XMLNode,$win:Window@#
+		return $xml;
+	}
+	function renderPage(&$win){
+		#@typecheck $win:Window@#
 		$ret = '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
@@ -208,9 +218,10 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		foreach ($this->app->jsscripts as $s) {
 			  $ret .= $s;
 		}
+		$ret .= $this->renderJSCommands($win);
 		$ret .= "</script>";
 
-		$ret .= $view->render();
+		$ret .= $win->wholeView->render();
 		$ret .= '</body></html>';
 
 		//$this->page->flushModifications();
@@ -260,17 +271,17 @@ class AjaxPageRenderer extends PageRenderer {
 	function initializeScripts(&$app) {
 		$app->addAjaxRenderingSpecificScripts();
 	}
-	function renderPage(&$win, &$view){
-		#@typecheck $view:XMLNode,$win:Window@#
-		return $this->initialPageRenderPage($win, $view);
+	function renderPage(&$win){
+		#@typecheck $win:Window@#
+		return $this->initialPageRenderPage($win);
 	}
-	function ajaxRenderPage(&$win, &$view){
-		#@typecheck $view:XMLNode,$win:Window@#
+	function ajaxRenderPage(&$win){
+		#@typecheck $win:Window@#
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
 		$xml .= "\n<ajax>";
 		$xml .= $view->renderAjaxResponseCommand();
-		$xml .= $this->renderAjaxCommands($win);
+		$xml .= $this->renderJSCommands($win);
 		$xml .= "</ajax>";
 
 		//$this->page->flushModifications();
@@ -278,12 +289,11 @@ class AjaxPageRenderer extends PageRenderer {
 		return $xml;
 	}
 
-	function renderAjaxCommands(&$window) {
+	function renderJSCommands(&$window) {
 		$xml = '';
 		foreach (array_keys($window->ajaxCommands) as $i) {
 			$xml .= $window->ajaxCommands[$i]->renderAjaxResponseCommand();
 		}
-
 		$a = array();
 		$window->ajaxCommands =& $a;
 

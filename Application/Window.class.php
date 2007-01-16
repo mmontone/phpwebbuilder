@@ -26,6 +26,7 @@ class Window extends ComponentHolder{
 			$tc->setAttribute('class','Component');
 			$app =& Application::instance();
 			$app->page_renderer->initPage($this, $this->wholeView);
+			//$this->wholeView->parentNode =& $this;
 			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;
 			$this->wholeView->getTemplatesAndContainers();
@@ -35,6 +36,10 @@ class Window extends ComponentHolder{
 			//$this->windowTitle->onChangeSend('setWindowTitle', $this);
 			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
 			$app->page_renderer->initialRender($this);
+	}
+	function addChildMod($pos,&$mod){
+		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
+		$this->toFlush->addChildMod($pos,$mod);
 	}
 	function redraw() {
 		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
@@ -49,7 +54,7 @@ class Window extends ComponentHolder{
 	}
 
 	function render() {
-		echo $this->parent->page_renderer->render($this, $this->wholeView);
+		echo $this->parent->page_renderer->render($this);
 	}
 	function getId() {
 		return "app";
