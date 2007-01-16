@@ -658,7 +658,7 @@ function fatal_error_handler($buffer) {
 function handle_error($errno, $errstr, $errfile, $errline) {
 	//error_log("$errstr in $errfile on line $errline");
 	//print_backtrace($errno);
-	if (($errno === E_NOTICE) && (strpos($errstr,'Only variables')!==FALSE) && defined('E_REFERENCE_ERROR')) {
+	if ((strpos($errstr,'Only variables')!==FALSE) && Compiler::CompileOpt('assertions')) {
 	    global $last_lambda;
 		//print_r(array_slice($last_lambda, -10));
 		print_backtrace('REFERENCE ERROR!'.$errstr);

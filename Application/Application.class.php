@@ -16,7 +16,8 @@ class Application {
 		$rc = & $this->setRootComponent();
 		#@typecheck $rc:Component@#
 		$this->createView();
-		$this->windows['root']=&new Window($rc,  $pos='root', $this);
+		$pos='root';
+		$this->windows['root'] =& new Window($rc, $pos, $this);
 		Window::setActiveInstance($this->windows['root']);
 		$this->windows[$pos]->createView();
 	}
@@ -62,7 +63,8 @@ class Application {
 	function & getInstanceOf($c) {
 		$class = strtolower($c);
 		if (!Session::isSetAttribute($class)) {
-			Session::setAttribute($class,new $class);
+			$app =& new $class;
+			Session::setAttribute($class,$app);
 		}
 		return Session::getAttribute($class);
 	}
@@ -158,7 +160,8 @@ class Application {
 	}
 
 	function needsView(& $comp) {
-		$this->viewCreator->createElemView($comp->parentView(),$comp);
+		$pv =& $comp->parentView();
+		$this->viewCreator->createElemView($pv,$comp);
 	}
 
 	function translate($msg) {

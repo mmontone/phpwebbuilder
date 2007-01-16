@@ -57,7 +57,8 @@ class ViewCreator {
 
 	function addTemplates(&$templates){
 		global $templates_xml;
-		$templates_xml->addTemplatesAndContainers($templates, $a=array(), $b=array());
+		$a=array();
+		$templates_xml->addTemplatesAndContainers($templates, $a, $a);
 	}
 	function &createElemView(&$pV, &$component){
 		/*

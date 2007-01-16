@@ -33,7 +33,7 @@ class PageRenderer // extends PWBObject
 		$this->addVariable($view,'pwb_url', pwb_url);
 		$this->addVariable($view,'window', $win->owner_index());
 	}
-	function addVariable($view,$name, $val){
+	function addVariable(&$view,$name, $val){
 		$n =& new XMLVariable('input', $a=array());
 		$n->setAttribute('type', 'hidden');
 		$n->setAttribute('id', $name);
@@ -177,7 +177,7 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 
-
+		$view =& $win->wholeView;
 	//	$ret = '';
 		$ret .= "<html>\n<head><title>" .$view->title .	"</title>";
 		$ret .= $this->app->renderExtraHeaderContent();
@@ -261,8 +261,8 @@ class DebugPageRenderer extends StandardPageRenderer {
 }
 
 class AjaxPageRenderer extends PageRenderer {
-	function initPage(&$win, &$view){
-		parent::initPage($win, $view);
+	function initPage(&$win){
+		parent::initPage($win);
 		$view->setAttribute('onsubmit','postInAjax();');
 	}
 	function initialRender(&$win){

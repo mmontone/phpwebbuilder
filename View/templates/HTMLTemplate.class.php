@@ -8,7 +8,8 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 				$tv->insert_in($t,$tv->nextNode++);
 			}
 		} else {
-			$tv = & $this->xml2template($this->first_child());
+			$fc =& $this->first_child();
+			$tv = & $this->xml2template($fc);
 		}
 		return $tv;
 	}

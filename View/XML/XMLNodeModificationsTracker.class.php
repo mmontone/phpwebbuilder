@@ -15,7 +15,8 @@ class XMLNodeModificationsTracker extends XMLNode {
 			$t =& $this->toFlush->getTarget();
 			$t->addChildMod($pos,$mod);
 		} else {
-			$this->toFlush->setTarget($m=& new ChildModificationsXMLNodeModification($this));
+			$m=& new ChildModificationsXMLNodeModification($this);
+			$this->toFlush->setTarget($m);
 			$m->addChildMod($pos,$mod);
 			if ($this->parentNode) {
 				$this->parentNode->addChildMod($this->parentPosition,$this);
