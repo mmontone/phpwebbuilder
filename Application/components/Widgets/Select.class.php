@@ -39,7 +39,9 @@ class Select extends Widget {
 	function &printPrimitive(&$primitive) {
 		return $primitive;
 	}
-
+	function refresh(){
+		$this->viewHandler->updateFromCollection();
+	}
     function viewUpdated($new_value) {
 		$value = & $this->getValueIndex();
 		if ($new_value != $value)
