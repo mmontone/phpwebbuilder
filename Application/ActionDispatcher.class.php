@@ -23,6 +23,7 @@ class ActionDispatcher {
 					break;
 				case 'window':
 					$event['window'] =& $app->windows[$param];
+					#@typecheck $event['window']:Window@#
 					break;
 				default :
 					$c = & $this->getComponent($dir, $app);

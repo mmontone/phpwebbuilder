@@ -201,8 +201,9 @@ class AjaxCommand {
 		return $xml;
 	}
 	function renderStdResponseCommand() {
+		if (count($this->params)==0) return $this->command.'();';
 		$xml =  $this->command . '("'.
-			implode('","',$this->params) . '")';
+			implode('","',$this->params) . '");';
 		return $xml;
 	}
 }

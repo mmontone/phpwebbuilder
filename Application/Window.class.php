@@ -26,7 +26,8 @@ class Window extends ComponentHolder{
 			$tc->setAttribute('class','Component');
 			$app =& Application::instance();
 			$app->page_renderer->initPage($this, $this->wholeView);
-			//$this->wholeView->parentNode =& $this;
+			$this->toFlush =& new ChildModificationsXMLNodeModification($this);
+			$this->wholeView->parentNode =& $this;
 			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;
 			$this->wholeView->getTemplatesAndContainers();
@@ -38,9 +39,9 @@ class Window extends ComponentHolder{
 			$app->page_renderer->initialRender($this);
 	}
 	function addChildMod($pos,&$mod){
-		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
 		$this->toFlush->addChildMod($pos,$mod);
 	}
+	function unsetChildWithId(){}
 	function redraw() {
 		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
 	}
@@ -52,9 +53,21 @@ class Window extends ComponentHolder{
 	function &getAjaxCommands() {
 		return $this->ajaxCommands;
 	}
-
+	function hasModifications(){
+		return (count($this->toFlush->modifications) + count($this->ajaxCommands)) >0;
+	}
 	function render() {
+		$myname = $this->owner_index();
+		$ws =& $this->parent->windows;
+		//echo $this->toFlush->printTree();
+		foreach(array_keys($ws) as $win){
+			if ($win!=$myname && $ws[$win]->hasModifications()){
+				$modwins[]=$win;
+			}
+		}
+		if ($modwins!=null)$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
 		echo $this->parent->page_renderer->render($this);
+		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
 	}
 	function getId() {
 		return "app";
@@ -80,6 +93,10 @@ class Window extends ComponentHolder{
 	}
 	function badUrl($bm, $params){
 		$this->resetUrl();
+	}
+	function close(){
+		$this->addAjaxCommand(new AjaxCommand('window.close', array($this->owner_index())));
+		unset($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
 	}
 }
 ?>

@@ -26,7 +26,7 @@ class Application {
 		$this->windows[$pos]->createView();
 		if($open){
 			$w =& Window::getActiveInstance();
-			$w->addAjaxCommand(new AjaxCommand('window.open',array('Action.php?window='.$pos,$pos)));
+			$w->addAjaxCommand(new AjaxCommand('openWindow',array($pos)));
 		}
 	}
 	function createView(){
@@ -115,8 +115,8 @@ class Application {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
-		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
-		$this->addScript(constant('pwb_url') . 'lib/history.js');
+		//$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
+		//$this->addScript(constant('pwb_url') . 'lib/history.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
 	}
 	function addXULRenderingSpecificScripts() {
