@@ -40,6 +40,7 @@ class Select extends Widget {
 		return $primitive;
 	}
 	function refresh(){
+		$this->options->refresh();
 		$this->viewHandler->updateFromCollection();
 	}
     function viewUpdated($new_value) {
