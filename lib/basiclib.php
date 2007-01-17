@@ -658,11 +658,11 @@ function fatal_error_handler($buffer) {
 function handle_error($errno, $errstr, $errfile, $errline) {
 	//error_log("$errstr in $errfile on line $errline");
 	//print_backtrace($errno);
-	if ((strpos($errstr,'Only variables')!==FALSE) && Compiler::CompileOpt('assertions')) {
+/*	if ((strpos($errstr,'Only variables')!==FALSE) && Compiler::CompileOpt('assertions')) {
 	    global $last_lambda;
 		//print_r(array_slice($last_lambda, -10));
 		print_backtrace('REFERENCE ERROR!'.$errstr);
-	}
+	}*/
 	if ($errno == E_ERROR) {
 		echo "error</b>:<br/>";
 		print_backtrace();
@@ -674,7 +674,7 @@ function handle_error($errno, $errstr, $errfile, $errline) {
 	}
 }
 
-set_error_handler('handle_error');
+//set_error_handler('handle_error');
 
 function print_n($obj, $n=5){
 	if ($n!=0){

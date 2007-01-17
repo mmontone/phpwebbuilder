@@ -51,11 +51,11 @@ class Compiler {
 									'/s','processMacro'
 					);
 				$f = $this->compileString($f,'/__FILE__/s',
-					lambda('','return \'\\\''.$file.'\\\'\';'));
+					lambda('','$x = \'\\\''.$file.'\\\'\';return $x;'));
 				if (Compiler::CompileOpt('recursive')) {
 					$self =& $this;
 					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
-					lambda('$matches','return $self->compileRecFile($file,$matches[1]);', get_defined_vars()));
+					lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
 				}
 				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 		}

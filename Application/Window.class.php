@@ -25,7 +25,7 @@ class Window extends ComponentHolder{
 			$tc =& new HTMLContainer('',array());
 			$tc->setAttribute('class','Component');
 			$app =& Application::instance();
-			$app->page_renderer->initPage($this, $this->wholeView);
+			$app->page_renderer->initPage($this);
 			$this->toFlush =& new ChildModificationsXMLNodeModification($this);
 			$this->wholeView->parentNode =& $this;
 			$this->wholeView->appendChild($tc);
@@ -34,7 +34,6 @@ class Window extends ComponentHolder{
 			$this->windowTitle =& new Label($this->parent->getTitle());
 			$this->setWindowTitle();
 			$this->component->linkToApp($this->parent);
-			//$this->windowTitle->onChangeSend('setWindowTitle', $this);
 			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
 			$app->page_renderer->initialRender($this);
 	}

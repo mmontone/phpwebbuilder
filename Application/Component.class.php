@@ -50,6 +50,20 @@ class Component extends PWBObject
 			if ($child!=null)$child->stopAll();
 		}
 	}
+	function reloadView(){
+		 #@check $this->viewHandler!=null@#
+		 $n = null;
+		 $this->view =& $n;
+		 $this->viewHandler->release();
+		 $this->viewHandler =& $n;
+		 $this->obtainView();
+		foreach(array_keys($this->__children) as $c) {
+			$child =& $this->__children[$c]->component;
+			if ($child!=null) {
+				$child->reloadView();
+			}
+		}
+	}
 	function releaseView(){
 		 #@check $this->viewHandler!=null@#
 		 $n = null;

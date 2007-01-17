@@ -64,7 +64,6 @@ class Application {
 		$class = strtolower($c);
 		if (!Session::isSetAttribute($class)) {
 			$app =& new $class;
-			Session::setAttribute($class,$app);
 		}
 		return Session::getAttribute($class);
 	}

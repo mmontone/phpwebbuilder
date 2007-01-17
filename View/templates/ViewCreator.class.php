@@ -7,11 +7,15 @@ class ViewCreator {
 	}
 	function reloadView(){
 		$app =& $this->app;
-		$v=&$app->component->view;
-		$app->wholeView->removeChild($v);
-		$app->component->releaseView();
 		$app->translators = array();
-		$app->component->createViews();
+
+		foreach(array_keys($app->windows) as $wk){
+			$win =& $app->windows[$wk];
+			$v=&$win->component->view;
+			$win->wholeView->removeChild($v);
+			$win->component->reloadView();
+		}
+
 	}
 	function parseTemplates ($files, $templatesdir){
 		$p =& new XMLParser;

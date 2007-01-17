@@ -52,7 +52,8 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function appendChild(& $child) {
 		// I don't want modifications on the $child to be taken into account by the page renderer
 		//$child->flushModifications();
-		$child->toFlush->setTarget($ac =& new AppendChildXMLNodeModification($this, $child));
+		$ac =& new AppendChildXMLNodeModification($this, $child);
+		$child->toFlush->setTarget($ac);
 		$ret = parent :: appendChild($child);
 		$this->addChildMod($child->parentPosition,$ac);
 		// Tag the child as an appended  node. See what happens when a "append" modification is found in AjaxPageRenderer
@@ -74,7 +75,8 @@ class XMLNodeModificationsTracker extends XMLNode {
 			$tf->apply_replace($new_child);
 			$new_child->toFlush->setTarget($tf);
 		} else {
-			$new_child->toFlush->setTarget($rc =& new ReplaceChildXMLNodeModification($new_child, $old_child, $this));
+			$rc =& new ReplaceChildXMLNodeModification($new_child, $old_child, $this);
+			$new_child->toFlush->setTarget($rc);
 			$this->addChildMod($old_child->parentPosition,$rc);
 		}
 		return parent :: replaceChild($new_child, $old_child);

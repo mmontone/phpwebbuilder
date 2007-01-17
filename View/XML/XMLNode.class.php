@@ -51,9 +51,6 @@ class XMLNode extends DOMXMLNode {
 	}
 	/* Always access attributes through getAttribute */
 
-	function setAttribute($name, $val) {
-		$this->attributes[$name] = $val;
-	}
 	function setId($id) {
 		$this->setAttribute('id', $id);
 	}
