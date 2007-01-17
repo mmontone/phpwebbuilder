@@ -93,6 +93,15 @@ class Window extends ComponentHolder{
 	function badUrl($bm, $params){
 		$this->resetUrl();
 	}
+	function Window(&$component, $name){
+		$app =& Application::Instance();
+		parent::ComponentHolder(&$component, $name, &$app);
+		$app->addWindow($this, $name);
+	}
+	function open($params=''){
+		$w =& Window::getActiveInstance();
+		$w->addAjaxCommand(new AjaxCommand('openWindow',array($this->owner_index(), $params)));
+	}
 	function close(){
 		$this->addAjaxCommand(new AjaxCommand('window.close', array($this->owner_index())));
 		unset($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
