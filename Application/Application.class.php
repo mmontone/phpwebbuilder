@@ -13,13 +13,13 @@ class Application {
 	function Application() {
 		Session::setAttribute(getClass($this),$this);
 		$this->commands =& new Collection();
+		$this->createView();
+		Window::setActiveInstance(new Window($c =& new Component, 'root'));
 		$rc = & $this->setRootComponent();
 		#@typecheck $rc:Component@#
-		$this->createView();
-		new Window($rc, 'root');
+		$c->stopAndCall($rc);
 	}
 	function addWindow(&$win, $pos){
-		if (!$this->windows) Window::setActiveInstance($win, $pos, $this);
 		$this->windows[$pos]=&$win;
 		$this->windows[$pos]->createView();
 	}
