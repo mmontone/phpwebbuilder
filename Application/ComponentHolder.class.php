@@ -39,8 +39,8 @@ class ComponentHolder
     function &getComponent() {
     	return $this->component;
     }
-	function &getWindow(){
-		return $this->parent->getWindow();
+	function &getParent(){
+		return $this->parent;
 	}
 
 }

@@ -189,4 +189,26 @@ class Application {
 	}
 
 }
+
+#@mixin DynVars
+{
+	function setDynVar($name, &$value) {
+		$this->dyn_vars[$name] =& $value;
+	}
+
+	function &getDynVar($name) {
+		if (isset($this->dyn_vars[$name])) {
+			return $this->dyn_vars[$name];
+		}
+		else {
+			$parent =& $this->getParent();
+			#@check $parent !== null@#
+			return $parent->getDynVar($name);
+		}
+	}
+}//@#
+
+
+
+
 ?>

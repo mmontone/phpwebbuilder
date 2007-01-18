@@ -20,21 +20,7 @@ class Component extends PWBObject
 		$this->__children = array();
 		$this->listener =& new ChildCallbackHandler();
 	}
-
-	function setDynVar($name, &$value) {
-		$this->dyn_vars[$name] =& $value;
-	}
-
-	function &getDynVar($name) {
-		if (isset($this->dyn_vars[$name])) {
-			return $this->dyn_vars[$name];
-		}
-		else {
-			$parent =& $this->getParent();
-			#@check $parent !== null@#
-			return $parent->getDynVar($name);
-		}
-	}
+	#@use_mixin DynVars@#
 	function initialize(){}
 	function start() {}
 	function stop() {}
@@ -63,6 +49,9 @@ class Component extends PWBObject
 				$child->reloadView();
 			}
 		}
+	}
+	function &getWindow(){
+		return $this->getDynVar('window');
 	}
 	function releaseView(){
 		 #@check $this->viewHandler!=null@#
@@ -121,9 +110,6 @@ class Component extends PWBObject
 		}
 		$null = array();
 		$this->toLink =& $null;
-	}
-	function &getWindow(){
-		return $this->holder->getWindow();
 	}
 	function startAll() {
 		$this->start();
@@ -345,7 +331,7 @@ class Component extends PWBObject
 		}
 	}
 	function &getParent() {
-		return $this->holder->parent;
+		return $this->holder->getParent();
 	}
 	function doNothing(){}
 	function printString(){
@@ -375,6 +361,6 @@ class FieldComponent extends Component{
 	function setValue(&$value){
 		$this->component->setValue($value);
 	}
-
 }
+
 ?>

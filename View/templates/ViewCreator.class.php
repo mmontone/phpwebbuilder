@@ -12,8 +12,9 @@ class ViewCreator {
 		foreach(array_keys($app->windows) as $wk){
 			$win =& $app->windows[$wk];
 			$v=&$win->component->view;
-			$win->wholeView->removeChild($v);
 			$win->component->reloadView();
+			//$win->wholeView->removeChild($v);
+			$win->wholeView->replaceChild($win->component->view,$v);
 		}
 
 	}

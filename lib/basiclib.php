@@ -47,6 +47,7 @@ $_mixin_file=array();
 		echo 'Hola';
 	}
 }//@#
+
 function mixin($text) {
 	preg_match('/([[:alpha:]]*)\s*\{(.*)\}/s', $text, $matches);
 	$name = $matches[1];
@@ -71,6 +72,7 @@ function use_mixin($text) {
 	global $mixins;
 	$code = '';
 	foreach ($ms as $name) {
+		//echo 'UseMixin name: ' . $name . '<br/>';
 		$name = trim($name);
 		if (isset($mixins[$name])) {
 			$code .= 'var $__use_mixin_'.$name. '=true;';
@@ -79,7 +81,7 @@ function use_mixin($text) {
 			global $_mixin_file;
 			$comp =& Compiler::instance();
 			$comp->compileFile($_mixin_file[$name]);
-			if (isset($mixins[$name])) $code.=use_mixin($name); break;
+			if (isset($mixins[$name])) {$code.=use_mixin($name); break;}
 			print_r($mixins);
 			print_backtrace_and_exit('Mixin '.$name .' not defined');
 		}

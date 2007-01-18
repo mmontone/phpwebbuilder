@@ -1,12 +1,12 @@
 <?php
 
 compile_once (dirname(__FILE__).'/ComponentHolder.class.php');
-compile_once (dirname(__FILE__).'/Window.class.php');
 compile_once (dirname(__FILE__).'/ActionDispatcher.class.php');
 compile_once (dirname(__FILE__).'/UrlManager.class.php');
 compile_once (dirname(__FILE__).'/Bookmark.class.php');
 compile_once (dirname(__FILE__).'/Application.class.php');
 compile_once (dirname(__FILE__).'/Component.class.php');
+compile_once (dirname(__FILE__).'/Window.class.php');
 compile_once (dirname(__FILE__).'/JSComponent.class.php');
 compile_once (dirname(__FILE__).'/ChildCallbackHandler.class.php');
 compile_once (dirname(__FILE__).'/Translator.class.php');

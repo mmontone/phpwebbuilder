@@ -4,6 +4,7 @@ class Window extends ComponentHolder{
 	var $ajaxCommands = array();
 	var $urlManager;
 	var $wholeView;
+	#@use_mixin DynVars@#
 	function &getWindow(){
 		return $this;
 	}
@@ -93,7 +94,12 @@ class Window extends ComponentHolder{
 	function badUrl($bm, $params){
 		$this->resetUrl();
 	}
+	function &getParent(){
+		return $this;
+	}
+
 	function Window(&$component, $name){
+		$this->setDynVar('window', $this);
 		$app =& Application::Instance();
 		parent::ComponentHolder(&$component, $name, &$app);
 		$app->addWindow($this, $name);
