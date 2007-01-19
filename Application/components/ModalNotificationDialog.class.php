@@ -130,7 +130,7 @@ class ModalQuestionDialog extends AjaxComponent {
     }
 
 	function start() {
-    	$app =& Application::instance();
+    	$app =&  Window::getActiveInstance();
     	$app->addAjaxCommand(new AjaxCommand('openQuestionDialog', array($this->renderMessage(), $this->getId(), constant('pwb_url'))));
     	$this->addInterestIn('yes', new FunctionObject($this, 'yes'));
     	$this->addInterestIn('no', new FunctionObject($this, 'no'));
@@ -167,7 +167,7 @@ class ModalQuestionDialog2 extends Component {
     }
 
 	function start() {
-    	$app =& Application::instance();
+    	$app =&  Window::getActiveInstance();
     	$app->addAjaxCommand(new AjaxCommand('openQuestionDialog', array('message' => $this->renderMessage(), 'callback_comp' => $this->getId())));
     	$this->addEventListener('yes', new FunctionObject($this, 'yes'));
     	$this->addEventListener('no', new FunctionObject($this, 'no'));
