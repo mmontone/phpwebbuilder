@@ -263,7 +263,7 @@ class DebugPageRenderer extends StandardPageRenderer {
 class AjaxPageRenderer extends PageRenderer {
 	function initPage(&$win){
 		parent::initPage($win);
-		$win->wholeView->setAttribute('onsubmit','postInAjax();');
+		$win->wholeView->setAttribute('onsubmit','refresh();');
 	}
 	function initialRender(&$win){
 		$win->redraw();
