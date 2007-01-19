@@ -7,7 +7,7 @@ class CollectionNavigator extends Component {
 	function CollectionNavigator(&$col, $fields=null, $callbacks=array()) {
 		parent::Component();
 
-		if ($col == null) print_backtrace();
+		if ($col == null) print_backtrace('No collection');
 		$this->col = & $col;
 		$this->col->addEventListener(array('changed'=>'refresh'), $this);
 		$this->classN = $col->getDataType();
