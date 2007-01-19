@@ -183,10 +183,11 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		$ret .= $this->app->renderExtraHeaderContent();
 
 		foreach ($this->app->style_sheets as $c) {
-			$ss = $c[0];
-			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" href=\"" . $ss ;
-			if (!$c[1]) {$ret .= '" disabled="disabled';}
-			$ret .= "\" />";
+			$d = '';
+			foreach($c as $k=>$v) {
+				$d .= $k.'="'.$v.'" ';
+			}
+			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" " . $d . " />";
 		}
 
 

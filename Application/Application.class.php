@@ -124,8 +124,12 @@ class Application {
 		$this->scripts[] = & $url;
 	}
 
-	function addStyleSheet($url, $enabled=true) {
-		$this->style_sheets[] = array($url,$enabled);
+	function addStyleSheet($url) {
+		if (!is_array($url)) {
+			$this->style_sheets[] = array('media'=>'screen','href'=>$url);
+		} else {
+			$this->style_sheets[] = $url;
+		}
 	}
 
 	function renderExtraHeaderContent() {}
