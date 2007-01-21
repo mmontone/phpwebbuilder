@@ -24,6 +24,7 @@ compile_once (dirname(__FILE__).'/Handler/HTMLHandler/LinkHTMLHandler.class.php'
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/JSCommandLinkHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/HTMLHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/CommandLinkHTMLHandler.class.php');
+compile_once (dirname(__FILE__).'/Handler/HTMLHandler/ButtonHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/NavigationLinkHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/CheckBoxHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/InputHTMLHandler.class.php');
