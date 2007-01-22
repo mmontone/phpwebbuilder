@@ -1,5 +1,7 @@
 <?php
 
+#@preprocessor Compiler::usesClass(__FILE__, constant('translator'));@#
+
 class Translator extends PWBObject
 {
     var $dictionary = null;

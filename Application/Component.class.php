@@ -277,7 +277,7 @@ class Component extends PWBObject
 	}
 
 	/**
-     * Functions for the new type of views.
+     * Functions for the views.
      */
 	function viewUpdated ($params){}
 	// TODO Remove View

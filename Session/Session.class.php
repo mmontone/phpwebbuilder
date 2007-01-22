@@ -1,5 +1,7 @@
 <?php
 
+#@preprocessor Compiler::usesClass(__FILE__, 'SessionHandler');@#
+
 class Session extends PersistentObject{
 	function initialize(){
 		$this->addField(new TextField('session_name', TRUE));

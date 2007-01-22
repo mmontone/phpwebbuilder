@@ -24,7 +24,9 @@ class Compiler {
 	var $toCompile;
 	var $toCompileSuffix;
     var $tempdir;
-
+	var $compilingClasses = false;
+	var $classesCompiled = array();
+	var $class_in_file= array();
 	function Compiler() {
 		$this->toCompile = explode(',', @constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
@@ -39,10 +41,12 @@ class Compiler {
 		$file = $this->getRealPath($file);
 		if (!in_array($file, $this->compiled)) {
 				$this->compiled[] = $file;
-
+				$this->actualFile[] = $file;
 				//echo 'Adding file: ' . $file . '<br />';
 
 				$f = file_get_contents($file);
+				$f = $this->compileString($f,'/__FILE__/s',
+					lambda('','$x = \'\\\''.$file.'\\\'\';return $x;'));
 				$f = $this->compileString($f,'/'.'#@'.//START_MACRO
 									'([[:alpha:]|\_]+)[\s\t]*' .
 									''.//START_PARAMS
@@ -50,17 +54,91 @@ class Compiler {
 									'@#'.//END_MACRO
 									'/s','processMacro'
 					);
-				$f = $this->compileString($f,'/__FILE__/s',
-					lambda('','$x = \'\\\''.$file.'\\\'\';return $x;'));
 				if (Compiler::CompileOpt('recursive')) {
 					$self =& $this;
+					if (!$this->compilingClasses) $this->getInvolvedClasses($f,$file);
 					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
 					lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
 				}
 				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
+				array_pop($this->actualFile);
 		}
 		return $f;
 	}
+	function usesClass($file, $class){
+		$comp =& Compiler::Instance();
+		$comp->file_uses_class[$file][] = $class;
+	}
+	function markAsCompiled($class, $file){
+		$comp =& Compiler::Instance();
+		$comp->classesCompiled[$file] = $file;
+		$comp->class_in_file[strtolower($class)] = $file;
+	}
+	function getInvolvedClasses($str, $file){
+		$int = preg_match_all('/[\s\t\n]+class[\s\t\n]+(\w+)/',$str, $matches_dec);
+		//if ($int>1) {print_r($matches_dec); exit;}
+		foreach($matches_dec[1] as $m){
+			$this->class_in_file[strtolower($m)] = $file;
+		}
+		if (!is_array($this->file_uses_class[$file]))$this->file_uses_class[$file] = array();
+		if (!is_array($this->file_reqs_class[$file]))$this->file_reqs_class[$file] = array();
+		preg_match_all('/(\w+)::/',$str, $matches_post);
+		foreach($matches_post[1] as $m){
+			if ($m!='parent') {
+				$this->file_uses_class[$file][] = $m;
+			}
+		}
+
+		preg_match_all('/new[\s\t\n]+(\w+)/',$str, $matches_post);
+		foreach($matches_post[1] as $m){
+			$this->file_uses_class[$file][] = $m;
+		}
+
+		preg_match_all('/::GetWithIndex\(\'(\w+)\'/i',$str, $matches_post);
+		foreach($matches_post[1] as $m){
+			$this->file_uses_class[$file][] = $m;
+		}
+
+		preg_match_all('/::GetWithId\(\'(\w+)\'/i',$str, $matches_post);
+		//if (count($matches_post[1])) print_r($matches_post[1]);
+		foreach($matches_post[1] as $m){
+			$this->file_uses_class[$file][] = $m;
+		}
+
+		preg_match_all('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',$str, $matches_post);
+		foreach($matches_post[1] as $m){
+			$this->file_uses_class[$file][] = $m;
+		}
+
+		preg_match_all('/[\s\t\n]+extends[\s\t\n]+(\w+)/',$str, $matches_pre);
+		foreach($matches_pre[1] as $m){
+			$this->file_reqs_class[$file][] = $m;
+		}
+	}
+	function compileClass($class){
+		/*Chequeno no compilada, Compilo las anteriores, marco esta como compilada, compilo las siguientes*/
+		$file = $this->class_in_file[strtolower($class)];
+		if ($file==null) {
+			//echo "$class was not defined ".print_r($this->actualFile,TRUE);
+			return '';
+		}
+		if (isset($this->classesCompiled[$file])) return '';
+		$this->actualFile[] = $file;
+		//echo "$class ($file)";
+		$this->classesCompiled[$file] = $file;
+		$comp='';
+		foreach ($this->file_reqs_class[$file] as $class1) {
+			$comp .= $this->compileClass($class1);
+		}
+		$comp .= $this->compileFile($file);
+		foreach ($this->file_uses_class[$file] as $class2) {
+			$comp .= $this->compileClass($class2);
+		}
+		array_pop($this->actualFile);
+		return $comp;
+	}
+
+
 	function compileRecFile($outfile, $infile){
 		$x = eval('return '.$infile.';');
 		return $this->compileFile($x);
@@ -86,6 +164,19 @@ class Compiler {
 		if (isset($_REQUEST['recompile']) or ((@constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
 			$f = '<?php '.$this->compileFile($file).' ?>';
+			if (Compiler::CompileOpt('recursive')){
+				Compiler::markAsCompiled('Compiler', __FILE__);
+				//Compiler::markAsCompiled('Session', $this->class_in_file[strtolower('Session')]);
+				$this->compiled = array();
+				//print_r($this->class_in_file);
+				//print_r($this->file_uses_class);
+				//print_r($this->file_reqs_class);
+				$this->compilingClasses = true;
+				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
+				$this->compilingClasses = false;
+				//echo 'Used Files: '.print_r(array_intersect($this->class_in_file, $this->classesCompiled), TRUE);
+				echo 'Unused Files: '.print_r(array_diff($this->class_in_file, $this->classesCompiled), TRUE);
+			}
 			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 			fwrite($fo, $f);
 			fclose($fo);

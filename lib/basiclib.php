@@ -37,6 +37,9 @@ function lambda_parser($text) {
 	return sexp_parser($text);
 }
 
+function preprocessor($code){
+	return eval($code);
+}
 
 
 $mixins = array();
@@ -260,6 +263,9 @@ function includeAll() {
 			fclose($fo);
 		}
 		$comp->compile($file);
+		//$comp->compiled = array();
+		require_once pwbdir. 'Session/Session.php';
+
 	} else {
 		eval(getIncludes());
 	}

@@ -2,10 +2,6 @@
 define('MAX_SIZE', 32000000);
 define('MAX_SIZE_B', strlen(MAX_SIZE));
 
-if (!class_exists('SessionHandler')) {
-	class SessionHandler {
-	}
-}
 
 class MMSessionHandler extends SessionHandler {
 	var $id, $name, $path, $sess_id;

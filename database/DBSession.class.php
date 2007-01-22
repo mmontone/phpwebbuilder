@@ -1,5 +1,7 @@
 <?php
 
+#@preprocessor Compiler::usesClass(__FILE__, constant('db_driver'));@#
+
 class DBSession {
 	var $lastError;
 	var $lastSQL = '';

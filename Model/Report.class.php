@@ -175,7 +175,7 @@ class Report extends Collection{
 	}
 
 	/**
-	  * Returns a new object of the dataype
+	  * Returns a New object of the dataype
 	  */
 	function &getObject(){
 		$dt = $this->getDataType();
