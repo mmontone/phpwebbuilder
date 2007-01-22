@@ -4,6 +4,7 @@ class Window extends ComponentHolder{
 	var $ajaxCommands = array();
 	var $urlManager;
 	var $wholeView;
+	var $opened=false;
 	#@use_mixin DynVars@#
 	function &getWindow(){
 		return $this;
@@ -54,9 +55,10 @@ class Window extends ComponentHolder{
 		return $this->ajaxCommands;
 	}
 	function hasModifications(){
-		return (count($this->toFlush->modifications) + count($this->ajaxCommands)) >0;
+		return $this->opened && (count($this->toFlush->modifications) + count($this->ajaxCommands)) >0;
 	}
 	function render() {
+		$this->opened=true;
 		$myname = $this->owner_index();
 		$ws =& $this->parent->windows;
 		//echo $this->toFlush->printTree();
