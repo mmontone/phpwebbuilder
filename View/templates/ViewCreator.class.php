@@ -13,8 +13,10 @@ class ViewCreator {
 			$win =& $app->windows[$wk];
 			$v=&$win->component->view;
 			$win->component->reloadView();
-			//$win->wholeView->removeChild($v);
-			$win->wholeView->replaceChild($win->component->view,$v);
+			$win->wholeView->removeChilds();
+			$win->wholeView->appendChild($win->component->view);
+			//$win->redraw();
+			//$win->wholeView->replaceChild($win->component->view,$v);
 		}
 
 	}
@@ -142,10 +144,10 @@ class ViewCreator {
 		global $templates_xml;
 		if ($templates_xml===null) {
 			$temp_file = $this->getTemplatesFilename();
-			if (!file_exists($temp_file) || @Constant('templates')=='recompile' ||! Compiler::CompileOpt('recursive')) {
+			if ((!file_exists($temp_file)) || @constant('templates')=='recompile' || (!Compiler::CompileOpt('recursive'))) {
 				$templates_xml = new XMLNode;
 				$this->app->loadTemplates();
-				if (!@Constant('templates')=='recompile'){
+				if (!(@Constant('templates')=='recompile')){
 					$fo = fopen($temp_file, 'w');
 					fwrite($fo, serialize($templates_xml));
 					fclose($fo);

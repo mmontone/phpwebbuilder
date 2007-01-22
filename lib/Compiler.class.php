@@ -94,12 +94,12 @@ class Compiler {
 			$this->file_uses_class[$file][] = $m;
 		}
 
-		preg_match_all('/::GetWithIndex\(\'(\w+)\'/i',$str, $matches_post);
+		preg_match_all('/::GetWithIndex\(\'?(\w+)\'?/i',$str, $matches_post);
 		foreach($matches_post[1] as $m){
 			$this->file_uses_class[$file][] = $m;
 		}
 
-		preg_match_all('/::GetWithId\(\'(\w+)\'/i',$str, $matches_post);
+		preg_match_all('/::GetWithId\(\'?(\w+)\'?/i',$str, $matches_post);
 		//if (count($matches_post[1])) print_r($matches_post[1]);
 		foreach($matches_post[1] as $m){
 			$this->file_uses_class[$file][] = $m;
@@ -114,6 +114,13 @@ class Compiler {
 		foreach($matches_pre[1] as $m){
 			$this->file_reqs_class[$file][] = $m;
 		}
+		preg_match_all('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',$str, $matches_post);
+		//if (count($matches_post[1])) print_r($matches_post[1]);
+		foreach($matches_post[1] as $m){
+			$this->file_uses_class[$file][] = $m;
+		}
+
+
 	}
 	function compileClass($class){
 		/*Chequeno no compilada, Compilo las anteriores, marco esta como compilada, compilo las siguientes*/
@@ -175,7 +182,7 @@ class Compiler {
 				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
 				$this->compilingClasses = false;
 				//echo 'Used Files: '.print_r(array_intersect($this->class_in_file, $this->classesCompiled), TRUE);
-				echo 'Unused Files: '.print_r(array_diff($this->class_in_file, $this->classesCompiled), TRUE);
+				//echo 'Unused Files: '.print_r(array_diff(array_unique($this->class_in_file), $this->classesCompiled), TRUE);
 			}
 			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 			fwrite($fo, $f);
