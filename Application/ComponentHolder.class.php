@@ -39,7 +39,7 @@ class ComponentHolder
     function &getComponent() {
     	return $this->component;
     }
-	function &getParent(){
+	function &getParentElement(){
 		return $this->parent;
 	}
 

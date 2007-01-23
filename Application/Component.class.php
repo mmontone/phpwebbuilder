@@ -331,7 +331,7 @@ class Component extends PWBObject
 		}
 	}
 	function &getParent() {
-		return $this->holder->getParent();
+		return $this->holder->getParentElement();
 	}
 	function doNothing(){}
 	function printString(){

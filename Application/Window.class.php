@@ -96,10 +96,12 @@ class Window extends ComponentHolder{
 	function badUrl($bm, $params){
 		$this->resetUrl();
 	}
-	function &getParent(){
+	function &getParentElement(){
 		return $this;
 	}
-
+	function &getParent(){
+		return $this->parent;
+	}
 	function Window(&$component, $name){
 		$this->setDynVar('window', $this);
 		$app =& Application::Instance();
