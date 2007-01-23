@@ -1,5 +1,13 @@
 <?php
 
+#@preprocessor
+$cr =& ConfigReader::Instance();
+Compiler::usesClass(__FILE__,$cr->getAttribute('app_class'));
+Compiler::usesClass(__FILE__,'DBController');
+Compiler::usesClass(__FILE__,'RolesController');
+Compiler::usesClass(__FILE__,'Logout');
+//@#
+
 class DefaultCMSApplication extends Application{
 	var $templateName = 'Default';
  	function &setRootComponent() {

@@ -4,9 +4,9 @@
  *
  * */
 
-compile_once (dirname(__FILE__) . '/ConfigReader.class.php');
-$config_reader =& new ConfigReader();
+require_once (dirname(__FILE__) . '/ConfigReader.class.php');
+$config_reader =& ConfigReader::Instance();
 $config_reader->load(dirname(__FILE__) . '/../config.php');
-compile_once (pwbdir . '/pwb.php');
+require_once (pwbdir . 'pwb.php');
 
 ?>

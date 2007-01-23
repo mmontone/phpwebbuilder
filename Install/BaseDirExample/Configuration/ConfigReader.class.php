@@ -9,6 +9,10 @@ if(isset($_REQUEST["app"])) define('app_class',$_REQUEST["app"]);
 
 class ConfigReader
 {
+	function &Instance() {
+		global $configReaderInstance;
+		return $configReaderInstance;
+	}
     function read($file_name, $section="") {
     	$configuration = $this->readAll($file_name);
     	if ($section==""){
@@ -47,7 +51,11 @@ class ConfigReader
         	}
         	if (!defined($key)) define($key, $v);
         }
+        $this->actualConf = $conf;
         return $conf;
+    }
+    function getAttribute($name){
+    	return $this->actualConf[$name];
     }
     function write($file_name, $configuration) {
     	$str = "<?/*\n";
@@ -102,4 +110,7 @@ class ConfigReader
 		}
     }
 }
+
+$configReaderInstance = new ConfigReader;
+
 ?>

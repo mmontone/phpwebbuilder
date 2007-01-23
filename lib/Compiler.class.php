@@ -99,6 +99,11 @@ class Compiler {
 			$this->file_uses_class[$file][] = $m;
 		}
 
+		preg_match_all('/PersistentCollection\(\'?(\w+)\'?/i',$str, $matches_post);
+		foreach($matches_post[1] as $m){
+			$this->file_uses_class[$file][] = $m;
+		}
+
 		preg_match_all('/::GetWithId\(\'?(\w+)\'?/i',$str, $matches_post);
 		//if (count($matches_post[1])) print_r($matches_post[1]);
 		foreach($matches_post[1] as $m){
