@@ -59,7 +59,7 @@ function mixin($text) {
 	//echo 'Mixin body: ' . $body . '<br/>';
 	global $mixins;
 	$mixins[$name] = $body;
-	return 'global $_mixin_file;$_mixin_file['.$name.']=__FILE__;';
+	return 'global $_mixin_file;$_mixin_file[\''.$name.'\']=\''.Compiler::actualFile().'\';';
 }
 /*
  class Mixed {

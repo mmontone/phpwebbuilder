@@ -206,6 +206,10 @@ class Compiler {
 		}
 
 	}
+	function actualFile(){
+		$comp =& Compiler::Instance();
+		return $comp->actualFile[count($comp->actualFile)-1];
+	}
 	function &Instance() {
 		global $compilerInstance;
 		return $compilerInstance;
