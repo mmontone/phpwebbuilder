@@ -1,9 +1,8 @@
 <templates>
-<!--
 	<template class="DateInput">
-		<input type="text" value="AA/MM/DD" id="theDate" name="theDate" />
-		<input type="button" value="Cal" onclick="displayCalendar(document.forms[0].theDate,'yyyy/mm/dd',this)" />
-	</template>  -->
+		<input type="text" value="AA/MM/DD" id="date" />
+		<input type="button" id="select" value="..." />
+	</template>
 	<template class="DateTimeInput">
 		<input type="text" value="AA/MM/DD" id="date" />
 		<input type="button" id="select" value="..." />
