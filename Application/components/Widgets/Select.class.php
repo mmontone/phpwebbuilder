@@ -11,6 +11,8 @@ class Select extends Widget {
     	parent::Widget($value_model);
 
     	$this->options =& $collection;
+        $this->options->onChangeSend('refreshView', $this);
+        $this->options->addInterestIn('refreshed', new FunctionObject($this, 'refreshView'));
 
     	if ($displayF!=null){
     		$this->displayF=$displayF;
@@ -41,8 +43,13 @@ class Select extends Widget {
 	}
 	function refresh(){
 		$this->options->refresh();
-		$this->viewHandler->updateFromCollection();
+		$this->refreshView();
 	}
+
+    function refreshView() {
+    	$this->viewHandler->updateFromCollection();
+    }
+
     function viewUpdated($new_value) {
 		$value = & $this->getValueIndex();
 		if ($new_value != $value)

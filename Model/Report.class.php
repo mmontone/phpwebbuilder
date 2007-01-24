@@ -344,6 +344,7 @@ class Report extends Collection{
 	function refresh() {
 		$n = null;
 		$this->elements=& $n;
+        $this->triggerEvent('refreshed', $this);
 	}
 	/**
 	  * Returns the restrictions (which rows, and which tables)

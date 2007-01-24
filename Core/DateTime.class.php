@@ -1,8 +1,9 @@
 <?php
 
 class DateTime extends PWBObject{
+    var $date;
 
-    function DateTime($date) {
+    function DateTime($date='') {
     	$this->setValue($date);
     	parent::PWBObject();
     }
