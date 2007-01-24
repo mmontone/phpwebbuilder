@@ -18,14 +18,22 @@ class SubdomainSelect extends Component {
 		parent::Component();
     }
 
+    function &getTargetSelect(&$value_model, &$target_elements, $displayFunction=null) {
+    	return new SelectMultiple($value_model, $target_elements, $displayFunction);
+    }
+
+    function &getSourceSelect(&$value_model, &$source_elements, $displayFunction=null) {
+        return new SelectMultiple($value_model, $source_elements, $displayFunction);
+    }
+
     function initialize() {
 		$this->selected_target_items =& new ObjectHolder(new Collection);
 		$this->selected_source_items =& new ObjectHolder(new Collection);
 
 		$this->source_items->removeAll($this->target_items->elements());
 
-		$target_list =& new SelectMultiple($this->selected_target_items, $this->target_items, new FunctionObject($this, 'printObject'));
-		$source_list =& new SelectMultiple($this->selected_source_items, $this->source_items, new FunctionObject($this, 'printObject'));
+		$target_list =& $this->getTargetSelect($this->selected_target_items, $this->target_items, new FunctionObject($this, 'printObject'));
+		$source_list =& $this->getSourceSelect($this->selected_source_items, $this->source_items, new FunctionObject($this, 'printObject'));
 
 		$this->addComponent($target_list, 'c_target_list');
 		$this->addComponent($source_list, 'c_source_list');
