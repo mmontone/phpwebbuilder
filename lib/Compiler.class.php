@@ -27,6 +27,7 @@ class Compiler {
 	var $compilingClasses = false;
 	var $classesCompiled = array();
 	var $class_in_file= array();
+	var $usageRules = array();
 	function Compiler() {
 		$this->toCompile = explode(',', @constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
@@ -98,6 +99,9 @@ class Compiler {
 		}
 		return class_exists($class);
 	}
+	function addClassUsageRule($ereg, $pos){
+		$this->usageRules[]=array('rule'=>$ereg,'pos'=>$pos);
+	}
 	function getInvolvedClasses($str, $file){
 		$int = preg_match_all('/[\s\t\n]+class[\s\t\n]+(\w+)/',$str, $matches_dec);
 		//if ($int>1) {print_r($matches_dec); exit;}
@@ -106,55 +110,19 @@ class Compiler {
 		}
 		if (!is_array($this->file_uses_class[$file]))$this->file_uses_class[$file] = array();
 		if (!is_array($this->file_reqs_class[$file]))$this->file_reqs_class[$file] = array();
-		preg_match_all('/(\w+)::/',$str, $matches_post);
-		foreach($matches_post[1] as $m){
-			if ($m!='parent') {
-				$this->file_uses_class[$file][] = $m;
-			}
-		}
-
-		preg_match_all('/new[\s\t\n]+(\w+)/',$str, $matches_post);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
-
-		preg_match_all('/::GetWithIndex\(\'?(\w+)\'?/i',$str, $matches_post);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
-
-		preg_match_all('/PersistentCollection\(\'?(\w+)\'?/i',$str, $matches_post);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
-
-		preg_match_all('/::GetWithId\(\'?(\w+)\'?/i',$str, $matches_post);
-		//if (count($matches_post[1])) print_r($matches_post[1]);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
-
-		preg_match_all('/TrackedObject::NewInstance\(\'?(\w+)\'?/i',$str, $matches_post);
-		//if (count($matches_post[1])) print_r($matches_post[1]);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
-
-		preg_match_all('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',$str, $matches_post);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
 
 		preg_match_all('/[\s\t\n]+extends[\s\t\n]+(\w+)/',$str, $matches_pre);
 		foreach($matches_pre[1] as $m){
 			$this->file_reqs_class[$file][] = $m;
 		}
-		preg_match_all('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',$str, $matches_post);
-		//if (count($matches_post[1])) print_r($matches_post[1]);
-		foreach($matches_post[1] as $m){
-			$this->file_uses_class[$file][] = $m;
-		}
 
+
+		foreach($this->usageRules as $ur){
+			preg_match_all($ur['rule'],$str, $matches_post);
+			foreach($matches_post[$ur['pos']] as $m){
+				$this->file_uses_class[$file][] = $m;
+			}
+		}
 
 	}
 	function compileClass($class){
@@ -205,10 +173,20 @@ class Compiler {
 		//print_backtrace('compiling '.$file .' to '.$tmpname);
 		if (isset($_REQUEST['recompile']) or ((@constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
+			$this->addClassUsageRule('/(\w+)::/',1);
+			$this->addClassUsageRule('/new[\s\t\n]+(\w+)/',1);
+			$this->addClassUsageRule('/::GetWithIndex\(\'?(\w+)\'?/i',1);
+			$this->addClassUsageRule('/PersistentCollection\(\'?(\w+)\'?/i',1);
+			$this->addClassUsageRule('/::GetWithId\(\'?(\w+)\'?/i',1);
+			$this->addClassUsageRule('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',1);
+			$this->addClassUsageRule('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',1);
+
 			$f = '<?php '.$this->compileFile($file).' ?>';
 			if (Compiler::CompileOpt('recursive')){
 				$this->compiledOutput = $tmpname;
 				Compiler::markAsCompiled('Compiler', __FILE__);
+				Compiler::markAsCompiled('parent', __FILE__);
+
 				$this->compiled = array();
 				$this->compilingClasses = true;
 				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
