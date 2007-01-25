@@ -10,8 +10,8 @@ if(isset($_REQUEST["app"])) define('app_class',$_REQUEST["app"]);
 class ConfigReader
 {
 	function &Instance() {
-		global $configReaderInstance;
-		return $configReaderInstance;
+		global $config_reader;
+		return $config_reader;
 	}
     function read($file_name, $section="") {
     	$configuration = $this->readAll($file_name);
@@ -111,6 +111,6 @@ class ConfigReader
     }
 }
 
-$configReaderInstance = new ConfigReader;
+$config_reader =& new ConfigReader();
 
 ?>
