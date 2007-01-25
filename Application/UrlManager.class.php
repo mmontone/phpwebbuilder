@@ -40,7 +40,7 @@ class UrlManager extends PWBObject{
     function navigate($bookmark, $params){
     	$this->setUrl($this->setBookmarkTarget($bookmark, $params));
     	$bmc = $bookmark.'Bookmark';
-    	if (class_exists($bmc)){
+    	if (Compiler::requiredClass($bmc)){
 	    	$bm =& new $bmc;
 	    	$bm->launch($this->window, $params);
     	} else {

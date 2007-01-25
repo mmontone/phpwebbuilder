@@ -8,7 +8,7 @@ class TableCheckAction {
 		$c = getClass($obj);
 		while(!$ok && $c!='') {
 			$name = $c.getClass($this);
-			$ok = class_exists($name);
+			$ok = Compiler::requiredClass($name);
 			$c = get_parent_class($c);
 		}
 		$v=& new $name;

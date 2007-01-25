@@ -7,7 +7,7 @@ class PWBFactory extends PWBObject{
 		$base = getClass($this);
 		while(!$ok) {
 			$name = $c.$base;
-			$ok = class_exists($name);
+			$ok = Compiler::requiredClass($name);
 			$c = get_parent_class($c);
 		}
 		//echo 'Creating ' . $name  . ' for ' . getClass($target) . '<br />';

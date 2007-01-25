@@ -1,17 +1,5 @@
 <?php
 
-#@preprocessor
-$comp =& Compiler::Instance();
-//if (!is_array($comp->class_in_file)) echo __FILE__;
-foreach($comp->class_in_file as $class=>$file){
-	//if (!isset($comp->classesCompiled[$file])) break;
-	if (isset($comp->class_in_file[$class.'htmlhandler'])) {
-		Compiler::usesClass(__FILE__, $class.'HTMLHandler');
-	}
-}
-//@#
-
-
 class PageRenderer // extends PWBObject
 {
 	var $page;

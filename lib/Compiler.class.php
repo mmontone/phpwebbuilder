@@ -74,6 +74,30 @@ class Compiler {
 		$comp->classesCompiled[$file] = $file;
 		$comp->class_in_file[strtolower($class)] = $file;
 	}
+	function compiledClass($class){
+		return isset($this->classesCompiled[$this->class_in_file[strtolower($class)]]);
+	}
+	function declaredClass($class){
+		return isset($this->class_in_file[strtolower($class)]);
+	}
+	function requiredClass($class){
+		if(Compiler::CompileOpt('recursive')){
+			$inst =& Compiler::Instance();
+			$c = $inst->compileClass($class);
+			if ($c!=null){
+				$old = file_get_contents($inst->compiledOutput);
+				$f = fopen($inst->compiledOutput, 'w');
+				fwrite($f,substr($old, 0,-2).$c.'?>');
+				fclose($f);
+				$cf = $inst->getCompFile();
+				$cfo = fopen($cf, 'w');
+				fwrite($cfo, serialize($inst));
+				fclose($cfo);
+				eval($c);
+			}
+		}
+		return class_exists($class);
+	}
 	function getInvolvedClasses($str, $file){
 		$int = preg_match_all('/[\s\t\n]+class[\s\t\n]+(\w+)/',$str, $matches_dec);
 		//if ($int>1) {print_r($matches_dec); exit;}
@@ -177,19 +201,17 @@ class Compiler {
 			$fo = fopen($tmpname, 'w');
 			$f = '<?php '.$this->compileFile($file).' ?>';
 			if (Compiler::CompileOpt('recursive')){
+				$this->compiledOutput = $tmpname;
 				Compiler::markAsCompiled('Compiler', __FILE__);
-				//Compiler::markAsCompiled('Session', $this->class_in_file[strtolower('Session')]);
 				$this->compiled = array();
-				//print_r($this->class_in_file);
-				//print_r($this->file_uses_class);
-				//print_r($this->file_reqs_class);
 				$this->compilingClasses = true;
 				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
 				$this->compilingClasses = false;
-				//echo 'Used Files: '.print_r(array_intersect($this->class_in_file, $this->classesCompiled), TRUE);
-				//echo 'Unused Files: '.print_r(array_diff(array_unique($this->class_in_file), $this->classesCompiled), TRUE);
+				$cf = $this->getCompFile();
+				$cfo = fopen($cf, 'w');
+				fwrite($cfo, serialize($this));
+				fclose($cfo);
 			}
-			//if ($fo==null) print_backtrace($file." temp: ".$tmpname);
 			fwrite($fo, $f);
 			fclose($fo);
 		}
@@ -222,6 +244,9 @@ class Compiler {
 	function getTempFile($file, $extra) {
 		return $this->getRealPath(implode(array($this->getTempDir($file),basename($file, '.php') , $extra , '.php')));
 	}
+	function getCompFile(){
+		return $this->getTempDir('').strtolower(constant('app_class')).'compiled.php';
+	}
 	function getTempDir($file) {
 		if ($this->tempdir === null) {
 			if (defined('compile_dir')) {
@@ -249,17 +274,7 @@ class Compiler {
 		return $dir;
 	}
 }
-$compilerInstance =& new Compiler;
-if (defined('compile')){
-	function compile_once($file) {
-		$compilerInstance =& Compiler::instance();
-		$compilerInstance->compile($file);
-	}
-} else {
-	function compile_once($file) {
-		require_once($file);
-	}
-}
+
 if (!function_exists('sys_get_temp_dir')) {
 	// Based on http://www.phpit.net/
 	// article/creating-zip-tar-archives-dynamically-php/2/
@@ -295,4 +310,22 @@ function mkdir_r($dirName, $rights=0777){
    return mkdir_r(dirname($dirName), $rights) &&
    		  @mkdir($dirName, $rights);
 }
+
+$compilerInstance =& new Compiler;
+$compfile = $compilerInstance->getCompFile();
+if (file_exists($compfile) && !$_REQUEST['recompile']){
+	$compilerInstance = unserialize(file_get_contents($compfile));
+}
+
+if (defined('compile')){
+	function compile_once($file) {
+		$compilerInstance =& Compiler::instance();
+		$compilerInstance->compile($file);
+	}
+} else {
+	function compile_once($file) {
+		require_once($file);
+	}
+}
+
 ?>

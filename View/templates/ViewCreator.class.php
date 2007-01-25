@@ -172,7 +172,7 @@ class ViewCreator {
 	}
 	function &instantiateFor(&$template, &$component){
 		$h = $template->getAttribute('handler');
-		if ($h != null && class_exists($h)){
+		if ($h != null && Compiler::requiredClass($h)){
 			$handler =& new $h;
 			$handler->setComponent($component);
 		} else {
