@@ -264,7 +264,7 @@ function includeAll() {
 		}
 		$comp->compile($file);
 		//$comp->compiled = array();
-		require_once pwbdir. 'Session/Session.php';
+		require_once pwbdir. 'Session/SessionStart.php';
 
 	} else {
 		eval(getIncludes());
@@ -666,11 +666,11 @@ function fatal_error_handler($buffer) {
 function handle_error($errno, $errstr, $errfile, $errline) {
 	//error_log("$errstr in $errfile on line $errline");
 	//print_backtrace($errno);
-/*	if ((strpos($errstr,'Only variables')!==FALSE) && Compiler::CompileOpt('assertions')) {
+	if ((strpos($errstr,'Only variables')!==FALSE) && Compiler::CompileOpt('assertions')) {
 	    global $last_lambda;
 		//print_r(array_slice($last_lambda, -10));
 		print_backtrace('REFERENCE ERROR!'.$errstr);
-	}*/
+	}
 	if ($errno == E_ERROR) {
 		echo "error</b>:<br/>";
 		print_backtrace();
