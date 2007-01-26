@@ -22,7 +22,7 @@ class Select extends Widget {
 		$this->initializeOptions();
     }
     function initializeOptions(){
-    	$this->options->onChangeSend('refreshView', $this);
+    	$this->options->onChangeSend('refresh', $this);
         if (($this->getValueIndex() == -1) and (!$this->options->isEmpty())) {
     		$this->setValueIndex($i = 0);
     	}
