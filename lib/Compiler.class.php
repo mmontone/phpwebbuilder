@@ -297,7 +297,7 @@ function mkdir_r($dirName, $rights=0777){
 
 $compilerInstance =& new Compiler;
 $compfile = $compilerInstance->getCompFile();
-if (file_exists($compfile) && !$_REQUEST['recompile']){
+if (Compiler::CompileOpt('recursive') && file_exists($compfile) && !$_REQUEST['recompile']){
 	$compilerInstance = unserialize(file_get_contents($compfile));
 }
 
