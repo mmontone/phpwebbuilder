@@ -14,11 +14,22 @@ class CompositeSelect extends Component {
     function initialize() {
 		$this->addComponent(new Text($this->value_model), 'display');
 		$this->navigator->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
-		$this->addComponent($this->navigator, 'nav');
+
+        // FIX: I am assuming that the collection is in $this->navigator->objects !!!
+        // Possible Solution: receive the collection in the constructor
+        $objs =& $this->navigator->objects;
+        $objs->onChangeSend('collectionChanged', $this);
+        //
+
+        $this->addComponent($this->navigator, 'nav');
     }
 
     function elementSelected(&$element) {
         $this->value_model->setValue($element);
+    }
+
+    function collectionChanged() {
+    	$this->value_model->setValue($n = null);
     }
 }
 
@@ -27,6 +38,11 @@ class CompositeMultipleSelect extends CompositeSelect {
         $col =& $this->value_model->getValue();
         $col->setEmpty();
         $col->add($element);
+    }
+
+    function collectionChanged() {
+    	$col =& $this->value_model->getValue();
+        $col->setEmpty();
     }
 }
 
