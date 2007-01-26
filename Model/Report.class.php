@@ -573,6 +573,22 @@ class Expression {
 	}
 }
 
+class NotExp extends Expression {
+	var $exp;
+    function NotExp(&$exp) {
+    	$this->exp =& $exp;
+        parent::Expression();
+    }
+
+    function evaluateIn(&$report) {
+
+    }
+
+    function printString() {
+    	return 'NOT (' . $this->exp->printString() . ')';
+    }
+}
+
 class AndExp extends Expression {
 	var $exps;
 
@@ -762,6 +778,25 @@ class ExistsExpression extends Expression {
 	function printString() {
 		return 'EXISTS (' . $this->query->selectsql() . ')';
 	}
+}
+
+class InExpression extends Expression {
+	var $query;
+    var $field;
+
+    function InExpression($field, &$query) {
+        $this->query =& $query;
+        $this->field = $field;
+        parent::Expression();
+    }
+
+    function evaluateIn(&$report) {
+
+    }
+
+    function printString() {
+        return $this->field . ' IN (' . $this->query->selectsql() . ')';
+    }
 }
 
 ?>
