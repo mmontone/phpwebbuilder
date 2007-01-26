@@ -62,7 +62,6 @@ class MySQLDriver extends DBDriver {
     }
 
     function &query($sql) {
-    	trace($sql. '<br/>');
     	#@sql_echo	echo($sql. '<br/>');@#
     	$this->openDatabase();
 		$this->setLastSQL($sql);

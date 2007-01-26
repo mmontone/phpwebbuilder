@@ -4,7 +4,7 @@ compile_once (dirname(__FILE__).'/DefaultCMS.class.php');
 compile_once (dirname(__FILE__).'/Administrator/RolesController.class.php');
 compile_once (dirname(__FILE__).'/Administrator/DBController.class.php');
 compile_once (dirname(__FILE__).'/Administrator/TablesChecker.class.php');
-compile_once (dirname(__FILE__).'/Administrator/TableCheckAction.class.php');
+compile_once (dirname(__FILE__).'/Administrator/FieldMapper.class.php');
 compile_once (dirname(__FILE__).'/Menu.class.php');
 compile_once (dirname(__FILE__).'/DefaultCMSApplication.class.php');
 compile_once (dirname(__FILE__).'/Files/FileLoader.class.php');

@@ -1,49 +1,36 @@
 <?
 
-class PersistentObjectTableCheckView {
+class ObjectMapper {
 	var $gotFields;
-	function &fieldsMap(&$fields){  /* la variable indica si los campos que referencian a otros objetos se incluyen*/
+	function &checkFields(&$fields){
 		$ret = array();
-		$obj =& $this->obj;
-		$fs =& $obj->getFields($fields);
-		for ($i=0; $i<count($fs) ; $i++) {
-			$field =& $fs[$i];
-			/*
-			$showField =& $this->fieldShowObject($field);
-			$ret[$field->colName]=& $showField->showMap($this);*/
-			$c =& new TableCheckAction;
-			$showField =& $c->viewFor($field);
-			$ret[$field->colName] = $showField->showMap($this);
+		foreach (array_keys($fields) as $i) {
+			$field =& $fields[$i];
+			$tca =& new FieldMapper;
+			$fieldMapper =& $tca->createFor($field);
+			$ret[$field->colName] = $fieldMapper->findModifications($this);
 		}
 		return $ret;
  	}
 
- 	function fieldsForm(&$linker, &$fields, $objFields){  /* la variable indica si los campos que referencian a otros objetos se incluyen*/
+ 	function createFields(&$fields){  /* la variable indica si los campos que referencian a otros objetos se incluyen*/
 		$ret = "";
-		$obj =& $this->obj;
-		$fs =& $obj->getFields($fields);
-		for ($i=0; $i<count($fs) ; $i++) {
-			$field =& $fs[$i];
-			/*
-			$showField =& $this->fieldShowObject($field);*/
-			$c =& new TableCheckAction;
-			$showField =& $c->viewFor($field);
-			$ret .= $showField->show($this, $linker, $objFields);
+		foreach (array_keys($fields) as $i) {
+			$field =& $fields[$i];
+			$c =& new FieldMapper;
+			$fieldMapper =& $c->createFor($field);
+			$ret .= $fieldMapper->creation($this);
 		}
 		return $ret;
  	}
 
-	function show () {
-		$table = $this->obj->getTable();
+	function analizeMods () {
+		$table = $this->object->getTable();
 		$sql = "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
 		$db =& DBSession::Instance();
-		$res = $db->SQLexec($sql, FALSE, $this->obj);
-		if (strcasecmp(getClass($this->obj),"ObjSQL")!=0) {
-			trace("Inspecting object ". getClass($this->obj));
+		$res = $db->query($sql);
 			if(mysql_num_rows($res)) {
-				trace("Tables with name $table are" . mysql_num_rows($res));
 				$ret ="";
-				//$sql = "SHOW COLUMNS FROM `" . $table."`";
 				$sql = $db->driver->showColumnsFromTableSQL($table);
 				$res = $db->query($sql);
 				$arr = $db->fetchArray($res);
@@ -51,22 +38,18 @@ class PersistentObjectTableCheckView {
 					$arr2 [$f["Field"]]=$f;
 				}
 				$this->gotFields = $arr2;
-				$arr = $this->fieldsMap($this->obj->fieldNames, TRUE);
+				$arr = $this->checkFields($this->object->fieldsWithNames($this->object->fieldNames));
 				$temp = '';
 				foreach ($arr as $name=>$f) {
 					$temp .= $f;
 				}
-				trace("Fields:" . print_r($f, TRUE));
-				trace("Deleting Extra Fields");
 				foreach ($this->gotFields as $name=>$f) {
 					if (!isset($arr[$f["Field"]])) {
-						trace("Field not found:" . print_r($f, TRUE));
-						//$temp .= "\n    DROP COLUMN `$name`, ";
 						$temp .= "\n     " . $db->driver->dropColumnSQL($name) . ", ";
 					}
 				}
 				$actunique = array();
-				$res =& $db->SQLExec("SHOW INDEX FROM `$table`", FALSE,$this);
+				$res =& $db->query("SHOW INDEX FROM `$table`");
 				$indexes = $db->fetchArray($res);
 				$has_super_unique = false;
 				foreach ($indexes as $f) {
@@ -77,11 +60,11 @@ class PersistentObjectTableCheckView {
 						$has_super_unique = true;
 					}
 				}
-				if (!$has_super_unique && isset($this->obj->fieldNames['super'])) {
+				if (!$has_super_unique && isset($this->object->fieldNames['super'])) {
 					$temp .= "\n   ADD UNIQUE (`super`), ";
 				}
-				$a = count(array_diff($actunique,$this->obj->indexFields));
-				$b = count(array_diff($this->obj->indexFields,$actunique));
+				$a = count(array_diff($actunique,$this->object->indexFields));
+				$b = count(array_diff($this->object->indexFields,$actunique));
 				if ($a+$b>0){
 					$ex=false;
 					foreach($indexes as $ind){
@@ -96,20 +79,14 @@ class PersistentObjectTableCheckView {
 					}
 				}
 				if ($temp!="") {
-					//$ret .= "\n-- Object: ".getClass($this->obj);
 					$ret .= "\nALTER TABLE `$table`";
 					$ret .= $temp;
 					$ret = substr($ret,0, -2);
 					$ret .= ";";
 				}
-		/*
-		Si est�, hay que verificar los atributos y el tipo. Si no, hay que crearla.
-		*/
 			} else {
-			//Si no est�, crearla:
-				//$ret = "\n-- Object: ".getClass($this->obj);
-				$ret =	"\nCREATE TABLE IF NOT EXISTS `$table` (" ;
-				$ret .= $this->fieldsForm($this, $this->obj->fieldNames, TRUE);
+				$ret =	"\nCREATE TABLE `$table` (" ;
+				$ret .= $this->createFields($this->object->fieldsWithNames($this->object->fieldNames));
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
 				if ($u) {
@@ -118,19 +95,16 @@ class PersistentObjectTableCheckView {
 				$ret .= "\n";
 				$ret .= "\n) " . $db->driver->tablePropertiesSQL() .";";
 			}
-		} else {
-			$ret="";
-		}
 		return $ret;
 	}
 	function uniques() {
-		$table = $this->obj->getTable();
-		$ifs =& $this->obj->allIndexFields();
+		$table = $this->object->getTable();
+		$ifs =& $this->object->allIndexFields();
 		$unis=array();
-		foreach ($this->obj->indexFields as $i){
+		foreach ($this->object->indexFields as $i){
 			$f =& $ifs[$i];
-			$tc =& new TableCheckAction;
-			$df =& $tc->viewFor($f);
+			$tca =& new FieldMapper;
+			$df =& $tca->createFor($f);
 			$unis []= $df->createUnique($i);
 		}
 		$uni = implode(', ',$unis);
@@ -140,11 +114,8 @@ class PersistentObjectTableCheckView {
 			return "";
 		}
 	}
-	function showField(&$field){
-		return $field->creation($this);
-	}
-	function showFieldMap(&$field){
-		$name = $field->obj->colName;
+	function findModifications(&$field){
+		$name = $field->field->colName;
 		$fields =& $this->gotFields;
 		if (isset($fields[$name])) {
 			$f =& $fields[$name];
@@ -176,9 +147,9 @@ class TablesChecker {
 		}
 		foreach ($arr as $o) {
 			$obj = new $o;
-			$dbc = new PersistentObjectTableCheckView;
-			$dbc->obj=$obj;
-			$mod .= $dbc->show();
+			$dbc = new ObjectMapper;
+			$dbc->object=$obj;
+			$mod .= $dbc->analizeMods();
 			$table = $obj->getTable();
 			unset($tables[$table]);
 			if ($mod!='' && $stepping) return $mod;
