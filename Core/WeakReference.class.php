@@ -14,7 +14,7 @@ class WeakReference {
 	function &getTarget(){
 		global $allObjectsInMem;
 		$obj =& $allObjectsInMem[$this->refId];
-		//if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}
+		#@gencheck if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}@#
 		return $obj;
 	}
 	function isNotNull(){
@@ -27,8 +27,14 @@ class WeakReference {
     }
 
     function printString() {
-    	$target =& $this->getTarget();
-        return $this->primPrintString('to ' . $target->printString());
+    	if ($this->isNotNull()) {
+            $target =& $this->getTarget();
+            $s = $target->printString();
+        }
+        else {
+        	$s = 'No target';
+        }
+        return $this->primPrintString('to ' . $s);
     }
 }
 
