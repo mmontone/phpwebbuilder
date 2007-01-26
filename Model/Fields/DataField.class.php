@@ -231,7 +231,13 @@ class DataField extends ValueModel {
 		return $this->getValue() == '';
 	}
 	function printString(){
-		return '('.getClass($this).')'.$this->owner->printString().':'.$this->displayString;
+		if (is_object($this->owner)) {
+			$owner = $this->owner->printString();
+		}
+        else {
+        	$owner = 'without owner';
+        }
+        return $this->primPrintString($owner . ':'.$this->displayString);
 	}
 }
 

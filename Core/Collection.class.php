@@ -21,6 +21,11 @@ class Collection extends PWBObject {
 	function isEmpty() {
 		return $this->size() == 0;
 	}
+
+    function setEmpty() {
+    	$n = null;
+        $this->elements =& $n;
+    }
 	/**
 	 *  Returns the first element of the collection, or null if it's empty
 	 */

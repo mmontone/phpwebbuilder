@@ -335,7 +335,13 @@ class Component extends PWBObject
 	}
 	function doNothing(){}
 	function printString(){
-		return getClass($this). ':'.$this->getInstanceId() . '('.$this->getId().')';
+		if (is_object($this->holder)) {
+			$id = $this->getId();
+		}
+        else {
+        	$id = 'without id';
+        }
+        return getClass($this). ':'.$this->getInstanceId() . '('. $id .')';
 	}
 
 }

@@ -5,11 +5,10 @@ $allObjectsInMem = array();
 class PWBObject
 {
     var $event_listeners = array();
-    var $listener_handle = 1;
     var $config;
     var $__instance_id = null;
 	var $creationParams;
-	var $event_handles = array();
+
 
 	/**
 	 * Special var, for get_subclass
@@ -103,7 +102,8 @@ class PWBObject
 	 */
 
     function addInterestIn($event, &$function) {
-       	$this->event_listeners[$event][] =& WeakFunctionObject::fromFunctionObject($function);
+       	#@track_events echo 'Adding interest in ' .  $this->printString() . '#' .$event . $function->printString() . '<br/>';@#
+        $this->event_listeners[$event][] =& WeakFunctionObject::fromFunctionObject($function);
     }
 	/**
 	 * Registers a callback for the changed event
@@ -136,14 +136,20 @@ class PWBObject
 
     function triggerEvent($event_selector, &$params) {
         $listeners =& $this->event_listeners[$event_selector];
-		if ($listeners == null) return;
-        //print_backtrace('Triggering event ' . $event_selector . ' listeners: ' . count($listeners));
+
+        #@track_events echo 'Triggering event: ' . $event_selector . ' in '. $this->printString() . '<br/>';@#
+
+        if ($listeners == null) return;
+
+
         foreach(array_keys($listeners) as $l) {
-        	$listener =& $listeners[$l];
-        	if ($listener->isNotNull()) {
-        		$listener->executeWithWith($this, $params);
+          	$listener =& $listeners[$l];
+            if ($listener->isNotNull()) {
+        		#@track_events echo 'Dispatching to ' . $listener->printString() . '<br/>';@#
+                $listener->executeWithWith($this, $params);
         	} else {
-				unset($listeners[$l]);
+				#@track_events echo 'Unsetting listener ' . $listener->printString() . '<br/>';@#
+                unset($listeners[$l]);
         	}
         }
     }
@@ -215,10 +221,16 @@ class PWBObject
         debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
         exit;
     }
-	function printString(){
-		return getClass($this). ':'.$this->getInstanceId();
+	function primPrintString($str=''){
+		if ($str !== '') {
+			$str = ' ' . $str;
+		}
+        return '[' . getClass($this). ':'.$this->getInstanceId() . $str .']';
 	}
 
+    function printString() {
+    	return $this->primPrintString();
+    }
 }
 
 

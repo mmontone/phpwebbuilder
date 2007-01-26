@@ -9,7 +9,6 @@ class CollectionNavigator extends Component {
 
 		if ($col == null) print_backtrace('No collection');
 		$this->col = & $col;
-		$this->col->addEventListener(array('changed'=>'refresh'), $this);
 		$this->classN = $col->getDataType();
 
 		if ($fields==null){
@@ -22,7 +21,8 @@ class CollectionNavigator extends Component {
 	}
 
 	function initialize() {
-		$this->addNavigationButtons();
+		$this->col->addInterestIn('changed', new FunctionObject($this, 'refresh'));
+        $this->addNavigationButtons();
 		$this->addComponent(new ActionLink($this, 'filter', 'filter', $n = null), 'filter');
 		$this->addComponent(new ActionLink($this, 'refresh', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 1);

@@ -27,5 +27,9 @@ class CommandLink extends Widget{
 	function execute(){
 		$this->proceed->execute();
 	}
+
+    function printString() {
+    	return $this->primPrintString($this->proceed->target->printString() . '->' . $this->proceed->method_name);
+    }
 }
 ?>

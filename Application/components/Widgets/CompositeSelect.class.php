@@ -22,4 +22,12 @@ class CompositeSelect extends Component {
     }
 }
 
+class CompositeMultipleSelect extends CompositeSelect {
+	function elementSelected(&$element) {
+        $col =& $this->value_model->getValue();
+        $col->setEmpty();
+        $col->add($element);
+    }
+}
+
 ?>

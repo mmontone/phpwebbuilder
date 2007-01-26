@@ -344,7 +344,7 @@ class Report extends Collection{
 	function refresh() {
 		$n = null;
 		$this->elements=& $n;
-        $this->triggerEvent('refreshed', $this);
+        //$this->triggerEvent('refreshed', $this);
 	}
 	/**
 	  * Returns the restrictions (which rows, and which tables)
@@ -420,7 +420,7 @@ class Report extends Collection{
 	 	return $obj;
 	}
 	function printString(){
-		return getClass($this). ':'.$this->getInstanceId() . '('.$this->getDataType().')';
+		return $this->primPrintString('('.$this->getDataType().')');
 	}
 }
 
@@ -430,8 +430,23 @@ class CompositeReport extends Report {
 	function CompositeReport(&$report) {
 		#@typecheck $report:Report@#
 		$this->report =& $report;
-		parent::Report();
+    	parent::Report();
+        $this->setEventsBubbling();
 	}
+
+    function printString() {
+        return $this->primPrintString('Report: ' . $this->report->printString());
+    }
+
+    function setEventsBubbling() {
+        $this->report->addInterestIn('changed', new FunctionObject($this, 'changed'));
+    }
+
+    /*
+    function bubbleUpEvent(&$collection, $event) {
+        $this->triggerEvent('changed', $this);
+        return;
+    }*/
 
 	function &getTables() {
 		return array_union_values($this->tables, $this->report->getTables());

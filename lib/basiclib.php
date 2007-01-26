@@ -113,6 +113,10 @@ function sql_echo($text) {
 	return optionalCompile('sql_echo', $text);
 }
 
+function track_events($text) {
+	return optionalCompile('track_events', $text);
+}
+
 #@check $x>$y@#
 function check($text) {
 	return optionalCompile('assertions',"assert('".addslashes($text)."');\n");

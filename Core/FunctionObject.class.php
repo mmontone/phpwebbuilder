@@ -92,6 +92,14 @@ class FunctionObject
     function setValue(&$value) {
     	return $this->callWith($value);
     }
+
+    function primPrintString($str){
+        return '[' . getClass($this) . ' ' . $str .']';
+    }
+
+    function printString() {
+        return $this->primPrintString($this->target->printString() . '->' . $this->method_name);
+    }
 }
 
 function &callback(&$target, $selector) {

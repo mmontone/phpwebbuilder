@@ -21,6 +21,15 @@ class WeakReference {
 		global $allObjectsInMem;
 		return ($allObjectsInMem[$this->refId] !== null);
 	}
+
+    function primPrintString($str){
+        return '[' . getClass($this).  ' ' . $str .']';
+    }
+
+    function printString() {
+    	$target =& $this->getTarget();
+        return $this->primPrintString('to ' . $target->printString());
+    }
 }
 
 class WeakFunctionObject extends FunctionObject{

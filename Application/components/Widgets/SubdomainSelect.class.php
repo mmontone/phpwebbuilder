@@ -26,9 +26,19 @@ class SubdomainSelect extends Component {
         return new SelectMultiple($value_model, $source_elements, $displayFunction);
     }
 
+    function &initializeTargetsHolder() {
+    	$h =& new ObjectHolder(new Collection);
+        return $h;
+    }
+
+    function &initializeSourcesHolder() {
+        $h =& new ObjectHolder(new Collection);
+        return $h;
+    }
+
     function initialize() {
-		$this->selected_target_items =& new ObjectHolder(new Collection);
-		$this->selected_source_items =& new ObjectHolder(new Collection);
+		$this->selected_target_items =& $this->initializeTargetsHolder();
+		$this->selected_source_items =& $this->initializeSourcesHolder();
 
 		$this->source_items->removeAll($this->target_items->elements());
 
@@ -50,8 +60,8 @@ class SubdomainSelect extends Component {
 		$source_elements =& $selected_source_items->elements();
 		$this->target_items->addAll($source_elements);
 		$this->source_items->removeAll($source_elements);
-		$this->setSelectedSourceItems(new Collection);
-		$this->setSelectedTargetItems(new Collection);
+		$this->initializeSourcesHolder();
+		$this->initializeTargetsHolder();
 		$this->triggerEvent('itemsAdded', $selected_source_items);
     }
 
@@ -60,13 +70,13 @@ class SubdomainSelect extends Component {
 		$target_elements =& $selected_target_items->elements();
 		$this->source_items->addAll($target_elements);
 		$this->target_items->removeAll($target_elements);
-		$this->setSelectedSourceItems(new Collection);
-		$this->setSelectedTargetItems(new Collection);
+		$this->initializeSourcesHolder();
+		$this->initializeTargetsHolder();
 		$this->triggerEvent('itemsRemoved', $selected_target_items);
     }
 
     function setSourceItems(&$items) {
-    	$this->setSelectedSourceItems(new Collection);
+    	$this->initializeSourcesHolder();
     	$this->source_items =& $items;
     }
 
