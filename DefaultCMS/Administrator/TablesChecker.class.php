@@ -148,7 +148,7 @@ class PersistentObjectTableCheckView {
 		$fields =& $this->gotFields;
 		if (isset($fields[$name])) {
 			$f =& $fields[$name];
-			if (!$field->compareType($f["Type"])) {
+			if (!$field->checkField($f)) {
 				$ret = "\n    MODIFY `$name` ".$field->type().", ";
 			} else $ret = "";
 			return $ret;

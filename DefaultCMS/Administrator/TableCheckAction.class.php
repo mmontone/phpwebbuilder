@@ -47,6 +47,9 @@ class TableCheckAction {
 	function createUnique($i){
 		return  "`".$i."`".$this->unique();
 	}
+	function checkField($f){
+		return $this->compareType($f["Type"]);
+	}
 }
 
 class CollectionFieldTableCheckAction extends TableCheckAction {
@@ -118,9 +121,11 @@ class VersionFieldTableCheckAction extends NumFieldTableCheckAction {
 
 class SuperFieldTableCheckAction extends NumFieldTableCheckAction {
 	function type(){
-		return "int(11) unsigned UNIQUE";
+		return "int(11) unsigned UNIQUE NOT NULL DEFAULT 0";
 	}
-
+	function checkField($f){
+		return $this->compareType($f["Type"]) && $f['Null']=='NO';
+	}
 }
 
 class FilenameFieldTableCheckAction extends TextFieldTableCheckAction {}
