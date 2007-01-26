@@ -118,7 +118,7 @@ class VersionFieldTableCheckAction extends NumFieldTableCheckAction {
 
 class SuperFieldTableCheckAction extends NumFieldTableCheckAction {
 	function type(){
-		return "int(11) unsigned";
+		return "int(11) unsigned UNIQUE";
 	}
 
 }

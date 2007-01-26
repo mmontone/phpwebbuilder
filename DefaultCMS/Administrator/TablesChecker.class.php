@@ -68,10 +68,17 @@ class PersistentObjectTableCheckView {
 				$actunique = array();
 				$res =& $db->SQLExec("SHOW INDEX FROM `$table`", FALSE,$this);
 				$indexes = $db->fetchArray($res);
+				$has_super_unique = false;
 				foreach ($indexes as $f) {
-					if ($f["Key_name"]!="PRIMARY") {
+					if ($f["Key_name"]!="PRIMARY" && $f["Column_name"]!="super") {
 						$actunique []= $f["Column_name"];
 					}
+					if ($f["Column_name"]=="super" && $f["Non_unique"]==0) {
+						$has_super_unique = true;
+					}
+				}
+				if (!$has_super_unique && isset($this->obj->fieldNames['super'])) {
+					$temp .= "\n   ADD UNIQUE (`super`), ";
 				}
 				$a = count(array_diff($actunique,$this->obj->indexFields));
 				$b = count(array_diff($this->obj->indexFields,$actunique));
