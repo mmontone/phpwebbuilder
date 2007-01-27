@@ -2,14 +2,16 @@
 class DBSessionHandler extends SessionHandler{
 	var $instance;
 	var $ss;
+	var $isStarted = false;
 	function open($path, $name){
 		$this->ss =& new PersistentCollection('Session');
-		$this->ss->conditions['session_name']=array('=',"'$name'");
+		$this->ss->setCondition('session_name','=',"'$name'");
 		$this->instance =& new Session;
 		$this->instance->session_name->setValue($name);
 		return true;
 	}
 	function close(){
+		$this->isStarted = false;
 		return $this->gc();
 	}
 	function read($sess_id){
@@ -17,8 +19,10 @@ class DBSessionHandler extends SessionHandler{
 		if (!$this->ss->isEmpty()){
 			$this->instance =& $this->ss->first();
 			$ret = $this->instance->session_data->getValue();
+			$this->isStarted = true;
 			return $ret;
 		} else {
+			$this->isStarted = true;
 			return '';
 		}
 	}
@@ -26,9 +30,9 @@ class DBSessionHandler extends SessionHandler{
 		$i =& $this->instance;
 		$i->session_data->setValue(addslashes($data));
 		$i->session_id->setValue($sess_id);
-		$i->last_updated->setValue($i->last_updated->now());
-		$ok = $i->save();
-		if (!$ok) print_backtrace('error saving session '.DBSession::lastError());
+		$i->last_updated->setNow();
+		$ex =& $i->save();
+		if (is_exception($ex)) print_backtrace('error saving session '.DBSession::lastError());
 		return true;
 	}
 	function destroy(){
@@ -39,6 +43,9 @@ class DBSessionHandler extends SessionHandler{
 		$q = 'DELETE FROM '.$this->instance->tableName().' WHERE last_updated < ADDTIME(now(), \'-00:20:00.0\')';
 		$db->query($q);
 		return true;
+	}
+	function isStarted(){
+		return $this->isStarted;
 	}
 	function setSessionHooks(){
 		$session_class =& $this;

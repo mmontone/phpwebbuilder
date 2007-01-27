@@ -19,9 +19,14 @@ class PWBObject
 	 */
     function PWBObject($params=array()) {
 		#@check is_array($params)@#
-		$iid =& Session::getAttribute('instance_id');
+		if (!Session::isStarted()) {
+			global $allObjectsInMem;
+			$iid=count($allObjectsInMem)-1000;
+		} else {
+			$iid =& Session::getAttribute('instance_id');
+		}
+		//echo ' id: '.$iid;
 		$this->__instance_id = ++$iid;
-		//Session::setAttribute('instance_id', ++$iid);
 		//$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->creationParams =& $params;
 		$this->__wakeup();

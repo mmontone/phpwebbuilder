@@ -157,7 +157,8 @@ class PersistentObject extends DescriptedObject {
 	 * Compares the object with another one, and returns if it's the same one.
 	 */
 	function is(&$other){
-		return parent::is($other) || (get_class($other)==get_class($this) && $other->id->getValue() == $this->id->getValue());
+		#@typecheck $other:PersistentObject@#
+		return parent::is($other) || (get_class($other)==get_class($this) && $other->getId() == $this->getId());
 	}
 	/**
 	 * Returns the relations for the tables so only one object is present
