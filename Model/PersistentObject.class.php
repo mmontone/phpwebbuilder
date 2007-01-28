@@ -55,7 +55,7 @@ class PersistentObject extends DescriptedObject {
 			$persistentObjects[getClass($this)][$id] =& $this;
 	}
 	function &getRealChild(){
-		if ($this->child===null) {
+		if (!isset($this->child)) {
 			return $this;
 		} else {
 			return $this->child->getRealChild();

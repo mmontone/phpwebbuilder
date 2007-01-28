@@ -128,7 +128,7 @@ class DescriptedObject extends PWBObject {
 	/**
 	 * Returns if the object is not a top class (that is, it's direct superclass is not persistent or descripted object)
 	 */
-	function isNotTopClass(& $class) {
+	function isNotTopClass($class) {
 		$cn = strtolower(get_parent_class($class));
 		return (strcmp($cn, 'persistentobject') != 0 && strcmp($cn, 'descriptedobject') != 0);
 	}

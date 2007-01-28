@@ -26,7 +26,7 @@ class WidgetHTMLHandler extends HTMLHandler{
 	}
 	function updateEvents(&$col){
 		$self =& $this;
-		$col->for_each(lambda('&$e', 'return $self->updateEvent($col, $e);', get_defined_vars()));
+		$col->for_each(lambda('&$e', '$self->updateEvent($col, $e); return $x;', get_defined_vars()));
 	}
 	function updateInvalid(&$vh){
 		if ($vh->getValue()){
