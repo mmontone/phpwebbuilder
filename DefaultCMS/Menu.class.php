@@ -21,7 +21,7 @@ class Menu extends Component {
 	function realMenus() {
 		$ms = & new PersistentCollection('MenuSection');
 		$self =& $this;
-		$ms->map($f=lambda('&$m','$self->realMenuSection($m);',get_defined_vars()));
+		$ms->map($f=lambda('&$m','$self->realMenuSection($m); return $x;',get_defined_vars()));
 	}
 	function realMenuSection(& $menu) {
 		$sect = & new MenuSectionComponent();
@@ -105,7 +105,7 @@ class MenuItemBookmark extends Bookmark{
 	function checkPermissions($params){
 		$con =& new $params['Component'];
 		$form = array();
-		parse_str($params['params'], $form);
+		parse_str(@$params['params'], $form);
 		return $con->hasPermission($form);
 	}
 }

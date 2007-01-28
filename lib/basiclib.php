@@ -473,7 +473,7 @@ function print_backtrace_and_exit($error) {
 function backtrace_string($error) {
 	$ret = "<h1>$error</h1>";
 	foreach (debug_backtrace() as $trace) {
-		$ret .= "<br/><b> {$trace['file']}: {$trace['line']} ({$trace['function']})</b>";
+		$ret .= "<br/><b> ".@$trace['file'].": ".@$trace['line']." ({$trace['function']})</b>";
 	}
 	return $ret;
 }

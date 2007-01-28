@@ -41,7 +41,8 @@ class Collection extends PWBObject {
 			return $es[$pos];
 		}
 		else {
-			return null;
+			$n = null;
+			return $n;
 		}
 	}
 	function atPut($pos, &$elem){

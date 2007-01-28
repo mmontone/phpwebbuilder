@@ -105,7 +105,7 @@ class DBController extends Component {
 		return $ok;
 	}
 
-	function &getMigrationCode() {
+	function getMigrationCode() {
 		return $this->new_version->migration_code->getValue();
 	}
 

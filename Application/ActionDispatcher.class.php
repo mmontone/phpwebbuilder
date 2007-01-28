@@ -68,7 +68,7 @@ class ActionDispatcher {
 				$comp1 = & $comp->componentAt($p);
 				if ($comp1 == null) {
 					$comp->redraw(); //We sent something to a thing that wasn't there. We render the parent to see what's really there.
-					return null;
+					return $comp1;
 				}
 				$comp = & $comp1;
 			}

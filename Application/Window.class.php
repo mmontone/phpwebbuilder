@@ -62,12 +62,13 @@ class Window extends ComponentHolder{
 		$myname = $this->owner_index();
 		$ws =& $this->parent->windows;
 		//echo $this->toFlush->printTree();
+		$modwins= array();
 		foreach(array_keys($ws) as $win){
 			if ($win!=$myname && $ws[$win]->hasModifications()){
 				$modwins[]=$win;
 			}
 		}
-		if ($modwins!=null)$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
+		if (count($modwins)>0)$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
 		echo $this->parent->page_renderer->render($this);
 		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
 	}

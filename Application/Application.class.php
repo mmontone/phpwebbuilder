@@ -14,7 +14,8 @@ class Application {
 		Session::setAttribute(getClass($this),$this);
 		$this->commands =& new Collection();
 		$this->createView();
-		Window::setActiveInstance(new Window($c =& new Component, 'root'));
+		$c =& new Component;
+		Window::setActiveInstance(new Window($c, 'root'));
 		$rc = & $this->setRootComponent();
 		#@typecheck $rc:Component@#
 		$c->stopAndCall($rc);

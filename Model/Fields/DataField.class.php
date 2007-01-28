@@ -125,7 +125,8 @@ class DataField extends ValueModel {
 		if ($data !== $this->buffered_value) {
 			$this->buffered_value =& $data;
 			$this->setModified(true);
-			$this->triggerEvent('changed', $no_params = null);
+			$no_params = null;
+			$this->triggerEvent('changed', $no_params);
 		}
 	}
 	/**
@@ -182,7 +183,7 @@ class DataField extends ValueModel {
 	 * Loads the value from the record
 	 */
 	function loadFrom($reg) {
-		$val = $reg[$this->sqlName()];
+		$val = @$reg[$this->sqlName()];
 		$this->setValue($val);
 	}
 	/**

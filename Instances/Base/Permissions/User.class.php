@@ -28,7 +28,8 @@ class User extends PersistentObject {
 			$u->getPermissions();
 			return $u;
 		} else
-			return FALSE;
+			$f = false;
+			return $f;
 	}
 
 

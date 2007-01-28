@@ -187,7 +187,8 @@ class Component extends PWBObject
 			$holder =& $this->__children[$index];
 			return $holder->component;
 		} else {
-			return false;
+			$false=false;
+			return $false;
 		}
 	}
 	function setChild($index, &$component){
@@ -302,7 +303,9 @@ class Component extends PWBObject
 	    	$cont=& $this->myContainer();
 	    	$pv->replaceChild($cont, $v);
 	    	$vp =& $this->parentView();
-    	  	$vp->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array(strtolower($cont->attributes['id'])=>&$cont));
+	    	$a1=array();$a2=array();
+	    	$a3=array(strtolower($cont->attributes['id'])=>&$cont);
+    	  	$vp->addTemplatesAndContainers($a1,$a2,$a3);
 	    	//$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array(strtolower($cont->attributes['id'])=>&$cont));
 	    }
 	}
@@ -327,7 +330,7 @@ class Component extends PWBObject
 		$ks = array_keys($this->__children);
 		foreach ($ks as $key){
 			$comp =& $this->componentAt($key);
-			$comp->getWidgets(&$ws);
+			$comp->getWidgets($ws);
 		}
 	}
 	function &getParent() {

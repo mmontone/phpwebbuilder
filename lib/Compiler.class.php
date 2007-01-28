@@ -240,6 +240,7 @@ class Compiler {
 			}
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
 		}
+		$fd=null;
 		foreach($this->compile_path as $p) {
 			if ($p!=''&&substr($file, 0, strlen($p))==$p) {
 				$fd = substr(dirname($file),strlen($p));

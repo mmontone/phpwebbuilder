@@ -13,8 +13,8 @@ class CommandLink extends Widget{
 		} else {
 			$this->textv =& new ValueHolder($params['text']);
 		}
-
-		parent::Widget($vm = null);
+		$vm = null;
+		parent::Widget($vm);
     }
     function checkAddingPermissions(){
 		return $this->proceed->hasPermissions();

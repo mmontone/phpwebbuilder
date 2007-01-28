@@ -4,7 +4,7 @@ class TextField extends DataField {
 	var $set = null;
 	function createInstance($params){
 		parent::createInstance($params);
-		$this->set = $params['set'];
+		$this->set = @$params['set'];
 	}
 	function defaultValues($params){
 		return array_merge(array('set'=>null), parent::defaultValues($params));
