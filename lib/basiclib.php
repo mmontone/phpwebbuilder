@@ -260,7 +260,8 @@ function includeAll() {
 	if (Compiler::CompileOpt('recursive')) {
 		$comp =& Compiler::Instance();
 		$file = $comp->getTempDir('').strtolower(constant('app_class')).'.php';
-		if (!file_exists($file) || isset($_REQUEST['recompile'])) {
+		if (!file_exists($file)) {$_REQUEST['recompile'] = 'yes';}
+		if (isset($_REQUEST['recompile'])) {
 			$fo = fopen($file, 'w');
 			$f = '<?php '.getIncludes().' ?>';
 			fwrite($fo, $f);
