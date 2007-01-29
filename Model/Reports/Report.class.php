@@ -425,8 +425,10 @@ class Report extends Collection{
 }
 
 #@preprocessor
-function select($query){
-	return "CompositeReport::fromQuery(\"$query\")";
+if (!function_exists('select')){
+	function select($query){
+		return "CompositeReport::fromQuery(\"$query\")";
+	}
 }
 @#
 

@@ -200,7 +200,12 @@ class Application {
 	function setDynVar($name, &$value) {
 		$this->dyn_vars[$name] =& $value;
 	}
-
+	function unsetDynVar($name) {
+		unset($this->dyn_vars[$name]);
+	}
+	function issetDynVar($name) {
+		return $this->getDynVar($name)!==null;
+	}
 	function &getDynVar($name) {
 		if (isset($this->dyn_vars[$name])) {
 			return $this->dyn_vars[$name];
@@ -208,7 +213,12 @@ class Application {
 		else {
 			$parent =& $this->getParent();
 			#@check $parent !== null@#
-			return $parent->getDynVar($name);
+			if (method_exists($parent,'getDynVar')) {
+				return $parent->getDynVar($name);
+			} else {
+				$n = null;
+				return $n;
+			}
 		}
 	}
 }//@#
