@@ -57,7 +57,7 @@ class CometPageRenderer extends PageRenderer {
 				echo $this->renderJSCommands($win);
 				$x=0;
 			}
-			sleep(1);
+			usleep(500000);
 		}
 	}
 
