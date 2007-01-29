@@ -130,9 +130,9 @@ class Widget extends Component {
 	function onEnterClickOn(&$comp) {
 		#@typecheck $comp:Component@#
 		$class = getClass($this);
-		$onkeypress = "if(event.which==13||event.keyCode==13) {
-			   	enqueueChange(getEventTarget(event),{$class}GetValue);
-				componentClicked(document.getElementById('" . $comp->getId() . "'));}";
+		$onkeypress = "if(event.which==13||event.keyCode==13) {".
+				"enqueueChange(getEventTarget(event),{$class}GetValue);".
+				"componentClicked(document.getElementById('" . $comp->getId() . "'));}";
 
 		$this->events->atPut('onkeypress', $a = array('onkeypress',$onkeypress));
 	}
@@ -140,13 +140,13 @@ class Widget extends Component {
 	// TODO: fix onEnterFocus
 	function onEnterFocus(&$comp) {
 		#@typecheck $comp:Component@#
-		$this->events->atPut('onkeypress', $a = array('onkeypress', "if(event.which==13||event.keyCode==13) {
-			    var fireOnThis = document.getElementById('" . $this->getId() ."');
-			    var evObj = document.createEvent('HTMLEvents');
-				evObj.initEvent('change', true, true );
-				fireOnThis.dispatchEvent(evObj);
-				fireOnThis = document.getElementById('" . $comp->getId() ."');
-				fireOnThis.focus();}"));
+		$this->events->atPut('onkeypress', $a = array('onkeypress', "if(event.which==13||event.keyCode==13) {".
+			    "var fireOnThis = document.getElementById('" . $this->getId() ."');".
+			    "var evObj = document.createEvent('HTMLEvents');".
+				"evObj.initEvent('change', true, true );".
+				"fireOnThis.dispatchEvent(evObj);".
+				"fireOnThis = document.getElementById('" . $comp->getId() ."');".
+				"fireOnThis.focus();}"));
 	}
 
 	function addInterestIn($event, & $event_callback) {

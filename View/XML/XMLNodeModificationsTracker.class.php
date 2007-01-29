@@ -136,6 +136,19 @@ class XMLNodeModificationsTracker extends XMLNode {
 		//$this->flushModifications();
 		return $xml;
 	}
+	function renderJsResponseCommand() {
+		if ($this->willFlush()) {
+			$tf =& $this->toFlush->getTarget();
+			$xml = $tf->renderJsResponseCommand();
+		} else {
+			$xml = '';
+		}
+		/*foreach (array_keys($this->childNodes) as $i) {
+			$xml .= $this->childNodes[$i]->renderAjaxResponseCommand();
+		}*/
+		//$this->flushModifications();
+		return $xml;
+	}
 }
 
 ?>

@@ -109,10 +109,18 @@ class Application {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
-		//$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
-		//$this->addScript(constant('pwb_url') . 'lib/history.js');
+		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
+		$this->addScript(constant('pwb_url') . 'lib/history.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
 	}
+
+	function addCometRenderingSpecificScripts() {
+		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
+		$this->addScript(constant('pwb_url') . 'lib/history.js');
+		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
+		$this->addScript(constant('pwb_url') . 'lib/comet.js');
+	}
+
 	function addXULRenderingSpecificScripts() {
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
         $this->addScript(constant('pwb_url') . 'lib/xul.js');
@@ -166,8 +174,7 @@ class Application {
 		return Translator::TranslateWith(translator,$msg);
 	}
 	function launch() {
-		$ad =& new ActionDispatcher();
-		$window =& $ad->dispatch();
+		$window =& ActionDispatcher::dispatch();
 		return $window->render();
 	}
 	function &getWidgets(){

@@ -1,5 +1,14 @@
 <?php
 
+#@preprocessor
+if (isset($_REQUEST['render'])) {
+			$page_renderer= $_REQUEST['render'].'PageRenderer';
+		} else {
+			$page_renderer = constant('page_renderer');
+		}
+Compiler::usesClass(__FILE__,$page_renderer);
+//@#
+
 class PageRenderer // extends PWBObject
 {
 	var $page;

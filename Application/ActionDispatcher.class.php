@@ -1,8 +1,23 @@
 <?php
 class ActionDispatcher {
 	function & dispatch() {
+		$ad =& new ActionDispatcher;
 		$form = array_merge($_REQUEST, $_FILES);
-		return $this->dispatchData($form);
+		return $ad->dispatchData($form);
+	}
+	function dispatchComet(){
+		$file = basedir.'/'.app_class.'-comet.txt';
+		if (file_exists($file)) {
+			$ad =& new ActionDispatcher;
+			$str = file_get_contents($file);
+			echo $str;
+			unlink($file);
+			$arr = unserialize($str);
+			$ad->dispatchData($arr);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	function &dispatchData($form){
 		$event = array ();

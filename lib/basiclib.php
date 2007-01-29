@@ -367,6 +367,11 @@ function getDirName($file){
 	return dirname($file);
 }
 
+function debug($str){
+	$app =& Application::Instance();
+	$app->page_renderer->debug($str);
+}
+
 /**
  * Fills a line in the log
  */

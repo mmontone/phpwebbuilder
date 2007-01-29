@@ -18,6 +18,19 @@ class XMLNodeModification extends PWBObject{
 	function printTree(){
 		return getClass($this);
 	}
+	function renderJsResponseCommand(){
+		$xml = $this->renderAjaxResponseCommand();
+		$xml = str_replace('"','\\"',$xml);
+		$xml = str_replace("\n","\\n",$xml);
+		echo
+		"<script>
+		var parser=new DOMParser();
+		var str = \"<ajax>".$xml."</ajax>\";
+  		var xmlDoc=	parser.parseFromString(str,'text/xml');
+		window.frameElement.ownerDocument.window.updatePage(str, xmlDoc);</script>";
+		flush();
+	}
+
 }
 
 class ReplaceNodeXMLNodeModification extends XMLNodeModification {
@@ -99,7 +112,12 @@ class ChildModificationsXMLNodeModification extends XMLNodeModification {
 		}
 		return $ret.'}';
 	}
-
+	function renderJsResponseCommand() {
+		foreach (array_keys($this->modifications) as $i) {
+			$mod =& $this->modifications[$i];
+			$mod->renderJsResponseCommand();
+		}
+	}
 }
 
 
