@@ -37,9 +37,7 @@ class CometPageRenderer extends PageRenderer {
 		}
 	}
 	function closeComet(){
-		echo '<script>' .
-				'parWin.closeComet()' .
-				'</script></body></html>';
+		echo '</body></html>';
 		flush();
 	}
 	function debug($str){
@@ -50,10 +48,13 @@ class CometPageRenderer extends PageRenderer {
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
    		register_shutdown_function(array(&$this, "closeComet"));
-		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;</script>';
+   		$interval=500000; //microseconds
+   		$maxsecs=20;       //seconds
+   		$maxtime=$maxsecs*1000000/$interval;
+		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
 		$x=0;
 		$ad =& ActionDispatcher::initializeComet();
-		while($x++<120){
+		while($x++<$maxtime && !connection_aborted()){
 			if ($count = $ad->dispatchComet()){
 				$win->wholeView->renderJsResponseCommand();
 				$win->modWindows();
@@ -62,11 +63,12 @@ class CometPageRenderer extends PageRenderer {
 				echo 'parWin.loadingStop(' .
 					'parWin.cometCount-='.$count.');' .
 				'</script>';
-				flush();
 				if($win->closeStream) {$this->closeComet(); break;}
 				$x=0;
+				set_time_limit($maxsecs);
 			}
-			usleep(500000);
+			flush();
+			usleep($interval);
 		}
 	}
 
