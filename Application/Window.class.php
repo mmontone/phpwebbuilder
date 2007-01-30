@@ -116,6 +116,9 @@ class Window extends ComponentHolder{
 		parent::ComponentHolder(&$component, $name, &$app);
 		$app->addWindow($this, $name);
 	}
+	function showStopLoading(){
+		$this->addAjaxCommand(new AjaxCommand('loadingStop(--parWin.cometCount);parWin.nothing',array()));
+	}
 	function open($params=''){
 		$w =& Window::getActiveInstance();
 		$w->addAjaxCommand(new AjaxCommand('openWindow',array($this->owner_index(), $params)));

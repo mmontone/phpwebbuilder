@@ -14,6 +14,10 @@
 
 
 class CometPageRenderer extends PageRenderer {
+	function CometPageRenderer(&$app){
+		parent::PageRenderer($app);
+		$this->ad =& ActionDispatcher::initializeComet();
+	}
 	function initPage(&$win){
 		parent::initPage($win);
 		$win->wholeView->setAttribute('onsubmit','refresh();');
@@ -53,16 +57,11 @@ class CometPageRenderer extends PageRenderer {
    		$maxtime=$maxsecs*1000000/$interval;
 		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
 		$x=0;
-		$ad =& ActionDispatcher::initializeComet();
 		while($x++<$maxtime && !connection_aborted()){
-			if ($count = $ad->dispatchComet()){
+			if ($count = $this->ad->dispatchComet()){
 				$win->wholeView->renderJsResponseCommand();
 				$win->modWindows();
-				echo '<script>';
 				echo $this->renderJSCommands($win);
-				echo 'parWin.loadingStop(' .
-					'parWin.cometCount-='.$count.');' .
-				'</script>';
 				if($win->closeStream) {$this->closeComet(); break;}
 				$x=0;
 				set_time_limit($maxsecs);
@@ -73,8 +72,12 @@ class CometPageRenderer extends PageRenderer {
 	}
 
 	function renderJSCommands(&$window) {
+
 		foreach (array_keys($window->ajaxCommands) as $i) {
-			$xml .= 'parWin.'.$window->ajaxCommands[$i]->renderStdResponseCommand();
+			echo '<script>';
+			echo 'parWin.'.$window->ajaxCommands[$i]->renderStdResponseCommand();
+			echo '</script>';
+
 		}
 		$a = array();
 		$window->ajaxCommands =& $a;

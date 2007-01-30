@@ -8,6 +8,9 @@ class ActionDispatcher {
 	function &initializeComet(){
 		$ad =& new ActionDispatcher;
 		$ad->file = ini_get('session.save_path').'/'.session_name().'-'.session_id().'.cmt';
+		$f = fopen($ad->file,'r+');
+		ftruncate($f,0);
+		fclose($f);
 		return $ad;
 	}
 	function dispatchComet(){
@@ -17,10 +20,12 @@ class ActionDispatcher {
 		if (strlen($strs)>0){
 			ftruncate($f,0);
 			fclose($f);
-			$arr = explode('newinput',$strs);
+			$arr = explode('<newinput>',$strs);
 			array_shift($arr);
 			foreach($arr as $str) {
-				$this->dispatchData(unserialize($str));
+				$params = unserialize($str);
+				$win =& $this->dispatchData($params);
+				if ($params['showStopLoading'])$win->showStopLoading();
 			}
 			return count($arr);
 		} else {
