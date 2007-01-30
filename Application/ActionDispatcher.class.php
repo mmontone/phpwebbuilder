@@ -5,18 +5,26 @@ class ActionDispatcher {
 		$form = array_merge($_REQUEST, $_FILES);
 		return $ad->dispatchData($form);
 	}
+	function &initializeComet(){
+		$ad =& new ActionDispatcher;
+		$ad->file = ini_get('session.save_path').'/'.session_name().'-'.session_id().'.cmt';
+		return $ad;
+	}
 	function dispatchComet(){
-		$file = basedir.'/'.app_class.'-comet.txt';
-		if (file_exists($file)) {
-			$ad =& new ActionDispatcher;
-			$str = file_get_contents($file);
-			echo $str;
-			unlink($file);
-			$arr = unserialize($str);
-			$ad->dispatchData($arr);
-			return true;
+		$f = fopen($this->file,'r+');
+		$strs = fgets($f);
+		if (strlen($strs)>0){
+			flock($f,LOCK_EX);
+			$arr = explode('newinput',$strs);
+			array_shift($arr);
+			foreach($arr as $str) {
+				$this->dispatchData(unserialize($str));
+			}
+			ftruncate($f,0);
+			fclose($f);
+			return count($arr);
 		} else {
-			return false;
+			return 0;
 		}
 	}
 	function &dispatchData($form){

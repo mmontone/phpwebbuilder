@@ -38,7 +38,7 @@ class CometPageRenderer extends PageRenderer {
 	}
 	function closeComet(){
 		echo '<script>' .
-				'window.frameElement.ownerDocument.window.closeComet()' .
+				'parWin.closeComet()' .
 				'</script></body></html>';
 	}
 	function debug($str){
@@ -49,12 +49,18 @@ class CometPageRenderer extends PageRenderer {
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
    		register_shutdown_function(array(&$this, "closeComet"));
-		echo "<html><body>";
+		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;</script>';
 		$x=0;
-		while($x++<60){
-			if (ActionDispatcher::dispatchComet()){
+		$ad =& ActionDispatcher::initializeComet();
+		while($x++<120){
+			if ($count = $ad->dispatchComet()){
 				$win->wholeView->renderJsResponseCommand();
+				echo '<script>';
 				echo $this->renderJSCommands($win);
+				echo 'parWin.loadingStop(' .
+					'parWin.cometCount-='.$count.');' .
+				'</script>';
+				flush();
 				$x=0;
 			}
 			usleep(500000);
@@ -62,13 +68,11 @@ class CometPageRenderer extends PageRenderer {
 	}
 
 	function renderJSCommands(&$window) {
-		$xml = '';
 		foreach (array_keys($window->ajaxCommands) as $i) {
-			$xml .= $window->ajaxCommands[$i]->renderJsResponseCommand();
+			$xml .= 'parWin.'.$window->ajaxCommands[$i]->renderStdResponseCommand();
 		}
 		$a = array();
 		$window->ajaxCommands =& $a;
-
 		return $xml;
 	}
 

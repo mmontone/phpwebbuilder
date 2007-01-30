@@ -115,9 +115,7 @@ class Application {
 	}
 
 	function addCometRenderingSpecificScripts() {
-		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
-		$this->addScript(constant('pwb_url') . 'lib/history.js');
-		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
+		$this->addAjaxRenderingSpecificScripts();
 		$this->addScript(constant('pwb_url') . 'lib/comet.js');
 	}
 
