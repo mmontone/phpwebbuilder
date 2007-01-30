@@ -12,18 +12,19 @@ class ActionDispatcher {
 	}
 	function dispatchComet(){
 		$f = fopen($this->file,'r+');
+		flock($f,LOCK_EX);
 		$strs = fgets($f);
 		if (strlen($strs)>0){
-			flock($f,LOCK_EX);
+			ftruncate($f,0);
+			fclose($f);
 			$arr = explode('newinput',$strs);
 			array_shift($arr);
 			foreach($arr as $str) {
 				$this->dispatchData(unserialize($str));
 			}
-			ftruncate($f,0);
-			fclose($f);
 			return count($arr);
 		} else {
+			fclose($f);
 			return 0;
 		}
 	}
