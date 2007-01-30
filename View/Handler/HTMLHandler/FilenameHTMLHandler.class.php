@@ -11,6 +11,8 @@ class FilenameHTMLHandler extends InputHTMLHandler{
 									'?basedir='.basedir.'&filenamefield='.$this->component->getId()
 									. '&app='.app_class));
 			$view->addCSSClass('uploadfile');
+			$w =& Window::getActiveInstance();
+			$w->closeStream=true;
 		} else {
 			$view->setTagName('span');
 			$view->removeChilds();
