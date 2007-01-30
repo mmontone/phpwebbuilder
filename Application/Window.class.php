@@ -58,7 +58,13 @@ class Window extends ComponentHolder{
 		return $this->opened && (count($this->toFlush->modifications) + count($this->ajaxCommands)) >0;
 	}
 	function render() {
+		$this->closeStream=false;
 		$this->opened=true;
+		$this->modWindows();
+		echo $this->parent->page_renderer->render($this);
+		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
+	}
+	function modWindows(){
 		$myname = $this->owner_index();
 		$ws =& $this->parent->windows;
 		//echo $this->toFlush->printTree();
@@ -68,9 +74,10 @@ class Window extends ComponentHolder{
 				$modwins[]=$win;
 			}
 		}
-		if (count($modwins)>0)$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
-		echo $this->parent->page_renderer->render($this);
-		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
+		if (count($modwins)>0) {
+			$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
+			$w->closeStream=true;
+		}
 	}
 	function getId() {
 		return "app";
@@ -112,6 +119,7 @@ class Window extends ComponentHolder{
 	function open($params=''){
 		$w =& Window::getActiveInstance();
 		$w->addAjaxCommand(new AjaxCommand('openWindow',array($this->owner_index(), $params)));
+		$w->closeStream=true;
 	}
 	function close(){
 		$this->addAjaxCommand(new AjaxCommand('window.close', array($this->owner_index())));

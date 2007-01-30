@@ -40,6 +40,7 @@ class CometPageRenderer extends PageRenderer {
 		echo '<script>' .
 				'parWin.closeComet()' .
 				'</script></body></html>';
+		flush();
 	}
 	function debug($str){
 			echo '<script>' .
@@ -55,12 +56,14 @@ class CometPageRenderer extends PageRenderer {
 		while($x++<120){
 			if ($count = $ad->dispatchComet()){
 				$win->wholeView->renderJsResponseCommand();
+				$win->modWindows();
 				echo '<script>';
 				echo $this->renderJSCommands($win);
 				echo 'parWin.loadingStop(' .
 					'parWin.cometCount-='.$count.');' .
 				'</script>';
 				flush();
+				if($win->closeStream) {$this->closeComet(); break;}
 				$x=0;
 			}
 			usleep(500000);
