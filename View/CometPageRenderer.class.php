@@ -81,7 +81,6 @@ class CometPageRenderer extends PageRenderer {
 		}
 		$a = array();
 		$window->ajaxCommands =& $a;
-		return $xml;
 	}
 
 	function toAjax($s) {
