@@ -2,6 +2,7 @@
 
 require_once 'md.php';
 require_once 'Compiler.class.php';
+require_once 'query_lang.php';
 
 //require_once 'md2.php';
 

@@ -36,13 +36,16 @@ class Report extends Collection{
 
 
 	function Report() {
-		$this->select_exp =& new AndExp;
+		$this->initializeSelectExp();
 		parent::Collection();
-
 	}
 
+    function initializeSelectExp() {
+        $this->select_exp =& new AndExp;
+    }
+
 	function addTable($table) {
-		$this->tables[] = $table;
+		$this->tables = array_union_values($this->tables, array($table));
 	}
 
 	function setTables($tables) {

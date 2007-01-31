@@ -94,9 +94,9 @@ class Collection extends PWBObject {
 	 *  Adds an element to the end of the collection
 	 */
 	function add(& $elem) {
-		$es = & $this->elements();
+        $es =& $this->elements;
 		$es[] = & $elem;
-		$this->triggerEvent('changed', $elem);
+        $this->triggerEvent('changed', $elem);
 	}
 	/**
 	 *  Removes the passed element from the collection
@@ -108,7 +108,7 @@ class Collection extends PWBObject {
 		if ($i == -1) {
 			return null;
 		} else {
-			$es = & $this->elements();
+			$es = & $this->elements;
 			$newelems = array();
 			foreach(array_keys($es) as $e) {
 				if ($e !== $i) {
@@ -239,10 +239,14 @@ class Collection extends PWBObject {
 	 *  Adds all of the elements of the array to the collection
 	 */
 	function addAll($arr) {
-		$ks = array_keys($arr);
-		foreach ($ks as $k) {
-			$this->add($arr[$k]);
-		}
+        $e = $this->disableEvent('changed');
+        $ks = array_keys($arr);
+        foreach ($ks as $k) {
+            $this->add($arr[$k]);
+        }
+
+        $this->enableEvent($e);
+        $this->triggerEvent('changed', $this);
 	}
 
 	function addAllFromCollection(&$collection) {
@@ -255,9 +259,13 @@ class Collection extends PWBObject {
 	 */
 
 	function removeAll($arr) {
-		foreach (array_keys($arr) as $k) {
-			$this->remove($arr[$k]);
-		}
+        $e = $this->disableEvent('changed');
+        $ks = array_keys($arr);
+        foreach (array_keys($arr) as $k) {
+            $this->remove($arr[$k]);
+        }
+        $this->enableEvent($e);
+        $this->triggerEvent('changed', $this);
 	}
 
 	function removeAllFromCollection(&$collection) {
@@ -282,5 +290,9 @@ class Collection extends PWBObject {
 	 */
 	function refresh() {
 	}
+
+    function printString() {
+    	return $this->primPrintString('size: ' . $this->size());
+    }
 }
 ?>

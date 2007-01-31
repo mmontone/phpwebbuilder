@@ -193,7 +193,12 @@ class PathExpression extends Expression {
 		$o =& new $datatype(array(),false);
 
 		foreach ($pp as $index) {
-			$class =& $o->$index->getDataType();
+            #@gencheck
+            if (!is_object($o->$index)) {
+                print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $datatype);
+            }
+            @#
+            $class =& $o->$index->getDataType();
 			$obj =& new $class(array(),false);
 			$report->addTables($obj->getTables());
 			$otable = $o->tableForField($index);
@@ -232,6 +237,54 @@ class ObjectPathExpression extends PathExpression {
 		$attr = $o->getTable() . '.id';
 		return $attr;
 	}
+}
+
+class CollectionPathExpression extends PathExpression {
+    var $collection_field;
+    var $var;
+    var $exp;
+
+    function CollectionPathExpression($path, $collection_field, $var) {
+        $this->collection_field = $collection_field;
+        $this->var = $var;
+        parent::PathExpression($path);
+    }
+
+    function evaluateIn(&$report) {
+        $o =& $this->registerPath($report);
+
+        $field = $this->collection_field;
+        $col_field =& $o->$field;
+
+        $type = $col_field->collection->getDataType();
+
+        if ($col_field->direct) {
+            $this->defineVar($this->var, $type);
+        }
+        else {
+            $link_obj =& new $type;
+            $table = $link_obj->getTable();
+            $target_field = $link_obj->target;
+
+            $target_obj =& new $target_field->datatype;
+            $and =& new AndExp;
+
+            $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field,'target'),
+                                                         'exp2' => new ValueExpression("`" . $target_obj->getTable() . '`.`id`'))));
+
+            $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field, 'owner'),
+                                                         'exp2' => new ValueExpression("`". $o->getTable() . '`.`id`'))));
+            $this->exp =& $and;
+
+            $report->defineVar($this->var, $target_field->datatype);
+
+            $this->exp->evaluateIn($report);
+        }
+    }
+
+    function printString() {
+        return $this->exp->printString();
+    }
 }
 
 class ExistsExpression extends Expression {
