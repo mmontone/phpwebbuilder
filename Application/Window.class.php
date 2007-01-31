@@ -76,7 +76,7 @@ class Window extends ComponentHolder{
 		}
 		if (count($modwins)>0) {
 			$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
-			$w->closeStream=true;
+			$this->closeStream=true;
 		}
 	}
 	function getId() {

@@ -8,7 +8,7 @@ class ActionDispatcher {
 	function &initializeComet(){
 		$ad =& new ActionDispatcher;
 		$ad->file = ini_get('session.save_path').'/'.session_name().'-'.session_id().'.cmt';
-		$f = fopen($ad->file,'r+');
+		$f = fopen($ad->file,'w');
 		ftruncate($f,0);
 		fclose($f);
 		return $ad;
