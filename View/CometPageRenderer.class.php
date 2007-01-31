@@ -52,7 +52,7 @@ class CometPageRenderer extends PageRenderer {
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
    		register_shutdown_function(array(&$this, "closeComet"));
-   		$interval=500000; //microseconds
+   		$interval=250000; //microseconds
    		$maxsecs=20;       //seconds
    		$maxtime=$maxsecs*1000000/$interval;
 		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
@@ -61,8 +61,8 @@ class CometPageRenderer extends PageRenderer {
 			if ($count = $this->ad->dispatchComet()){
 				$win->wholeView->renderJsResponseCommand();
 				$win->modWindows();
-				echo $this->renderJSCommands($win);
-				if($win->closeStream) {$this->closeComet(); break;}
+				$this->renderJSCommands($win);
+				if($win->closeStream) {$this->closeComet(); return;}
 				$x=0;
 				set_time_limit($maxsecs);
 			}
@@ -79,6 +79,7 @@ class CometPageRenderer extends PageRenderer {
 			echo '</script>';
 
 		}
+		flush();
 		$a = array();
 		$window->ajaxCommands =& $a;
 	}
