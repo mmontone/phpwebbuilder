@@ -430,7 +430,7 @@ class Report extends Collection{
 #@preprocessor
 if (!function_exists('select')){
 	function select($query){
-		return "CompositeReport::fromQuery(\"$query\")";
+		return "CompositeReport::fromQuery(\"$query\",get_defined_vars())";
 	}
 }
 @#

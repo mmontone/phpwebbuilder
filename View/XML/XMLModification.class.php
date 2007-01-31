@@ -46,6 +46,20 @@ class ReplaceNodeXMLNodeModification extends XMLNodeModification {
 		$xml .= '</repn>';
 		return $xml;
 	}
+	function renderJsResponseCommand(){
+		$id=$this->target->getId();
+		$xml = $this->replacement->render();
+		$xml = str_replace('"','\\"',$xml);
+		$xml = str_replace("\n","\\n",$xml);
+		echo
+		"<script>
+		var parser=new DOMParser();
+		var str = \"".$xml."\";
+		parser.innerHTML= str;
+		parWin.do_repn(parWin.document.getElementById('$id'),parser);
+		</script>";
+		flush();
+	}
 }
 
 

@@ -8,7 +8,7 @@ class CompositeReport extends Report {
 		parent :: Report();
 		$this->setEventsBubbling();
 	}
-	function & fromQuery($query) {
+	function & fromQuery($query, $env) {
 		preg_match('/^((\w)+)?' . '[\s\t\n]*' .
 		'(\((.*)\))?' . '[\s\t\n]*' .
 		'(from (.+))?' . '[\s\t\n]*' .
