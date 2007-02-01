@@ -8,31 +8,38 @@ class XULPageRenderer extends PageRenderer {
 		$app->addXULRenderingSpecificScripts();
 		//$app->addAjaxRenderingSpecificScripts();
 	}
-	function setPage(&$app, &$view){
-		$this->page=&$view;
+	function initPage(&$win){
+		#@typecheck $win:Window@#
+		$view =& $win->wholeView;
 		$view->setTagName('box');
-		$this->addVariable('app_class', getClass($app));
-		$this->addVariable('bookmark', $app->urlManager->actUrl);
-		$this->addVariable('basedir', basedir);
-		$this->addVariable('pwb_url', pwb_url);
+		$this->addVariable($view,'app_class', getClass($win->parent));
+		$this->addVariable($view,'bookmark', $app->urlManager->actUrl);
+		$this->addVariable($view,'basedir', basedir);
+		$this->addVariable($view,'pwb_url', pwb_url);
+		$this->addVariable($view,'window', $win->owner_index());
 	}
-	function addVariable($name, $val){
+	function addVariable(&$view,$name, $val){
 		$n =& new XMLVariable('textbox', $a=array());
 		$n->setAttribute('hidden', 'true');
 		$n->setAttribute('id', $name);
 		$n->setAttribute('value', $val);
 		$n->controller = 1;
-		$this->page->appendChild($n);
+		$view->appendChild($n);
 	}
-	function renderPage(&$app) {
+	function renderPage(&$win) {
+		#@typecheck $win:Window@#
+		#@typecheck $win->wholeView:XMLNode@#
 		header("Content-type: application/vnd.mozilla.xul+xml");
 		$ret = '<?xml version="1.0"?>
 		<?xml-stylesheet href="chrome://global/skin/" type="text/css" ?>';
-		foreach ($this->page->style_sheets as $c) {
-			$ret .= '<?xml-stylesheet href="' . $c[0] . '" type="text/css" ?>';
+		foreach ($this->app->style_sheets as $c) {
+			foreach($c as $k=>$v) {
+				$d .= $k.'="'.$v.'" ';
+			}
+			$ret .= '<?xml-stylesheet href="' . $d . '" type="text/css" ?>';
 		}
 		$ret .='<window id="main-window"
-    title="'.$this->page->title .'"
+    title="'.$win->wholeView->title .'"
     orient="horizontal" '
 	.'xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" '
 	.'xmlns:html="http://www.w3.org/1999/xhtml" '
@@ -48,22 +55,20 @@ class XULPageRenderer extends PageRenderer {
 		}
 
 
-		foreach ($this->page->scripts as $s) {
+		foreach ($this->app->scripts as $s) {
 			$ret .= '<script type="application/x-javascript" src="' . $s . '"/>';
 		}
 
 		$ret .= '<script type="application/x-javascript">';
 
-		foreach ($this->page->jsscripts as $s) {
+		foreach ($this->app->jsscripts as $s) {
 			  $ret .= $s;
 		}
 		$ret .= "</script>";
 
-		$page = $this->page->render();
+		$page = $win->wholeView->render();
 		$ret .= $page;
 		$ret .= '</window>';
-		//$this->page->flushModifications();
-
 		return $ret;
 	}
 	function templateExtension(){

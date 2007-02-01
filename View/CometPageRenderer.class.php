@@ -32,18 +32,6 @@ class CometPageRenderer extends PageRenderer {
 		#@typecheck $win:Window@#
 		return $this->initialPageRenderPage($win);
 	}
-	function render(&$win){
-		#@typecheck $win:Window@#
-		if (isset($_REQUEST['ajax'])&&$_REQUEST['ajax']=='true'){
-			return $this->cometRenderPage($win);
-		} else {
-			return parent::render($win);
-		}
-	}
-	function closeComet(){
-		echo '</body></html>';
-		flush();
-	}
 	function debug($str){
 			echo '<script>' .
 				'alert(\''.$str.'\');' .
@@ -51,7 +39,6 @@ class CometPageRenderer extends PageRenderer {
 	}
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
-   		register_shutdown_function(array(&$this, "closeComet"));
    		$interval=10000; //microseconds
    		$maxsecs=20;       //seconds
    		$maxtime=$maxsecs*1000000/$interval;

@@ -61,14 +61,16 @@ class PageRenderer // extends PWBObject
 		#@typecheck $win:Window@#
 		if (isset($_REQUEST['ajax'])&&$_REQUEST['ajax']=='true'){
 			return $this->ajaxRenderPage($win);
-		} else {
+		} else if (isset($_REQUEST['comet'])){
+			return $this->cometRenderPage($win);
+		} else	{
 			return $this->renderPage($win);
 		}
 	}
 	function ajaxRenderPage(&$win){
 		#@typecheck $win:Window@#
 		$initial_page_renderer = & new AjaxPageRenderer(Application::Instance());
-		return $initial_page_renderer->renderPage($win);
+		return $initial_page_renderer->ajaxRenderPage($win);
 	}
 	function templateExtension(){
 		return '.xml';
@@ -234,8 +236,6 @@ class StandardPageRenderer extends HTMLPageRenderer {
 
 		$ret .= $win->wholeView->render();
 		$ret .= '</body></html>';
-
-		//$this->page->flushModifications();
 
 		return $ret;
 	}
