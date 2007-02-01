@@ -26,6 +26,7 @@ class ActionDispatcher {
 				$params = unserialize($str);
 				$win =& $this->dispatchData($params);
 				if ($params['showStopLoading'])$win->showStopLoading();
+				$this->params = $params;
 			}
 			return count($arr);
 		} else {

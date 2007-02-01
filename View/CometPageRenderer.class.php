@@ -52,7 +52,7 @@ class CometPageRenderer extends PageRenderer {
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
    		register_shutdown_function(array(&$this, "closeComet"));
-   		$interval=250000; //microseconds
+   		$interval=10000; //microseconds
    		$maxsecs=20;       //seconds
    		$maxtime=$maxsecs*1000000/$interval;
 		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
@@ -60,6 +60,7 @@ class CometPageRenderer extends PageRenderer {
 		while($x++<$maxtime && !connection_aborted()){
 			if ($count = $this->ad->dispatchComet()){
 				$win->wholeView->renderJsResponseCommand();
+				$win->toFlush =& new ChildModificationsXMLNodeModification($this);
 				$win->modWindows();
 				$this->renderJSCommands($win);
 				if($win->closeStream) {$this->closeComet(); return;}
