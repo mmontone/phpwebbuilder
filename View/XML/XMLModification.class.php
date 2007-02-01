@@ -19,49 +19,18 @@ class XMLNodeModification extends PWBObject{
 		return getClass($this);
 	}
 	function renderJsResponseCommand(){
+
 		$xml = $this->renderAjaxResponseCommand();
 		$xml = str_replace('"','\\"',$xml);
 		$xml = str_replace("\n","\\n",$xml);
 		echo
 		"<script>
-		var parser=new DOMParser();
 		var str = \"<ajax>".$xml."</ajax>\";
-  		var xmlDoc=	parser.parseFromString(str,'text/xml');
-		window.frameElement.ownerDocument.window.updatePage(str, xmlDoc);</script>";
+		window.frameElement.ownerDocument.window.updatePage(str, str2html(str));</script>";
 		flush();
 	}
 
 }
-
-class ReplaceNodeXMLNodeModification extends XMLNodeModification {
-	var $replacement;
-
-	function ReplaceNodeXMLNodeModification(& $replacement, &$target) {
-		parent::XMLNodeModification($target);
-		$this->replacement = & $replacement;
-	}
-	function renderAjaxResponseCommand() {
-		$xml = '<repn id="' . $this->target->getId() . '">';
-		$xml .= $this->replacement->render();
-		$xml .= '</repn>';
-		return $xml;
-	}
-	function renderJsResponseCommand(){
-		$id=$this->target->getId();
-		$xml = $this->replacement->render();
-		$xml = str_replace('"','\\"',$xml);
-		$xml = str_replace("\n","\\n",$xml);
-		echo
-		"<script>
-		var parser=new DOMParser();
-		var str = \"".$xml."\";
-		parser.innerHTML= str;
-		parWin.do_repn(parWin.document.getElementById('$id'),parser);
-		</script>";
-		flush();
-	}
-}
-
 
 class BookmarkXMLNodeModification extends XMLNodeModification {
 	var $hash;
@@ -73,6 +42,13 @@ class BookmarkXMLNodeModification extends XMLNodeModification {
 	function renderAjaxResponseCommand() {
 		$xml = '<bookmark hash="' . $this->hash. '"/>';
 		return $xml;
+	}
+	function renderJsResponseCommand(){
+		echo
+		"<script>".
+		"parWin.do_bookmark('$this->hash');".
+		"</script>";
+		flush();
 	}
 }
 
@@ -94,6 +70,17 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	}
 	function apply_replace(&$elem){
 		$this->replacement = & $elem;
+	}
+	function renderJsResponseCommand(){
+		$id=$this->childId;
+		$xml = $this->replacement->render();
+		$xml = str_replace('"','\\"',$xml);
+		$xml = str_replace("\n","\\n",$xml);
+		echo
+		"<script>".
+		"parWin.do_repn(parWin.document.getElementById('$id'),\"".$xml."\");".
+		"</script>";
+		flush();
 	}
 }
 
@@ -152,6 +139,17 @@ class InsertBeforeXMLNodeModification extends XMLNodeModification {
 	function apply_replace(&$elem){
 		$this->new = & $elem;
 	}
+	function renderJsResponseCommand(){
+		$id=$this->childId;
+		$xml = $this->replacement->render();
+		$xml = str_replace('"','\\"',$xml);
+		$xml = str_replace("\n","\\n",$xml);
+		echo
+		"<script>".
+		"parWin.do_insert(parWin.document.getElementById('$id'),\"".$xml."\");".
+		"</script>";
+		flush();
+	}
 }
 
 class AppendChildXMLNodeModification extends XMLNodeModification {
@@ -170,15 +168,16 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	function apply_replace(&$elem){
 		$this->child = & $elem;
 	}
-}
-
-class RemoveNodeXMLNodeModification extends XMLNodeModification {
-	function RemoveNodeXMLNodeModification(&$target)  {
-		parent::XMLNodeModification($target);
-	}
-	function renderAjaxResponseCommand() {
-		$xml = '<rem id="' . $this->target->getId() . '" />';
-		return $xml;
+	function renderJsResponseCommand(){
+		$id= $this->target->getId();
+		$xml = $this->child->render();
+		$xml = str_replace('"','\\"',$xml);
+		$xml = str_replace("\n","\\n",$xml);
+		echo
+		"<script>".
+		"parWin.do_append(parWin.document.getElementById('$id'),\"".$xml."\");".
+		"</script>";
+		flush();
 	}
 }
 
@@ -192,6 +191,13 @@ class RemoveChildXMLNodeModification extends XMLNodeModification {
 	function renderAjaxResponseCommand() {
 		$xml = '<rem id="' . $this->childId . '" />';
 		return $xml;
+	}
+	function renderJsResponseCommand(){
+		echo
+		"<script>".
+		"parWin.do_rem(parWin.document.getElementById('$this->childId'));".
+		"</script>";
+		flush();
 	}
 }
 
@@ -210,6 +216,14 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 		$ret.= '</setatt>';
 		return $ret;
 	}
+	function renderJsResponseCommand(){
+		$id=$this->target->getId();
+		echo
+		"<script>".
+		"parWin.do_setatt(parWin.document.getElementById('$id'), '$this->attribute','$this->value');".
+		"</script>";
+		flush();
+	}
 }
 
 class RemoveAttributeXMLNodeModification extends XMLNodeModification {
@@ -223,6 +237,14 @@ class RemoveAttributeXMLNodeModification extends XMLNodeModification {
 		$xml .= '<att>' . $this->attribute . '</att>';
 		$xml .= '</rematt>';
 		return $xml;
+	}
+	function renderJsResponseCommand(){
+		$id=$this->target->getId();
+		echo
+		"<script>".
+		"parWin.do_rematt(parWin.document.getElementById('$id'), '$this->attribute');".
+		"</script>";
+		flush();
 	}
 }
 ?>
