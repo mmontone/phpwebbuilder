@@ -18,11 +18,13 @@ class XMLNodeModification extends PWBObject{
 	function printTree(){
 		return getClass($this);
 	}
+	function xmlize($str){
+		$xml = str_replace('"','\\"',$str);
+		return str_replace("\n","\\n",$xml);
+	}
 	function renderJsResponseCommand(){
 
-		$xml = $this->renderAjaxResponseCommand();
-		$xml = str_replace('"','\\"',$xml);
-		$xml = str_replace("\n","\\n",$xml);
+		$xml = $this->xmlize($this->renderAjaxResponseCommand());
 		echo
 		"<script>
 		var str = \"<ajax>".$xml."</ajax>\";
@@ -73,9 +75,7 @@ class ReplaceChildXMLNodeModification extends XMLNodeModification {
 	}
 	function renderJsResponseCommand(){
 		$id=$this->childId;
-		$xml = $this->replacement->render();
-		$xml = str_replace('"','\\"',$xml);
-		$xml = str_replace("\n","\\n",$xml);
+		$xml = $this->xmlize($this->replacement->render());
 		echo
 		"<script>".
 		"parWin.do_repn(parWin.document.getElementById('$id'),\"".$xml."\");".
@@ -141,9 +141,7 @@ class InsertBeforeXMLNodeModification extends XMLNodeModification {
 	}
 	function renderJsResponseCommand(){
 		$id=$this->childId;
-		$xml = $this->replacement->render();
-		$xml = str_replace('"','\\"',$xml);
-		$xml = str_replace("\n","\\n",$xml);
+		$xml = $this->xmlize($this->replacement->render());
 		echo
 		"<script>".
 		"parWin.do_insert(parWin.document.getElementById('$id'),\"".$xml."\");".
@@ -170,9 +168,7 @@ class AppendChildXMLNodeModification extends XMLNodeModification {
 	}
 	function renderJsResponseCommand(){
 		$id= $this->target->getId();
-		$xml = $this->child->render();
-		$xml = str_replace('"','\\"',$xml);
-		$xml = str_replace("\n","\\n",$xml);
+		$xml = $this->xmlize($this->child->render());
 		echo
 		"<script>".
 		"parWin.do_append(parWin.document.getElementById('$id'),\"".$xml."\");".

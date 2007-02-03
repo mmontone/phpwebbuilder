@@ -121,6 +121,7 @@ class Application {
 
 	function addXULRenderingSpecificScripts() {
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
+		$this->addScript(constant('pwb_url') . 'lib/comet.js');
         $this->addScript(constant('pwb_url') . 'lib/xul.js');
 	}
 	function addStdRenderingSpecificScripts() {
@@ -173,7 +174,7 @@ class Application {
 	}
 	function launch() {
 		$window =& ActionDispatcher::dispatch();
-		return $window->render();
+		$window->render();
 	}
 	function &getWidgets(){
 		$ws=array();

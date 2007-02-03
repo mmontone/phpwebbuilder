@@ -61,7 +61,7 @@ class Window extends ComponentHolder{
 		$this->closeStream=false;
 		$this->opened=true;
 		$this->modWindows();
-		echo $this->parent->page_renderer->render($this);
+		$this->parent->page_renderer->render($this);
 		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
 	}
 	function modWindows(){

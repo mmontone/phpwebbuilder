@@ -42,23 +42,34 @@ class CometPageRenderer extends PageRenderer {
    		$interval=10000; //microseconds
    		$maxsecs=20;       //seconds
    		$maxtime=$maxsecs*1000000/$interval;
-		echo '<html><body><script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
 		$x=0;
-		while($x++<$maxtime && !connection_aborted()){
+		$this->sendHeaders();
+		while($x++<$maxtime){
 			if ($count = $this->ad->dispatchComet()){
-				$win->wholeView->renderJsResponseCommand();
+				$this->startCometWrapper();
+				$this->renderWindow($win);
 				$win->toFlush =& new ChildModificationsXMLNodeModification($this);
 				$win->modWindows();
 				$this->renderJSCommands($win);
-				if($win->closeStream) {$this->closeComet(); return;}
+				$this->stopCometWrapper();
+				if($win->closeStream) {break;}
 				$x=0;
 				set_time_limit($maxsecs);
 			}
 			flush();
 			usleep($interval);
 		}
+		$this->sendFooters();
 	}
-
+	function sendHeaders(){
+		echo '<script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
+	}
+	function sendFooters(){}
+	function renderWindow(&$win){
+		$win->wholeView->renderJsResponseCommand();
+	}
+	function startCometWrapper(){}
+	function stopCometWrapper(){}
 	function renderJSCommands(&$window) {
 
 		foreach (array_keys($window->ajaxCommands) as $i) {
@@ -76,5 +87,31 @@ class CometPageRenderer extends PageRenderer {
 		return $this->toXML($this->toHTML($s));
 	}
 
+}
+
+class XulCometPageRenderer extends CometPageRenderer{
+function sendHeaders(){
+		header('Content-type: multipart/x-mixed-replace;boundary="rn9012"');
+		$this->startCometWrapper();
+		echo '<script>parWin = window;</script>';
+		$this->stopCometWrapper();
+	}
+	function sendFooters(){
+		$this->startCometWrapper();
+		echo '<script>xrequest = null;</script>';
+		$this->stopCometWrapper();
+		echo "--\n";
+
+	}
+	function renderWindow(&$win){
+		//$win->wholeView->renderJsResponseCommand();
+		echo $win->wholeView->renderAjaxResponseCommand();
+	}
+	function startCometWrapper(){
+  		echo "Content-type: text/xml\n\n"; echo '<?xml version="1.0"?'.'><ajax>';
+	}
+	function stopCometWrapper(){
+  		echo '</ajax>';echo "\n--rn9012\n";flush();
+	}
 }
 ?>
