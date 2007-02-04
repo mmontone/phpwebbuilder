@@ -8,7 +8,9 @@ class DateInput extends Component {
 		$this->value_model =& $value_model;
 		parent::Component();
 	}
-
+	function getValue(){
+		return $this->date->getValue();
+	}
 	function initialize() {
 		$this->addComponent(new Input($this->value_model), 'date');
 		$this->addComponent(new Label('&nbsp;'), 'select');
