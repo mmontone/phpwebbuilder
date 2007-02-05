@@ -24,6 +24,8 @@
 ;;(setq pwb-recompile-after-config-saving "prompt")
 ;;(require 'pwb)
 
+(require 'cl)
+(require 'php-mode)
 
 ;; -----------------------------------
 (defvar pwb-verbose nil "Use debug-mode for compiling pwb files")
@@ -53,7 +55,7 @@
 			(equal ans "no"))
 	      (pwb-prim-compile-all)))
 	(pwb-prim-compile-all))))
-     
+
 ;; Open pwb-mode on *.php files
 (push '("\\.php\\'" . pwb-mode) auto-mode-alist)
 
@@ -71,7 +73,7 @@
 ;;(defun set-pwb-mode ()
 ;;  (setq pwb-buffer-mode t)
 ;;  (pwb-mode))
-    
+
 
 ;; Key binding
 (define-key pwb-mode-map (kbd "C-c C-k") 'pwb-compile-file)
@@ -88,7 +90,7 @@
 ;; Compile all menu
 (define-key pwb-mode-map [menu-bar PWB compile-all]
   '("Compile all" . pwb-compile-all))
-  
+
 ;; PHP Scripts
 (defvar pwb-compiler-command (concatenate 'string pwb-dir "scripts/compile-file.php") "Path to script for compiling files")
 (defvar pwb-compile-all-command (concatenate 'string pwb-dir "scripts/compile-all.php") "Path to script for compiling the proyect")
@@ -131,11 +133,11 @@
 	(function (gensym))
 	(hook-and-function (gensym)))
     `(progn (dolist (,hook-and-function ,hooks)
-	      (destructuring-bind (,hook ,function) ,hook-and-function 
+	      (destructuring-bind (,hook ,function) ,hook-and-function
 		(assert (remove-hook ,hook ,function t))))
 	    ,@body
 	    (dolist (,hook-and-function ,hooks)
-	      (destructuring-bind (,hook ,function) ,hook-and-function 
+	      (destructuring-bind (,hook ,function) ,hook-and-function
 		(add-hook ,hook ,function nil t))))))
 
 (provide 'pwb)

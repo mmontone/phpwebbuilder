@@ -19,7 +19,10 @@ class Condition extends Expression {
 	}
 
 	function printString() {
-		if ($this->evaluated_e1 == null) print_backtrace_and_exit(print_r($this, true));
+		#@gencheck
+        if ($this->evaluated_e1 == null) {
+			print_backtrace($this->evaluated_e1 . ' ' . $this->operation . ' ' . $this->evaluated_e2 . ' has not been evaluated');
+		}//@#
 		return $this->evaluated_e1 . ' ' . $this->operation . ' ' . $this->evaluated_e2;
 	}
 }
@@ -51,6 +54,10 @@ class NotExp extends Expression {
         parent::Expression();
     }
 
+    function isEmpty() {
+    	return false;
+    }
+
     function evaluateIn(&$report) {
 
     }
@@ -64,10 +71,7 @@ class AndExp extends Expression {
 	var $exps;
 
 	function AndExp() {
-		$c =& new Condition(array('exp1' => new ValueExpression(1), 'operation' => '=', 'exp2' => new ValueExpression(1)));
-		$n = null;
-		$c->evaluateIn($n);
-		$this->exps = array($c);
+		$this->exps = array();
 
 		parent::Expression();
 	}
@@ -81,19 +85,27 @@ class AndExp extends Expression {
 
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
-			$exp =& $this->exps[$e];
-			$exp->evaluateIn($report);
+			$this->exps[$e]->evaluateIn($report);
 		}
 	}
 
 	function printString() {
-		$printed = array();
-		foreach(array_keys($this->exps) as $e) {
-			$exp =& $this->exps[$e];
-			$printed[] = '(' . $exp->printString() . ')';
-		}
+	  $printed = array();
+	  foreach(array_keys($this->exps) as $e) {
+	    $p = $this->exps[$e]->printString();
+	    if ($p !== '') {
+	      $printed[] = $p;
+	    }
+	  }
 
-		return implode(' AND ', $printed);
+	  if (empty($printed)) {
+	    return '';
+	  }
+	  if (count($printed) == 1) {
+	    return $printed[0];
+	  }
+
+	  return '(' . implode(') AND (', $printed) . ')';
 	}
 
 	function isEmpty() {
@@ -105,9 +117,7 @@ class OrExp extends Expression {
 	var $exps;
 
 	function OrExp() {
-		$c =& new Condition(array('exp1' => new ValueExpression(1), 'operation' => '=', 'exp2' => new ValueExpression(2)));
-		$c->evaluateIn($n = null);
-		$this->exps = array($c);
+		$this->exps = array();
 
 		parent::Expression();
 	}
@@ -116,20 +126,29 @@ class OrExp extends Expression {
 	}
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
-			$exp =& $this->exps[$e];
-			$exp->evaluateIn($report);
+			$this->exps[$e]->evaluateIn($report);
 		}
 	}
 
 	function printString() {
-		$printed = array();
-		foreach(array_keys($this->exps) as $e) {
-			$exp =& $this->exps[$e];
-			$printed[] = '(' . $exp->printString() . ')';
-		}
+	  $printed = array();
+	  foreach(array_keys($this->exps) as $e) {
+	    $p = $this->exps[$e]->printString();
+	    if ($p !== '') {
+	      $printed[] = $p;
+	    }
+	  }
 
-		return implode(' OR ', $printed);
+	  if (empty($printed)) {
+	    return '';
+	  }
+	  if (count($printed) == 1) {
+	    return '';
+	  }
+
+	  return '(' . implode(') OR (', $printed) . ')';
 	}
+
 
 	function isEmpty() {
 		return empty($this->exps);
@@ -302,6 +321,10 @@ class ExistsExpression extends Expression {
 	function printString() {
 		return 'EXISTS (' . $this->query->selectsql() . ')';
 	}
+
+    function isEmpty() {
+    	return false;
+    }
 }
 
 class InExpression extends Expression {

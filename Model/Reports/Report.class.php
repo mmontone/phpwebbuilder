@@ -120,11 +120,13 @@ class Report extends Collection{
 		$cond = ' WHERE ' . $cond;*/
 
 		$select_exp =& $this->getSelectExp();
-		if ($select_exp->isEmpty()) {
-			$cond = ' ';
+		$printed = $select_exp->printString();
+
+		if ($printed == '') {
+		  $cond = ' ';
 		}
 		else {
-			$cond = ' WHERE ' . $select_exp->printString();
+		  $cond = ' WHERE ' . $printed;
 		}
 		return $cond;
 	}
@@ -354,8 +356,6 @@ class Report extends Collection{
 	  */
 
 	function restrictions() {
-		$select_exp =& $this->getSelectExp();
-		//$select_exp->evaluateIn($this);
 		return $this->tableNames() . $this->conditions();
 	}
 	/**
@@ -425,6 +425,46 @@ class Report extends Collection{
 	function printString(){
 		return $this->primPrintString('('.$this->getDataType().')');
 	}
+
+    /*
+    function add(&$element) {
+    	print_backtrace('Adding ' . $element->printString() . ' to ' . $this->printString());
+        #@gencheck
+        if (!is_a($element, $this->getDataType())) {
+            print_backtrace('Warning: ' . $element->printString() . ' is not of type ' . $this->getDataType());
+        }//@#
+
+        $c =& new EqualCondition(array('exp1' => new ValueExpression('`' . $element->getTable() . '`.id'),
+                                       'exp2' => new ValueExpression($element->getId())));
+        $c->evaluateIn($this);
+
+        $exp =& new OrExp;
+        $exp->addExpression($c);
+        $exp->addExpression($this->getSelectExp());
+
+        $this->select_exp =& $exp;
+        $this->changed();
+    }
+
+    function remove(&$element) {
+        print_backtrace('Removing ' . $element->printString() . ' from ' . $this->printString());
+        #@gencheck
+        if (!is_a($element, $this->getDataType())) {
+            print_backtrace('Warning: ' . $element->printString() . ' is not of type ' . $this->getDataType());
+        }//@#
+
+        $c =& new Condition(array('exp1' => new ValueExpression('`' . $element->getTable() . '`.id'),
+                                  'operation' => '<>',
+                                  'exp2' => new ValueExpression($element->getId())));
+        $c->evaluateIn($this);
+
+        $exp =& new AndExp;
+        $exp->addExpression($c);
+        $exp->addExpression($this->getSelectExp());
+
+        $this->select_exp =& $exp;
+        $this->changed();
+    }*/
 }
 
 #@preprocessor
@@ -450,9 +490,5 @@ if (!function_exists('select')){
      where tema.titulo LIKE $titulo and
               tema.reunion.publica @#
  */
-
-
-
-
 
 ?>
