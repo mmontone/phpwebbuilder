@@ -46,7 +46,7 @@ class CometPageRenderer extends PageRenderer {
 		$this->sendHeaders();
 		$starting = true;
 		while($x++<$maxtime){
-			if ($starting ||$count = $this->ad->dispatchComet()){
+			if ($starting || $this->ad->dispatchComet()){
 				$starting = false;
 				$this->startCometWrapper();
 				$this->renderWindow($win);

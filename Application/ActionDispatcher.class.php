@@ -8,9 +8,6 @@ class ActionDispatcher {
 	function &initializeComet(){
 		$ad =& new ActionDispatcher;
 		$ad->file = ini_get('session.save_path').'/'.session_name().'-'.session_id().'.cmt';
-		$f = fputs($f,'<newinput>'.serialize($_REQUEST));
-		ftruncate($f,0);
-		fclose($f);
 		return $ad;
 	}
 	function dispatchComet(){
@@ -28,10 +25,10 @@ class ActionDispatcher {
 				if ($params['showStopLoading'])$win->showStopLoading();
 				$this->params = $params;
 			}
-			return count($arr);
+			return true;
 		} else {
 			fclose($f);
-			return 0;
+			return false;
 		}
 	}
 	function &dispatchData($form){
