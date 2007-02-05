@@ -26,11 +26,13 @@ class XULPageRenderer extends PageRenderer {
 		$n->controller = 1;
 		$view->appendChild($n);
 	}
+	/*
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
 		$initial_page_renderer = & new XulCometPageRenderer(Application::Instance());
 		$initial_page_renderer->cometRenderPage($win);
 	}
+	*/
 	function renderPage(&$win) {
 		#@typecheck $win:Window@#
 		#@typecheck $win->wholeView:XMLNode@#
@@ -74,7 +76,7 @@ class XULPageRenderer extends PageRenderer {
 		$page = $win->wholeView->render();
 		$ret .= $page;
 		$ret .= '</window>';
-		return $ret;
+		echo $ret;
 	}
 	function templateExtension(){
 		return '.xul';

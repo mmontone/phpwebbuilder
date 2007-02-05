@@ -88,7 +88,7 @@ class CometPageRenderer extends PageRenderer {
 	}
 
 }
-
+/*
 class XulCometPageRenderer extends CometPageRenderer{
 function sendHeaders(){
 		header('Content-type: multipart/x-mixed-replace;boundary="rn9012"');
@@ -114,4 +114,6 @@ function sendHeaders(){
   		echo '</ajax>';echo "\n--rn9012\n";flush();
 	}
 }
+
+*/
 ?>
