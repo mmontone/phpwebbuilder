@@ -16,7 +16,6 @@
 class CometPageRenderer extends PageRenderer {
 	function CometPageRenderer(&$app){
 		parent::PageRenderer($app);
-		$this->ad =& ActionDispatcher::initializeComet();
 	}
 	function initPage(&$win){
 		parent::initPage($win);
@@ -43,9 +42,12 @@ class CometPageRenderer extends PageRenderer {
    		$maxsecs=20;       //seconds
    		$maxtime=$maxsecs*1000000/$interval;
 		$x=0;
+		$this->ad =& ActionDispatcher::initializeComet();
 		$this->sendHeaders();
+		$starting = true;
 		while($x++<$maxtime){
-			if ($count = $this->ad->dispatchComet()){
+			if ($starting ||$count = $this->ad->dispatchComet()){
+				$starting = false;
 				$this->startCometWrapper();
 				$this->renderWindow($win);
 				$win->toFlush =& new ChildModificationsXMLNodeModification($this);
