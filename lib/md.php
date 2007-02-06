@@ -11,6 +11,9 @@ require_once 'spyc-0.2.3/spyc.php';
      }
  @#*/
 
+function md_echo ($code) {
+	return Compiler::optionalCompile('md_echo', $code);
+}
 
 function defmdf($text) {
 	preg_match('/([[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*)\)[\s\t]*\{(.*)\}/s', $text, $matches);
@@ -215,12 +218,10 @@ function &mdcompcall($function, $args) {
 	$layers = $flayers;
 	$fname = null;
 
-	if (defined('md_echo') and (constant('md_echo') == 1)) {
-		$msg = 'Trying to match:<br/>';
-		$msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
-		$msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
-		echo $msg;
-	}
+	#@md_echo $msg = 'Trying to match:<br/>';
+	          $msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
+	          $msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
+	          echo $msg;//@#
 
 	while (!empty($layers) and $fname == null) {
 		$f = $function . '_begctx_' . implode('_', $layers) . '_endctx';
@@ -238,9 +239,7 @@ function &mdcompcall($function, $args) {
 			$params[$i] = '$args[' . $i . ']';
 		}
 
-		if (defined('md_echo') and (constant('md_echo') == 1)) {
-			echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';
-		}
+		#@md_echo echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';//@#
 		$res = null;
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
