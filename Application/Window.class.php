@@ -33,8 +33,7 @@ class Window extends ComponentHolder{
 			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;
 			$this->wholeView->getTemplatesAndContainers();
-			$this->windowTitle =& new Label($this->parent->getTitle());
-			$this->setWindowTitle();
+			$this->setTitle($this->parent->getTitle());
 			$this->component->linkToApp($this->parent);
 			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
 			$app->page_renderer->initialRender($this);
@@ -86,11 +85,8 @@ class Window extends ComponentHolder{
 		return $this->parent->getRealId() . CHILD_SEPARATOR.$this->owner_index();
 	}
 	function setTitle($title){
-		$this->windowTitle->setValue($title);
-	}
-
-	function setWindowTitle(){
-		$this->wholeView->title=$this->windowTitle->getValue();
+		$this->wholeView->title=$title;
+		$this->addAjaxCommand(new AjaxCommand('window.title=',array($title)));
 	}
 	function navigate($bookmark, $params){
 		$this->urlManager->navigate($bookmark, $params);
