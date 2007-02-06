@@ -31,7 +31,7 @@ class Compiler {
 	function Compiler() {
 		$this->toCompile = explode(',', @constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
-		$this->compile_path = array(dirname(dirname(__FILE__)).'/',constant('pwbdir'),constant('basedir'));
+		$this->compile_path = array(Compiler::getRealPath(dirname(dirname(__FILE__)).'/'),Compiler::getRealPath(constant('pwbdir')),Compiler::getRealPath(constant('basedir')));
 	}
 	function CompileOpt($opt) {
 		global $compilerInstance;
@@ -168,6 +168,7 @@ class Compiler {
 	   return $address;
 	}
 	function compile($file) {
+		$file = Compiler::getRealPath($file);
 		if (in_array($file, $this->compiled)) return;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
 		//print_backtrace('compiling '.$file .' to '.$tmpname);
@@ -248,7 +249,7 @@ class Compiler {
 			}
 		}
 		if ($fd==null) {
-			$fd = substr(dirname($file),strlen(constant('basedir')));
+			$fd = dirname($file);
 		}
 		$dir = $this->tempdir . $fd;
 		if (substr($dir,-1)!=="/") $dir.='/';
