@@ -174,11 +174,11 @@ class Compiler {
 		//print_backtrace('compiling '.$file .' to '.$tmpname);
 		if (isset($_REQUEST['recompile']) or ((@constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
-			$this->addClassUsageRule('/(\w+)::/',1);
+			$this->addClassUsageRule('/(\w+)[\s\t\n]*::/',1);
 			$this->addClassUsageRule('/new[\s\t\n]+(\w+)/',1);
-			$this->addClassUsageRule('/::GetWithIndex\(\'?(\w+)\'?/i',1);
+			$this->addClassUsageRule('/::[\s\t\n]*GetWithIndex\(\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/PersistentCollection\(\'?(\w+)\'?/i',1);
-			$this->addClassUsageRule('/::GetWithId\(\'?(\w+)\'?/i',1);
+			$this->addClassUsageRule('/::[\s\t\n]*GetWithId\(\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',1);
 
