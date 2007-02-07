@@ -70,9 +70,11 @@ class NotExp extends Expression {
 class AndExp extends Expression {
 	var $exps;
 
-	function AndExp() {
+	function AndExp($params=array()) {
 		$this->exps = array();
-
+		foreach(array_keys($params) as $k) {
+			$this->addExpression($params[$k]);
+		}
 		parent::Expression();
 	}
 	function addExpression(&$exp) {
@@ -116,8 +118,11 @@ class AndExp extends Expression {
 class OrExp extends Expression {
 	var $exps;
 
-	function OrExp() {
+	function OrExp($params=array()) {
 		$this->exps = array();
+		foreach(array_keys($params) as $k) {
+			$this->addExpression($params[$k]);
+		}
 
 		parent::Expression();
 	}

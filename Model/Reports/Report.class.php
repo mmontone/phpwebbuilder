@@ -466,11 +466,12 @@ class Report extends Collection{
         $this->changed();
     }*/
 }
-
 #@preprocessor
 if (!function_exists('select')){
+	Compiler::usesClass(__FILE__,'OQLCompiler');
 	function select($query){
-		return "CompositeReport::fromQuery(\"$query\",get_defined_vars())";
+		$oc =& new OQLCompiler;
+		return $oc->fromQuery($query,get_defined_vars());
 	}
 }
 @#
@@ -481,14 +482,14 @@ if (!function_exists('select')){
  	[from {<ident> : <class>[,]}]
  	[where <expression>]
 
- #@select Tema
+ #//@select Tema (a as a)
      from tema : Tema
      where tema.titulo LIKE $titulo and
-              tema.reunion.publica @#
- #@select Tema (count(*) as temas)
+              tema.reunion.publica = 1 @#
+ #//@select Tema (count as temas)
      from tema : Tema,reunion:Reunion
      where tema.titulo LIKE $titulo and
-              tema.reunion.publica @#
+              tema.reunion.publica = TRUE@#
  */
 
 ?>

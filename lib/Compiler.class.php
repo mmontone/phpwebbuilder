@@ -1,5 +1,6 @@
 <?php
 
+require_once(dirname(__FILE__).'/Compiler/Parser.class.php');
 
 function processMacro($matches) {
 	$macro = $matches[1];

@@ -41,7 +41,7 @@ class FunctionObject
     }
 
     function callString($method) {
-    	if ($this->target == null) {
+    	if ($this->target === null) {
     		return '$ret =& '. $method;
     	}
     	else {
@@ -49,7 +49,7 @@ class FunctionObject
     	}
     }
     function executeString($method) {
-    	if ($this->target == null) {
+    	if ($this->target === null) {
     		return $method;
     	}
     	else {

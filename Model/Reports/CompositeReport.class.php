@@ -8,65 +8,6 @@ class CompositeReport extends Report {
 		parent :: Report();
 		$this->setEventsBubbling();
 	}
-	function & fromQuery($query, $env) {
-		preg_match('/^((\w)+)?' . '[\s\t\n]*' .
-		'(\((.*)\))?' . '[\s\t\n]*' .
-		'(from (.+))?' . '[\s\t\n]*' .
-		'(where ((.|\n)*))?' . '$/i', $query, $matches);
-		echo '<br/>';
-		$class = $matches[1];
-		$c = & new CompositeReport(new PersistentCollection($class));
-		$subfields = $matches[4];
-		if ($subfields != '') {
-			foreach (explode(',', $subfields) as $sf) {
-				$fd = explode('as', $sf);
-				$fields[trim($fd[0])] = trim($fd[1]);
-			}
-			$c->fields = & $fields;
-		}
-
-		$from = $matches[6];
-		foreach (explode(',', $from) as $fs) {
-			$fd = explode(':', $fs);
-			$c->defineVar(trim($fd[0]), trim($fd[1]));
-		}
-		$where = $matches[8];
-		$matches = preg_split('/(\W)/i', str_replace("\n", ' ', $where), -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
-		$last = & new AndExp();
-		$word = '';
-		for ($i = 0;$i<count($matches);$i++) {
-			$match = $matches [$i];
-			switch ($match) {
-				case ' ' :break;
-				case 'or' :case 'OR' : case '(' : print_backtrace_and_exit("'$match' not supported yet");
-				case 'AND' :
-				case 'and' :
-					$lastExpression->exp2=& new ValueExpression($word);
-					$word = '';
-					break;
-				case '=': case '<=':case '>=':case '<':case '>':case 'LIKE':case 'like':
-					$path= substr($word, 0, strrpos($word,'.'));
-					$attr= substr($word, strrpos($word,'.')+1);
-					$last->addExpression($lastExpression =& new Condition(array (
-							'exp1' => new AttrPathExpression($path, $attr),
-							'operation'=>$match,
-							'exp2' => new Expression
-						)));
-					$word = '';
-					break;
-				case '$':
-				case '.' :
-				default :
-					$word .= $match;
-					//echo 'not handled:'.$word;
-			}
-		}
-		$lastExpression->exp2=& new ValueExpression($word);
-		$last->evaluateIn($c);
-		$c->select_exp->addExpression($last);
-		return $c;
-	}
-
 	function printString() {
 		return $this->primPrintString('Report: ' . $this->report->printString());
 	}
