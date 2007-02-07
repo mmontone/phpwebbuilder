@@ -42,7 +42,7 @@ class Compiler {
 		$f='';
 		$file = $this->getRealPath($file);
 		if (!in_array($file, $this->compiled)) {
-				$this->compiled[] = $file;
+				$this->compiled[$file] = $file;
 				$this->actualFile[] = $file;
 				//echo 'Adding file: ' . $file . '<br />';
 
@@ -66,6 +66,14 @@ class Compiler {
 				array_pop($this->actualFile);
 		}
 		return $f;
+	}
+	function forCompilation($class){
+		$comp =& Compiler::Instance();
+		$file = $comp->class_in_file[strtolower($class)];
+		unset($comp->compiled[$file]);
+		$f = $comp->compileFile($file);
+		eval($f);
+
 	}
 	function usesClass($file, $class){
 		$comp =& Compiler::Instance();
@@ -187,6 +195,7 @@ class Compiler {
 			if (Compiler::CompileOpt('recursive')){
 				$this->compiledOutput = $tmpname;
 				Compiler::markAsCompiled('Compiler', __FILE__);
+				Compiler::markAsCompiled('OQLCompiler', __FILE__);
 				Compiler::markAsCompiled('parent', __FILE__);
 
 				$this->compiled = array();

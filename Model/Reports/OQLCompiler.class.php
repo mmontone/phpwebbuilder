@@ -1,7 +1,34 @@
 <?php
 
-class OQLCompiler {
+class FObject {
+    function FObject(&$target, $method_name) {
+        #@gencheck if(!method_exists($target, $method_name)) { print_backtrace('Method ' . $method_name . ' does not exist in ' . getClass($target));        }//@#
+        $this->setTarget($target);
+        $this->method_name =& $method_name;
+    }
+	function setTarget(&$target){
+		$this->target =& $target;
+	}
+	function &getTarget(){
+		return $this->target;
+	}
+    function callString($method) {
+    	if ($this->target === null) {
+    		return '$ret =& '. $method;
+    	}
+    	else {
+       		return '$t =& $this->getTarget(); $ret =& $t->' . $method;
+    	}
+    }
+    function &callWith(&$params) {
+		$method_name = $this->method_name;
+		$ret ='';
+    	eval($this->callString($method_name) . '($params, $this->params);');
+    	return $ret;
+    }
+}
 
+class OQLCompiler {
 	function & fromQuery($query, $env) {
 		$variable = & new ListParser(new Identifier, new Symbol('\.'));
 		$value = & new AltParser($a0=array (
@@ -34,7 +61,7 @@ class OQLCompiler {
 				));
 
 			$oql = & new SeqParser(array (
-					'class'=> new Identifier,
+					'class'=>new MaybeParser( new Identifier),
 					'fields'=> new MaybeParser(
 						new SeqParser(array (
 							new Symbol('\('
@@ -77,11 +104,11 @@ class OQLCompiler {
 				$oqlg = & new Grammar(array (
 				'root' => 'oql',
 				'nt' => array (
-					'condition' => array(&$condition, new FunctionObject($self, 'parseCondition')),
-					'expression' => array(&$expression, new FunctionObject($self, 'parseExpression')),
-					'oql' => array(&$oql, new FunctionObject($self, 'parseOql')),
-					'variable' => array(&$variable, new FunctionObject($self, 'parseVariable')),
-					'value' => array(&$value, new FunctionObject($self, 'parseValue')),
+					'condition' => array(&$condition, new FObject($self, 'parseCondition')),
+					'expression' => array(&$expression, new FObject($self, 'parseExpression')),
+					'oql' => array(&$oql, new FObject($self, 'parseOql')),
+					'variable' => array(&$variable, new FObject($self, 'parseVariable')),
+					'value' => array(&$value, new FObject($self, 'parseValue')),
 				)
 			));
 			$config = $oqlg->compile($query);
@@ -94,12 +121,12 @@ class OQLCompiler {
 			if ($query['fields']['fields']!==null){
 				$ret .= "'fields'=>array(";
 				foreach($query['fields']['fields'] as $f){
-					$ret .= "'".$f[0]."',";
+					$ret .= "'".$f[0][0]."'=>".$f[0][2].",";
 				}
 				$ret .= "),";
 			}
 			if ($query['from']['from']!==null){
-				$ret .= "'vars'=>array(";
+				$ret .= "'from'=>array(";
 				foreach($query['from']['from'] as $f){
 
 					$ret .= "'".$f[0]['var'].'\'=>\''.$f[0]['class']."',";

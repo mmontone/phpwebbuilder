@@ -19,7 +19,6 @@ compile_once (dirname(__FILE__).'/Fields/EnumField.class.php');
 compile_once (dirname(__FILE__).'/Fields/EmailField.class.php');
 compile_once (dirname(__FILE__).'/Fields/WikiArea.class.php');
 compile_once (dirname(__FILE__).'/DescriptedObject.class.php');
-compile_once (dirname(__FILE__).'/Reports/OQLCompiler.class.php');
 compile_once (dirname(__FILE__).'/Reports/Report.class.php');
 compile_once (dirname(__FILE__).'/Reports/Condition.class.php');
 compile_once (dirname(__FILE__).'/Reports/CompositeReport.class.php');

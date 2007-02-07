@@ -167,8 +167,10 @@ class SeqParser extends Parser {
 		foreach (array_keys($this->children) as $k) {
 			$res = $this->children[$k]->parse($res[1]);
 			$ret[$k] = $res[0];
-			if ($res[0] === FALSE)
+			if ($res[0] === FALSE) {
+				//echo 'Unexpected "'.$res[1][0]. '"';
 				return array (FALSE,$tks);
+			}
 		}
 		return array ($ret,$res[1]);
 	}

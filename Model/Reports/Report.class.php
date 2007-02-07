@@ -35,9 +35,23 @@ class Report extends Collection{
 	  var $select = null;
 
 
-	function Report() {
+	function Report($params=array()) {
 		$this->initializeSelectExp();
 		parent::Collection();
+		if (isset($params['class'])){
+			$this->dataType =$params['class'];
+		}
+		if (isset($params['fields'])){
+			$this->fields =$params['fields'];
+		}
+		if (isset($params['from'])){
+			foreach($params['from'] as $var=>$class){
+				$this->defineVar($var,$class);
+			}
+		}
+		if (isset($params['exp'])){
+			$this->setSelectExp($params['exp']);
+		}
 	}
 
     function initializeSelectExp() {
@@ -467,8 +481,8 @@ class Report extends Collection{
     }*/
 }
 #@preprocessor
+require_once(dirname(__FILE__).'/OQLCompiler.class.php');
 if (!function_exists('select')){
-	Compiler::usesClass(__FILE__,'OQLCompiler');
 	function select($query){
 		$oc =& new OQLCompiler;
 		return $oc->fromQuery($query,get_defined_vars());

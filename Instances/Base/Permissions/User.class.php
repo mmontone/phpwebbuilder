@@ -77,35 +77,12 @@ class User extends PersistentObject {
 	}
 
 	function getPermissions() {
-		$r =& new Report();
-		$r->defineVar('u','UserRole');
-		$r->defineVar('p','RolePermission');
-
-		$c1 =& new EqualCondition(array('exp1' => new AttrPathExpression('u', 'role'),
-			                                'exp2' => new AttrPathExpression('p', 'role')));
-		$c2 =& new EqualCondition(array('exp1' => new AttrPathExpression('u', 'user'),
-			                                'exp2' => new ObjectExpression($this,'User')));
-
-		$r->setPathCondition($c1);
-		$r->setPathCondition($c2);
-		$r->select('permission');
+		$id = $this->getUserId();
+		$r =& #@select RolePermission (permission as permission) from p: RolePermission, u:UserRole where p.role =u.role AND u.user=$id@#;
+		$id;
 		foreach ($r->elements() as $p) {
 			$this->permissions[] = strtolower($p->permission->getValue());
 		}
-		/*
-		$db = & DBSession:: Instance();
-		$sql = implode(array (
-			'SELECT permission FROM ',
-			baseprefix,
-			'UserRole u, ',
-			baseprefix,
-			'RolePermission p',
-			' WHERE user =',
-		$this->getUserId(), ' AND u.role=p.role'));
-		$ps = $db->queryDB($sql);
-		foreach ($ps as $p) {
-			$this->permissions[] = strtolower($p['permission']);
-		}*/
 	}
 	function hasPermission($permission) {
 		return in_array(strtolower($permission), $this->permissions);
