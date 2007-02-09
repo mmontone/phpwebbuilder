@@ -1,35 +1,7 @@
 <?php
 
-class FObject {
-    function FObject(&$target, $method_name) {
-        #@gencheck if(!method_exists($target, $method_name)) { print_backtrace('Method ' . $method_name . ' does not exist in ' . getClass($target));        }//@#
-        $this->setTarget($target);
-        $this->method_name =& $method_name;
-    }
-	function setTarget(&$target){
-		$this->target =& $target;
-	}
-	function &getTarget(){
-		return $this->target;
-	}
-    function callString($method) {
-    	if ($this->target === null) {
-    		return '$ret =& '. $method;
-    	}
-    	else {
-       		return '$t =& $this->getTarget(); $ret =& $t->' . $method;
-    	}
-    }
-    function &callWith(&$params) {
-		$method_name = $this->method_name;
-		$ret ='';
-    	eval($this->callString($method_name) . '($params, $this->params);');
-    	return $ret;
-    }
-}
-
 class OQLCompiler {
-	function & fromQuery($query, $env) {
+	function fromQuery($query, $env) {
 		$variable = & new ListParser(new Identifier, new Symbol('\.'));
 		$value = & new AltParser($a0=array (
 			'var'=>new SubParser('variable'
@@ -100,43 +72,61 @@ class OQLCompiler {
 							))
 						),
 				));
-				$self =& $this;
 				$oqlg = & new Grammar(array (
 				'root' => 'oql',
 				'nt' => array (
-					'condition' => array(&$condition, new FObject($self, 'parseCondition')),
-					'expression' => array(&$expression, new FObject($self, 'parseExpression')),
-					'oql' => array(&$oql, new FObject($self, 'parseOql')),
-					'variable' => array(&$variable, new FObject($self, 'parseVariable')),
-					'value' => array(&$value, new FObject($self, 'parseValue')),
-				)
+					'condition' => &$condition,
+					'expression' => &$expression,
+					'oql' => &$oql,
+					'variable' => &$variable,
+					'value' => &$value,
+				)));
+
+			/*header('Content-type: text/plain');
+			$oqlg =&PHPCC::createGrammar(
+				'<oql(
+				   condition::=subexpression=>"\(",<expression>,"\)"|comparison=><value>,"=|<=|>=|LIKE",<value>.
+				   expression::=logical=><condition>,operator->"AND|OR|and|or",<condition>|condition=><condition>.
+				   oql::=class->["[a-zA-Z_][a-zA-Z_0-9]*"],fields->["\(",fields->{"[a-zA-Z_][a-zA-Z_0-9]*","as","[a-zA-Z_][a-zA-Z_0-9]*";","},"\)"],from->["from",from->{var->"[a-zA-Z_][a-zA-Z_0-9]*",":",class->"[a-zA-Z_][a-zA-Z_0-9]*";","}],where->["where",expression-><expression>].
+				   variable::={"[a-zA-Z_][a-zA-Z_0-9]*";"."}.
+				   value::=var=><variable>|value=>(number=>"[0-9]+"|str=>"\'[^\']\'"|phpvar=>"\$[a-zA-Z_][a-zA-Z_0-9]*"|bool=>"TRUE|FALSE|True|False|true|false").
+				   )>'
+				);*/
+			$oqlg->addPointCuts(array (
+					'condition' => new FObject($this, 'parseCondition'),
+					'expression' => new FObject($this, 'parseExpression'),
+					'oql' => new FObject($this, 'parseOql'),
+					'variable' => new FObject($this, 'parseVariable'),
+					'value' => new FObject($this, 'parseValue'),
 			));
-			$config = $oqlg->compile($query);
+			$config =& $oqlg->compile($query);
 			return 'new Report('.$config.');';
 		}
-		function parseOQL($query){
+		function &parseOQL(&$query){
 			if ($query['class']!==null){
-				$ret .= "'class'=>'".$query['class']."',";
+				$ret = "'class'=>'".$query['class']."',";
 			}
 			if ($query['fields']['fields']!==null){
 				$ret .= "'fields'=>array(";
 				foreach($query['fields']['fields'] as $f){
-					$ret .= "'".$f[0][0]."'=>".$f[0][2].",";
+					if ($f[0]==',')continue;
+					$ret .= "'".$f[0]."'=>'".$f[2]."',";
 				}
 				$ret .= "),";
 			}
 			if ($query['from']['from']!==null){
 				$ret .= "'from'=>array(";
 				foreach($query['from']['from'] as $f){
-
-					$ret .= "'".$f[0]['var'].'\'=>\''.$f[0]['class']."',";
+					if ($f[0]==',')continue;
+					$ret .= "'".$f['var'].'\'=>\''.$f['class']."',";
 				}
 				$ret .= "),";
 			}
 			if ($query['where']['expression']!==null){
 				$ret .= "'exp'=>".$query['where']['expression'];
 			}
-			return 'array('.$ret.')';
+			$ret = 'array('.$ret.')';
+			return $ret;
 		}
 		function &parseCondition(&$cond){
 			if ($cond['selector']=='comparison'){
@@ -172,11 +162,12 @@ class OQLCompiler {
 			}
 		}
 		function &parseVariable(&$cond){
-			for($i=0;$i<count($cond)-1;$i++){
-				$path .= $cond[$i][0]. '.';
+			$path = '';
+			for($i=0;$i<count($cond)-1;$i+=2){
+				$path .= $cond[$i]. '.';
 			}
 			$path = substr($path,0,-1);
-			$ap =  'new AttrPathExpression(\''.$path.'\',\''.$cond[$i][0].'\')';
+			$ap =  'new AttrPathExpression(\''.$path.'\',\''.$cond[$i].'\')';
 			return $ap;
 		}
 }

@@ -1,64 +1,62 @@
 <?php
 
+require_once dirname(__FILE__).'/PHPCC.class.php';
+
 class Grammar {
+	var $pointcuts = array();
 	function Grammar($params) {
 		$this->params = & $params;
 		foreach (array_keys($this->params['nt']) as $k) {
-			$this->params['nt'][$k][0]->setParent($this);
+			$this->params['nt'][$k]->setParent($this);
 		}
 	}
 	function &get($name) {
-		return $this->params['nt'][$name][0];
+		return $this->params['nt'][$name];
+	}
+	function addPointCuts($ps){
+		$this->pointcuts= array_merge($ps,$this->pointcuts);
 	}
 	function &getGrammar() {
 		return $this;
 	}
 	function &getProcessor($name) {
-		return $this->params['nt'][$name][1];
+		return $this->pointcuts[$name];
 	}
 	function &getRoot() {
 		$root = & $this->get($this->params['root']);
 		return $root;
 	}
-	//tokenize::str->[token]
-	function tokenize($str) {
-		$pregs = $this->tokenizer();
-		$pregs = array_unique($pregs);
-		rsort($pregs);
-		$expr = '/(' . implode('|', $pregs) . '|[^\s])/';
-		preg_match_all($expr, $str, $matches);
-		//print_r($matches[0]);
-		return $matches[0];
-	}
-	function tokenizer() {
-		$e = array ();
-		foreach (array_keys($this->params['nt']) as $k) {
-			$tk =$this->params['nt'][$k][0]->tokenizer();
-			$e = array_merge($e, $tk);
+	function &process($name, &$data){
+		$p =& $this->getProcessor($name);
+		if ($p===null){
+			return $data;
+		} else {
+			return $p->callWith($data);
 		}
-		return $e;
 	}
 	function &compile($str) {
 		$root =& $this->getRoot();
-		$res = $root->parse($this->tokenize($str));
-		//print_r($res[1]);
-		if (count($res[1])==0){
-			$res1 = $root->process($res[0]);
-			$proc =& $this->getProcessor($this->params['root']);
-			return $proc->callWith($res1);
+		$res = $root->parse($str);
+		if (preg_match('/^[\s\t\n]*$/',$res[1])){
+			$res1 =& $root->process($res[0]);
+			return $this->process($this->params['root'],$res1);
 		} else {
-			return $n=null;
+			$n=null;
+			var_dump($this->error);
+			return $this->error;
 		}
 	}
-
+	function setError($err){
+		$this->error=& $err;
+	}
 	function print_tree() {
-		echo "<(\n   ";
+		$ret =  "<".$this->params['root']."(\n   ";
 		foreach (array_keys($this->params['nt']) as $k) {
-			echo $k . '=>';
-			$c = & $this->params['nt'][$k][0]->print_tree();
-			echo ",\n   ";
+			$ret.= $k . '::='.
+				$this->params['nt'][$k]->print_tree().
+				".\n   ";
 		}
-		echo ")\n," . $this->params['root'] . ">\n";
+		return $ret . ")>";
 	}
 }
 
@@ -74,9 +72,10 @@ class Parser {
 	function setParent(&$parent){
 		$this->parentParser =& $parent;
 	}
-	function process($result){return $result;}
-	//tokenizer::[preg]
-	//parse::[token]->(FALSE|<result>,[token])
+	function &process($result){return $result;}
+	function setError($err){
+		$this->parentParser->setError($err);
+	}
 }
 
 class AltParser extends Parser {
@@ -95,37 +94,38 @@ class AltParser extends Parser {
 			$this->children[$k]->setParent($this);
 		}
 	}
-	function tokenizer() {
-		$e = array ();
-		foreach (array_keys($this->children) as $k) {
-			$tk = $this->children[$k]->tokenizer();
-			$e = array_merge($e, $tk);
-		}
-		return $e;
-	}
-	//parse(while(fst.children==null)),
 	function parse($tks) {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$res = $c->parse($tks);
 			if ($res[0] !== FALSE) {
-				$ret[0]= array($k,$res[0]);
-				$ret[1]=$res[1];
-				return $ret;
+				$res[0]= array($k,$res[0]);
+				return $res;
 			}
 		}
+		$this->parentParser->setError($this->errorBuffer);
 		return array(FALSE, $tks);
 	}
 	function print_tree() {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
-			$c->print_tree();
-			echo '|';
+			if (is_numeric($k)){
+				$ret []= $c->print_tree();
+			} else {
+				$ret []= $k.'=>'.$c->print_tree();
+			}
+
 		}
+		 return implode('|',$ret);
 	}
 	function &process($result) {
+		if (!$this->children[$result[0]]) {echo 'wrong alternative:';var_dump($result);}
 		$rets =&$this->children[$result[0]]->process($result[1]);
-		return array('selector'=>$result[0],'result'=>$rets);
+		 $arr = array('selector'=>$result[0],'result'=>$rets);
+		return $arr;
+	}
+	function setError($err){
+		$this->errorBuffer=& $err;
 	}
 }
 
@@ -146,40 +146,38 @@ class SeqParser extends Parser {
 		}
 	}
 
-	function process($result) {
+	function &process($result) {
 		foreach (array_keys($this->children) as $k) {
 			$rets [$k]=&$this->children[$k]->process($result[$k]);
 		}
 		return $rets;
 	}
-	//tokenizer::preg::concat(children::[preg])
-	function tokenizer() {
-		$e = array ();
-		foreach (array_keys($this->children) as $k) {
-			$tk = $this->children[$k]->tokenizer();
-			$e = array_merge($e, $tk);
-		}
-		return $e;
-	}
-	//parse(while(fst.children==null)),
 	function parse($tks) {
 		$res = array (FALSE,$tks);
 		foreach (array_keys($this->children) as $k) {
 			$res = $this->children[$k]->parse($res[1]);
 			$ret[$k] = $res[0];
-			if ($res[0] === FALSE) {
-				//echo 'Unexpected "'.$res[1][0]. '"';
+			if ($res[0] === FALSE ) {
 				return array (FALSE,$tks);
 			}
 		}
+
 		return array ($ret,$res[1]);
 	}
 	function print_tree() {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
-			$c->print_tree();
-			echo ',';
+			$t = $c->print_tree();
+			if (strcasecmp(get_class($c),'altparser')=='0'){
+				$t = '('.$t.')';
+			}
+			if (is_numeric($k)){
+				$ret []= $t;
+			} else {
+				$ret []= $k.'->'.$t;
+			}
 		}
+		return implode(',',$ret);
 	}
 }
 
@@ -192,11 +190,6 @@ class MaybeParser extends Parser {
 		parent :: setParent($parent);
 		$this->parser->setParent($this);
 	}
-	//tokenizer::preg
-	function tokenizer() {
-		return $this->parser->tokenizer();
-	}
-	//parse(while(fst.children==null)),
 	function parse($tks) {
 		$res = $this->parser->parse($tks);
 		if ($res[0] === FALSE) {
@@ -209,13 +202,14 @@ class MaybeParser extends Parser {
 		}
 	}
 	function print_tree() {
-		echo '(';
-		$this->parser->print_tree();
-		echo ')?';
+		return  '['.
+		$this->parser->print_tree().
+		']';
 	}
 	function &process($result) {
-		if ($result!=null) return $this->parser->process($result); else {return $n=null;}
+		if ($result!=null) return $this->parser->process($result); else {$n=null;return $n;}
 	}
+	function setError($err){}
 }
 
 class ListParser extends Parser {
@@ -228,14 +222,6 @@ class ListParser extends Parser {
 		parent :: setParent($parent);
 		$this->sep->setParent($this);
 		$this->parser->setParent($this);
-	}
-
-	function tokenizer() {
-		$tk = $this->sep->tokenizer();
-		$e = $tk;
-		$tk = $this->parser->tokenizer();
-		$e = array_merge($e, $tk);
-		return $e;
 	}
 	function parse($tks) {
 		/*first, we parse the list*/
@@ -262,15 +248,21 @@ class ListParser extends Parser {
 			$res1[1]
 		);
 	}
+	function setError($err){
+		$this->errorBuffer=& $err;
+	}
 	function print_tree() {
-		$this->sep->print_tree();
-		$this->parser->print_tree();
+		return '{'.
+		$this->parser->print_tree().
+		';'.
+		$this->sep->print_tree().
+		'}';
 	}
 	function &process($res) {
-		for ($i=0; $i<count($res);$i+=2){
-			$ret []=$this->parser->process($res[$i]);
-			if(isset($res[$i+1]))
-				$ret []=$this->sep->process($res[$i+1]);
+		for ($i=0; $i<count($res);$i++){
+			$ret []=&$this->parser->process($res[$i][0]);
+			if(isset($res[$i][1]))
+				$ret []=&$this->sep->process($res[$i][1]);
 		}
 		return $ret;
 	}
@@ -287,11 +279,6 @@ class MultiParser extends Parser {
 		parent :: setParent($parent);
 		$this->parser->setParent($this);
 	}
-	//tokenizer::preg
-	function tokenizer() {
-		return $this->parser->tokenizer();
-	}
-	//parse(while(fst.children==null)),
 	function parse($tks) {
 		$res = array (
 			1,
@@ -308,7 +295,7 @@ class MultiParser extends Parser {
 		);
 	}
 	function print_tree() {
-		$this->parser->print_tree();
+		return '('.$this->parser->print_tree(). ')*';
 	}
 	function &process($res) {
 		foreach($res as $r){
@@ -323,20 +310,16 @@ class EregSymbol extends Parser {
 		parent :: Parser();
 		$this->sym = $sym;
 	}
-	function tokenizer() {
-		return array ($this->sym);
-	}
 	function parse($tks) {
-		if (preg_match('/^' . $this->sym . '$/', $tks[0])) {
-			$res2 = $tks;
-			$res = array_shift($res2);
-			return array ($res,$res2);
+		if (preg_match('/^[\s\t\n]*(' . $this->sym . ')[\s\t\n]*/', $tks, $matches)) {
+			return array ($matches[1],substr($tks,strlen($matches[0])));
 		} else {
+			$this->setError('Unexpected "'.$tks[0].'", expecting "'.$this->sym.'" in'.$this->parentParser->print_tree().' with "'.print_r($tks,TRUE). '" remaining');
 			return array (FALSE,$tks);
 		}
 	}
 	function print_tree() {
-		echo '"' . $this->sym . '"';
+		return '"' . $this->sym . '"';
 	}
 }
 
@@ -346,10 +329,6 @@ class Symbol extends EregSymbol {
 class Symbols extends EregSymbol {
 	function Symbols($ss) {
 		parent :: EregSymbol(implode('|', $ss));
-		$this->ss = $ss;
-	}
-	function tokenizer() {
-		return $this->ss;
 	}
 }
 
@@ -364,24 +343,51 @@ class SubParser extends Parser {
 		parent :: Parser();
 		$this->subName = $name;
 	}
-	function tokenizer() {
-		return array ();
-	}
 	function parse($tks) {
 		$p = & $this->get($this->subName);
-		return $p->parse($tks);
+		$res = $p->parse($tks);
+		return $res;
 	}
 	function print_tree() {
-		echo '<' . $this->subName . '>';
+		return '<' . $this->subName . '>';
 	}
 	function &process($res){
-		$g =& $this->getGrammar();
-		$proc = $g->getProcessor($this->subName);
 		$p = & $this->get($this->subName);
 		$ret =& $p->process($res);
-		return $proc->callWith($ret);
+		$g =& $this->getGrammar();
+		return $g->process($this->subName, $ret);
 	}
 }
+
+
+class FObject {
+    function FObject(&$target, $method_name) {
+        #@gencheck if(!method_exists($target, $method_name)) { print_backtrace('Method ' . $method_name . ' does not exist in ' . getClass($target));        }//@#
+        $this->setTarget($target);
+        $this->method_name =& $method_name;
+    }
+	function setTarget(&$target){
+		$this->target =& $target;
+	}
+	function &getTarget(){
+		return $this->target;
+	}
+    function callString($method) {
+    	if ($this->target === null) {
+    		return '$ret =& '. $method;
+    	}
+    	else {
+       		return '$t =& $this->getTarget(); $ret =& $t->' . $method;
+    	}
+    }
+    function &callWith(&$params) {
+		$method_name = $this->method_name;
+		$ret ='';
+    	eval($this->callString($method_name) . '($params);');
+    	return $ret;
+    }
+}
+
 //PHP
 /*
 function parseFunction(){
@@ -397,7 +403,4 @@ $id =& new AltParser(array(new Identifier,functionCall()));
 print_r($id->compile('algo()'));
 */
 
-//OQL
-
-//select query:
 ?>
