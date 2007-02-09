@@ -35,11 +35,7 @@ class PWBObject
 	}
 
     function disableEvent($event) {
-        if (is_null($this->disabled_events)) {
-            $this->disabled_events[$event] = 0;
-        }
-
-        $this->disabled_events[$event]++;
+        @$this->disabled_events[$event]++;
         return $event;
     }
 
@@ -62,7 +58,7 @@ class PWBObject
     }
 
     function isEnabledEvent($event) {
-        return (($this->disabled_events[$event] == null) or ($this->disabled_events[$event] == 0));
+        return @$this->disabled_events[$event] == 0;
     }
 
 	/**
