@@ -2,7 +2,7 @@
 
 class OQLCompiler {
 	function fromQuery($query, $env) {
-		$variable = & new ListParser(new Identifier, new Symbol('\.'));
+		/*$variable = & new ListParser(new Identifier, new Symbol('\.'));
 		$value = & new AltParser($a0=array (
 			'var'=>new SubParser('variable'
 			), 'value'=>new AltParser(array('number'=>new EregSymbol('[0-9]+'),
@@ -80,18 +80,21 @@ class OQLCompiler {
 					'oql' => &$oql,
 					'variable' => &$variable,
 					'value' => &$value,
-				)));
+				)));*/
 
-			/*header('Content-type: text/plain');
+			//header('Content-type: text/plain');
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
 				   condition::=subexpression=>"\(",<expression>,"\)"|comparison=><value>,"=|<=|>=|LIKE",<value>.
 				   expression::=logical=><condition>,operator->"AND|OR|and|or",<condition>|condition=><condition>.
-				   oql::=class->["[a-zA-Z_][a-zA-Z_0-9]*"],fields->["\(",fields->{"[a-zA-Z_][a-zA-Z_0-9]*","as","[a-zA-Z_][a-zA-Z_0-9]*";","},"\)"],from->["from",from->{var->"[a-zA-Z_][a-zA-Z_0-9]*",":",class->"[a-zA-Z_][a-zA-Z_0-9]*";","}],where->["where",expression-><expression>].
-				   variable::={"[a-zA-Z_][a-zA-Z_0-9]*";"."}.
+				   oql::=class->["[a-zA-Z_][a-zA-Z_0-9]*"],
+				   		 fields->["\(",fields->{"[a-zA-Z_][a-zA-Z_0-9]*","as","[a-zA-Z_][a-zA-Z_0-9]*";","},"\)"],
+				   		 from->["from",from->{var->"[a-zA-Z_][a-zA-Z_0-9]*",":",class->"[a-zA-Z_][a-zA-Z_0-9]*";","}],
+				   		 where->["where",expression-><expression>].
+				   variable::={"[a-zA-Z_][a-zA-Z_0-9]*";"\."}.
 				   value::=var=><variable>|value=>(number=>"[0-9]+"|str=>"\'[^\']\'"|phpvar=>"\$[a-zA-Z_][a-zA-Z_0-9]*"|bool=>"TRUE|FALSE|True|False|true|false").
 				   )>'
-				);*/
+				);
 			$oqlg->addPointCuts(array (
 					'condition' => new FObject($this, 'parseCondition'),
 					'expression' => new FObject($this, 'parseExpression'),
@@ -103,27 +106,28 @@ class OQLCompiler {
 			return 'new Report('.$config.');';
 		}
 		function &parseOQL(&$query){
+			$query =& $query['result'];
 			if ($query['class']!==null){
-				$ret = "'class'=>'".$query['class']."',";
+				$ret = "'class'=>'".$query['class']['result'][0]."',";
 			}
-			if ($query['fields']['fields']!==null){
+			if ($query['fields']['result']['fields']!==null){
 				$ret .= "'fields'=>array(";
-				foreach($query['fields']['fields'] as $f){
+				foreach($query['fields']['result']['fields'] as $f){
 					if ($f[0]==',')continue;
-					$ret .= "'".$f[0]."'=>'".$f[2]."',";
+					$ret .= "'".$f['result'][0]."'=>'".$f['result'][2]."',";
 				}
 				$ret .= "),";
 			}
-			if ($query['from']['from']!==null){
+			if ($query['from']['result']['from']!==null){
 				$ret .= "'from'=>array(";
-				foreach($query['from']['from'] as $f){
-					if ($f[0]==',')continue;
-					$ret .= "'".$f['var'].'\'=>\''.$f['class']."',";
+				foreach($query['from']['result']['from'] as $f){
+					if ($f['result'][0]==',')continue;
+					$ret .= "'".$f['result']['var'].'\'=>\''.$f['result']['class']."',";
 				}
 				$ret .= "),";
 			}
-			if ($query['where']['expression']!==null){
-				$ret .= "'exp'=>".$query['where']['expression'];
+			if ($query['where']['result']['expression']!==null){
+				$ret .= "'exp'=>".$query['where']['result']['expression'];
 			}
 			$ret = 'array('.$ret.')';
 			return $ret;
@@ -155,19 +159,20 @@ class OQLCompiler {
 		}
 		function &parseValue(&$cond){
 			if ($cond['selector']=='value'){
-				$ve =  'new ValueExpression("'.$cond['result']['result'].'")';
+				$ve =  'new ValueExpression("'.$cond['result'][0]['result'][0].'")';
 				return $ve;
 			} else {
-				return $cond['result'];
+				return $cond['result'][0];
 			}
 		}
 		function &parseVariable(&$cond){
+			$cond = $cond['result'][0];
 			$path = '';
 			for($i=0;$i<count($cond)-1;$i+=2){
-				$path .= $cond[$i]. '.';
+				$path .= $cond[$i]['result'][0]. '.';
 			}
 			$path = substr($path,0,-1);
-			$ap =  'new AttrPathExpression(\''.$path.'\',\''.$cond[$i].'\')';
+			$ap =  'new AttrPathExpression(\''.$path.'\',\''.$cond[$i]['result'][0].'\')';
 			return $ap;
 		}
 }
