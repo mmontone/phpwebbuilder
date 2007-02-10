@@ -38,6 +38,13 @@ class PHPCC {
 		return $g->compile($grammar);
     }
     function &createSequence(&$params){
+	    if (count($params)==1) {
+		    if ($params[0][1]['selector']==='alt'){
+		    	return $params[0][1]['result'][1];
+		    } else {
+		    	return $params[0][1]['result'];
+		    }
+	    }
 	    $ks = array_keys($params);
 	    for($i=0;$i<count($params);$i+=2){
 	    	$param = $params[$ks[$i]];
@@ -54,6 +61,7 @@ class PHPCC {
 	    return $seq;
     }
     function &createAlternative(&$params){
+	    if (count($params)==1) return $params[0][1];
 	    $ks = array_keys($params);
 	    for($i=0;$i<count($params);$i+=2){
 	    	$param = $params[$ks[$i]];

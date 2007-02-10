@@ -2,86 +2,6 @@
 
 class OQLCompiler {
 	function fromQuery($query, $env) {
-		/*$variable = & new ListParser(new Identifier, new Symbol('\.'));
-		$value = & new AltParser($a0=array (
-			'var'=>new SubParser('variable'
-			), 'value'=>new AltParser(array('number'=>new EregSymbol('[0-9]+'),
-											'str'=>new EregSymbol('\'[^\']\''),
-											'phpvar'=>new EregSymbol('\$[a-zA-Z_][a-zA-Z_0-9]*'),
-											'bool'=>new Symbols(array('TRUE','FALSE', 'True', 'False','true','false'))
-			))));
-
-		$condition = & new AltParser(array (
-			'subexpression'=>new SeqParser(array (new Symbol('\('),
-				new SubParser('expression'), new Symbol('\)'))
-				),
-			'comparison'=>new SeqParser(array (new SubParser('value'
-				), new Symbols(array (
-			'=',
-			'<=',
-			'>=',
-			'LIKE'
-		)), new SubParser('value')))));
-
-				$expression = & new AltParser(array (
-				'logical'=>new SeqParser(array (
-					new SubParser('condition'),
-					'operator'=>new Symbols(array ('AND','OR','and', 'or')),
-					new SubParser('condition')
-					)),
-				'condition'=>new SubParser('condition'),
-				));
-
-			$oql = & new SeqParser(array (
-					'class'=>new MaybeParser( new Identifier),
-					'fields'=> new MaybeParser(
-						new SeqParser(array (
-							new Symbol('\('
-							),
-							'fields'=>new ListParser(
-								new SeqParser(array(
-									//new AltParser(array('count'=>new Symbol('count\(\*\)'),
-										//				'field'=>
-														new Identifier,
-										//)),
-									new Symbol('as'),
-									new Identifier,
-								)),
-								new Symbol(','
-								)),
-							new Symbol('\)')
-							))
-						),
-					'from'=> new MaybeParser(
-						new SeqParser(array (
-							new Symbol('from'),
-							'from'=>new ListParser(
-								new SeqParser(array (
-									'var'=>new Identifier,
-									new Symbol(':'),
-									'class'=>new Identifier
-									)),
-								new Symbol(',')
-								)
-							))
-						),
-					'where'=> new MaybeParser(
-						new SeqParser(array (
-							new Symbol('where'),
-							'expression'=>new SubParser('expression')
-							))
-						),
-				));
-				$oqlg = & new Grammar(array (
-				'root' => 'oql',
-				'nt' => array (
-					'condition' => &$condition,
-					'expression' => &$expression,
-					'oql' => &$oql,
-					'variable' => &$variable,
-					'value' => &$value,
-				)));*/
-
 			//header('Content-type: text/plain');
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
@@ -106,28 +26,27 @@ class OQLCompiler {
 			return 'new Report('.$config.');';
 		}
 		function &parseOQL(&$query){
-			$query =& $query['result'];
 			if ($query['class']!==null){
-				$ret = "'class'=>'".$query['class']['result'][0]."',";
+				$ret = "'class'=>'".$query['class']."',";
 			}
-			if ($query['fields']['result']['fields']!==null){
+			if ($query['fields']['fields']!==null){
 				$ret .= "'fields'=>array(";
-				foreach($query['fields']['result']['fields'] as $f){
-					if ($f[0]==',')continue;
-					$ret .= "'".$f['result'][0]."'=>'".$f['result'][2]."',";
+				foreach($query['fields']['fields'] as $f){
+					if ($f==',')continue;
+					$ret .= "'".$f[0]."'=>'".$f[2]."',";
 				}
 				$ret .= "),";
 			}
-			if ($query['from']['result']['from']!==null){
+			if ($query['from']['from']!==null){
 				$ret .= "'from'=>array(";
-				foreach($query['from']['result']['from'] as $f){
-					if ($f['result'][0]==',')continue;
-					$ret .= "'".$f['result']['var'].'\'=>\''.$f['result']['class']."',";
+				foreach($query['from']['from'] as $f){
+					if ($f==',')continue;
+					$ret .= "'".$f['var'].'\'=>\''.$f['class']."',";
 				}
 				$ret .= "),";
 			}
-			if ($query['where']['result']['expression']!==null){
-				$ret .= "'exp'=>".$query['where']['result']['expression'];
+			if ($query['where']['expression']!==null){
+				$ret .= "'exp'=>".$query['where']['expression'];
 			}
 			$ret = 'array('.$ret.')';
 			return $ret;
@@ -159,20 +78,19 @@ class OQLCompiler {
 		}
 		function &parseValue(&$cond){
 			if ($cond['selector']=='value'){
-				$ve =  'new ValueExpression("'.$cond['result'][0]['result'][0].'")';
+				$ve =  'new ValueExpression("'.$cond['result']['result'].'")';
 				return $ve;
 			} else {
-				return $cond['result'][0];
+				return $cond['result'];
 			}
 		}
 		function &parseVariable(&$cond){
-			$cond = $cond['result'][0];
 			$path = '';
 			for($i=0;$i<count($cond)-1;$i+=2){
-				$path .= $cond[$i]['result'][0]. '.';
+				$path .= $cond[$i]. '.';
 			}
 			$path = substr($path,0,-1);
-			$ap =  'new AttrPathExpression(\''.$path.'\',\''.$cond[$i]['result'][0].'\')';
+			$ap =  'new AttrPathExpression(\''.$path.'\',\''.$cond[$i].'\')';
 			return $ap;
 		}
 }
