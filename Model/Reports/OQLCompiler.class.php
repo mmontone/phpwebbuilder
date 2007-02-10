@@ -4,14 +4,19 @@ class OQLCompiler {
 	function fromQuery($query, $env) {
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
-				   condition::=subexpression=>"\(",<expression>,"\)"|comparison=><value>,"=|<=|>=|LIKE",<value>.
-				   expression::=logical=><condition>,operator->"AND|OR|and|or",<condition>|condition=><condition>.
-				   oql::=class->["[a-zA-Z_][a-zA-Z_0-9]*"],
-				   		 fields->["\(",fields->{"[a-zA-Z_][a-zA-Z_0-9]*","as","[a-zA-Z_][a-zA-Z_0-9]*";","},"\)"],
-				   		 from->["from",from->{var->"[a-zA-Z_][a-zA-Z_0-9]*",":",class->"[a-zA-Z_][a-zA-Z_0-9]*";","}],
-				   		 where->["where",expression-><expression>].
-				   variable::={"[a-zA-Z_][a-zA-Z_0-9]*";"\."}.
-				   value::=var=><variable>|value=>(number=>"[0-9]+"|str=>"\'[^\']\'"|phpvar=>"\$[a-zA-Z_][a-zA-Z_0-9]*"|bool=>"TRUE|FALSE|True|False|true|false").
+				   identifier::="[a-zA-Z_][a-zA-Z_0-9]*".
+				   condition::=subexpression=>"\(" <expression> "\)"|comparison=><value> "=|<=|>=|LIKE" <value>.
+				   expression::=logical=><condition> operator->"AND|OR|and|or" <condition>|condition=><condition>.
+				   oql::=class->[<identifier>]
+				   		 fields->["\(" fields->{<identifier> "as" <identifier> ; ","} "\)"]
+				   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
+				   		 where->["where" expression-><expression>].
+				   variable::={<identifier> ; "\."}.
+				   value::=var=><variable>|
+				   		value=>(number=>"[0-9]+"|
+				   		str=>"\'[^\']\'"|
+				   		phpvar=>"\$[a-zA-Z_][a-zA-Z_0-9]*"|
+				   		bool=>"TRUE|FALSE|True|False|true|false").
 				   )>'
 				);
 			$oqlg->addPointCuts(array (

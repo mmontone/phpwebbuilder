@@ -29,7 +29,7 @@ class PHPCC {
     							new SeqParser(array(new Identifier, new Symbol('=>')))),new SubParser('sequence'))),new Symbol('\|')),
     			'maybe'=>new SeqParser(array(new Symbol('\['),new SubParser('alternative'),new Symbol('\]'))),
     			'list'=>new SeqParser(array(new Symbol('\{'),new SubParser('alternative'),new Symbol(';'),new SubParser('alternative'),new Symbol('\}'))),
-    			'sequence'=>new ListParser(new SeqParser(array(new MaybeParser(
+    			'sequence'=>new MultiParser(new SeqParser(array(new MaybeParser(
     							new SeqParser(array(new Identifier, new Symbol('->')))),
     							new AltParser(array(
     								new SubParser('list'),
@@ -37,7 +37,7 @@ class PHPCC {
     								new SubParser('symbol'),
     								new SubParser('subparser'),
     								'alt'=>new SeqParser(array(new Symbol('\('),new SubParser('alternative'),new Symbol('\)'))),
-    							)))),new Symbol(',')),
+    							))))),
     			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new Identifier,new Symbol('>'),)),
     			'symbol'=>new Symbol('"[^"]+"'),
     			'non-terminal'=>new SeqParser(array(new Identifier, new Symbol('::='), new SubParser('alternative'), new Symbol('\.'))),
@@ -54,7 +54,7 @@ class PHPCC {
 		    }
 	    }
 	    $ks = array_keys($params);
-	    for($i=0;$i<count($params);$i+=2){
+	    for($i=0;$i<count($params);$i++){
 	    	$param = $params[$ks[$i]];
 	    	if ($param[1]['selector']==='alt'){
 	    		$param[1]['result']=&$param[1]['result'][1];
