@@ -2,7 +2,6 @@
 
 class OQLCompiler {
 	function fromQuery($query, $env) {
-			//header('Content-type: text/plain');
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
 				   condition::=subexpression=>"\(",<expression>,"\)"|comparison=><value>,"=|<=|>=|LIKE",<value>.
@@ -16,11 +15,11 @@ class OQLCompiler {
 				   )>'
 				);
 			$oqlg->addPointCuts(array (
-					'condition' => new FObject($this, 'parseCondition'),
-					'expression' => new FObject($this, 'parseExpression'),
-					'oql' => new FObject($this, 'parseOql'),
-					'variable' => new FObject($this, 'parseVariable'),
-					'value' => new FObject($this, 'parseValue'),
+					'condition' => new FunctionObject($this, 'parseCondition'),
+					'expression' => new FunctionObject($this, 'parseExpression'),
+					'oql' => new FunctionObject($this, 'parseOql'),
+					'variable' => new FunctionObject($this, 'parseVariable'),
+					'value' => new FunctionObject($this, 'parseValue'),
 			));
 			$config =& $oqlg->compile($query);
 			return 'new Report('.$config.');';

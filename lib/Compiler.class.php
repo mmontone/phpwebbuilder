@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__).'/Compiler/Parser.class.php');
+require_once(dirname(__FILE__).'/Compiler/PHPCC.class.php');
 
 function processMacro($matches) {
 	$macro = $matches[1];
@@ -149,6 +149,7 @@ class Compiler {
 		foreach ($this->file_reqs_class[$file] as $class1) {
 			$comp .= $this->compileClass($class1);
 		}
+		eval($this->compileFile($file));
 		$comp .= $this->compileFile($file);
 		foreach ($this->file_uses_class[$file] as $class2) {
 			$comp .= $this->compileClass($class2);
@@ -206,6 +207,9 @@ class Compiler {
 				$cfo = fopen($cf, 'w');
 				fwrite($cfo, serialize($this));
 				fclose($cfo);
+				fwrite($fo, $f);
+				fclose($fo);
+				return; //DO NOT INCLUDE ANYTHING ELSE.
 			}
 			fwrite($fo, $f);
 			fclose($fo);
