@@ -9,7 +9,7 @@ class QuestionDialog extends Component
 		parent::Component();
 	}
 	function &create($message){
-		if (constant('page_renderer') == 'AjaxPageRenderer') {
+		if (Application::rendersAjax()) {
 			return new ModalQuestionDialog($message);
 		} else {
 			return new QuestionDialog($message);

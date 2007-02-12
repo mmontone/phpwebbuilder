@@ -10,7 +10,7 @@ class NotificationDialog extends Component
 	}
 
 	function &Create($message){
-		if (constant('page_renderer') == 'AjaxPageRenderer') {
+		if (Application::rendersAjax()) {
 			return new ModalNotificationDialog($message);
 		} else {
 			return new NotificationDialog($message);

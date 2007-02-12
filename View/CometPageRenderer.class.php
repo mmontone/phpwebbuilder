@@ -17,6 +17,9 @@ class CometPageRenderer extends PageRenderer {
 	function CometPageRenderer(&$app){
 		parent::PageRenderer($app);
 	}
+	function  rendersAjax(){
+		return true;
+	}
 	function initPage(&$win){
 		parent::initPage($win);
 		$win->wholeView->setAttribute('onsubmit','refresh();');

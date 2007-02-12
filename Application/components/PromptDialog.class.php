@@ -13,7 +13,7 @@ class PromptDialog extends Component
 	}
 
 	function &Create($message){
-		if (constant('page_renderer') == 'AjaxPageRenderer') {
+		if (Application::rendersAjax()) {
 			return new ModalPromptDialog($message);
 		} else {
 			return new PromptDialog($message);

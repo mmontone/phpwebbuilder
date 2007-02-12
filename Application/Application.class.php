@@ -113,7 +113,10 @@ class Application {
 		$this->addScript(constant('pwb_url') . 'lib/history.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
 	}
-
+	function rendersAjax(){
+		$app =& Application::Instance();
+		return $app->page_renderer->rendersAjax();
+	}
 	function addCometRenderingSpecificScripts() {
 		$this->addAjaxRenderingSpecificScripts();
 		$this->addScript(constant('pwb_url') . 'lib/comet.js');
