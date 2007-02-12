@@ -93,9 +93,13 @@ class Report extends Collection{
 	function defineVar($id, $class) {
 		$o =& new $class(array(),false);
 		$this->addTables($o->getTables());
-		$this->vars[$id] =& $class;
+		$this->freeVar($id,$class);
 	}
-
+	function registerAllVars(&$report){
+		foreach($this->vars as $id=>$class){
+			$report->freeVar($id, $class);
+		}
+	}
 	function freeVar($id, $class) {
 		$this->vars[$id] =& $class;
 	}
@@ -148,19 +152,21 @@ class Report extends Collection{
 	function &getConditions() {
 		return $this->conditions;
 	}
-
+	function evaluateSelect(){
+		$this->select_exp->evaluateIn($this);
+	}
 	function &getSelectExp() {
+		$this->evaluateSelect();
 		return $this->select_exp;
 	}
 
 	function setSelectExp(&$exp) {
-		$exp->evaluateIn($this);
 		$this->select_exp =& $exp;
 	}
 	/**
 	  * Returns the size of the collection
 	  */
-	function size() {
+	function sizeSQL(){
 		$sql = 'SELECT COUNT(';
 		$g = $this->group();
 		if ($g!=''){
@@ -169,8 +175,11 @@ class Report extends Collection{
 			$sql .= '*';
 		}
 		$sql .=') as collection_size FROM ' . $this->restrictions();
+		return $sql;
+	}
+	function size() {
 		$db = & DBSession::Instance();
-		$reg = $db->query($sql);
+		$reg = $db->query($this->sizeSQL());
 		if ($reg===false) {
 			return false;
 		} else {
@@ -481,7 +490,9 @@ class Report extends Collection{
     }*/
 }
 #@preprocessor
-require_once(dirname(__FILE__).'/OQLCompiler.class.php');
+//compile _once(dirname(__FILE__).'/OQLCompiler.class.php');
+Compiler::usesClass(__FILE__,'OQLCompiler');
+
 if (!function_exists('select')){
 	function select($query){
 		$oc =& new OQLCompiler;

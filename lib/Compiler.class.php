@@ -58,7 +58,11 @@ class Compiler {
 					);
 				if (Compiler::CompileOpt('recursive')) {
 					$self =& $this;
-					if (!$this->compilingClasses) $this->getInvolvedClasses($f,$file);
+					if (!$this->compilingClasses) {
+						$this->getInvolvedClasses($f,$file);
+						$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
+						eval(str_replace('compile_once','',$f));
+					}
 					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
 					lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
 				}
@@ -103,7 +107,8 @@ class Compiler {
 				$cfo = fopen($cf, 'w');
 				fwrite($cfo, serialize($inst));
 				fclose($cfo);
-				eval($c);
+				if (!$inst->compilingClasses)
+					eval($c);
 			}
 		}
 		return class_exists($class);
@@ -149,7 +154,6 @@ class Compiler {
 		foreach ($this->file_reqs_class[$file] as $class1) {
 			$comp .= $this->compileClass($class1);
 		}
-		eval($this->compileFile($file));
 		$comp .= $this->compileFile($file);
 		foreach ($this->file_uses_class[$file] as $class2) {
 			$comp .= $this->compileClass($class2);
@@ -202,7 +206,6 @@ class Compiler {
 				$this->compiled = array();
 				$this->compilingClasses = true;
 				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
-				$this->compilingClasses = false;
 				$cf = $this->getCompFile();
 				$cfo = fopen($cf, 'w');
 				fwrite($cfo, serialize($this));

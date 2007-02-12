@@ -249,20 +249,31 @@ class AttrPathExpression extends PathExpression {
 	}
 }
 
-class ObjectPathExpression extends PathExpression {
+class ObjectPathExpression extends AttrPathExpression {
 	var $type;
 
 	function ObjectPathExpression($path, $type='') {
 		$this->type = $type;
-		parent::PathExpression($path);
+		$path = explode('.',$path);
+		if (count($path)>1) $att = array_pop($path);
+		parent::AttrPathExpression(implode('.',$path), $att);
 	}
 	function evaluateIn(&$report) {
+		if ($this->attr!=''){
+			return parent::evaluateIn($report);
+		}
 		$o =& $this->registerPath($report);
+		$type = $this->type;
+		if ($type!=''){
+			$o =& new $type(array(),false);
+		}
 		$attr = $o->getTable() . '.id';
 		return $attr;
 	}
 }
 
+
+/** Finds a collection, and defines $var to access it*/
 class CollectionPathExpression extends PathExpression {
     var $collection_field;
     var $var;
@@ -320,11 +331,11 @@ class ExistsExpression extends Expression {
 	}
 
 	function evaluateIn(&$report) {
-
+		$report->registerAllVars($this->query);
 	}
 
 	function printString() {
-		return 'EXISTS (' . $this->query->selectsql() . ')';
+		return 'EXISTS (' . $this->query->sizeSQL() . ')';
 	}
 
     function isEmpty() {

@@ -77,9 +77,8 @@ class User extends PersistentObject {
 	}
 
 	function getPermissions() {
-		$id = $this->getUserId();
-		$r =& #@select RolePermission (permission as permission) from p: RolePermission, u:UserRole where p.role =u.role AND u.user=$id@#;
-		$id;
+		$r =& #@select p: RolePermission (permission as permission) from u:UserRole where p.role is u.role AND u.user is$this@#;
+		$this;
 		foreach ($r->elements() as $p) {
 			$this->permissions[] = strtolower($p->permission->getValue());
 		}

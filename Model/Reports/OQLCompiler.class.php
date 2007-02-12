@@ -5,9 +5,13 @@ class OQLCompiler {
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
 				   identifier::="[a-zA-Z_][a-zA-Z_0-9]*".
-				   condition::=subexpression=>"\(" <expression> "\)"|comparison=><value> "=|<=|>=|LIKE" <value>.
-				   expression::=logical=><condition> operator->"AND|OR|and|or" <condition>|condition=><condition>.
-				   oql::=class->[<identifier>]
+				   condition::=subexpression=>"\(" <expression> "\)"|comparison=><value> "=|<=|>=|LIKE|is" <value>.
+				   expression::=logical=><condition> operator->"AND|OR|and|or" <expression>|
+				   			condition=><condition>|
+				   			not=>"NOT|not" <expression>|
+							exists=>"EXISTS" "\(" <oql> "\)"|
+							in=><identifier> "IN" "\(" <oql> "\)".
+				   oql::=class->[[<identifier> ":"]<identifier>]
 				   		 fields->["\(" fields->{<identifier> "as" <identifier> ; ","} "\)"]
 				   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
 				   		 where->["where" expression-><expression>].
@@ -23,15 +27,18 @@ class OQLCompiler {
 					'condition' => new FunctionObject($this, 'parseCondition'),
 					'expression' => new FunctionObject($this, 'parseExpression'),
 					'oql' => new FunctionObject($this, 'parseOql'),
-					'variable' => new FunctionObject($this, 'parseVariable'),
-					'value' => new FunctionObject($this, 'parseValue'),
+					//'variable' => new FunctionObject($this, 'parseVariable'),
+					//'value' => new FunctionObject($this, 'parseValue'),
 			));
 			$config =& $oqlg->compile($query);
-			return 'new Report('.$config.');';
+			return $config;
 		}
 		function &parseOQL(&$query){
 			if ($query['class']!==null){
-				$ret = "'class'=>'".$query['class']."',";
+				$ret = "'class'=>'".$query['class'][1]."',";
+				if ($query['class'][0]){
+					$query['from']['from'][]=array('var'=>$query['class'][0][0],'class'=>$query['class'][1]);
+				}
 			}
 			if ($query['fields']['fields']!==null){
 				$ret .= "'fields'=>array(";
@@ -52,11 +59,19 @@ class OQLCompiler {
 			if ($query['where']['expression']!==null){
 				$ret .= "'exp'=>".$query['where']['expression'];
 			}
-			$ret = 'array('.$ret.')';
+			$ret = 'new Report(array('.$ret.'))';
 			return $ret;
 		}
 		function &parseCondition(&$cond){
 			if ($cond['selector']=='comparison'){
+				if ($cond['result'][1]=='is'){
+					$cond['result'][1] = '=';
+					$cond['result'][0]=$this->parseObject($cond['result'][0]);
+					$cond['result'][2]=$this->parseObject($cond['result'][2]);
+				} else {
+					$cond['result'][0]=$this->parseValue($cond['result'][0]);
+					$cond['result'][2]=$this->parseValue($cond['result'][2]);
+				}
 				$ret = 'new Condition(array(\'exp1\'=>'.$cond['result'][0].
 						',\'operation\'=>\''.$cond['result'][1].'\''.
 						',\'exp2\'=>'.$cond['result'][2].'))';
@@ -67,17 +82,24 @@ class OQLCompiler {
 
 		}
 		function &parseExpression(&$cond){
-			if ($cond['selector']=='condition'){
-				return $cond['result'];
-			} else {
-				if ($cond['result']['operator']=='AND'){
-					$class= 'AndExp';
-				} else if ($cond['result']['operator']=='OR') {
-					$class= 'OrExp';
-				}
-				$ret = 'new '.$class.'(array('.$cond['result'][0].
-						','.$cond['result'][1].'))';
-				return $ret;
+			switch($cond['selector']){
+				case 'not':
+					return 'new NotExp("'.$cond['result'][1].'")';
+				case 'condition':
+					return $cond['result'];
+				case 'exists':
+					return 'new ExistsExpression('.$cond['result'][2].')';
+				case 'in':
+					return 'new InExpression("'.$cond['result'][0].'",'.$cond['result'][3].')';
+				default:
+					if ($cond['result']['operator']=='AND'){
+						$class= 'AndExp';
+					} else if ($cond['result']['operator']=='OR') {
+						$class= 'OrExp';
+					}
+					$ret = 'new '.$class.'(array('.$cond['result'][0].
+							','.$cond['result'][1].'))';
+					return $ret;
 			}
 		}
 		function &parseValue(&$cond){
@@ -85,7 +107,15 @@ class OQLCompiler {
 				$ve =  'new ValueExpression("'.$cond['result']['result'].'")';
 				return $ve;
 			} else {
-				return $cond['result'];
+				return $this->parseVariable($cond['result']);
+			}
+		}
+		function &parseObject(&$cond){
+			if ($cond['selector']=='value'){
+				$ve =  'new ObjectExpression('.$cond['result']['result'].')';
+				return $ve;
+			} else {
+				return 'new ObjectPathExpression(\''.implode($cond['result']).'\')';
 			}
 		}
 		function &parseVariable(&$cond){
