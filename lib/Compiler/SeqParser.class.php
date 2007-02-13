@@ -39,7 +39,7 @@ class SeqParser extends Parser {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$t = $c->print_tree();
-			if (strcasecmp(get_class($c),'altparser')=='0'){
+			if (getClass($c)=='altparser'){
 				$t = '('.$t.')';
 			}
 			if (is_numeric($k)){
@@ -48,7 +48,7 @@ class SeqParser extends Parser {
 				$ret []= $k.'->'.$t;
 			}
 		}
-		return implode(',',$ret);
+		return implode(' ',$ret);
 	}
 }
 ?>

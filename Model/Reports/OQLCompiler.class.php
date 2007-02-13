@@ -4,23 +4,26 @@ class OQLCompiler {
 	function fromQuery($query, $env) {
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
-				   identifier::="[a-zA-Z_][a-zA-Z_0-9]*".
-				   condition::=subexpression=>"\(" <expression> "\)"|comparison=><value> "=|<=|>=|LIKE|is" <value>.
-				   expression::=logical=><condition> operator->"AND|OR|and|or" <expression>|
+				   identifier::=/[a-z_][a-z_0-9]*/i.
+				   phpvar::=/\$[a-z_][a-z_0-9]*/i.
+				   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|<=|>=|\>|\<|LIKE|is/i <value>.
+				   expression::=logical=><condition> operator->/AND|OR/i <expression>|
 				   			condition=><condition>|
-				   			not=>"NOT|not" <expression>|
-							exists=>"EXISTS" "\(" <oql> "\)"|
-							in=><identifier> "IN" "\(" <oql> "\)".
-				   oql::=class->[[<identifier> ":"]<identifier>]
-				   		 fields->["\(" fields->{<identifier> "as" <identifier> ; ","} "\)"]
-				   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
-				   		 where->["where" expression-><expression>].
-				   variable::={<identifier> ; "\."}.
+				   			not=>/NOT|not/ <expression>|
+							exists=>/EXISTS/i "(" <oql> ")"|
+							in=><variable> /IN/i "(" <oql> ")".
+				   oql::=phpvar=><phpvar>|query=>class->[[<identifier> ":"]<identifier>]
+					   		 fields->["(" fields->{<identifier> "as" <identifier> ; ","} ")"]
+					   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
+					   		 where->["where" expression-><expression>]
+						.
+				   variable::={<identifier> ; "."}.
 				   value::=var=><variable>|
-				   		value=>(number=>"[0-9]+"|
-				   		str=>"\'[^\']\'"|
-				   		phpvar=>"\$[a-zA-Z_][a-zA-Z_0-9]*"|
-				   		bool=>"TRUE|FALSE|True|False|true|false").
+				   		value=>(
+							number=>/[0-9]+/|
+					   		str=>/\'[^\']\'/|
+					   		phpvar=><phpvar>|
+					   		bool=>/TRUE|FALSE|True|False|true|false/).
 				   )>'
 				);
 			$oqlg->addPointCuts(array (
@@ -34,6 +37,11 @@ class OQLCompiler {
 			return $config;
 		}
 		function &parseOQL(&$query){
+			if ($query['selector']=='phpvar'){
+				return $query['result'];
+			} else {
+				$query =& $query['result'];
+			}
 			if ($query['class']!==null){
 				$ret = "'class'=>'".$query['class'][1]."',";
 				if ($query['class'][0]){
@@ -92,9 +100,9 @@ class OQLCompiler {
 				case 'in':
 					return 'new InExpression("'.$cond['result'][0].'",'.$cond['result'][3].')';
 				default:
-					if ($cond['result']['operator']=='AND'){
+					if (strcasecmp($cond['result']['operator'],'AND')==0){
 						$class= 'AndExp';
-					} else if ($cond['result']['operator']=='OR') {
+					} else if (strcasecmp($cond['result']['operator'],'OR')==0) {
 						$class= 'OrExp';
 					}
 					$ret = 'new '.$class.'(array('.$cond['result'][0].

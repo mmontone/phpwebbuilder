@@ -13,6 +13,7 @@ class PHPCC {
     			'sequence'=>new FObject($n=null, 'PHPCC::createSequence'),
     			'grammar'=>new FObject($n=null, 'PHPCC::createNTS'),
 				'symbol'=>new FObject($n=null, 'PHPCC::createSymbol'),
+				'ereg'=>new FObject($n=null, 'PHPCC::createEreg'),
 				'subparser'=>new FObject($n=null, 'PHPCC::createSubparser'),
 		));
 		return $g->compile($grammar);
@@ -26,22 +27,24 @@ class PHPCC {
     		'root'=>'grammar',
     		'nt'=>array(
     			'alternative'=>new ListParser(new SeqParser(array(new MaybeParser(
-    							new SeqParser(array(new Identifier, new Symbol('=>')))),new SubParser('sequence'))),new Symbol('\|')),
-    			'maybe'=>new SeqParser(array(new Symbol('\['),new SubParser('alternative'),new Symbol('\]'))),
-    			'list'=>new SeqParser(array(new Symbol('\{'),new SubParser('alternative'),new Symbol(';'),new SubParser('alternative'),new Symbol('\}'))),
+    							new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('=>')))),new SubParser('sequence'))),new Symbol('|')),
+    			'maybe'=>new SeqParser(array(new Symbol('['),new SubParser('alternative'),new Symbol(']'))),
+    			'list'=>new SeqParser(array(new Symbol('{'),new SubParser('alternative'),new Symbol(';'),new SubParser('alternative'),new Symbol('}'))),
     			'sequence'=>new MultiParser(new SeqParser(array(new MaybeParser(
-    							new SeqParser(array(new Identifier, new Symbol('->')))),
+    							new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('->')))),
     							new AltParser(array(
     								new SubParser('list'),
     								new SubParser('maybe'),
     								new SubParser('symbol'),
+    								new SubParser('ereg'),
     								new SubParser('subparser'),
-    								'alt'=>new SeqParser(array(new Symbol('\('),new SubParser('alternative'),new Symbol('\)'))),
+    								'alt'=>new SeqParser(array(new Symbol('('),new SubParser('alternative'),new Symbol(')'))),
     							))))),
-    			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new Identifier,new Symbol('>'),)),
-    			'symbol'=>new Symbol('"[^"]+"'),
-    			'non-terminal'=>new SeqParser(array(new Identifier, new Symbol('::='), new SubParser('alternative'), new Symbol('\.'))),
-    			'grammar'=>new SeqParser(array(new Symbol('\<'),new Identifier, new Symbol('\('),new MultiParser(new SubParser('non-terminal')), new Symbol('\)'),new Symbol('\>')))
+    			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"),new Symbol('>'),)),
+    			'symbol'=>new EregSymbol('/"[^"]+"/'),
+    			'ereg'=>new EregSymbol('/\/[^\/]+\/\w*/'),
+    			'non-terminal'=>new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('::='), new SubParser('alternative'), new Symbol('.'))),
+    			'grammar'=>new SeqParser(array(new Symbol('<'),new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('('),new MultiParser(new SubParser('non-terminal')), new Symbol(')'),new Symbol('>')))
     		)));
     }
 
@@ -96,6 +99,10 @@ class PHPCC {
     function &createSymbol(&$sym){
     	$sym = substr(substr($sym, 1),0, -1);
     	$s =& new Symbol($sym);
+    	return $s;
+    }
+    function &createEreg(&$sym){
+    	$s =& new EregSymbol($sym);
     	return $s;
     }
     function &createSubparser(&$sp){

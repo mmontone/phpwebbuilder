@@ -26,19 +26,22 @@ class AltParser extends Parser {
 				return $res;
 			}
 		}
-		$this->parentParser->setError($this->errorBuffer);
+		$this->parentParser->setError(implode('',$this->errorBuffer));
 		return array(FALSE, $tks);
 	}
 	function print_tree() {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
-			if (is_numeric($k)){
-				$ret []= $c->print_tree();
-			} else {
-				$ret []= $k.'=>'.$c->print_tree();
+			$t = $c->print_tree();
+			if (getClass($c)=='altparser'){
+				$t = '('.$t.')';
 			}
-
-		}
+			if (is_numeric($k)){
+				$ret []= $t;
+			} else {
+				$ret []= $k.'=>'.$t;
+			}
+		 }
 		 return implode('|',$ret);
 	}
 	function &process($result) {
@@ -48,7 +51,7 @@ class AltParser extends Parser {
 		return $arr;
 	}
 	function setError($err){
-		$this->errorBuffer=& $err;
+		$this->errorBuffer[]=& $err;
 	}
 }
 

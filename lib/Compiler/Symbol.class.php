@@ -3,10 +3,14 @@
 class EregSymbol extends Parser {
 	function EregSymbol($sym) {
 		parent :: Parser();
+		$bars = explode('/',$sym);
+		$mods = array_pop($bars);
+		array_shift($bars);
+		$this->preg = '/^[\s\t\n]*('.implode('/',$bars).')[\s\t\n]*/'.$mods;
 		$this->sym = $sym;
 	}
 	function parse($tks) {
-		if (preg_match('/^[\s\t\n]*(' . $this->sym . ')[\s\t\n]*/', $tks, $matches)) {
+		if (preg_match($this->preg, $tks, $matches)) {
 			return array ($matches[1],substr($tks,strlen($matches[0])));
 		} else {
 			$this->setError('Unexpected "'.$tks[0].'", expecting "'.$this->sym.'" in'.$this->parentParser->print_tree().' with "'.print_r($tks,TRUE). '" remaining');
@@ -19,17 +23,8 @@ class EregSymbol extends Parser {
 }
 
 class Symbol extends EregSymbol {
-}
-
-class Symbols extends EregSymbol {
-	function Symbols($ss) {
-		parent :: EregSymbol(implode('|', $ss));
-	}
-}
-
-class Identifier extends EregSymbol {
-	function Identifier() {
-		parent :: EregSymbol('[a-zA-Z_][a-zA-Z_0-9]*');
+	function Symbol($ss) {
+		parent :: EregSymbol('/'.preg_quote($ss).'/');
 	}
 }
 ?>
