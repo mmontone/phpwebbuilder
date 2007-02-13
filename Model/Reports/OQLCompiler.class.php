@@ -6,10 +6,10 @@ class OQLCompiler {
 				'<oql(
 				   identifier::=/[a-z_][a-z_0-9]*/i.
 				   phpvar::=/\$[a-z_][a-z_0-9]*/i.
-				   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|<=|>=|\>|\<|LIKE|is/i <value>.
+				   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|\<\>|<=|>=|\>|\<|LIKE|IS/i <value>.
 				   expression::=logical=><condition> operator->/AND|OR/i <expression>|
 				   			condition=><condition>|
-				   			not=>/NOT|not/ <expression>|
+				   			not=>/NOT/i <expression>|
 							exists=>/EXISTS/i "(" <oql> ")"|
 							in=><variable> /IN/i "(" <oql> ")".
 				   oql::=phpvar=><phpvar>|query=>class->[[<identifier> ":"]<identifier>]
@@ -23,7 +23,7 @@ class OQLCompiler {
 							number=>/[0-9]+/|
 					   		str=>/\'[^\']\'/|
 					   		phpvar=><phpvar>|
-					   		bool=>/TRUE|FALSE|True|False|true|false/).
+					   		bool=>/TRUE|FALSE/i).
 				   )>'
 				);
 			$oqlg->addPointCuts(array (
