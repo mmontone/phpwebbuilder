@@ -6,8 +6,12 @@ class TextAreaComponentHTMLHandler extends WidgetHTMLHandler{
 		$v->setTagName('textarea');
 		return $v;
 	}
+	function getPrintValue(){
+		$pv = $this->component->printValue();
+		return $pv==''?'&amp;nbsp;':$pv;
+	}
 	function prepareToRender() {
-		$this->view->appendChild(new XMLTextNode($this->component->printValue()));
+		$this->view->appendChild(new XMLTextNode());
 	}
 	function updateDisabled(&$vh){
 		if ($vh->getValue()) {
@@ -17,7 +21,7 @@ class TextAreaComponentHTMLHandler extends WidgetHTMLHandler{
 		}
 	}
 	function valueChanged(&$value_model, &$params) {
-		$text = $this->component->printValue();
+		$text = $this->getPrintValue();
 		$this->view->replaceChild(new XMLTextNode($text), $this->view->first_child());
 		$this->redraw();
 	}
