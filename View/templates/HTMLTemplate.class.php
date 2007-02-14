@@ -16,18 +16,16 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 
 
 	function renderEcho() {
+		echo $this->renderNonEcho();
+	}
+
+	function renderNonEcho() {
 		$fc =& $this->first_child();
 		$tag_name= $fc->tagName;
 		$this->getRealId();
 		$fid = $this->getAttribute('fakeid');
-		echo "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";
-	}
-
-	function renderNonEcho() {
-		$tag_name=Application::defaultTag();
-		$this->getRealId();
-		$fid = $this->getAttribute('fakeid');
-		return "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";
+		return "<script id=\"$fid\">0;</script>";
+		//return "<$tag_name style=\"visibility:hidden\" id=\"$fid\">0;</$tag_name>";
 	}
 
 	function getRealId(){
@@ -47,7 +45,7 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 			case 'template': $temp = & new HTMLTemplate($tag,$atts); break;
 			case 'container': $temp = & new HTMLContainer($tag,$atts); break;
 			case 'translated':
-				if ($xml->childNodes[0]==null) print_backtrace_and_exit();
+				#@gencheck if ($xml->childNodes[0]==null) print_backtrace_and_exit();@#
 				$ret = new XMLTextNode(Translator::Translate(trim($xml->childNodes[0]->data)));
 				return $ret;
 				break;

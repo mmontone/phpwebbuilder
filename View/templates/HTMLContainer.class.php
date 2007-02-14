@@ -7,20 +7,8 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 		$this->attributes['simpleId'] = $id;
 	}
 	function renderEcho() {
-			if (isset($this->attributes['tagname'])) {
-				$tag_name=$this->attributes['tagname'];
-			} else {
-				$tag_name=Application::defaultTag();
-			}
-			$fid = $this->getId();
-			if (defined('debugview') and constant('debugview')=='1') {
-				echo "<$tag_name class=\"hiddencontainer\" id=\"$fid\">".$this->attributes['class'].':'.$this->attributes['simpleId']."</$tag_name>";
-			} else {
-				echo "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";
-			}
-
+			echo $this->renderNonEcho();
 	}
-
 	function renderNonEcho() {
 			if (isset($this->attributes['tagname'])) {
 				$tag_name=$this->attributes['tagname'];
@@ -31,7 +19,8 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 			if (defined('debugview') and constant('debugview')=='1') {
 				return "<$tag_name class=\"hiddencontainer\" id=\"$fid\">".$this->attributes['class'].':'.$this->attributes['simpleId']."</$tag_name>";
 			} else {
-				return "<$tag_name style=\"visibility:hidden\" id=\"$fid\"></$tag_name>";
+				return "<script id=\"$fid\">&amp;nbsp;</script>";
+				//return "<$tag_name style=\"visibility:hidden\" id=\"$fid\">&amp;nbsp;</$tag_name>";
 			}
 
 	}
