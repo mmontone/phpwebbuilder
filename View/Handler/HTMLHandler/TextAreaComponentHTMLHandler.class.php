@@ -11,7 +11,7 @@ class TextAreaComponentHTMLHandler extends WidgetHTMLHandler{
 		return $pv==''?'&amp;nbsp;':$pv;
 	}
 	function prepareToRender() {
-		$this->view->appendChild(new XMLTextNode());
+		$this->view->appendChild(new XMLTextNode($this->getPrintValue()));
 	}
 	function updateDisabled(&$vh){
 		if ($vh->getValue()) {
