@@ -1,0 +1,13 @@
+<templates>
+
+	<template class="Login">
+ 	<table><tbody>
+		<tr><td colspan="2"><translated>Fill in the username and password</translated>:</td></tr>
+		<tr><td><translated>Username</translated>:</td><td> <input type="text" id="comp_username" /></td></tr>
+		<tr><td><translated>Password</translated>:</td><td> <input type="password" id="comp_password" /></td></tr>
+		<tr><td><container id="status"/></td></tr>
+		<!--  I don't know how to apply translation on the login button -->
+		<tr><td></td><td><input type="button" id="login" value="Login"/></td></tr>
+	</tbody></table>
+	</template>
+</templates>

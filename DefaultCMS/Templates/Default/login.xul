@@ -1,0 +1,52 @@
+<templates>
+	<template class="Login">
+		<grid>
+			<rows>
+				<box colspan="2">
+					<description>
+						<translated>
+							Fill in the username and password
+						</translated>
+						:
+					</description>
+				</box>
+				<row>
+					<box>
+						<description>
+							<translated>Username</translated>
+							:
+						</description>
+					</box>
+					<box>
+						<textbox type="text" id="comp_username" />
+					</box>
+				</row>
+				<row>
+					<box>
+						<description>
+							<translated>Password</translated>
+							:
+						</description>
+					</box>
+					<box>
+						<textbox type="password" id="comp_password" />
+					</box>
+				</row>
+				<row>
+					<box>
+						<container id="status" />
+					</box>
+				</row>
+				<!--  I don't know how to apply translation on the login button -->
+				<row>
+					<box></box>
+					<box>
+						<button type="button" id="login">
+							<description>Login</description>
+						</button>
+					</box>
+				</row>
+			</rows>
+		</grid>
+	</template>
+</templates>
