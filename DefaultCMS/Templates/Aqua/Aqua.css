@@ -9,6 +9,7 @@ body {
 	margin-left: 0px;
 	margin-right: 0px;
 	margin-bottom: 0px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
 /*HEADER*/
@@ -124,6 +125,7 @@ body {
 	font-size: 10px;
 	color: #FF9900;
 	font-weight: bold;
+	text-decoration:none;
 }
 .news_text {	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
@@ -135,11 +137,22 @@ body {
 	color: #CCCCCC;
 }
 .title_blue {font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: bold; font-size: 26px; color: #7DA5E0; }
-.title_panel {	font-family: Verdana, Arial, Helvetica, sans-serif;
+.title_panel {
 	font-size: 12px;
 	font-weight: bold;
 }
 
+a img{
+border:none;
+}
+
+table{
+border:2px inset #CCCCCC ;
+}
+
+table table{
+border:2px outset #CCCCCC ;
+}
 
 div#loader {
 visibility: hidden;

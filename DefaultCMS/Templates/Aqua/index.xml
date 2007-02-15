@@ -40,10 +40,9 @@
 		<div class="table_content">
 			<div class="table_text">
 				<template class="CommandLink">
-					<span class="news_more">
-						<container id="linkName" />
-					</span>
-					<br />
+					<a class="news_more">
+						<container id="linkName" /><br />
+					</a>
 				</template>
 			</div>
 		</div>
