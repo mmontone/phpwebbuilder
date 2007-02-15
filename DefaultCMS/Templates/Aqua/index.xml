@@ -1,0 +1,56 @@
+<templates>
+	<template class="DefaultCMS">
+		<div class="page" align="center">
+			<div class="header">
+				<div class="companyname" align="left"><container id="siteName"/></div>
+				<div id="landmark" align="right" class="menu">
+					<template class="CommandLink">
+						<a href="#">
+							<container id="linkName" />
+						</a>
+						|
+					</template>
+				</div>
+			</div>
+			<br />
+			<div class="content">
+				<div class="leftpanel">
+					<container id="menu" />
+				</div>
+				<div class="contenttext">
+					<container id="body" />
+				</div>
+				<div class="footer">
+					<br />
+					PHPWebBuilder | Designed by
+					<a href="http://www.winkhosting.com/">
+						Wink Hosting
+					</a>
+					.
+				</div>
+			</div>
+		</div>
+	</template>
+	<template class="MenuSectionComponent">
+		<div class="table_top">
+			<span class="title_panel">
+				<container id="secName" />
+			</span>
+		</div>
+		<div class="table_content">
+			<div class="table_text">
+				<template class="CommandLink">
+					<span class="news_more">
+						<container id="linkName" />
+					</span>
+					<br />
+				</template>
+			</div>
+		</div>
+		<div class="table_bottom">
+			<img src="$templatesdirimages/table_bottom.jpg" width="204" height="23"
+				border="0" alt="" />
+		</div>
+		<br />
+	</template>
+</templates>
