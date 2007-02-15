@@ -28,11 +28,13 @@ class Compiler {
 	var $compilingClasses = false;
 	var $classesCompiled = array();
 	var $class_in_file= array();
+	var $file_uses_class= array();
+	var $file_reqs_class= array();
 	var $usageRules = array();
 	function Compiler() {
 		$this->toCompile = explode(',', @constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
-		$this->compile_path = array(Compiler::getRealPath(dirname(dirname(__FILE__)).'/'),Compiler::getRealPath(constant('pwbdir')),Compiler::getRealPath(constant('basedir')));
+		$this->compile_path = array(Compiler::getRealPath($this->tempDir()),Compiler::getRealPath(dirname(dirname(__FILE__)).'/'),Compiler::getRealPath(constant('pwbdir')),Compiler::getRealPath(constant('basedir')));
 	}
 	function CompileOpt($opt) {
 		global $compilerInstance;
@@ -107,8 +109,9 @@ class Compiler {
 				$cfo = fopen($cf, 'w');
 				fwrite($cfo, serialize($inst));
 				fclose($cfo);
-				if (!$inst->compilingClasses)
+				if (!class_exists($class)) {
 					eval($c);
+				}
 			}
 		}
 		return class_exists($class);
@@ -120,10 +123,10 @@ class Compiler {
 		$int = preg_match_all('/[\s\t\n]+class[\s\t\n]+(\w+)/',$str, $matches_dec);
 		//if ($int>1) {print_r($matches_dec); exit;}
 		foreach($matches_dec[1] as $m){
-			$this->class_in_file[strtolower($m)] = $file;
+			@$this->class_in_file[strtolower($m)] = $file;
 		}
-		if (!is_array($this->file_uses_class[$file]))$this->file_uses_class[$file] = array();
-		if (!is_array($this->file_reqs_class[$file]))$this->file_reqs_class[$file] = array();
+		if (!is_array(@$this->file_uses_class[$file]))$this->file_uses_class[$file] = array();
+		if (!is_array(@$this->file_reqs_class[$file]))$this->file_reqs_class[$file] = array();
 
 		preg_match_all('/[\s\t\n]+extends[\s\t\n]+(\w+)/',$str, $matches_pre);
 		foreach($matches_pre[1] as $m){
@@ -244,12 +247,12 @@ class Compiler {
 		return $compilerInstance;
 	}
 	function getTempFile($file, $extra) {
-		return $this->getRealPath(implode(array($this->getTempDir($file),basename($file, '.php') , $extra , '.php')));
+		return $this->getRealPath(implode(array($this->getTempDir($this->getRealPath($file)),basename($file, '.php') , $extra , '.php')));
 	}
 	function getCompFile(){
 		return $this->getTempDir('').strtolower(constant('app_class')).'compiled.php';
 	}
-	function getTempDir($file) {
+	function tempDir(){
 		if ($this->tempdir === null) {
 			if (defined('compile_dir')) {
 				$this->tempdir = constant('compile_dir');
@@ -258,15 +261,15 @@ class Compiler {
 			}
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
 		}
-		$fd=null;
+		return $this->tempdir;
+	}
+	function getTempDir($file) {
+		$fd = dirname($file);
 		foreach($this->compile_path as $p) {
 			if ($p!=''&&substr($file, 0, strlen($p))==$p) {
 				$fd = substr(dirname($file),strlen($p));
 				break;
 			}
-		}
-		if ($fd==null) {
-			$fd = dirname($file);
 		}
 		$dir = $this->tempdir . $fd;
 		if (substr($dir,-1)!=="/") $dir.='/';
