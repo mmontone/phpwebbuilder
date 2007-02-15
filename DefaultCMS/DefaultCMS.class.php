@@ -4,6 +4,7 @@ class DefaultCMS extends Component{
 	var $menu;
 	function initialize(){
 		$menu =& $this->addComponent(new Menu, 'menu');
+		$this->addComponent(new Label(sitename.'\'s CMS'), "SiteName");
 		$this->menu->addEventListener(array('menuClicked'=>'changeBody'),$this);
 	}
 	function start(){

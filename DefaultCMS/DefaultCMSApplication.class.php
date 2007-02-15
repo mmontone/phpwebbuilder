@@ -9,13 +9,15 @@ Compiler::usesClass(__FILE__,'Logout');
 //@#
 
 class DefaultCMSApplication extends Application{
-	var $templateName = 'Default';
+	//var $templateName = 'Default';
+	var $templateName = 'Aqua';
  	function &setRootComponent() {
  		return new DefaultCMS;
  	}
 
  	function loadTemplates (){
- 		$this->viewCreator->loadTemplatesDir(pwbdir . "DefaultCMS/Templates/".$this->templateName);
+ 		$this->viewCreator->loadTemplatesDir(pwbdir . "DefaultCMS/Templates/".$this->templateName.'/');
+ 		$this->viewCreator->loadTemplatesDir(pwbdir . "DefaultCMS/Templates/Default/");
  		$this->viewCreator->loadTemplatesDir(basedir . "MyTemplates/");
  	}
  	function addStyleSheets(){

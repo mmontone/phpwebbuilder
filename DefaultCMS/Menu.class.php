@@ -1,9 +1,7 @@
 <?php
 class Menu extends Component {
 	function initialize() {
-		$this->addComponent(new Text(new ValueHolder($s = sitename)), "SiteName");
 		$this->addComponent(new CompositeWidget, 'menus');
-		$this->addComponent(new ActionLink($this, 'newmenu', 'refresh', $n=null), 'refresh');
 		$this->newmenu();
 	}
 	function newmenu() {
@@ -13,6 +11,7 @@ class Menu extends Component {
 		$this->menus->deleteChildren();
 		$this->menus();
 		$this->redraw();
+		$this->menus->objects->addComponent(new ActionLink($this, 'newmenu', 'Refresh', $n=null), 'refresh');
 	}
 	function menus() {
 		$this->realMenus();
@@ -36,7 +35,7 @@ class Menu extends Component {
 				'Component' => $menu->controller->getValue()
 			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
 		}
-		$this->menus->addComponent($sect);
+		$this->menus->addComponent($sect, $mv);
 	}
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
@@ -54,7 +53,7 @@ class Menu extends Component {
 			'Component' => 'Logout'
 		);
 		$this->additem($log, 'Logout', $sect);
-		$this->menus->addComponent($sect);
+		$this->menus->addComponent($sect, 'objects');
 	}
 	function additem(& $comp, $text, & $sect) {
 		$sect->addItem(new NavigationLink($comp['bookmark'], $text, $comp));
