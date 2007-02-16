@@ -335,7 +335,7 @@ class ExistsExpression extends Expression {
 	}
 
 	function printString() {
-		return 'EXISTS (' . $this->query->sizeSQL() . ')';
+		return 'EXISTS (' . $this->query->inSQL() . ')';
 	}
 
     function isEmpty() {
@@ -358,7 +358,7 @@ class InExpression extends Expression {
     }
 
     function printString() {
-        return $this->field . ' IN (' . $this->query->selectsql() . ')';
+        return $this->field . ' IN (' . $this->query->inSQL() . ')';
     }
 }
 ?>

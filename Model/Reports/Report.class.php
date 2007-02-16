@@ -177,6 +177,10 @@ class Report extends Collection{
 		$sql .=') as collection_size FROM ' . $this->restrictions();
 		return $sql;
 	}
+	function inSQL(){
+		$obj =& $this->getObject();
+		$sql = 'SELECT '.$obj->id->fieldName('SELECT').' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
+	}
 	function size() {
 		$db = & DBSession::Instance();
 		$reg = $db->query($this->sizeSQL());
