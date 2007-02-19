@@ -19,7 +19,7 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 			if (defined('debugview') and constant('debugview')=='1') {
 				return "<$tag_name class=\"hiddencontainer\" id=\"$fid\">".$this->attributes['class'].':'.$this->attributes['simpleId']."</$tag_name>";
 			} else {
-				return "<script id=\"$fid\">&amp;nbsp;</script>";
+				return "<script id=\"$fid\">0;</script>";
 				//return "<$tag_name style=\"visibility:hidden\" id=\"$fid\">&amp;nbsp;</$tag_name>";
 			}
 
