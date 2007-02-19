@@ -11,7 +11,7 @@ class ActionDispatcher {
 		return $ad;
 	}
 	function dispatchComet(){
-		$f = fopen($this->file,'r+');
+		$f = @fopen($this->file,'r+');
 		flock($f,LOCK_EX);
 		$strs = fgets($f);
 		if (strlen($strs)>0){
