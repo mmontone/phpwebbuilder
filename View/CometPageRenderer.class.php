@@ -73,7 +73,7 @@ class CometPageRenderer extends PageRenderer {
 	}
 	function sendHeaders(){
 		echo '<script>parWin = window.frameElement.ownerDocument.window;</script>';
-		 #@profile echo '<a href="#" onclick="parWin.closeComet()">close comet</a>'; return; @#
+		 #@profile echo '<a href="" onclick="parWin.closeComet()">close comet</a>'; return; @#
 		echo '<script>window.onload=function(){parWin.closeComet();};</script>';
 
 	}
