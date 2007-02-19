@@ -110,6 +110,10 @@ function debugview($text) {
 }
 
 
+function profile($text) {
+	return optionalCompile('profile', $text);
+}
+
 function sql_echo($text) {
 	return optionalCompile('sql_echo', $text);
 }

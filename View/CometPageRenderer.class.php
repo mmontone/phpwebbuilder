@@ -48,8 +48,10 @@ class CometPageRenderer extends PageRenderer {
 		$this->ad =& ActionDispatcher::initializeComet();
 		$this->sendHeaders();
 		$starting = true;
+		#@profile xdebug_start_profiling();@#
 		while($x++<$maxtime){
-			if ($starting || $this->ad->dispatchComet()){
+			$count = $this->ad->dispatchComet();
+			if ($starting || $count>0){
 				$starting = false;
 				$this->startCometWrapper();
 				$this->renderWindow($win);
@@ -57,24 +59,34 @@ class CometPageRenderer extends PageRenderer {
 				$win->modWindows();
 				$this->renderJSCommands($win);
 				$this->stopCometWrapper();
+				#@profile echo '<div id="profile">';xdebug_dump_function_profile(4);echo '</div>';@#
+				flush();
 				if($win->closeStream) {break;}
-				$x=0;
 				set_time_limit($maxsecs);
 			}
+			if ($count!==FALSE)	$x=0;
 			flush();
 			usleep($interval);
+			#@profile xdebug_stop_profiling();@#
 		}
 		$this->sendFooters();
 	}
 	function sendHeaders(){
-		echo '<script>parWin = window.frameElement.ownerDocument.window;window.onload=function(){parWin.closeComet();};</script>';
+		echo '<script>parWin = window.frameElement.ownerDocument.window;</script>';
+		 #@profile echo '<a href="#" onclick="parWin.closeComet()">close comet</a>'; return; @#
+		echo '<script>window.onload=function(){parWin.closeComet();};</script>';
+
 	}
 	function sendFooters(){}
 	function renderWindow(&$win){
 		$win->wholeView->renderJsResponseCommand();
 	}
 	function startCometWrapper(){}
-	function stopCometWrapper(){}
+	function stopCometWrapper(){
+			#@profile echo '<script>var prof = document.getElementById("profile");if (prof)prof.parentNode.removeChild(prof);</script>';@#
+			flush();
+
+	}
 	function renderJSCommands(&$window) {
 
 		foreach (array_keys($window->ajaxCommands) as $i) {

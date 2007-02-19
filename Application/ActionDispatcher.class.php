@@ -11,7 +11,11 @@ class ActionDispatcher {
 		return $ad;
 	}
 	function dispatchComet(){
+		#@profile xdebug_start_profiling();@#
 		$f = @fopen($this->file,'r+');
+		if ($f==FALSE) {
+			return false;
+		}
 		flock($f,LOCK_EX);
 		$strs = fgets($f);
 		if (strlen($strs)>0){
@@ -19,16 +23,17 @@ class ActionDispatcher {
 			fclose($f);
 			$arr = explode('<newinput>',$strs);
 			array_shift($arr);
+			if (count($arr)>0)
 			foreach($arr as $str) {
 				$params = unserialize($str);
 				$win =& $this->dispatchData($params);
 				if ($params['showStopLoading'])$win->showStopLoading();
 				$this->params = $params;
 			}
-			return true;
+			return count($arr);
 		} else {
 			fclose($f);
-			return false;
+			return FALSE;
 		}
 	}
 	function &dispatchData($form){

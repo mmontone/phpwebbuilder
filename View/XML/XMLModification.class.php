@@ -19,16 +19,18 @@ class XMLNodeModification extends PWBObject{
 		return getClass($this);
 	}
 	function xmlize($str){
-		$xml = str_replace('"','\\"',$str);
-		return str_replace("\n","\\n",$xml);
+		$str = str_replace('"','\"',$str);
+		$str = str_replace("\n","\\n",$str);
+		$str = str_replace("</script","</\"+\"script",$str);
+		return $str;
 	}
 	function renderJsResponseCommand(){
 
 		$xml = $this->xmlize($this->renderAjaxResponseCommand());
 		echo
-		"<script>
-		var str = \"<ajax>".$xml."</ajax>\";
-		window.frameElement.ownerDocument.window.updatePage(str, str2html(str));</script>";
+		"<script>".
+		"var str = \"<ajax>".$xml."</ajax>\";
+		parWin.all_updatePage(str, (parWin.str2html(str)).childNodes);</script>";
 		flush();
 	}
 
