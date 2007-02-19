@@ -1,6 +1,6 @@
 <?php
 
-class Window extends ComponentHolder{
+class Window extends PWBObject{
 	var $ajaxCommands = array();
 	var $urlManager;
 	var $wholeView;
@@ -78,6 +78,9 @@ class Window extends ComponentHolder{
 			$this->closeStream=true;
 		}
 	}
+	function setCloseStream(){
+		$this->closeStream=true;
+	}
 	function getId() {
 		return "app";
 	}
@@ -109,7 +112,7 @@ class Window extends ComponentHolder{
 	function Window(&$component, $name){
 		$this->setDynVar('window', $this);
 		$app =& Application::Instance();
-		parent::ComponentHolder(&$component, $name, &$app);
+		$this->ComponentHolder(&$component, $name, &$app);
 		$app->addWindow($this, $name);
 	}
 	function showStopLoading(){
@@ -124,5 +127,37 @@ class Window extends ComponentHolder{
 		$this->addAjaxCommand(new AjaxCommand('window.close', array($this->owner_index())));
 		unset($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
 	}
+
+
+
+	var $component;
+	var $__owner_index;
+	var $parent;
+	var $realId =null;
+	function ComponentHolder(&$component,&$owner_index, &$parent) {
+	   $this->__owner_index = $owner_index;
+	   $this->parent =& $parent;
+	   $this->hold($component);
+	}
+
+	function owner_index() {
+		return $this->__owner_index;
+	}
+
+    function hold(&$component) {
+    	$i = $this->owner_index();
+	    $this->parent->$i=&$component;
+		$component->holder =& $this;
+		$this->component =& $component;
+	}
+
+    function getSimpleId(){
+    	return $this->__owner_index;
+    }
+
+    function &getComponent() {
+    	return $this->component;
+    }
+
 }
 ?>
