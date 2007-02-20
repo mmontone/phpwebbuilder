@@ -144,7 +144,7 @@ class ViewCreator {
 		global $templates_xml;
 		if ($templates_xml===null) {
 			$temp_file = $this->getTemplatesFilename();
-			if ((!file_exists($temp_file)) || @constant('templates')=='recompile' || (!Compiler::CompileOpt('recursive'))) {
+			if ((!file_exists($temp_file)) || @constant('templates')=='recompile' || (!(Compiler::CompileOpt('recursive')||Compiler::CompileOpt('optimal')))) {
 				$templates_xml = new XMLNode;
 				$this->app->loadTemplates();
 				if (!(@Constant('templates')=='recompile')){

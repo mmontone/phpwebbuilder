@@ -262,7 +262,7 @@ function includeAll() {
 	}
 	define('app', "MyInstances,MyComponents");
 
-	if (Compiler::CompileOpt('recursive')) {
+	if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
 		$comp =& Compiler::Instance();
 		$file = $comp->getTempDir('').strtolower(constant('app_class')).'.php';
 		if (!file_exists($file)) {$_REQUEST['recompile'] = 'yes';}

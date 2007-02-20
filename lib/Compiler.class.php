@@ -58,13 +58,13 @@ class Compiler {
 									'@#'.//END_MACRO
 									'/s','processMacro'
 					);
-				if (Compiler::CompileOpt('recursive')) {
-					$self =& $this;
+				if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
 					if (!$this->compilingClasses) {
 						$this->getInvolvedClasses($f,$file);
 						$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 						eval(str_replace('compile_once','',$f));
 					}
+					$self =& $this;
 					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
 					lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
 				}
@@ -97,7 +97,7 @@ class Compiler {
 		return isset($this->class_in_file[strtolower($class)]);
 	}
 	function requiredClass($class){
-		if(Compiler::CompileOpt('recursive')){
+		if(Compiler::CompileOpt('optimal')){
 			$inst =& Compiler::Instance();
 			$c = $inst->compileClass($class);
 			if ($c!=null){
@@ -198,14 +198,12 @@ class Compiler {
 			$this->addClassUsageRule('/::[\s\t\n]*GetWithId\(\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',1);
-
 			$f = '<?php '.$this->compileFile($file).' ?>';
-			if (Compiler::CompileOpt('recursive')){
+			if (Compiler::CompileOpt('optimal')){
 				$this->compiledOutput = $tmpname;
 				Compiler::markAsCompiled('Compiler', __FILE__);
 				Compiler::markAsCompiled('OQLCompiler', __FILE__);
 				Compiler::markAsCompiled('parent', __FILE__);
-
 				$this->compiled = array();
 				$this->compilingClasses = true;
 				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
@@ -219,6 +217,9 @@ class Compiler {
 			}
 			fwrite($fo, $f);
 			fclose($fo);
+			if (Compiler::CompileOpt('recursive')){
+				return;
+			}
 		}
 		require_once $tmpname;
 	}
@@ -319,7 +320,7 @@ function mkdir_r($dirName, $rights=0777){
 
 $compilerInstance =& new Compiler;
 $compfile = $compilerInstance->getCompFile();
-if (Compiler::CompileOpt('recursive') && file_exists($compfile) && !$_REQUEST['recompile']){
+if (Compiler::CompileOpt('optimal') && file_exists($compfile) && !$_REQUEST['recompile']){
 	$compilerInstance = unserialize(file_get_contents($compfile));
 }
 
