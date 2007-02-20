@@ -12,7 +12,7 @@ require_once 'spyc-0.2.3/spyc.php';
  @#*/
 
 function md_echo ($code) {
-	return Compiler::optionalCompile('md_echo', $code);
+    return optionalCompile('md_echo', $code);
 }
 
 function defmdf($text) {
@@ -218,10 +218,11 @@ function &mdcompcall($function, $args) {
 	$layers = $flayers;
 	$fname = null;
 
-	#@md_echo $msg = 'Trying to match:<br/>';
-	          $msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
-	          $msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
-	          echo $msg;//@#
+	#@md_echo
+    $msg = 'Trying to match:<br/>';
+    $msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
+    $msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
+    echo $msg;//@#
 
 	while (!empty($layers) and $fname == null) {
 		$f = $function . '_begctx_' . implode('_', $layers) . '_endctx';
@@ -239,7 +240,9 @@ function &mdcompcall($function, $args) {
 			$params[$i] = '$args[' . $i . ']';
 		}
 
-		#@md_echo echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';//@#
+		#@md_echo
+        echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';//@#
+
 		$res = null;
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;

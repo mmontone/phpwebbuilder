@@ -77,8 +77,8 @@ class IndexField extends NumField {
 	}
 
 	function setValue($value) {
-		parent::setValue($value);
-		//print_backtrace('Setting index field ' . $this->colName . $this->__instance_id .' value: ' . $value);
+		parent::setValue((integer)$value);
+
 		$n = null;
 		$this->buffered_target =& $n;
 	}

@@ -110,7 +110,8 @@ class Window extends PWBObject{
 		return $this->parent;
 	}
 	function Window(&$component, $name){
-		$this->setDynVar('window', $this);
+		parent::PWBObject();
+        $this->setDynVar('window', $this);
 		$app =& Application::Instance();
 		$this->ComponentHolder(&$component, $name, &$app);
 		$app->addWindow($this, $name);
