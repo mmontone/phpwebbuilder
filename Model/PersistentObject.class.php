@@ -553,13 +553,13 @@ class PersistentObject extends DescriptedObject {
 		$pcs = get_superclasses($p0);
 		foreach($pcs as $pc){
 			$o1 =& new $pc(array(),false);
-			echo 'Checking class ' . getClass($o1). ' for field ' . $field . '<br />';
+			//echo 'Checking class ' . getClass($o1). ' for field ' . $field . '<br />';
 			if (getClass($o1) == 'pwbobject') {
 				print_backtrace_and_exit('Field not found: ' . $field);
 			}
 
             if (in_array($field, $o1->allFieldNamesThisLevel())) {
-				echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
+				//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
 				return $o1->getTable();
 			}
 		}
