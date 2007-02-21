@@ -8,33 +8,21 @@ class ActionDispatcher {
 	function &initializeComet(){
 		$ad =& new ActionDispatcher;
 		$ad->file = ini_get('session.save_path').'/'.session_name().'-'.session_id().'.cmt';
+		msg_remove_queue(msg_get_queue(ftok($ad->file, 'c')));
 		return $ad;
 	}
 	function dispatchComet(){
 		#@profile xdebug_start_profiling();@#
-		$f = @fopen($this->file,'r+');
-		if ($f==FALSE) {
-			return false;
-		}
-		flock($f,LOCK_EX);
-		$strs = fgets($f);
-		if (strlen($strs)>0){
-			ftruncate($f,0);
-			fclose($f);
-			$arr = explode('<newinput>',$strs);
-			array_shift($arr);
-			if (count($arr)>0)
-			foreach($arr as $str) {
-				$params = unserialize($str);
-				$win =& $this->dispatchData($params);
-				if ($params['showStopLoading'])$win->showStopLoading();
-				$this->params = $params;
-			}
-			return count($arr);
-		} else {
-			fclose($f);
-			return FALSE;
-		}
+		echo 'waiting...';flush();
+		$type = $params = 0;
+		touch($this->file);
+		msg_receive(msg_get_queue(ftok($this->file, 'c')),
+			1,$type, 2048, $params);
+		$win =& $this->dispatchData($params);
+		if ($params['showStopLoading'])$win->showStopLoading();
+		$this->params = $params;
+		print_r($params);
+		return isset($params['showStopLoading']);
 	}
 	function &dispatchData($form){
 		$event = array ();

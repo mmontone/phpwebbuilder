@@ -41,32 +41,22 @@ class CometPageRenderer extends PageRenderer {
 	}
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
-   		$interval=10000; //microseconds
-   		$maxsecs=20;       //seconds
-   		$maxtime=$maxsecs*1000000/$interval;
-		$x=0;
+   		$maxsecs=5;       //seconds
 		$this->ad =& ActionDispatcher::initializeComet();
 		$this->sendHeaders();
-		$starting = true;
 		#@profile xdebug_start_profiling();@#
-		while($x++<$maxtime){
-			$count = $this->ad->dispatchComet();
-			if ($starting || $count>0){
-				$starting = false;
-				$this->startCometWrapper();
-				$this->renderWindow($win);
-				$win->toFlush =& new ChildModificationsXMLNodeModification($this);
-				$win->modWindows();
-				$this->renderJSCommands($win);
-				$this->stopCometWrapper();
-				#@profile echo '<div id="profile">';xdebug_dump_function_profile(4);echo '</div>';@#
-				flush();
-				if($win->closeStream) {break;}
-				set_time_limit($maxsecs);
-			}
-			if ($count!==FALSE)	$x=0;
+		while(true){
+			$this->ad->dispatchComet();
+			set_time_limit($maxsecs);
+			$this->startCometWrapper();
+			$this->renderWindow($win);
+			$win->toFlush =& new ChildModificationsXMLNodeModification($this);
+			$win->modWindows();
+			$this->renderJSCommands($win);
+			$this->stopCometWrapper();
+			#@profile echo '<div id="profile">';xdebug_dump_function_profile(4);echo '</div>';@#
 			flush();
-			usleep($interval);
+			if($win->closeStream) {break;}
 			#@profile xdebug_stop_profiling();@#
 		}
 		$this->sendFooters();
