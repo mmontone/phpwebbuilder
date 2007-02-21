@@ -13,7 +13,7 @@ class ActionDispatcher {
 	}
 	function dispatchComet(){
 		#@profile xdebug_start_profiling();@#
-		echo 'waiting...';flush();
+		//echo 'waiting...';flush();
 		$type = $params = 0;
 		touch($this->file);
 		msg_receive(msg_get_queue(ftok($this->file, 'c')),
@@ -21,7 +21,7 @@ class ActionDispatcher {
 		$win =& $this->dispatchData($params);
 		if ($params['showStopLoading'])$win->showStopLoading();
 		$this->params = $params;
-		print_r($params);
+		//print_r($params);
 		return isset($params['showStopLoading']);
 	}
 	function &dispatchData($form){
