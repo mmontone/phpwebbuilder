@@ -36,6 +36,7 @@ class DOMXMLNode {
 
 	function setTagName($tagName) {
 		$this->tagName = $tagName;
+		$this->flushCache();
 	}
 
 	function & first_child() {
@@ -57,10 +58,12 @@ class DOMXMLNode {
 
 	function appendChild(& $xml) {
 		$this->insert_in($xml, $this->nextNode++);
+		$this->flushCache();
 	}
 	function replaceChild(& $new, & $old) {
 		$this->insert_in($new, $old->parentPosition);
 		$old->release();
+		$this->flushCache();
 	}
 
 	function removeChild(& $old) {
@@ -75,6 +78,7 @@ class DOMXMLNode {
 
 		unset ($this->childNodes[$pos]);
 		$old->release();
+		$this->flushCache();
 	}
 
 	function removeChilds() {
@@ -85,6 +89,7 @@ class DOMXMLNode {
 
 		$temp = array ();
 		$this->childNodes = & $temp;
+		$this->flushCache();
 	}
 
 	function insertBefore(& $old, & $new) {
@@ -100,10 +105,12 @@ class DOMXMLNode {
 			$this->insert_in($this->childNodes[$ks[$i -1]], $ks[$i]);
 		}
 		$this->insert_in($new, $pos);
+		$this->flushCache();
 	}
-
+	function flushCache(){}
 	function setAttribute($name, $val) {
 		$this->attributes[$name] = $val;
+		$this->flushCache();
 	}
 	function getAttribute($attribute) {
 		return @$this->attributes[$attribute];
@@ -111,6 +118,7 @@ class DOMXMLNode {
 
 	function removeAttribute($attr) {
 		unset ($this->attributes[$attr]);
+		$this->flushCache();
 	}
 }
 ?>

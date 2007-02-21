@@ -63,6 +63,7 @@ class Window extends PWBObject{
 		$this->parent->page_renderer->render($this);
 		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
 	}
+	function flushCache(){}
 	function modWindows(){
 		$myname = $this->owner_index();
 		$ws =& $this->parent->windows;
