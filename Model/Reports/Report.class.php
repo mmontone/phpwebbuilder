@@ -33,6 +33,7 @@ class Report extends Collection{
 	  var $vars = array();
 	  var $select_exp;
 	  var $select = null;
+      var $evaluated=false;
 
 
 	function Report($params=array()) {
@@ -105,10 +106,9 @@ class Report extends Collection{
 	}
 
 	function setPathCondition(&$condition) {
-		//$condition->applyTo($this);
 		//print_backtrace('Setting path condition: ' . print_r($condition,true));
-		$condition->evaluateIn($this);
 		$this->select_exp->addExpression($condition);
+        $this->evaluated=false;
 	}
 	/**
 	  * removes a condition
@@ -153,7 +153,10 @@ class Report extends Collection{
 		return $this->conditions;
 	}
 	function evaluateSelect(){
-		$this->select_exp->evaluateIn($this);
+		if (!$this->evaluated) {
+            $this->select_exp->evaluateIn($this);
+            $this->evaluated=true;
+        }
 	}
 	function &getSelectExp() {
 		$this->evaluateSelect();
@@ -162,6 +165,7 @@ class Report extends Collection{
 
 	function setSelectExp(&$exp) {
 		$this->select_exp =& $exp;
+        $this->evaluated=false;
 	}
 	/**
 	  * Returns the size of the collection
@@ -179,7 +183,8 @@ class Report extends Collection{
 	}
 	function inSQL(){
 		$obj =& $this->getObject();
-		$sql = 'SELECT '.$obj->id->fieldName('SELECT').' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
+		$sql = 'SELECT '.substr($obj->id->fieldName('SELECT'), 0, -2).' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
+        return $sql;
 	}
 	function size() {
 		$db = & DBSession::Instance();

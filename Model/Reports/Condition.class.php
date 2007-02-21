@@ -9,9 +9,25 @@ class Condition extends Expression {
 	function Condition($params=array()) {
 		#@typecheck $params['operation']:String,$params['exp2']:Expression,$params['exp2']:Expression@#
 		$this->exp1 =& $params['exp1'];
+        $this->exp1->parent =& $this;
 		$this->exp2 =& $params['exp2'];
+        $this->exp2->parent =& $this;
 		$this->operation = $params['operation'];
 	}
+
+    function setExp1(&$exp) {
+    	$this->exp1 =& $exp;
+        $this->exp1->parent =& $this;
+    }
+
+    function setExp2(&$exp) {
+        $this->exp2 =& $exp;
+        $this->exp2->parent =& $this;
+    }
+
+    function setOperation($operation) {
+    	$this->operation = $operation;
+    }
 
 	function evaluateIn(&$report) {
 		$this->evaluated_e1 = $this->exp1->evaluateIn($report);
@@ -25,6 +41,11 @@ class Condition extends Expression {
 		}//@#
 		return $this->evaluated_e1 . ' ' . $this->operation . ' ' . $this->evaluated_e2;
 	}
+
+    function addEvalExpression(&$exp) {
+    	//print_backtrace('Adding eval expression ' . $exp->printString());
+        $this->parent->addEvalExpression($exp);
+    }
 }
 
 class EqualCondition extends Condition {
@@ -35,7 +56,9 @@ class EqualCondition extends Condition {
 }
 
 class Expression {
-	function Expression() {
+	var $parent;
+
+    function Expression() {
 
 	}
 	function evaluateIn(&$report) {
@@ -49,8 +72,10 @@ class Expression {
 
 class NotExp extends Expression {
 	var $exp;
+
     function NotExp(&$exp) {
     	$this->exp =& $exp;
+        $this->exp->parent =& $this;
         parent::Expression();
     }
 
@@ -59,7 +84,7 @@ class NotExp extends Expression {
     }
 
     function evaluateIn(&$report) {
-
+        return $this->exp->evaluateIn($report);
     }
 
     function printString() {
@@ -69,6 +94,7 @@ class NotExp extends Expression {
 
 class AndExp extends Expression {
 	var $exps;
+    var $evaluated_exps = array();
 
 	function AndExp($params=array()) {
 		$this->exps = array();
@@ -79,16 +105,32 @@ class AndExp extends Expression {
 	}
 	function addExpression(&$exp) {
 		$this->exps[] =& $exp;
+        $exp->parent =& $this;
 	}
+
+    function addEvalExpression(&$exp) {
+    	$this->addExpression($exp);
+        $this->evaluated_exps[] = count($this->exps);
+    }
+
+    function cleanEvalExpressions() {
+        foreach($this->evaluated_exps as $evaluated_exp) {
+        	unset($this->exps[$evaluated_exp]);
+        }
+
+        $this->exps = array_values($this->exps);
+    }
 
 	function addExpressionUnique($index, &$exp) {
 		$this->exps[$index] =& $exp;
+        $exp->parent =& $this;
 	}
 
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
 			$this->exps[$e]->evaluateIn($report);
 		}
+        $this->cleanEvalExpressions();
 	}
 
 	function printString() {
@@ -117,6 +159,7 @@ class AndExp extends Expression {
 
 class OrExp extends Expression {
 	var $exps;
+    var $evaluated_exps=array();
 
 	function OrExp($params=array()) {
 		$this->exps = array();
@@ -128,11 +171,28 @@ class OrExp extends Expression {
 	}
 	function addExpression(&$exp) {
 		$this->exps[] =& $exp;
+        $exp->parent =& $this;
 	}
+
+    function addEvalExpression(&$exp) {
+        $this->addExpression($exp);
+        $this->evaluated_exps[] = count($this->exps);
+    }
+
+    function cleanEvalExpressions() {
+        foreach($this->evaluated_exps as $evaluated_exp) {
+            unset($this->exps[$evaluated_exp]);
+        }
+
+        $this->exps = array_values($this->exps);
+    }
+
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
 			$this->exps[$e]->evaluateIn($report);
 		}
+
+        $this->cleanEvalExpressions();
 	}
 
 	function printString() {
@@ -226,7 +286,15 @@ class PathExpression extends Expression {
 			$obj =& new $class(array(),false);
 			$report->addTables($obj->getTables());
 			$otable = $o->tableForField($index);
-			$report->setCondition($otable. '.' . $index, '=', '`'.$obj->getTable() .'`'. '.id');
+			//$report->setCondition($otable. '.' . $index, '=', '`'.$obj->getTable() .'`'. '.id');
+
+            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
+                                             'exp2' => new ValueExpression('`' . $obj->getTable() .'`'. '.id')));
+
+            $exp->evaluateIn($report);
+            $this->parent->addEvalExpression($exp);
+
+
 			$o =& $obj;
 		}
 		return $o;

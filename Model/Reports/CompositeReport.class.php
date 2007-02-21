@@ -31,15 +31,16 @@ class CompositeReport extends Report {
 	}
 
 	function & getSelectExp() {
-		$e = & new AndExp;
+		$this->select_exp->evaluateIn($this);
+        $e = & new AndExp;
 		$e->addExpression($this->select_exp);
-		$se =& $this->report->getSelectExp();
+        $se =& $this->report->getSelectExp();
 		$e->addExpression($se);
 
 		return $e;
 	}
 
-	function & getGroup() {
+    function & getGroup() {
 		return array_merge($this->group, $this->report->getGroup());
 	}
 
@@ -69,10 +70,6 @@ class CompositeReport extends Report {
 
 	function getDataType() {
 		return $this->report->getDataType();
-	}
-
-	function setDataType($dataType) {
-		$this->report->setDataType();
 	}
 }
 
