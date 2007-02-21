@@ -71,12 +71,11 @@ class CometPageRenderer extends PageRenderer {
 	function renderWindow(&$win){
 		$win->wholeView->renderJsResponseCommand();
 	}
-	function startCometWrapper(){}
-	function stopCometWrapper(){
-			#@profile echo '<script>var prof = document.getElementById("profile");if (prof)prof.parentNode.removeChild(prof);</script>';@#
-			flush();
-
+	function startCometWrapper(){
+		#@profile echo '<script>var prof = document.getElementById("profile");if (prof)prof.parentNode.removeChild(prof);</script>';@#
+		flush();
 	}
+	function stopCometWrapper(){}
 	function renderJSCommands(&$window) {
 
 		foreach (array_keys($window->ajaxCommands) as $i) {

@@ -100,7 +100,7 @@ class Compiler {
 		if(Compiler::CompileOpt('optimal')){
 			$inst =& Compiler::Instance();
 			$c = $inst->compileClass($class);
-			if ($c!=null){
+			if ($c!=null && !class_exists($class)){
 				$old = file_get_contents($inst->compiledOutput);
 				$f = fopen($inst->compiledOutput, 'w');
 				fwrite($f,substr($old, 0,-2).$c.'?>');
