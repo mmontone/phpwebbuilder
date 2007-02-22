@@ -147,7 +147,7 @@
 				<img class="operation" title="Previous"
 					src="$templatesdir/icons/stock_left.png" />
 			</a>
-			<input type="text" id="firstElem" style="width:4em" />
+			<input type="text" id="firstElem" style="width:4em" readonly="readonly" />
 			<a href="#" id="next">
 				<img class="operation" title="Next"
 					src="$templatesdir/icons/stock_right.png" />
@@ -158,14 +158,15 @@
 			</a>
 			<br />
 			<a href="#" id="refresh">
-				<translated>refresh</translated>
+				<img class="operation" title="refresh"
+                                        src="$templatesdir/icons/view-refresh.png" />
 			</a>
 			<a href="#" id="filter">
 				<img class="operation" title="Search"
 					src="$templatesdir/icons/stock_search.png" />
 			</a>
 			<translated>Showing</translated>
-			<input type="text" id="pSize" style="width:4em" />
+			<input type="text" id="pSize" style="width:4em" readonly="readonly" />
 			<translated>per page</translated>
 			.
 			<container id="realSize" />

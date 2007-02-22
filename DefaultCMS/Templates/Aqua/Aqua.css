@@ -163,3 +163,23 @@ background-color: #FF9900;
 padding:1px;
 color:white;
 }
+
+textarea{
+width:30em;
+height
+}
+
+table{
+  background-color:#F8F6F6;
+  border:thin outset #000000;
+}
+
+
+td {
+  border:inherit;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-family:"Courier New", Courier, mono;
+  font-size:12px;
+}
+
