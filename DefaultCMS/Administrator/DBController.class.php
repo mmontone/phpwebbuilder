@@ -40,6 +40,8 @@ class DBController extends Component {
 		$this->addComponent(new TextAreaComponent($this->sql), 'sql_comp');
 		$this->addComponent(new Text($this->sql_result), 'sql_res');
 		$this->addComponent(new ActionLink($this, 'exec_sql', 'Execute the SQL', $n3=null), 'exec_sql');
+		$this->addComponent(new ActionLink($this, 'exec_oql', 'Execute in OQL', $n3=null), 'exec_oql');
+		$this->addComponent(new ActionLink($this, 'exec_update', 'Update the Database', $n3=null), 'exec_update');
 
 		$this->addComponent(new Label('Check Table Structure'));
 		$this->addComponent(new Label('Step by step checking'));
@@ -137,12 +139,21 @@ class DBController extends Component {
 	function permissionNeeded () {
 		return "DatabaseAdmin";
 	}
+	function exec_oql(){
+		$oql = stripslashes($this->sql->getValue());
+		if (strcasecmp(substr($oql, 0,6), 'select')==0) {$oql = substr($oql,6);}
+		$oq =& new OQLCompiler;
+		$repstr = $oq->fromQuery($oql);
+		eval('$rep =& '.$repstr.';');
+		$sql = $rep->selectSql();
+		$this->do_sql($sql);
+	}
 	function exec_sql() {
+		$this->do_sql(stripslashes($this->sql->getValue()));
+	}
+	function exec_update() {
 		$db =& DBSession::Instance();
-		$sqlstr = stripslashes($this->sql->getValue());
-		$sqls = explode(";",$sqlstr);
-		$ress = $db->batchExec($sqls);
-		$this->sql_result->setValue(print_r($ress, TRUE));
+		$this->exec_sql();
 
 		$this->new_version->version->setValue($this->getCurrentVersionNumber() + 1);
 		$this->new_version->sql->setValue($this->sql->getValue());
@@ -164,6 +175,12 @@ class DBController extends Component {
 			}
 		}
 		$this->vnum_aspect->changed();
+	}
+	function do_sql($sqlstr){
+		$db =& DBSession::Instance();
+		$sqls = explode(";",$sqlstr);
+		$ress = $db->batchExec($sqls);
+		$this->sql_result->setValue(print_r($ress, TRUE));
 	}
 
 	function check_tables() {

@@ -1,7 +1,7 @@
 <?php
 
 class OQLCompiler {
-	function fromQuery($query, $env) {
+	function fromQuery($query) {
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
 				   identifier::=/[a-z_][a-z_0-9]*/i.
