@@ -43,7 +43,6 @@ class Condition extends Expression {
 	}
 
     function addEvalExpression(&$exp) {
-    	//print_backtrace('Adding eval expression ' . $exp->printString());
         $this->parent->addEvalExpression($exp);
     }
 }
@@ -94,10 +93,13 @@ class NotExp extends Expression {
 
 class AndExp extends Expression {
 	var $exps;
-    var $evaluated_exps = array();
 
-	function AndExp($params=array()) {
+	function AndExp($params=array(), $evaluate=true) {
 		$this->exps = array();
+        if ($evaluate) {
+            $this->addExpression(new AndExp(array(), false));
+        }
+
 		foreach(array_keys($params) as $k) {
 			$this->addExpression($params[$k]);
 		}
@@ -109,16 +111,13 @@ class AndExp extends Expression {
 	}
 
     function addEvalExpression(&$exp) {
-    	$this->addExpression($exp);
-        $this->evaluated_exps[] = count($this->exps);
+        $evaluated_exp =& $this->exps[0];
+
+        $evaluated_exp->addExpression($exp);
     }
 
     function cleanEvalExpressions() {
-        foreach($this->evaluated_exps as $evaluated_exp) {
-        	unset($this->exps[$evaluated_exp]);
-        }
-
-        $this->exps = array_values($this->exps);
+        $this->exps[0] =& new AndExp(array(), false);
     }
 
 	function addExpressionUnique($index, &$exp) {
@@ -130,12 +129,12 @@ class AndExp extends Expression {
 		foreach(array_keys($this->exps) as $e) {
 			$this->exps[$e]->evaluateIn($report);
 		}
-        $this->cleanEvalExpressions();
-	}
+    }
 
 	function printString() {
 	  $printed = array();
-	  foreach(array_keys($this->exps) as $e) {
+
+      foreach(array_keys($this->exps) as $e) {
 	    $p = $this->exps[$e]->printString();
 	    if ($p !== '') {
 	      $printed[] = $p;
@@ -149,7 +148,7 @@ class AndExp extends Expression {
 	    return $printed[0];
 	  }
 
-	  return '(' . implode(') AND (', $printed) . ')';
+      return '(' . implode(') AND (', $printed) . ')';
 	}
 
 	function isEmpty() {
@@ -159,11 +158,12 @@ class AndExp extends Expression {
 
 class OrExp extends Expression {
 	var $exps;
-    var $evaluated_exps=array();
+    var $eval_exp = null;
 
 	function OrExp($params=array()) {
 		$this->exps = array();
-		foreach(array_keys($params) as $k) {
+
+        foreach(array_keys($params) as $k) {
 			$this->addExpression($params[$k]);
 		}
 
@@ -175,44 +175,62 @@ class OrExp extends Expression {
 	}
 
     function addEvalExpression(&$exp) {
-        $this->addExpression($exp);
-        $this->evaluated_exps[] = count($this->exps);
+        if ($this->eval_exp == null) {
+        	$this->eval_exp =& new AndExp;
+        }
+
+        $this->eval_exp->addExpression($exp);
     }
 
     function cleanEvalExpressions() {
-        foreach($this->evaluated_exps as $evaluated_exp) {
-            unset($this->exps[$evaluated_exp]);
-        }
-
-        $this->exps = array_values($this->exps);
+        $n = null;
+        $this->eval_exp =& $n;
     }
 
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
 			$this->exps[$e]->evaluateIn($report);
 		}
-
-        $this->cleanEvalExpressions();
 	}
 
 	function printString() {
-	  $printed = array();
-	  foreach(array_keys($this->exps) as $e) {
-	    $p = $this->exps[$e]->printString();
-	    if ($p !== '') {
-	      $printed[] = $p;
-	    }
+	  if ($this->eval_exp != null) {
+	  	$s = $this->evalPrintString();
 	  }
+      else {
+      	$s = $this->primPrintString();
+      }
 
-	  if (empty($printed)) {
-	    return '';
-	  }
-	  if (count($printed) == 1) {
-	    return '';
-	  }
-
-	  return '(' . implode(') OR (', $printed) . ')';
+      return $s;
 	}
+
+    function primPrintString() {
+      $printed = array();
+      foreach(array_keys($this->exps) as $e) {
+        $p = $this->exps[$e]->printString();
+        if ($p !== '') {
+          $printed[] = $p;
+        }
+      }
+
+      if (empty($printed)) {
+        return '';
+      }
+      if (count($printed) == 1) {
+        return '';
+      }
+
+      return '(' . implode(') OR (', $printed) . ')';
+    }
+
+    function evalPrintString() {
+    	$exp =& new AndExp;
+        $exp->addExpression($this->eval_exp);
+        $n = null;
+        $this->eval_exp =& $n;
+        $exp->addExpression($this);
+        return $exp->printString();
+    }
 
 
 	function isEmpty() {
@@ -284,7 +302,8 @@ class PathExpression extends Expression {
             @#
             $class =& $o->$index->getDataType();
 			$obj =& new $class(array(),false);
-			$report->addTables($obj->getTables());
+
+            $report->addTables($obj->getTables());
 			$otable = $o->tableForField($index);
 			//$report->setCondition($otable. '.' . $index, '=', '`'.$obj->getTable() .'`'. '.id');
 

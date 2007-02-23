@@ -61,7 +61,12 @@ class DBSession {
 	}
 
 	function commit() {
-		if ($this->nesting == 1) {
+		#@gencheck if ($this->nesting <= 0)
+        {
+		  print_backtrace('Error: trying to commit a non existing transaction');
+		}//@#
+
+        if ($this->nesting == 1) {
 			if (!$this->rollback) {
 				#@sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');@#
 				$this->commitTransaction();
@@ -85,7 +90,12 @@ class DBSession {
 	}
 
 	function rollback() {
-		#@sql_echo print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');@#
+		#@gencheck if ($this->nesting <= 0)
+        {
+          print_backtrace('Error: trying to rollback a non existing transaction');
+        }//@#
+
+        #@sql_echo print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');@#
 
 		if ($this->nesting == 1) {
 			$this->rollbackTransaction();

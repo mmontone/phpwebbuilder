@@ -60,7 +60,9 @@ class Report extends Collection{
     }
 
 	function addTable($table) {
-		$this->tables = array_union_values($this->tables, array($table));
+
+        $this->tables = array_union_values($this->tables, array($table));
+        //echo 'Tables: ' . $this->printString() . ':'.print_r($this->tables,true) . '<br/>';
 	}
 
 	function setTables($tables) {
@@ -371,7 +373,8 @@ class Report extends Collection{
 	  */
 
 	function selectsql(){
-		return 'SELECT ' . $this->fieldNames() . ' FROM ' . $this->restrictions()  .$this->group(). $this->order() . $this->limit();
+		$this->evaluateSelect();
+        return 'SELECT ' . $this->fieldNames() . ' FROM ' . $this->restrictions()  .$this->group(). $this->order() . $this->limit();
 	}
 
 	/**
@@ -455,7 +458,8 @@ class Report extends Collection{
 	 	return $obj;
 	}
 	function printString(){
-		return $this->primPrintString('('.$this->getDataType().')');
+
+        return $this->primPrintString('('.$this->getDataType().')');
 	}
 
     /*
