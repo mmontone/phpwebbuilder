@@ -141,7 +141,8 @@ class DBController extends Component {
 	}
 	function exec_oql(){
 		$oql = stripslashes($this->sql->getValue());
-		if (strcasecmp(substr($oql, 0,6), 'select')==0) {$oql = substr($oql,6);}
+		$this->sql->getValue($oql);
+		$oql = preg_replace('/^[\s\n\t]*select/','',$oql );
 		$oq =& new OQLCompiler;
 		$repstr = $oq->fromQuery($oql);
 		eval('$rep =& '.$repstr.';');
@@ -149,7 +150,8 @@ class DBController extends Component {
 		$this->do_sql($sql);
 	}
 	function exec_sql() {
-		$this->do_sql(stripslashes($this->sql->getValue()));
+		$this->do_sql($sql = stripslashes($this->sql->getValue()));
+		$this->sql->getValue($sql);
 	}
 	function exec_update() {
 		$db =& DBSession::Instance();

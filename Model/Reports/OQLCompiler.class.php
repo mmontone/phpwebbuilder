@@ -21,7 +21,7 @@ class OQLCompiler {
 				   value::=var=><variable>|
 				   		value=>(
 							number=>/[0-9]+/|
-					   		str=>/\'[^\']\'/|
+					   		str=>/\'[^\']+\'/|
 					   		phpvar=><phpvar>|
 					   		bool=>/TRUE|FALSE/i).
 				   )>'
@@ -85,7 +85,7 @@ class OQLCompiler {
 						',\'exp2\'=>'.$cond['result'][2].'))';
 				return $ret;
 			} else {
-				return $cond['result'];
+				return $cond['result'][1];
 			}
 
 		}
