@@ -7,12 +7,12 @@
 		<container id="idN" />
 		<table>
 			<tbody>
-				<template class="FieldValueComponent"><tr>
+				<template class="FieldComponent"><tr>
 						<td>
-							<container id="fieldName" />
+							<container id="field_name" />
 						</td>
 						<td>
-							<container id="value" />
+							<container id="component" />
 						</td>
 				</tr></template>
 			</tbody>
@@ -57,13 +57,13 @@
 		<container id="idN" />
 		<table>
 			<tbody>
-				<template class="FieldValueComponent">
+				<template class="FieldComponent">
 					<tr>
 						<td>
-							<container id="fieldName" />
+							<container id="field_name" />
 						</td>
 						<td>
-							<container id="value" />
+							<container id="component" />
 						</td>
 					</tr>
 				</template>
@@ -109,8 +109,8 @@
 				<tbody id="objs">
 					<template class="PersistentObjectViewer">
 							<tr>
-							<template class="FieldValueComponent"><td>
-									<container id="value" />
+							<template class="FieldComponent"><td>
+									<container id="component" />
 							</td></template>
 						<td>&amp;nbsp;
 							<a href="#" id="viewer">

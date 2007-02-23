@@ -4,7 +4,7 @@ class PersistentObjectPresenter extends Component {
 	var $obj;
 	var $classN;
 	var $fieldNames;
-
+	#@use_mixin EditorComponent@#
     function PersistentObjectPresenter(&$object, $fields=null) {
 		$this->obj =& $object;
 		$this->classN = getClass($object);
@@ -30,16 +30,16 @@ class PersistentObjectPresenter extends Component {
 
     	$fields =& $obj->fieldsWithNames($this->fieldNames);
        	foreach(array_keys($fields) as $f2){
-    		$this->addComponent($this->addField($fields[$f2]), $f2);
+    		$this->addFieldComponent($this->addField($fields[$f2]), $f2, $f2->displayString);
        	}
     }
 
     function &addField(&$field){
-		$fc =& new FieldValueComponent;
+//		$fc =& new FieldValueComponent;
 		$fieldComponent = & $this->factory->createFor($field);
-		$fc->addComponent($fieldComponent, 'value');
-		$fc->addComponent(new Label($field->displayString), 'fieldName');
-		return $fc;
+//		$fc->addComponent($fieldComponent, 'value');
+//		$fc->addComponent(new Label($field->displayString), 'fieldName');
+		return $fieldComponent;
     }
 }
 

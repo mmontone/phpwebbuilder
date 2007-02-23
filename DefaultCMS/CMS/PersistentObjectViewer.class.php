@@ -11,7 +11,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	parent::initialize();
     }
 
-    function &addField(&$field){
+    /*function &addField(&$field){
 		$fc =& new FieldValueComponent;
 		$fieldComponent = & $this->factory->createFor($field);
 		$fc->addComponent($fieldComponent, 'value');
@@ -21,7 +21,7 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 			$fc->addComponent(new Label($field->displayString), 'fieldName');
         }
 		return $fc;
-    }
+    }*/
 
     function editField($params) {
    	  	$field =& $params['field'];
