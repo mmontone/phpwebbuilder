@@ -2,9 +2,10 @@
 
 class CollectionFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new CollectionViewer(
+		$cv =& new CollectionViewer(
 			$field->collection
 		);
+		return $cv;
 	}
 }
 

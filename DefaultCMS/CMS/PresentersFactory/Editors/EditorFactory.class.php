@@ -4,7 +4,8 @@ class EditorFactory extends FieldPresenterFactory {}
 
 class DataFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new Input($field);
+		$i =&  new Input($field);
+		return $i;
 	}
 }
 

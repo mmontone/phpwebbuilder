@@ -12,7 +12,8 @@ class DefaultCMSApplication extends Application{
 	//var $templateName = 'Default';
 	var $templateName = 'Aqua';
  	function &setRootComponent() {
- 		return new DefaultCMS;
+ 		$comp =& new DefaultCMS;
+ 		return $comp;
  	}
 
  	function loadTemplates (){

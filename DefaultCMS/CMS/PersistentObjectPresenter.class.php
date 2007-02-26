@@ -30,7 +30,7 @@ class PersistentObjectPresenter extends Component {
 
     	$fields =& $obj->fieldsWithNames($this->fieldNames);
        	foreach(array_keys($fields) as $f2){
-    		$this->addFieldComponent($this->addField($fields[$f2]), $f2, $f2->displayString);
+    		$this->addFieldComponent($this->addField($fields[$f2]), $f2, $fields[$f2]->displayString);
        	}
     }
 

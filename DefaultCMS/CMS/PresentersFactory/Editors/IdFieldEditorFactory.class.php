@@ -2,13 +2,15 @@
 
 class IdFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new Text($field);
+		$text =& new Text($field);
+		return $text;
 	}
 }
 
 class SuperFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new Text($field);
+		$text =& new Text($field);
+		return $text;
 	}
 }
 

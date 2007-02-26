@@ -17,7 +17,7 @@ class LoginTest extends UnitTestCase {
 							`PWBversion` INT,
 							`user` VARCHAR( 30 ) NOT NULL ,
 							`pass` VARCHAR( 30 ) NOT NULL
-							) TYPE = innodb;');
+							) TYPE = innodb;', false, $n=null, $rows=0);
 		$alex =& new User;
 		$alex->user->setValue('alex');
 		$alex->pass->setValue('alexpass');
@@ -36,7 +36,7 @@ class LoginTest extends UnitTestCase {
 
 	function tearDown() {
 		User::logout();
-		$this->db->SQLExec('DROP TABLE `users`');
+		$this->db->SQLExec('DROP TABLE `users`',false, $n=null, $rows=0);
 		TestsDBSession::release();
 	}
 
