@@ -23,7 +23,7 @@ class AspectAdaptor extends ObjectHolder
     	$this->__value->$set_selector($value);
     }
 
-    function &getValue() {
+    function getValue() {
     	$get_selector = $this->get_selector;
     	return $this->__value->$get_selector();
     }

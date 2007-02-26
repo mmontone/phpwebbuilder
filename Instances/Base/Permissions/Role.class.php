@@ -23,7 +23,7 @@ class Role extends PersistentObject {
 				' WHERE user =', $id,
 				' AND ',$perm,
 				' AND u.role=p.role'));
-		$reg=& $db->SQLExec($sql, FALSE, 0);
+		$reg=& $db->SQLExec($sql, FALSE, $n=0, $rows=0);
 		unset($sql);
 		$can = mysql_num_rows ($reg) > 0;
 		unset($reg);
@@ -43,7 +43,7 @@ class Role extends PersistentObject {
 				' WHERE user =', $id,
 				' AND ',$perm,
 				' AND u.role=p.role'));
-		$reg=& $db->SQLExec($sql, FALSE, 0);
+		$reg=& $db->SQLExec($sql, FALSE, 0, $rows=0);
 		unset($sql);
 		$can = mysql_num_rows ($reg) > 0;
 		unset($reg);
@@ -63,7 +63,7 @@ class Role extends PersistentObject {
 			$sql = "SELECT * FROM ".baseprefix."RolePermission p".
 					" WHERE $perm".
 					" AND " . $this->id->getValue() . "=p.role";
-			$reg=$db->SQLExec($sql, FALSE, 0);
+			$reg=$db->SQLExec($sql, FALSE, $n=null, $rows=0);
 	    	return ((mysql_num_rows ($reg) > 0));
 	}
 }
