@@ -22,11 +22,11 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
-			if ($this->opts[$this->component->selected_index]) {
+			if (isset($this->opts[$this->component->selected_index])) {
 				$this->opts[$this->component->selected_index]->removeAttribute('selected');
 			}
 			$index = $this->component->getValueIndex();
-			if ($this->opts[$index] !== null) {
+			if (isset($this->opts[$index])) {
 				$this->opts[$index]->setAttribute('selected', 'selected');
 			}
 			$this->component->selected_index =& $this->component->getValueIndex();
@@ -54,10 +54,11 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 			lambda('&$elem',
 			'$option =& new XMLNodeModificationsTracker(\'option\');
 			$option->setAttribute(\'value\', $i);
-			$option->appendChild(new XMLTextNode($self->component->displayElement($elem)));
+			$display = $self->component->displayElement($elem);
+			$option->appendChild(new XMLTextNode($display));
 			$self->opts[$i] =& $option;
 			$view->appendChild($option);
-			$i++;', get_defined_vars()));
+			$i++;return $i;', get_defined_vars()));
 	}
 
 }

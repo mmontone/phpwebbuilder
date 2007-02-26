@@ -94,6 +94,7 @@ class NullXMLNodeModification extends XMLNodeModification {
 class ChildModificationsXMLNodeModification extends XMLNodeModification {
 	var $modifications = array();
 	function renderAjaxResponseCommand() {
+		$xml = '';
 		foreach (array_keys($this->modifications) as $i) {
 			$mod =& $this->modifications[$i];
 			$xml .= $mod->renderAjaxResponseCommand();

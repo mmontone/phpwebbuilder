@@ -6,7 +6,7 @@ class XMLNode extends DOMXMLNode {
 	var $containers = array ();
 	var $childById = array ();
 	var $css_classes = array();
-
+	var $cache;
 	function XMLNode($tag_name = null, $attributes = array ()) {
 		parent :: DOMXMLNode($tag_name, $attributes);
 		$this->addCSSClasses();
