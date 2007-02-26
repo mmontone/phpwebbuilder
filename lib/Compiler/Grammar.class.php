@@ -2,6 +2,7 @@
 
 class Grammar {
 	var $pointcuts = array();
+	var $error;
 	function Grammar($params) {
 		$this->params = & $params;
 		foreach (array_keys($this->params['nt']) as $k) {
@@ -40,7 +41,6 @@ class Grammar {
 			return $this->process($this->params['root'],$res1);
 		} else {
 			$n=null;
-			var_dump($this->error);
 			return $this->error;
 		}
 	}
