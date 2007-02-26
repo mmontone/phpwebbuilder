@@ -39,6 +39,9 @@ class Report extends Collection{
 	function Report($params=array()) {
 		$this->initializeSelectExp();
 		parent::Collection();
+		$this->setConfigArray($params);
+	}
+	function setConfigArray($params){
 		if (isset($params['class'])){
 			$this->dataType =$params['class'];
 		}
@@ -402,7 +405,7 @@ class Report extends Collection{
 			$this->elements = array();
 			$sql = $this->selectsql();
 			$db =& DBSession::Instance();
-			$reg = $db->SQLExec($sql, FALSE, $this);
+			$reg = $db->SQLExec($sql, FALSE, $this,$rows=0);
 			if ($reg===false) return false;
 			while ($data = $db->fetchrecord($reg)) {
 				$this->addElement($this->makeElement($data));

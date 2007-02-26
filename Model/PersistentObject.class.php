@@ -185,7 +185,7 @@ class PersistentObject extends DescriptedObject {
 	function &basicLoad() {
 		$sql = $this->loadSQL();
 		$db =& DBSession::Instance();
-		$rec = $db->SQLExec($sql, FALSE, $this);
+		$rec = $db->SQLExec($sql, FALSE, $this, $rows=0);
 		if (is_exception($rec)) {
 			return $rec;
 		}
@@ -213,7 +213,7 @@ class PersistentObject extends DescriptedObject {
 		$values = substr($values, 0, -2);
 		$sql = 'INSERT INTO ' . $this->tableName() . ' (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DBSession::Instance();
-		$res =& $db->SQLExec($sql, TRUE, & $this, & $rows);
+		$res =& $db->SQLExec($sql, TRUE, $this, $rows=0);
 		if (!is_exception($res)) {
 			$this->existsObject = true;
 		}
@@ -238,7 +238,7 @@ class PersistentObject extends DescriptedObject {
 	function &basicUpdate() {
 		$sql = $this->updateString();
 		$db =& DBSession::Instance();
-		$res = $db->SQLExec($sql, FALSE, & $this, &$rows);
+		$res = $db->SQLExec($sql, FALSE, $this, $rows=0);
 		if (is_exception($res)) {
 			return $res;
 		}
@@ -254,6 +254,9 @@ class PersistentObject extends DescriptedObject {
 				}
 
 				return $ex;
+			} else {
+				$error = false;
+				return $error;
 			}
 		}
 	}
@@ -271,7 +274,7 @@ class PersistentObject extends DescriptedObject {
 		if (!$this->existsObject) return true;
 		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DBSession::Instance();
-		$res =& $db->SQLExec($sql, FALSE, $this);
+		$res =& $db->SQLExec($sql, FALSE, $this, $rows=0);
 		if (!is_exception($res)) {
 			$this->existsObject=FALSE;
 		}
@@ -346,7 +349,7 @@ class PersistentObject extends DescriptedObject {
 	 * Function for loading an object (class method)
 	 */
 	function & getWithId($class, $id) {
-		if ($id==0) return $n=null;
+		if ($id==0) {$n=null;return$n;}
 		$o =&PersistentObject::findGlobalObject($class, $id);
 		if ($o!==null) return $o;
 		$obj = & new $class(array(),false);
@@ -383,7 +386,7 @@ class PersistentObject extends DescriptedObject {
 		$this->setID($id);
 		$rec =& $this->basicLoad();
 		if (!$rec) return $f = false;
-		return $this->loadFromRec(&$rec);
+		return $this->loadFromRec($rec);
 	}
 	/**
 	 * Loads an object from a database record
@@ -407,7 +410,8 @@ class PersistentObject extends DescriptedObject {
 				return $o;
 			}
 		}
-		return new $c(array(), false);
+		$o =& new $c(array(), false);
+		return $o;
 	}
 	/**
 	 * Checks if the subclass can be loaded from the record

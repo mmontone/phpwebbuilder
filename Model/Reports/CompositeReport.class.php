@@ -8,6 +8,11 @@ class CompositeReport extends Report {
 		parent :: Report();
 		$this->setEventsBubbling();
 	}
+	function &fromArray($params){
+		$cr =& new CompositeReport($params['subq']);
+		$cr->setConfigArray($params);
+		return $cr;
+	}
 	function printString() {
 		return $this->primPrintString('Report: ' . $this->report->printString());
 	}
@@ -23,7 +28,8 @@ class CompositeReport extends Report {
 	}*/
 
 	function & getTables() {
-		return array_union_values($this->tables, $this->report->getTables());
+		$arr= array_union_values($this->tables, $this->report->getTables());
+		return $arr;
 	}
 
 	function & getConditions() {
@@ -41,11 +47,13 @@ class CompositeReport extends Report {
 	}
 
     function & getGroup() {
-		return array_merge($this->group, $this->report->getGroup());
+		$arr = array_merge($this->group, $this->report->getGroup());
+		return $arr;
 	}
 
 	function & getOrder() {
-		return array_merge($this->order, $this->report->getOrder());
+		$arr = array_merge($this->order, $this->report->getOrder());
+		return $arr;
 	}
 
 	function & getLimit() {
@@ -65,7 +73,8 @@ class CompositeReport extends Report {
 	}
 
 	function & getFields() {
-		return array_merge($this->fields, $this->report->getFields());
+		$arr = array_merge($this->fields, $this->report->getFields());
+		return $arr;
 	}
 
 	function getDataType() {

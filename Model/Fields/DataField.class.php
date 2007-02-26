@@ -200,7 +200,7 @@ class DataField extends ValueModel {
 	function validated() {
 		$this->triggerEvent('validated', $this);
 	}
-	function validate_ereg($regex, $mess){
+	function &validate_ereg($regex, $mess){
 			if (!ereg($regex, $this->getValue())) {
 			$ex =& new ValidationException(array (
 				'message' => $mess,
@@ -211,7 +211,8 @@ class DataField extends ValueModel {
 		}
 
 		$this->triggerEvent('validated', $this);
-		return false;
+		$f = false;
+		return $f;
 	}
 	/**
 	 * Triggers a required_but_empty event

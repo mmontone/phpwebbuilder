@@ -342,7 +342,7 @@ class ObjectPathExpression extends AttrPathExpression {
 	function ObjectPathExpression($path, $type='') {
 		$this->type = $type;
 		$path = explode('.',$path);
-		if (count($path)>1) $att = array_pop($path);
+		if (count($path)>1) $att = array_pop($path); else $att='';
 		parent::AttrPathExpression(implode('.',$path), $att);
 	}
 	function evaluateIn(&$report) {
