@@ -10,10 +10,11 @@ class ErrorDialog extends Component
 	}
 	function &create($message){
 		if (Application::rendersAjax()) {
-			return new ModalErrorDialog($message);
+			$ed =& new ModalErrorDialog($message);
 		} else {
-			return new ErrorDialog($message);
+			$ed =& new ErrorDialog($message);
 		}
+		return $ed;
 	}
 	function initialize() {
 		$this->addComponent(new Label($this->message), 'error');

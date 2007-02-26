@@ -364,7 +364,7 @@ class Component extends PWBObject
 }//@#
 
 class FieldComponent extends Component{
-	function &getValue(){
+	function getValue(){
 		return $this->component->getValue();
 	}
 	function setValue(&$value){

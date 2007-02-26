@@ -11,10 +11,11 @@ class NotificationDialog extends Component
 
 	function &Create($message){
 		if (Application::rendersAjax()) {
-			return new ModalNotificationDialog($message);
+			$nd =& new ModalNotificationDialog($message);
 		} else {
-			return new NotificationDialog($message);
+			$nd =& new NotificationDialog($message);
 		}
+		return $nd;
 	}
 
 	function initialize() {

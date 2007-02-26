@@ -34,7 +34,8 @@ class Select extends Widget {
 	}
 
 	function &printObject(&$object) {
-		return $object->printString();
+		$str = $object->printString();
+		return $str;
 	}
 
 	function &printPrimitive(&$primitive) {
@@ -50,7 +51,7 @@ class Select extends Widget {
     }
 
     function viewUpdated($new_value) {
-		$value = & $this->getValueIndex();
+		$value = $this->getValueIndex();
 		if ($new_value != $value)
 			$this->setValueIndex($new_value);
 	}
@@ -61,7 +62,7 @@ class Select extends Widget {
 	function getSize() {
 		return $this->size;
 	}
-	function &getValueIndex() {
+	function getValueIndex() {
 		return $this->options->indexOf($this->getValue());
 	}
 

@@ -114,7 +114,7 @@ class Window extends PWBObject{
 		parent::PWBObject();
         $this->setDynVar('window', $this);
 		$app =& Application::Instance();
-		$this->ComponentHolder(&$component, $name, &$app);
+		$this->ComponentHolder($component, $name, $app);
 		$app->addWindow($this, $name);
 	}
 	function showStopLoading(){
