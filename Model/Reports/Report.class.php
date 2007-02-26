@@ -231,16 +231,19 @@ class Report extends Collection{
 		if ($this->select !== null) {
 			return $this->select;
 		}
-
-		foreach($this->getFields() as $f=>$n){
-			if (!is_numeric($f)){
-				$ret []= $f .' as `'. $n.'`';
-			} else {
-				$ret []= '`'. $this->parseField($n).'`';
+		$fs = $this->getFields();
+		if (!empty($fs)){
+			foreach($fs as $f=>$n){
+				if (!is_numeric($f)){
+					$ret []= $f .' as `'. $n.'`';
+				} else {
+					$ret []= '`'. $this->parseField($n).'`';
+				}
 			}
+		} else {
+			$obj =& $this->getObject();
+			$ret []= $obj->fieldNames('SELECT');
 		}
-		$obj =& $this->getObject();
-		$ret []= $obj->fieldNames('SELECT');
 		return  implode(',',$ret);
 	}
 

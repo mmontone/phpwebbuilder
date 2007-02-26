@@ -1,19 +1,21 @@
 <?php
 
 class OQLCompiler {
+	var $error;
 	function fromQuery($query) {
 			$oqlg =&PHPCC::createGrammar(
 				'<oql(
 				   identifier::=/[a-z_][a-z_0-9]*/i.
 				   phpvar::=/\$[a-z_][a-z_0-9]*/i.
 				   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|\<\>|<=|>=|\>|\<|LIKE|IS/i <value>.
+				   valueorfunction::=<identifier> ["(" {<identifier>; ","} ")"].
 				   expression::=logical=><condition> operator->/AND|OR/i <expression>|
 				   			condition=><condition>|
 				   			not=>/NOT/i <expression>|
 							exists=>/EXISTS/i "(" <oql> ")"|
 							in=><variable> /IN/i "(" <oql> ")".
 				   oql::=class->(name=>[[<identifier> ":"]<identifier>]|phpvar=><phpvar>)
-					   		 fields->["(" fields->{<identifier> "as" <identifier> ; ","} ")"]
+					   		 fields->["(" fields->{<valueorfunction> "as" <identifier> ; ","} ")"]
 					   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
 					   		 where->["where" expression-><expression>]
 						.
@@ -30,10 +32,15 @@ class OQLCompiler {
 					'condition' => new FunctionObject($this, 'parseCondition'),
 					'expression' => new FunctionObject($this, 'parseExpression'),
 					'oql' => new FunctionObject($this, 'parseOql'),
+					'valueorfunction' => new FunctionObject($this, 'parsevalueorfunction'),
+
 					//'variable' => new FunctionObject($this, 'parseVariable'),
 					//'value' => new FunctionObject($this, 'parseValue'),
 			));
 			$config =& $oqlg->compile($query);
+			if ($oqlg->isError()) {
+				$this->error = $oqlg->error;
+			}
 			return $config;
 		}
 		function &parseOQL(&$query){
@@ -68,6 +75,10 @@ class OQLCompiler {
 			}
 			$ret = 'CompositeReport::fromArray(array('.$ret.'))';
 			return $ret;
+		}
+		function &parsevalueorfunction($arr){
+			$val = $arr[0].$arr[1][0].implode('',$arr[1][1]).$arr[1][2];
+			return $val;
 		}
 		function &parseCondition(&$cond){
 			if ($cond['selector']=='comparison'){

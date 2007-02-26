@@ -38,11 +38,15 @@ class Grammar {
 		$res = $root->parse($str);
 		if (preg_match('/^[\s\t\n]*$/',$res[1])){
 			$res1 =& $root->process($res[0]);
+			$this->error = null;
 			return $this->process($this->params['root'],$res1);
 		} else {
 			$n=null;
 			return $this->error;
 		}
+	}
+	function isError(){
+		return $this->error !== null;
 	}
 	function setError($err){
 		$this->error=& $err;
