@@ -60,13 +60,14 @@ class Compiler {
 					);
 				if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
 					if (!$this->compilingClasses) {
-						$this->getInvolvedClasses($f,$file);
+						if (Compiler::CompileOpt('optimal'))$this->getInvolvedClasses($f,$file);
 						$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 						eval(str_replace('compile_once','',$f));
 					}
 					$self =& $this;
 					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
-					lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
+					$lam = lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
+					delete_lambda($lam);
 				}
 				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 				array_pop($this->actualFile);
@@ -261,6 +262,7 @@ class Compiler {
 				$this->tempdir = sys_get_temp_dir();
 			}
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
+			$this->tempdir = $this->getRealPath($this->tempdir);
 		}
 		return $this->tempdir;
 	}
@@ -313,7 +315,7 @@ if (!function_exists('sys_get_temp_dir')) {
 }
 
 function mkdir_r($dirName, $rights=0777){
-   if (file_exists($dirName)) return true;
+   if (file_exists($dirName) || $dirName=='/') return true;
    return mkdir_r(dirname($dirName), $rights) &&
    		  @mkdir($dirName, $rights);
 }

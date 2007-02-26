@@ -23,7 +23,7 @@ class PHPCC {
     	return $g->print_tree();
     }
     function &ccGrammar(){
-    	return new Grammar(array(
+    	$g=& new Grammar(array(
     		'root'=>'grammar',
     		'nt'=>array(
     			'alternative'=>new ListParser(new SeqParser(array(new MaybeParser(
@@ -46,6 +46,7 @@ class PHPCC {
     			'non-terminal'=>new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('::='), new SubParser('alternative'), new Symbol('.'))),
     			'grammar'=>new SeqParser(array(new Symbol('<'),new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('('),new MultiParser(new SubParser('non-terminal')), new Symbol(')'),new Symbol('>')))
     		)));
+    	return $g;
     }
 
     function &createSequence(&$params){

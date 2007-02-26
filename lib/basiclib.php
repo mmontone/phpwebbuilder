@@ -1,8 +1,8 @@
 <?php
 
 require_once 'md.php';
-require_once 'Compiler.class.php';
 require_once 'query_lang.php';
+require_once 'Compiler.class.php';
 
 //require_once 'md2.php';
 
@@ -274,11 +274,10 @@ function includeAll() {
 		}
 		$comp->compile($file);
 		//$comp->compiled = array();
-		require_once pwbdir. 'Session/SessionStart.php';
-
 	} else {
 		eval(getIncludes());
 	}
+	require_once pwbdir. 'Session/SessionStart.php';
 	if (isset($_REQUEST['recompile'])) {
 		$temp_file = ViewCreator::getTemplatesFilename();
 		@unlink($temp_file);
@@ -570,7 +569,10 @@ function lambda($args, $code, $env = array ()) {
 /**
  * Frees the space used for the variable's context
  */
-function delete_lambda($name) {}
+function delete_lambda($name) {
+	global $lambda_vars;
+	unset($lambda_vars[$name]);
+}
 
 /**
  * Checks if the variable references a PWB object
