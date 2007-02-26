@@ -5,7 +5,6 @@ class MultiParser extends Parser {
 	function MultiParser(& $parser) {
 		parent :: Parser();
 		$this->parser = & $parser;
-		$parser->setParent($this);
 	}
 	function setParent(&$parent){
 		parent :: setParent($parent);

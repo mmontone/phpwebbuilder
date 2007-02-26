@@ -7,7 +7,9 @@ class SubParser extends Parser {
 	}
 	function parse($tks) {
 		$p = & $this->get($this->subName);
+		$p->setErrorHandler($this);
 		$res = $p->parse($tks);
+		$p->popErrorHandler();
 		return $res;
 	}
 	function print_tree() {

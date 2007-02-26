@@ -26,7 +26,7 @@ class AltParser extends Parser {
 				return $res;
 			}
 		}
-		$this->parentParser->setError(implode('',$this->errorBuffer));
+		parent::setError(implode('',$this->errorBuffer));
 		return array(FALSE, $tks);
 	}
 	function print_tree() {

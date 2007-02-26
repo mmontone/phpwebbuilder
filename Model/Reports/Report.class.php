@@ -232,15 +232,14 @@ class Report extends Collection{
 			return $this->select;
 		}
 		$fs = $this->getFields();
-		if (!empty($fs)){
-			foreach($fs as $f=>$n){
-				if (!is_numeric($f)){
-					$ret []= $f .' as `'. $n.'`';
-				} else {
-					$ret []= '`'. $this->parseField($n).'`';
-				}
+		foreach($fs as $f=>$n){
+			if (!is_numeric($f)){
+				$ret []= $f .' as `'. $n.'`';
+			} else {
+				$ret []= '`'. $this->parseField($n).'`';
 			}
-		} else {
+		}
+		if ($this->getDataType()!='PersistentObject'){
 			$obj =& $this->getObject();
 			$ret []= $obj->fieldNames('SELECT');
 		}

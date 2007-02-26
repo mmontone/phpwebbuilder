@@ -42,14 +42,17 @@ class Grammar {
 			return $this->process($this->params['root'],$res1);
 		} else {
 			$n=null;
-			return $this->error;
+			return $n;
 		}
 	}
 	function isError(){
 		return $this->error !== null;
 	}
+	function getError(){
+		return $this->error;
+	}
 	function setError($err){
-		$this->error=& $err;
+		$this->error= $err;
 	}
 	function print_tree() {
 		$ret =  "<".$this->params['root']."(\n   ";

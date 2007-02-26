@@ -7,14 +7,14 @@ class PHPCC {
     function &createGrammar($grammar) {
     	$g =& PHPCC::ccGrammar();
     	$g->addPointCuts(array(
-    			'alternative'=>new FObject($n=null, 'PHPCC::createAlternative'),
-    			'maybe'=>new FObject($n=null, 'PHPCC::createMaybe'),
-    			'list'=>new FObject($n=null, 'PHPCC::createList'),
-    			'sequence'=>new FObject($n=null, 'PHPCC::createSequence'),
-    			'grammar'=>new FObject($n=null, 'PHPCC::createNTS'),
-				'symbol'=>new FObject($n=null, 'PHPCC::createSymbol'),
-				'ereg'=>new FObject($n=null, 'PHPCC::createEreg'),
-				'subparser'=>new FObject($n=null, 'PHPCC::createSubparser'),
+    			'alternative'=>new FunctionObject($n=null, 'PHPCC::createAlternative'),
+    			'maybe'=>new FunctionObject($n=null, 'PHPCC::createMaybe'),
+    			'list'=>new FunctionObject($n=null, 'PHPCC::createList'),
+    			'sequence'=>new FunctionObject($n=null, 'PHPCC::createSequence'),
+    			'grammar'=>new FunctionObject($n=null, 'PHPCC::createNTS'),
+				'symbol'=>new FunctionObject($n=null, 'PHPCC::createSymbol'),
+				'ereg'=>new FunctionObject($n=null, 'PHPCC::createEreg'),
+				'subparser'=>new FunctionObject($n=null, 'PHPCC::createSubparser'),
 		));
 		return $g->compile($grammar);
     }

@@ -38,9 +38,10 @@ class OQLCompiler {
 					//'value' => new FunctionObject($this, 'parseValue'),
 			));
 			$config =& $oqlg->compile($query);
-			if ($oqlg->isError()) {
+			if ($config==null) {
 				$this->error = $oqlg->error;
 			}
+			echo $config;
 			return $config;
 		}
 		function &parseOQL(&$query){
@@ -77,7 +78,11 @@ class OQLCompiler {
 			return $ret;
 		}
 		function &parsevalueorfunction($arr){
-			$val = $arr[0].$arr[1][0].implode('',$arr[1][1]).$arr[1][2];
+			if (($arr[1])!==null){
+				$val = $arr[0].$arr[1][0].implode('',$arr[1][1]).$arr[1][2];
+			} else {
+				$val = $arr[0];
+			}
 			return $val;
 		}
 		function &parseCondition(&$cond){

@@ -6,7 +6,9 @@ class PersistentCollection extends Report{
 	function PersistentCollection($dataType = "") {
 		#@check Compiler::requiredClass($dataType)@#
 		parent::Report();
-		$this->setDataType($dataType);
+		if ($dataType!=''){
+			$this->setDataType($dataType);
+		}
 	}
 
 	function setCondition($field, $comparator, $value){
@@ -43,9 +45,14 @@ class PersistentCollection extends Report{
 	}*/
 
 	function getTables() {
-		$datatype = $this->getDataType();
-		$obj = new $datatype(array(),false);
-		return $obj->getTables();
+		if ($this->getDataType()!='PersistentObject'){
+			$datatype = $this->getDataType();
+			$obj = new $datatype(array(),false);
+			return $obj->getTables();
+		} else {
+			parent::getTables();
+		}
+
 	}
 	/**
 	  * Returns the tables of the base class of the elements of the collection
