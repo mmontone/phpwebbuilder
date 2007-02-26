@@ -4,7 +4,8 @@ class MySQLDriver extends DBDriver {
 	var $conn;
 	var $tables_type = 'MyISAM';
 
-    function &SQLExec ($sql, $getID=false, $obj=null, $rows=0) {
+    function &SQLExec ($sql, $getID=false, $obj=null, &$rows) {
+       	$rows=0;
        	$this->setLastSQL($sql);
         $reg =& $this->query ($sql);
         if (!is_exception($reg)) {

@@ -139,8 +139,8 @@ class DBSession {
 		return $db->lastSQL;
 	}
 
-	function &SQLExec($sql, $getID=false, $obj=null, $rows=0) {
-       	return $this->driver->SQLExec($sql, $getID, & $obj, & $rows);
+	function &SQLExec($sql, $getID=false, &$obj, &$rows) {
+       	return $this->driver->SQLExec($sql, $getID, $obj, $rows);
     }
 
     function queryDB($query){
