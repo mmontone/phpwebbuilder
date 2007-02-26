@@ -57,9 +57,9 @@ class Collection extends PWBObject {
 		$es = & $this->elements();
 		$ks = array_keys($es);
 		if (isPWBObject($elem)) {
-			$f = lambda('&$e1', 'return $v = $elem->is($e1);', get_defined_vars());
+			$f = lambda('&$e1', '$v = $elem->is($e1);return $v;', get_defined_vars());
 		} else {
-			$f = lambda('&$e1', 'return $v = $elem==$e1;', get_defined_vars());
+			$f = lambda('&$e1', '$v = $elem==$e1;return $v;', get_defined_vars());
 		}
 		foreach ($ks as $k) {
 			$e = & $es[$k];
@@ -67,7 +67,8 @@ class Collection extends PWBObject {
 				return $k;
 			}
 		}
-		return -1;
+		$n = -1;
+		return $n;
 	}
 	/**
 	 *  Is the element in the collection?
@@ -84,7 +85,8 @@ class Collection extends PWBObject {
 		}
 		if ($this->limit != 0) {
 			$e = $this->elements;
-			return array_splice($e, $this->offset, $this->limit);
+			$newa = array_splice($e, $this->offset, $this->limit);
+			return $newa;
 		} else {
 			return $this->elements;
 		}

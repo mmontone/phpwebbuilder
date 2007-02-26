@@ -37,7 +37,7 @@ class ActivationRecord {
 
 	function enter() {
 		$records = & get_activation_records();
-		array_push($records, & $this);
+		$records[]=&$this;
 	}
 
 	function leave() {

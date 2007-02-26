@@ -19,7 +19,7 @@ class WeakReference {
 	}
 	function isNotNull(){
 		global $allObjectsInMem;
-		return ($allObjectsInMem[$this->refId] !== null);
+		return (isset($allObjectsInMem[$this->refId]));
 	}
 
     function primPrintString($str){
