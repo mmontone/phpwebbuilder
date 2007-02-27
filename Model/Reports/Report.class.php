@@ -510,6 +510,7 @@ class Report extends Collection{
 #@preprocessor
 //compile _once(dirname(__FILE__).'/OQLCompiler.class.php');
 Compiler::usesClass(__FILE__,'OQLCompiler');
+//@#
 
 if (!function_exists('select')){
 	function select($query){
@@ -517,7 +518,6 @@ if (!function_exists('select')){
 		return $oc->fromQuery($query,get_defined_vars());
 	}
 }
-@#
 
 /*
 
