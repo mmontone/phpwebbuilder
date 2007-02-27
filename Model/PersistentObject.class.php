@@ -213,8 +213,13 @@ class PersistentObject extends DescriptedObject {
 		$values = substr($values, 0, -2);
 		$sql = 'INSERT INTO ' . $this->tableName() . ' (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DBSession::Instance();
-		$res =& $db->SQLExec($sql, TRUE, $this, $rows=0);
-		if (!is_exception($res)) {
+		$rows=0;
+		$res =& $db->SQLExec($sql, TRUE, $this, $rows);
+		if ($rows!=1) {
+			$ex =& new PWBException(array('message' => 'Could not update'));
+			return $ex;
+		}
+		if (!is_exception($res) && $rows==1) {
 			$this->existsObject = true;
 		}
 		return $res;
@@ -238,7 +243,8 @@ class PersistentObject extends DescriptedObject {
 	function &basicUpdate() {
 		$sql = $this->updateString();
 		$db =& DBSession::Instance();
-		$res = $db->SQLExec($sql, FALSE, $this, $rows=0);
+		$rows=0;
+		$res = $db->SQLExec($sql, FALSE, $this, $rows);
 		if (is_exception($res)) {
 			return $res;
 		}
