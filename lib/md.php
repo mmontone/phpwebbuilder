@@ -217,12 +217,13 @@ function &mdcompcall($function, $args) {
 	$flayers = md_get_layers($comp);
 	$layers = $flayers;
 	$fname = null;
-
+	/*
 	#@md_echo
     $msg = 'Trying to match:<br/>';
     $msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
     $msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
     echo $msg;//@#
+    */
 
 	while (!empty($layers) and $fname == null) {
 		$f = $function . '_begctx_' . implode('_', $layers) . '_endctx';
@@ -239,10 +240,10 @@ function &mdcompcall($function, $args) {
 		for($i = 0; $i < $n; $i++) {
 			$params[$i] = '$args[' . $i . ']';
 		}
-
+		/*
 		#@md_echo
         echo 'Dispatching to: ' . $fname . '(' . print_r($c, true) . ')<br/>';//@#
-
+		*/
 		$res = null;
 		eval('$res =& ' . $fname . '(' . implode(',', $params) . ');');
 		return $res;
