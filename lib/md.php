@@ -275,7 +275,7 @@ function compile_md_function($f, $rules) {
 	$s = '';
 
 	foreach($rules as $rule_def) {
-		if (is_array($rule_def['in'])) {
+		if (is_array(@$rule_def['in'])) {
 			$s .= def_md_comprule_rule($f, $rule_def);
 		}
 		else {
