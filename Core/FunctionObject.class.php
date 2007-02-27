@@ -9,7 +9,15 @@ class FunctionObject
     var $params;
 
     function FunctionObject(&$target, $method_name, $params=array()) {
-        #@gencheck if(!method_exists($target, $method_name)) { print_backtrace('Method ' . $method_name . ' does not exist in ' . getClass($target));        }//@#
+        #@gencheck
+        if($target == null)
+        {
+        	//if(!function_exists($method_name)) { print_backtrace('Function ' . $method_name . ' does not exist');        }
+        }
+        else {
+            if(!method_exists($target, $method_name)) { print_backtrace('Method ' . $method_name . ' does not exist in ' . getClass($target));        }
+        }//@#
+
         $this->setTarget($target);
         $this->method_name =& $method_name;
         $this->params =& $params;
