@@ -145,9 +145,13 @@ class DBController extends Component {
 		$oql = preg_replace('/^[\s\n\t]*select/','',$oql );
 		$oq =& new OQLCompiler;
 		$repstr = $oq->fromQuery($oql);
-		eval('$rep =& '.$repstr.';');
-		$sql = $rep->selectSql();
-		$this->do_sql($sql);
+		if ($repstr==null) {
+			$this->sql_result->setValue(print_r($oq->error,TRUE));
+		} else {
+			eval('$rep =& '.$repstr.';');
+			$sql = $rep->selectSql();
+			$this->do_sql($sql);
+		}
 	}
 	function exec_sql() {
 		$this->do_sql($sql = stripslashes($this->sql->getValue()));
