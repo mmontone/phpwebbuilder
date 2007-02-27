@@ -139,7 +139,7 @@ class DBSession {
 		return $db->lastSQL;
 	}
 
-	function &SQLExec($sql, $getID=false, &$obj, &$rows) {
+	function &SQLExec($sql, $getID, &$obj, &$rows) {
        	return $this->driver->SQLExec($sql, $getID, $obj, $rows);
     }
 
