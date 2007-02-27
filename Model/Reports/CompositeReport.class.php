@@ -5,9 +5,16 @@ class CompositeReport extends Report {
 	function CompositeReport(& $report) {
 		#@typecheck $report:Report@#
 		$this->report = & $report;
+        $this->parent =& $report;
+
 		parent :: Report();
 		$this->setEventsBubbling();
 	}
+
+    function &getTargetVar() {
+    	return $this->report->getTargetVar();
+    }
+
 	function &fromArray($params){
 		$cr =& new CompositeReport($params['subq']);
 		$cr->setConfigArray($params);

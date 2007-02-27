@@ -397,19 +397,27 @@ class DescriptedObject extends PWBObject {
 	 * Returns a SQL string for accesing the fields for the specified operation
 	 */
 
-	function fieldNames($operation) {
-		$fieldnames = '';
+
+    function fieldNames($operation) {
+    	return $this->fieldNamesPrefixed($operation, 'target_');
+    }
+
+    function fieldNamesPrefixed($operation, $prefix) {
+		$fieldnames = array();
 		if ($operation=='SELECT'){
 			$fs =& $this->allFieldsAllLevels();
 		} else {
 			$fs =& $this->allFieldsThisLevel();
 		}
 		foreach ($fs as $name => $field) {
-			$fieldnames .= $field->fieldName($operation);
+			$fn = $field->fieldNamePrefixed($operation,$prefix);
+            if ($fn != null) {
+            	$fieldnames[] = $fn;
+            }
 		}
-		$fieldnames = substr($fieldnames, 0, -2);
-		return $fieldnames;
-	}
 
+		return implode(',', $fieldnames);
+    }
 }
+
 ?>

@@ -102,45 +102,58 @@ class PersistentObject extends DescriptedObject {
 	 * Returns the table name for the object.
 	 */
 	function tableName() {
-		return '`' . constant('baseprefix') . $this->table .'`';
+		return $this->tableNamePrefixed('');
 	}
 
+    function tableNamePrefixed($prefix) {
+    	return '`' . $this->getTablePrefixed($prefix) . '`';
+    }
 	function getTable() {
-		return constant('baseprefix') . $this->table;
+		return $this->getTablePrefixed('target_');
 	}
+
+    function getTablePrefixed($prefix) {
+        return constant('baseprefix') . $prefix . $this->table;
+    }
 
 	/**
 	 * Returns the table names for the object (including all
 	 * hierarchy that involves it)
 	 */
 	function getTables() {
-		$allObjectTables =& Session::getAttribute('allObjectTables');
-		if (!isset($allObjectTables[getClass($this)])){
-		$tns[] = $this->tableName();
-		$p0 = getClass($this);
-		$pcs = get_superclasses($p0);
-		$o0 =& $this;
-		foreach($pcs as $pc){
-			$o1 =& new $pc(array(),false);
-			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o1->tableName().'.id = '.$o0->tableName().'.super';
-			}
-			$o0 =& $o1;
-			$p0 = $pc;
-		}
-		$scs = get_subclasses(getClass($this));
-		foreach($scs as $sc){
-			$o1 =& new $sc(array(),false);
-			$pc = get_parent_class($sc);
-			$o2 =& new $pc(array(),false);
-			if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-				$tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' ON '. $o2->tableName().'.id = '.$o1->tableName().'.super';
-			}
-		}
-		$allObjectTables[getClass($this)] = array(implode(' ',$tns));
-		}
-		return $allObjectTables[getClass($this)];
+		return $this->getTablesPrefixed('target_');
 	}
+
+    function getTablesPrefixed($prefix) {
+        $allObjectTables =& Session::getAttribute('allObjectTables');
+        if (!isset($allObjectTables[getClass($this)])){
+        //$tns[] = $this->renameTableName();
+        $tns[] = $this->tableName() . ' AS ' . $this->tableNamePrefixed($prefix);
+        $p0 = getClass($this);
+        $pcs = get_superclasses($p0);
+        $o0 =& $this;
+        foreach($pcs as $pc){
+            $o1 =& new $pc(array(),false);
+            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
+                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o1->tableNamePrefixed($prefix).'.id = '.$o0->tableNamePrefixed($prefix).'.super';
+            }
+            $o0 =& $o1;
+            $p0 = $pc;
+        }
+        $scs = get_subclasses(getClass($this));
+        foreach($scs as $sc){
+            $o1 =& new $sc(array(),false);
+            $pc = get_parent_class($sc);
+            $o2 =& new $pc(array(),false);
+            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
+                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o1->tableNamePrefixed($prefix).'.id = '. $o1->tableNamePrefixed($prefix).'.super';
+            }
+        }
+        $allObjectTables[getClass($this)] = array(implode(' ',$tns));
+        }
+        return $allObjectTables[getClass($this)];
+    }
+
 
 	function tableNames(){
 		$tns = $this->getTables();
@@ -151,7 +164,7 @@ class PersistentObject extends DescriptedObject {
 	 * Returns the id comparison for the object
 	 */
 	function idRelations(){
-		return $this->tableName().'.id=' . $this->getID();
+		return $this->getTable().'.id=' . $this->getID();
 	}
 	/**
 	 * Compares the object with another one, and returns if it's the same one.
@@ -552,11 +565,15 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function tableForField($field) {
+		return $this->tableForFieldPrefixed($field, '');
+	}
+
+    function tableForFieldPrefixed($field, $prefix) {
 		$o1 =& $this;
 		//echo 'Checking class ' . getClass($o1). ' field ' . $field . '<br />';
 		if (in_array($field, $o1->allFieldNamesThisLevel())) {
 			//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
-			return $o1->getTable();
+			return $o1->getTablePrefixed($prefix);
 		}
 
 		$p0 = getClass($this);
@@ -570,7 +587,7 @@ class PersistentObject extends DescriptedObject {
 
             if (in_array($field, $o1->allFieldNamesThisLevel())) {
 				//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
-				return $o1->getTable();
+				return $o1->getTablePrefixed($prefix);
 			}
 		}
 	}

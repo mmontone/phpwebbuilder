@@ -83,18 +83,23 @@ class DataField extends ValueModel {
 	 * Returns name of the field for the specified operation
 	 */
 	function fieldName($operation) {
-		if ($operation=='SELECT'){
-			return $this->owner->tableName().'.`'.$this->colName
-				   .'` as `'.$this->sqlName().	'`, ';
-		} else {
-			return '`'.$this->colName .	'`, ';
-		}
+		return $this->fieldNamePrefixed($operation,'');
 	}
+
+    function fieldNamePrefixed($operation, $prefix) {
+        if ($operation=='SELECT'){
+            return $this->owner->tableNamePrefixed($prefix).'.`'.$this->colName
+                   .'` AS `'.$this->sqlName() .'`';
+        } else {
+            return '`'.$this->colName . '`';
+        }
+    }
+
 	/**
 	 * Returns the sql name of the field
 	 */
 	function sqlName(){
-		return $this->owner->getTable().'_'.$this->colName;
+		return $this->owner->getTablePrefixed('').'_'.$this->colName;
 	}
 	/**
 	 * Returns the sql value of the field

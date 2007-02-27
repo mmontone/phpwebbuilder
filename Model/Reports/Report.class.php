@@ -1,5 +1,17 @@
 <?php
 
+class ReportVar {
+	var $id;
+    var $class;
+    var $prefix;
+
+    function ReportVar($params) {
+	   $this->id = $params['id'];
+       $this->class = $params['class'];
+       $this->prefix = $params['prefix'];
+	}
+}
+
 class Report extends Collection{
 	/**
 	 * Used with Collection Navigator.
@@ -29,11 +41,15 @@ class Report extends Collection{
 	  * Adds a condition to filter the data
 	  */
 
+      var $tables_prefix = 1;
+
 	  var $group = array();
 	  var $vars = array();
 	  var $select_exp;
 	  var $select = null;
       var $evaluated=false;
+      var $parent = null;
+      var $target_var;
 
 
 	function Report($params=array()) {
@@ -41,10 +57,46 @@ class Report extends Collection{
 		parent::Collection();
 		$this->setConfigArray($params);
 	}
-	function setConfigArray($params){
-		if (isset($params['class'])){
-			$this->dataType =$params['class'];
-		}
+
+    function &getTargetVar() {
+    	//print_backtrace('Returning target var: ' . print_r($this->target_var,true) . ' in ' . $this->printString());
+        return $this->target_var;
+    }
+
+    function &getVar($id) {
+        //print_backtrace('Looking for variable: ' . $id . ' in ' . $this->printString());
+        if (isset($this->vars[$id])) {
+        	//print_backtrace('Found: ' . $id . ' in ' . $this->printString());
+            return $this->vars[$id];
+        }
+        else {
+        	if ($this->parent !== null) {
+        		return $this->parent->getVar($id);
+        	}
+            else {
+                //print_backtrace('Variable: ' . $id  . ' not found in ' . $this->printString());
+
+            	return null;
+            }
+        }
+    }
+
+    function setTargetVar($var, $type) {
+    	//print_backtrace('Setting target var: ' . $var . ' in ' . $this->printString());
+        $v =& $this->primDefineVar($var, $type);
+        $this->target_var =& $v;
+        $this->dataType = $type;
+    }
+
+    function setConfigArray($params){
+		if (isset($params['target'])){
+            $this->setTargetVar($params['target'], $params['class']);
+        } else {
+            if (isset($params['class'])){
+    			$this->setDataType($params['class']);
+    		}
+        }
+
 		if (isset($params['fields'])){
 			$this->fields =$params['fields'];
 		}
@@ -80,8 +132,9 @@ class Report extends Collection{
 
 	function setCondition($field, $comparator, $value) {
 		//echo 'Report: Setting condition: ' . $field . $comparator . $value . '<br />';
-		$cond =& new Condition(array('operation'=> $comparator,
-				'exp1' => new ValueExpression('`' . $this->parseField($field) . '`'),
+		$target_table = $this->getTargetTable();
+        $cond =& new Condition(array('operation'=> $comparator,
+				'exp1' => new ValueExpression('`'. $target_table .'`.`' . $this->parseField($field) . '`'),
 				'exp2'=> new ValueExpression($value)));
 		$cond->evaluateIn($this);
 		$this->select_exp->addExpression($cond);
@@ -90,25 +143,30 @@ class Report extends Collection{
 		$this->elements=& $n;
 	}
 
+    function getTargetTable() {
+    	$var =& $this->getTargetVar();
+        $dt = $var->class;
+        $obj =& new $dt;
+        return $obj->getTablePrefixed($var->prefix);
+    }
+
 	function setConditions($conditions) {
 		foreach ($conditions as $condition) {
 			$this->setCondition($condition[0], $condition[1], $condition[2]);
 		}
 	}
 
-	function defineVar($id, $class) {
+	function &defineVar($id, $class) {
 		$o =& new $class(array(),false);
-		$this->addTables($o->getTables());
-		$this->freeVar($id,$class);
+        $this->addTables($o->getTablesPrefixed($id . '_'));
+        return $this->primDefineVar($id, $class);
 	}
-	function registerAllVars(&$report){
-		foreach($this->vars as $id=>$class){
-			$report->freeVar($id, $class);
-		}
-	}
-	function freeVar($id, $class) {
-		$this->vars[$id] =& $class;
-	}
+
+    function primDefineVar($id, $class) {
+    	$this->vars[$id] =& new ReportVar(array('id' => $id, 'class' => $class, 'prefix' => $id . '_'));
+        return $this->vars[$id];
+    }
+
 
 	function setPathCondition(&$condition) {
 		//print_backtrace('Setting path condition: ' . print_r($condition,true));
@@ -188,7 +246,7 @@ class Report extends Collection{
 	}
 	function inSQL(){
 		$obj =& $this->getObject();
-		$sql = 'SELECT '.substr($obj->id->fieldName('SELECT'), 0, -2).' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
+		$sql = 'SELECT '. $obj->id->fieldName('SELECT') .' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
         return $sql;
 	}
 	function size() {
@@ -231,8 +289,8 @@ class Report extends Collection{
 		if ($this->select !== null) {
 			return $this->select;
 		}
-		$fs = $this->getFields();
-		foreach($fs as $f=>$n){
+
+		foreach($this->getFields() as $f=>$n){
 			if (!is_numeric($f)){
 				$ret []= $f .' as `'. $n.'`';
 			} else {
@@ -240,11 +298,17 @@ class Report extends Collection{
 			}
 		}
 		if ($this->getDataType()!='PersistentObject'){
-			$obj =& $this->getObject();
-			$ret []= $obj->fieldNames('SELECT');
-		}
-		return  implode(',',$ret);
+            $obj =& $this->getObject();
+            $var =& $this->getTargetVar();
+            //print_backtrace('Target var in ' . $this->printString() . ': ' . print_r($var,true));
+            $ret []= $obj->fieldNamesPrefixed('SELECT', $var->prefix);
+        }
+        return  implode(',',$ret);
 	}
+
+    function freeVar() {
+
+    }
 
 	function &getFields() {
 		return $this->fields;
@@ -273,7 +337,11 @@ class Report extends Collection{
 	}
 
 	function getTables() {
-		return $this->tables;
+	    $target =& $this->getTargetVar();
+        $datatype = $target->class;
+        $obj = new $datatype(array(),false);
+        $target =& $this->getTargetVar();
+        return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
 	}
 	/**
 	  * Sets an order based on the field=>order array parameter
@@ -428,7 +496,7 @@ class Report extends Collection{
 	}
 
 	function setDataType($dataType) {
-		$this->dataType = $dataType;
+        $this->setTargetVar('target', $dataType);
 	}
 	/**
 	  * Creates an element, and fills it from the record
@@ -514,8 +582,9 @@ Compiler::usesClass(__FILE__,'OQLCompiler');
 
 if (!function_exists('select')){
 	function select($query){
-		$oc =& new OQLCompiler;
-		return $oc->fromQuery($query,get_defined_vars());
+        $oc =& new OQLCompiler;
+		$res = $oc->fromQuery($query,get_defined_vars());
+        return $res;
 	}
 }
 

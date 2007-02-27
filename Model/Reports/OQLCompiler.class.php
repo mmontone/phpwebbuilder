@@ -46,10 +46,7 @@ class OQLCompiler {
 		function &parseOQL(&$query){
 			if ($query['class']!==null){
 				if ($query['class']['selector']=='name'){
-					$ret = "'subq'=>new PersistentCollection('".$query['class']['result'][1]."'),";
-					if ($query['class']['result'][0]){
-						$query['from']['from'][]=array('var'=>$query['class']['result'][0][0],'class'=>$query['class']['result'][1]);
-					}
+					$ret = "'subq'=>new Report(array('class'=>'".$query['class']['result'][1]."', 'target'=>".$query['class']['result'][0][0].")),";
 				} else {
 					$ret = "'subq'=>".$query['class']['result'].",";
 				}

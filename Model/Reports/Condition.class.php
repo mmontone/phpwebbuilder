@@ -280,17 +280,29 @@ class PathExpression extends Expression {
 		parent::Expression();
 	}
 
-	function &registerPath(&$report) {
+	function &getTargetVar(&$report) {
 		$pp = explode('.', $this->path);
-		$target = $pp[0];
-		if (!isset($report->vars[$target])) {
-			//print_backtrace($target . ' not defined');
-			$datatype = $report->getDataType();
-		}
-		else {
-			$datatype = $report->vars[$target];
-			array_shift($pp);
-		}
+        $target = $pp[0];
+
+
+        $target_var =& $report->getVar($target);
+        if (!is_object($target_var)) {
+            $target_var =& $report->getTargetVar();
+        }
+        else {
+        	array_shift($pp);
+        }
+
+        return array(&$target_var, $pp);
+	}
+
+    function &registerPath(&$report) {
+		$result =& $this->getTargetVar($report);
+        $target_var =& $result[0];
+
+        $pp = $result[1];
+        $datatype = $target_var->class;
+        $prefix = $target_var->prefix;
 
 		$o =& new $datatype(array(),false);
 
@@ -303,12 +315,17 @@ class PathExpression extends Expression {
             $class =& $o->$index->getDataType();
 			$obj =& new $class(array(),false);
 
-            $report->addTables($obj->getTables());
-			$otable = $o->tableForField($index);
+            $report->addTables($obj->getTablesPrefixed($prefix));
+            //$report->defineVar($target_var->id, $target_var->class);
+
+			$otable = $o->tableForFieldPrefixed($index, $prefix);
 			//$report->setCondition($otable. '.' . $index, '=', '`'.$obj->getTable() .'`'. '.id');
 
             $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
-                                             'exp2' => new ValueExpression('`' . $obj->getTable() .'`'. '.id')));
+                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($prefix) .'`.`id`')));
+            /*
+            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
+                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($prefix) .'`'. '.id')));*/
 
             $exp->evaluateIn($report);
             $this->parent->addEvalExpression($exp);
@@ -330,7 +347,9 @@ class AttrPathExpression extends PathExpression {
 
 	function evaluateIn(&$report) {
 		$o =& $this->registerPath($report);
-		$otable = $o->tableForField($this->attr);
+        $result =& $this->getTargetVar($report);
+        $target_var =& $result[0];
+		$otable = $o->tableForFieldPrefixed($this->attr, $target_var->prefix);
 		$attr = $otable . '.' . $this->attr;
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
@@ -391,7 +410,7 @@ class CollectionPathExpression extends PathExpression {
             $target_obj =& new $target_field->datatype;
             $and =& new AndExp;
 
-            $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field,'target'),
+            $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field,'target_'),
                                                          'exp2' => new ValueExpression("`" . $target_obj->getTable() . '`.`id`'))));
 
             $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field, 'owner'),
