@@ -13,7 +13,7 @@ class EregSymbol extends Parser {
 		if (preg_match($this->preg, $tks, $matches)) {
 			return array ($matches[1],substr($tks,strlen($matches[0])));
 		} else {
-			$this->setError('Unexpected "'.$tks[0].'", expecting "'.$this->sym.'" in'.$this->parentParser->print_tree().' with "'.print_r($tks,TRUE). '" remaining');
+			$this->setError('Unexpected "'.@$tks[0].'", expecting "'.$this->sym.'" in'.$this->parentParser->print_tree().' with "'.print_r($tks,TRUE). '" remaining');
 			return array (FALSE,$tks);
 		}
 	}

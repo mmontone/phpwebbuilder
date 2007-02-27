@@ -11,6 +11,8 @@ class PHPCC {
     			'maybe'=>new FunctionObject($n=null, 'PHPCC::createMaybe'),
     			'list'=>new FunctionObject($n=null, 'PHPCC::createList'),
     			'sequence'=>new FunctionObject($n=null, 'PHPCC::createSequence'),
+    			'multiparser'=>new FunctionObject($n=null, 'PHPCC::createMultiParser'),
+    			'multioneparser'=>new FunctionObject($n=null, 'PHPCC::createMultiOneParser'),
     			'grammar'=>new FunctionObject($n=null, 'PHPCC::createNTS'),
 				'symbol'=>new FunctionObject($n=null, 'PHPCC::createSymbol'),
 				'ereg'=>new FunctionObject($n=null, 'PHPCC::createEreg'),
@@ -35,11 +37,15 @@ class PHPCC {
     							new AltParser(array(
     								new SubParser('list'),
     								new SubParser('maybe'),
+    								new SubParser('multiparser'),
+    								new SubParser('multioneparser'),
     								new SubParser('symbol'),
     								new SubParser('ereg'),
     								new SubParser('subparser'),
     								'alt'=>new SeqParser(array(new Symbol('('),new SubParser('alternative'),new Symbol(')'))),
     							))))),
+    			'multiparser'=>new SeqParser(array('name'=>new SubParser('alternative'),new Symbol('*'),)),
+    			'multioneparser'=>new SeqParser(array('name'=>new SubParser('alternative'),new Symbol('+'),)),
     			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"),new Symbol('>'),)),
     			'symbol'=>new EregSymbol('/"[^"]+"/'),
     			'ereg'=>new EregSymbol('/\/[^\/]+\/\w*/'),
@@ -104,6 +110,14 @@ class PHPCC {
     }
     function &createEreg(&$sym){
     	$s =& new EregSymbol($sym);
+    	return $s;
+    }
+    function &createMultiParser(&$params){
+    	$s =& new MultiParser($params['name']);
+    	return $s;
+    }
+    function &createMultiOneParser(&$params){
+    	$s =& new MultiOneParser($params['name']);
     	return $s;
     }
     function &createSubparser(&$sp){
