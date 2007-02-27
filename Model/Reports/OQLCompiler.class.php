@@ -41,7 +41,6 @@ class OQLCompiler {
 			if ($config==null) {
 				$this->error = $oqlg->error;
 			}
-			echo $config;
 			return $config;
 		}
 		function &parseOQL(&$query){
