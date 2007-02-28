@@ -75,8 +75,8 @@ class Report extends Collection{
         	}
             else {
                 //print_backtrace('Variable: ' . $id  . ' not found in ' . $this->printString());
-
-            	return null;
+				$n=null;
+            	return $n;
             }
         }
     }
@@ -162,7 +162,7 @@ class Report extends Collection{
         return $this->primDefineVar($id, $class);
 	}
 
-    function primDefineVar($id, $class) {
+    function &primDefineVar($id, $class) {
     	$this->vars[$id] =& new ReportVar(array('id' => $id, 'class' => $class, 'prefix' => $id . '_'));
         return $this->vars[$id];
     }
@@ -338,10 +338,14 @@ class Report extends Collection{
 
 	function getTables() {
 	    $target =& $this->getTargetVar();
-        $datatype = $target->class;
-        $obj = new $datatype(array(),false);
-        $target =& $this->getTargetVar();
-        return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
+	    if (is_object($target)){
+	        $datatype = $target->class;
+	        $obj = new $datatype(array(),false);
+	        $target =& $this->getTargetVar();
+	        return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
+	    } else {
+	    	return $this->tables;
+	    }
 	}
 	/**
 	  * Sets an order based on the field=>order array parameter

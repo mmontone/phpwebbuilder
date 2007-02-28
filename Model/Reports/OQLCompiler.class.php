@@ -46,7 +46,10 @@ class OQLCompiler {
 		function &parseOQL(&$query){
 			if ($query['class']!==null){
 				if ($query['class']['selector']=='name'){
-					$ret = "'subq'=>new Report(array('class'=>'".$query['class']['result'][1]."', 'target'=>".$query['class']['result'][0][0].")),";
+					$class=array();
+					if ($query['class']['result'][1]!=null) $class[]="'class'=>'".$query['class']['result'][1]."'";
+					if ($query['class']['result'][0][0]!=null) $class[]="'target'=>'".$query['class']['result'][0][0]."'";
+					$ret = "'subq'=>new Report(array(".implode(',',$class).")),";
 				} else {
 					$ret = "'subq'=>".$query['class']['result'].",";
 				}

@@ -292,8 +292,8 @@ class PathExpression extends Expression {
         else {
         	array_shift($pp);
         }
-
-        return array(&$target_var, $pp);
+		$arr = array(&$target_var, $pp);
+        return $arr;
 	}
 
     function &registerPath(&$report) {
@@ -437,7 +437,7 @@ class ExistsExpression extends Expression {
 	}
 
 	function evaluateIn(&$report) {
-		$report->registerAllVars($this->query);
+		//$report->registerAllVars($this->query);
 	}
 
 	function printString() {
