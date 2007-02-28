@@ -25,7 +25,7 @@ class ObjectMapper {
  	}
 
 	function analizeMods () {
-		$table = $this->object->getTable();
+		$table = $this->object->getTablePrefixed('');
 		$sql = "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
 		$db =& DBSession::Instance();
 		$res = $db->query($sql);
@@ -150,7 +150,7 @@ class TablesChecker {
 			$dbc = new ObjectMapper;
 			$dbc->object=$obj;
 			$mod .= $dbc->analizeMods();
-			$table = $obj->getTable();
+			$table = $obj->getTablePrefixed('');
 			unset($tables[$table]);
 			if ($mod!='' && $stepping) return $mod;
 		}
