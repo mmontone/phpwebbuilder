@@ -192,12 +192,9 @@ class AjaxCommand {
 	}
 
 	function renderAjaxResponseCommand() {
-		$xml =  '<call f="' . $this->command . '">';
-		$xml .= '<ps>';
-		foreach ($this->params as $param) {
-			$xml .= '<p>' . $param . '</p>';
-		}
-		$xml .='</ps></call>';
+		$xml =  '<call>';
+		$xml .= $this->renderStdResponseCommand();
+		$xml .= '</call>';
 		return $xml;
 	}
 	function renderStdResponseCommand() {
