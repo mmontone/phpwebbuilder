@@ -299,6 +299,7 @@ class PathExpression extends Expression {
     function &registerPath(&$report) {
 		$result =& $this->getTargetVar($report);
         $target_var =& $result[0];
+
         $pp = $result[1];
         $datatype = $target_var->class;
         $prefix = $target_var->prefix;
@@ -309,7 +310,7 @@ class PathExpression extends Expression {
 		foreach ($pp as $index) {
             #@gencheck
             if (!is_object($o->$index)) {
-                print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $datatype);
+                print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $datatype . '(' . getClass($this) . ' with path: ' . $this->path . ')');
             }
             @#
             $class =& $o->$index->getDataType();

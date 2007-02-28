@@ -10,10 +10,11 @@ class PersistentCollection extends Report{
 	}
 
 	function setCondition($field, $comparator, $value){
-		$target_table = $this->getTargetTable();
+		//print_backtrace('Setting condition: ' . $field . $comparator . $value);
+        $target_var =& $this->getTargetVar();
 
-        $e1=&new ValueExpression('`' . $target_table . '`.`' . $this->parseField($field) . '`');
-		$e2=&new ValueExpression($value);
+        $e1 =& new AttrPathExpression($target_var->id,$field);
+		$e2 =& new ValueExpression($value);
 		$cond =& new Condition(array('exp1'=> &$e1,
 				'operation'=>$comparator,
 				'exp2' => &$e2));

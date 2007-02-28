@@ -130,9 +130,9 @@ class Report extends Collection{
 
 	function setCondition($field, $comparator, $value) {
 		//print_backtrace('Report: ' . $this->printString() . ' setting condition: ' . $field . $comparator . $value);
-		$target_table = $this->getTargetTable();
+		$target_var = $this->getTargetVar();
         $cond =& new Condition(array('operation'=> $comparator,
-				'exp1' => new ValueExpression('`'. $target_table .'`.`' . $this->parseField($field) . '`'),
+				'exp1' => new AttrPathExpression($target_var->id, $field),
 				'exp2'=> new ValueExpression($value)));
 		$cond->evaluateIn($this);
 		$this->select_exp->addExpression($cond);
