@@ -408,15 +408,18 @@ class DescriptedObject extends PWBObject {
 			$fs =& $this->allFieldsAllLevels();
 		} else {
 			$fs =& $this->allFieldsThisLevel();
+            if ($operation == 'INSERT') {
+            	unset($fs['id']);
+            }
 		}
-		foreach ($fs as $name => $field) {
-			$fn = $field->fieldNamePrefixed($operation,$prefix);
+
+        foreach ($fs as $name => $field) {
+		    $fn = $field->fieldNamePrefixed($operation, $prefix);
             if ($fn != null) {
             	$fieldnames[] = $fn;
             }
 		}
-
-		return implode(',', $fieldnames);
+        return implode(',', $fieldnames);
     }
 }
 

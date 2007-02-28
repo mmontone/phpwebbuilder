@@ -1,35 +1,50 @@
 <?php
 class CompositeReport extends Report {
 	var $report;
+    var $parent;
 
 	function CompositeReport(& $report) {
 		#@typecheck $report:Report@#
-		$this->report = & $report;
-        $this->parent =& $report;
-
 		parent :: Report();
+
+        $this->report = & $report;
+        $this->parent =& $report;
 		$this->setEventsBubbling();
 	}
 
     function &getTargetVar() {
-    	return $this->report->getTargetVar();
+        $v =& $this->report->getTargetVar();
+
+        if ($v == null) {
+    	    return parent::getTargetVar();
+        }
+        else {
+        	return $v;
+        }
     }
+
     function &getVar($id){
-    	$v =& $this->report->getVar($id);
-    	if ($v==null){
-    		return parent::getVar($id);
+    	$v =& parent::getVar($id);
+
+    	if ($v==null) {
+    		return $this->report->getVar($id);
     	} else {
     		return $v;
     	}
     }
 
-	function &fromArray($params){
+    function &fromArray($params){
 		$cr =& new CompositeReport($params['subq']);
 		$cr->setConfigArray($params);
 		return $cr;
 	}
 	function printString() {
-		return $this->primPrintString('Report: ' . $this->report->printString());
+		$vars = array();
+        foreach ($this->vars as $var) {
+            $vars[] = $var->id . ':' . $var->class;
+        }
+
+        return $this->primPrintString('Report: ' . $this->report->printString() . ' Vars: ' . implode(',', $vars));
 	}
 
 	function setEventsBubbling() {
@@ -44,7 +59,7 @@ class CompositeReport extends Report {
 
 	function & getTables() {
 		$arr= array_union_values($this->tables, $this->report->getTables());
-		return $arr;
+        return $arr;
 	}
 
 	function & getConditions() {

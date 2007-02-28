@@ -125,8 +125,8 @@ class PersistentObject extends DescriptedObject {
 	}
 
     function getTablesPrefixed($prefix) {
-        $allObjectTables =& Session::getAttribute('allObjectTables');
-        if (!isset($allObjectTables[getClass($this)])){
+        //$allObjectTables =& Session::getAttribute('allObjectTables');
+        //if (!isset($allObjectTables[getClass($this)])){
         //$tns[] = $this->renameTableName();
         $tns[] = $this->tableName() . ' AS ' . $this->tableNamePrefixed($prefix);
         $p0 = getClass($this);
@@ -146,11 +146,11 @@ class PersistentObject extends DescriptedObject {
             $pc = get_parent_class($sc);
             $o2 =& new $pc(array(),false);
             if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o1->tableNamePrefixed($prefix).'.id = '. $o1->tableNamePrefixed($prefix).'.super';
+                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o2->tableNamePrefixed($prefix).'.id = '. $o1->tableNamePrefixed($prefix).'.super';
             }
         }
         $allObjectTables[getClass($this)] = array(implode(' ',$tns));
-        }
+        //}
         return $allObjectTables[getClass($this)];
     }
 

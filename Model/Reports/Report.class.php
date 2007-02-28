@@ -41,15 +41,13 @@ class Report extends Collection{
 	  * Adds a condition to filter the data
 	  */
 
-      var $tables_prefix = 1;
-
-	  var $group = array();
+      var $group = array();
 	  var $vars = array();
 	  var $select_exp;
 	  var $select = null;
       var $evaluated=false;
       var $parent = null;
-      var $target_var;
+      var $target_var=null;
 
 
 	function Report($params=array()) {
@@ -131,7 +129,7 @@ class Report extends Collection{
 	}
 
 	function setCondition($field, $comparator, $value) {
-		//echo 'Report: Setting condition: ' . $field . $comparator . $value . '<br />';
+		//print_backtrace('Report: ' . $this->printString() . ' setting condition: ' . $field . $comparator . $value);
 		$target_table = $this->getTargetTable();
         $cond =& new Condition(array('operation'=> $comparator,
 				'exp1' => new ValueExpression('`'. $target_table .'`.`' . $this->parseField($field) . '`'),
@@ -169,7 +167,7 @@ class Report extends Collection{
 
 
 	function setPathCondition(&$condition) {
-		//print_backtrace('Setting path condition: ' . print_r($condition,true));
+		//print_backtrace($this->printString() . ' setting path condition: ' . print_r($condition,true));
 		$this->select_exp->addExpression($condition);
         $this->evaluated=false;
 	}
@@ -323,17 +321,6 @@ class Report extends Collection{
 	  * Returns the tables to be used
 	  */
 	function tableNames(){
-		/*
-		$tnames = array();
-		foreach($this->getTables() as $table) {
-			if (strstr($table, ' ')){
-				$tnames[] = $table;
-			} else {
-				$tnames[] = '`' . $table . '`';
-			}
-		}
-		return implode(',',$tnames);
-		*/
 		return implode(',', $this->getTables());
 	}
 
@@ -342,7 +329,7 @@ class Report extends Collection{
 	    if (is_object($target)){
 	        $datatype = $target->class;
 	        $obj = new $datatype(array(),false);
-	        return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
+            return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
 	    } else {
 	    	return $this->tables;
 	    }
@@ -535,8 +522,12 @@ class Report extends Collection{
 	 	return $obj;
 	}
 	function printString(){
+        $vars = array();
+        foreach ($this->vars as $var) {
+        	$vars[] = $var->id . ':' . $var->class;
+        }
 
-        return $this->primPrintString('('.$this->getDataType().')');
+        return $this->primPrintString('(' . $this->getDataType() . ') Vars: ' . implode(',', $vars));
 	}
 
     /*

@@ -106,7 +106,7 @@ class OQLCompiler {
 		function &parseExpression(&$cond){
 			switch($cond['selector']){
 				case 'not':
-					$v = 'new NotExp("'.$cond['result'][1].'")';
+					$v = 'new NotExp('.$cond['result'][1].')';
 					return $v;
 				case 'condition':
 					return $cond['result'];

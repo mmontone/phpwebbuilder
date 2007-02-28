@@ -300,9 +300,12 @@ class PathExpression extends Expression {
 		$result =& $this->getTargetVar($report);
         $target_var =& $result[0];
 
+
+
         $pp = $result[1];
         $datatype = $target_var->class;
         $prefix = $target_var->prefix;
+        $pre = $prefix;
 
 		$o =& new $datatype(array(),false);
 
@@ -315,25 +318,21 @@ class PathExpression extends Expression {
             $class =& $o->$index->getDataType();
 			$obj =& new $class(array(),false);
 
-            $report->addTables($obj->getTablesPrefixed($prefix.='_'.$index));
-            //$report->defineVar($target_var->id, $target_var->class);
+            $otable = $o->tableForFieldPrefixed($index, $pre);
 
-			$otable = $o->tableForFieldPrefixed($index, $prefix);
-			//$report->setCondition($otable. '.' . $index, '=', '`'.$obj->getTable() .'`'. '.id');
+            $pre .= $index . '_';
+
+            $report->addTables($obj->getTablesPrefixed($pre));
 
             $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
-                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($prefix) .'`.`id`')));
-            /*
-            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
-                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($prefix) .'`'. '.id')));*/
+                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($pre) .'`.`id`')));
 
             $exp->evaluateIn($report);
             $this->parent->addEvalExpression($exp);
 
-
 			$o =& $obj;
 		}
-		$arr = array(&$o, $prefix);
+		$arr = array(&$o, $pre);
 		return $arr;
 	}
 }
@@ -350,7 +349,7 @@ class AttrPathExpression extends PathExpression {
 		$o =& $this->registerPath($report);
         $result =& $this->getTargetVar($report);
         $target_var =& $result[0];
-		$otable = $o[0]->tableForFieldPrefixed($this->attr, $target_var->prefix);
+        $otable = $o[0]->tableForFieldPrefixed($this->attr, $o[1]);
 		$attr = $otable . '.' . $this->attr;
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
@@ -376,7 +375,7 @@ class ObjectPathExpression extends AttrPathExpression {
 			$o =& new $type(array(),false);
 		}
 		$attr = '`'.$o->getTablePrefixed($ret[1]) .'`.`id`';
-		return $attr;
+        return $attr;
 	}
 }
 
