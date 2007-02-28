@@ -3,11 +3,11 @@
 class DateTimeField extends DataField {
     function DateTimeField($name, $isIndex=null) {
    	  	parent::DataField($name, $isIndex);
-   	  	$this->setValue(DateTime::Now());
+   	  	$this->setValue(PWBDateTime::Now());
     }
     function createInstance($params){
     	parent::createInstance($params);
-    	$this->setValue(new DateTime(''));
+    	$this->setValue(new PWBDateTime(''));
     }
     function SQLvalue() {
         $d =& $this->getValue();
@@ -15,7 +15,7 @@ class DateTimeField extends DataField {
     }
 	function loadFrom($reg) {
 		$val = $reg[$this->sqlName()];
-		$this->setValue(new DateTime($val));
+		$this->setValue(new PWBDateTime($val));
 	}
     function &validate() {
     	$v =& $this->getValue();
@@ -27,10 +27,10 @@ class DateTimeField extends DataField {
     }
 
 	function setNow(){
-		$this->setValue(DateTime::now());
+		$this->setValue(PWBDateTime::now());
 	}
 	function setValue(&$d){
-		#@typecheck $d : DateTime@#
+		#@typecheck $d : PWBDateTime@#
 		$this->value =& $d;
 		$d->onChangeSend('changed',$this);
 		if ($d !== $this->buffered_value) {
@@ -49,7 +49,7 @@ class DateTimeField extends DataField {
 
 class DateField extends DateTimeField {
     function format ($date) {
-        return DateTime::dateFormat($date);
+        return PWBDateTime::dateFormat($date);
     }
     function &validate() {
     	$v =& $this->getValue();
@@ -63,7 +63,7 @@ class DateField extends DateTimeField {
 
 class TimeField extends DateTimeField{
     function format ($date) {
-        return DateTime::timeFormat($date);
+        return PWBDateTime::timeFormat($date);
     }
 	function &validate() {
     	$v =& $this->getValue();
