@@ -146,7 +146,7 @@ class Report extends Collection{
     function getTargetTable() {
     	$var =& $this->getTargetVar();
         $dt = $var->class;
-        $obj =& new $dt;
+        $obj =& new $dt(array(),false);
         return $obj->getTablePrefixed($var->prefix);
     }
 
@@ -342,7 +342,6 @@ class Report extends Collection{
 	    if (is_object($target)){
 	        $datatype = $target->class;
 	        $obj = new $datatype(array(),false);
-	        $target =& $this->getTargetVar();
 	        return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
 	    } else {
 	    	return $this->tables;
