@@ -455,7 +455,8 @@ class Report extends Collection{
 	  */
 
 	function restrictions() {
-		return $this->tableNames() . $this->conditions();
+		$conds = $this->conditions();
+		return $this->tableNames() .$conds;
 	}
 	/**
 	  * Returns an array of all the elements (considering limit and offset)

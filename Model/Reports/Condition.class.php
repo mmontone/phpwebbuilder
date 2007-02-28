@@ -299,13 +299,10 @@ class PathExpression extends Expression {
     function &registerPath(&$report) {
 		$result =& $this->getTargetVar($report);
         $target_var =& $result[0];
-
-
-
         $pp = $result[1];
         $datatype = $target_var->class;
         $prefix = $target_var->prefix;
-        $pre = $prefix;
+        $pre = substr($prefix,0);
 
 		$o =& new $datatype(array(),false);
 
@@ -320,10 +317,14 @@ class PathExpression extends Expression {
 
             $otable = $o->tableForFieldPrefixed($index, $pre);
 
-            $pre .= $index . '_';
+            $pre .= $index ;
 
-            $report->addTables($obj->getTablesPrefixed($pre));
-
+            //$report->addTables($obj->getTablesPrefixed($pre));
+            $var = $report->getVar($pre);
+            if ($var==null){
+            	$report->defineVar($pre,$class);
+            }
+			$pre .= '_';
             $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
                                              'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($pre) .'`.`id`')));
 
