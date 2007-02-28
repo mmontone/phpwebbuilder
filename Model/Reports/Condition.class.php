@@ -315,7 +315,7 @@ class PathExpression extends Expression {
             $class =& $o->$index->getDataType();
 			$obj =& new $class(array(),false);
 
-            $report->addTables($obj->getTablesPrefixed($prefix));
+            $report->addTables($obj->getTablesPrefixed($prefix.='_'.$index));
             //$report->defineVar($target_var->id, $target_var->class);
 
 			$otable = $o->tableForFieldPrefixed($index, $prefix);
@@ -333,7 +333,8 @@ class PathExpression extends Expression {
 
 			$o =& $obj;
 		}
-		return $o;
+		$arr = array(&$o, $prefix);
+		return $arr;
 	}
 }
 
@@ -349,7 +350,7 @@ class AttrPathExpression extends PathExpression {
 		$o =& $this->registerPath($report);
         $result =& $this->getTargetVar($report);
         $target_var =& $result[0];
-		$otable = $o->tableForFieldPrefixed($this->attr, $target_var->prefix);
+		$otable = $o[0]->tableForFieldPrefixed($this->attr, $target_var->prefix);
 		$attr = $otable . '.' . $this->attr;
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
@@ -368,12 +369,13 @@ class ObjectPathExpression extends AttrPathExpression {
 		if ($this->attr!=''){
 			return parent::evaluateIn($report);
 		}
-		$o =& $this->registerPath($report);
+		$ret =& $this->registerPath($report);
+		$o =& $ret[0];
 		$type = $this->type;
 		if ($type!=''){
 			$o =& new $type(array(),false);
 		}
-		$attr = $o->getTable() . '.id';
+		$attr = '`'.$o->getTablePrefixed($ret[1]) .'`.`id`';
 		return $attr;
 	}
 }
@@ -437,7 +439,7 @@ class ExistsExpression extends Expression {
 	}
 
 	function evaluateIn(&$report) {
-		//$report->registerAllVars($this->query);
+		$this->query->parent =& $report;
 	}
 
 	function printString() {
@@ -460,7 +462,7 @@ class InExpression extends Expression {
     }
 
     function evaluateIn(&$report) {
-
+		$this->query->parent =& $report;
     }
 
     function printString() {

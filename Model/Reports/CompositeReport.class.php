@@ -14,6 +14,14 @@ class CompositeReport extends Report {
     function &getTargetVar() {
     	return $this->report->getTargetVar();
     }
+    function &getVar($id){
+    	$v =& $this->report->getVar($id);
+    	if ($v==null){
+    		return parent::getVar($id);
+    	} else {
+    		return $v;
+    	}
+    }
 
 	function &fromArray($params){
 		$cr =& new CompositeReport($params['subq']);

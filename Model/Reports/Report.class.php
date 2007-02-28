@@ -246,7 +246,8 @@ class Report extends Collection{
 	}
 	function inSQL(){
 		$obj =& $this->getObject();
-		$sql = 'SELECT '. $obj->id->fieldName('SELECT') .' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
+		$var =& $this->getTargetVar();
+		$sql = 'SELECT '. $obj->id->fieldNamePrefixed('SELECT', $var->prefix) .' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
         return $sql;
 	}
 	function size() {
