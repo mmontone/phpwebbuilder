@@ -126,33 +126,34 @@ class PersistentObject extends DescriptedObject {
 	}
 
     function getTablesPrefixed($prefix) {
-        //$allObjectTables =& Session::getAttribute('allObjectTables');
-        //if (!isset($allObjectTables[getClass($this)])){
-        //$tns[] = $this->renameTableName();
-        $tns[] = $this->tableName() . ' AS ' . $this->tableNamePrefixed($prefix);
-        $p0 = getClass($this);
-        $pcs = get_superclasses($p0);
-        $o0 =& $this;
-        foreach($pcs as $pc){
-            $o1 =& PersistentObject::getMetaData($pc);
-            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o1->tableNamePrefixed($prefix).'.id = '.$o0->tableNamePrefixed($prefix).'.super';
-            }
-            $o0 =& $o1;
-            $p0 = $pc;
+        $allObjectTables =& Session::getAttribute('allObjectTables');
+        if (!isset($allObjectTables[getClass($this)])){
+	        $tns[] = $this->tableName() . ' AS ' . $this->tableNamePrefixed('{$prefix}');
+	        $p0 = getClass($this);
+	        $pcs = get_superclasses($p0);
+	        $o0 =& $this;
+	        foreach($pcs as $pc){
+	            $o1 =& PersistentObject::getMetaData($pc);
+	            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
+	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o1->tableNamePrefixed('{$prefix}').'.id = '.$o0->tableNamePrefixed('{$prefix}').'.super';
+	            }
+	            $o0 =& $o1;
+	            $p0 = $pc;
+	        }
+	        $scs = get_subclasses(getClass($this));
+	        foreach($scs as $sc){
+	            $o1 =& PersistentObject::getMetaData($sc);
+	            $pc = get_parent_class($sc);
+	            $o2 =& PersistentObject::getMetaData($pc);
+	            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
+	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o2->tableNamePrefixed('{$prefix}').'.id = '. $o1->tableNamePrefixed('{$prefix}').'.super';
+	            }
+	        }
+	        $allObjectTables[getClass($this)] = implode(' ',$tns);
         }
-        $scs = get_subclasses(getClass($this));
-        foreach($scs as $sc){
-            $o1 =& PersistentObject::getMetaData($sc);
-            $pc = get_parent_class($sc);
-            $o2 =& PersistentObject::getMetaData($pc);
-            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o2->tableNamePrefixed($prefix).'.id = '. $o1->tableNamePrefixed($prefix).'.super';
-            }
-        }
-        $allObjectTables[getClass($this)] = array(implode(' ',$tns));
-        //}
-        return $allObjectTables[getClass($this)];
+        $tableNames = '';
+        eval('$tableNames = "'.$allObjectTables[getClass($this)].'";');
+        return array($tableNames);
     }
 
 
