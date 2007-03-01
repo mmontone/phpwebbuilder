@@ -1,4 +1,9 @@
 <?php
+
+function unify_types($t1, $t2){
+	print_backtrace_and_exit('Type error: '.$t1.' and '.$t2);
+}
+
 class Condition extends Expression {
 	var $exp1;
 	var $operation;
@@ -45,6 +50,17 @@ class Condition extends Expression {
     function addEvalExpression(&$exp) {
         $this->parent->addEvalExpression($exp);
     }
+    function getExpressionType(&$report){
+    	$t1 = $this->exp1->getExpressionType($report);
+		$t2 = $this->exp2->getExpressionType($report);
+		if($t1==$t2) return $t2;
+		if($t1==null) $nt = $t2;
+		else if($t2==null) $nt = $t1;
+		else $nt = unify_types($t1, $t2);
+		$this->exp2->setType($nt);
+		$this->exp1->setType($nt);
+		return $nt;
+    }
 }
 
 class EqualCondition extends Condition {
@@ -67,6 +83,7 @@ class Expression {
 	function printString() {
 		print_backtrace_and_exit('Subclass responsibility');
 	}
+	function getExpressionType(){return null;}
 }
 
 class NotExp extends Expression {
@@ -355,6 +372,13 @@ class AttrPathExpression extends PathExpression {
 		$attr = $otable . '.' . $this->attr;
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
+	function getExpressionType(&$report){
+		if ($this->type==''){
+			$rp =& $this->registerPath($report);
+			$this->type = $rp[0]->{$this->attr}->getDataType();
+		}
+		return $this->type;
+	}
 }
 
 class ObjectPathExpression extends AttrPathExpression {
@@ -372,12 +396,20 @@ class ObjectPathExpression extends AttrPathExpression {
 		}
 		$ret =& $this->registerPath($report);
 		$o =& $ret[0];
+		//$type = $this->getExpressionType($report);
 		$type = $this->type;
 		if ($type!=''){
 			$o =& new $type(array(),false);
 		}
 		$attr = '`'.$o->getTablePrefixed($ret[1]) .'`.`id`';
         return $attr;
+	}
+	function getExpressionType(&$report){
+		if ($this->type==''){
+			$rp =& $this->registerPath($report);
+			$this->type = getClass($rp[0]);
+		}
+		return $this->type;
 	}
 }
 
