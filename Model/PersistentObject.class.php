@@ -228,13 +228,14 @@ class PersistentObject extends DescriptedObject {
 		$db =& DBSession::Instance();
 		$rows=0;
 		$res =& $db->SQLExec($sql, TRUE, $this, $rows);
+		if (is_exception($res)) {
+			return $res;
+		}
 		if ($rows!=1) {
 			$ex =& new PWBException(array('message' => 'Could not update'));
 			return $ex;
 		}
-		if (!is_exception($res) && $rows==1) {
-			$this->existsObject = true;
-		}
+		$this->existsObject = true;
 		return $res;
 	}
 	/**
@@ -371,9 +372,10 @@ class PersistentObject extends DescriptedObject {
 		if ($id==0) {$n=null;return$n;}
 		$o =&PersistentObject::findGlobalObject($class, $id);
 		if ($o!==null) return $o;
-		$obj = & new $class(array(),false);
-		$obj = & $obj->loadFromId($id);
-		return $obj;
+		//$obj = & new $class(array(),false);
+		//$obj = & $obj->loadFromId($id);
+		//return $obj;
+		return PersistentObject::getWithIndex($class,array('id'=>$id));
 	}
 	/**
 	 * Reloads the object from the database
