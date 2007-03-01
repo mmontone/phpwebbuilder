@@ -27,7 +27,13 @@ class PersistentObject extends DescriptedObject {
 			$this->initializeObject();
 		}
 	}
-
+	function &getMetaData($class){
+		global $metadata;
+		if (!isset($metadata[$class])){
+			$metadata[$class] =& new $class(array(), false);;
+		}
+		return $metadata[$class];
+	}
 	function __wakeup(){
 		parent::__wakeup();
 		$this->registerGlobalObject();
@@ -86,7 +92,7 @@ class PersistentObject extends DescriptedObject {
 		$fs = array();
 		foreach($rcs as $rc){
 			if ($rc != 'persistentobject' && $rc != 'descriptedobject' && $rc != 'pwbobject') {
-				$o = new $rc(array(),false);
+				$o = PersistentObject::getMetaData($rc);
 				$fs = array_merge($fs, $o->allSQLFields());
 			}
 		}
@@ -128,7 +134,7 @@ class PersistentObject extends DescriptedObject {
         $pcs = get_superclasses($p0);
         $o0 =& $this;
         foreach($pcs as $pc){
-            $o1 =& new $pc(array(),false);
+            $o1 =& PersistentObject::getMetaData($pc);
             if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
                 $tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o1->tableNamePrefixed($prefix).'.id = '.$o0->tableNamePrefixed($prefix).'.super';
             }
@@ -137,9 +143,9 @@ class PersistentObject extends DescriptedObject {
         }
         $scs = get_subclasses(getClass($this));
         foreach($scs as $sc){
-            $o1 =& new $sc(array(),false);
+            $o1 =& PersistentObject::getMetaData($sc);
             $pc = get_parent_class($sc);
-            $o2 =& new $pc(array(),false);
+            $o2 =& PersistentObject::getMetaData($pc);
             if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
                 $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed($prefix) . ' ON '. $o2->tableNamePrefixed($prefix).'.id = '. $o1->tableNamePrefixed($prefix).'.super';
             }
@@ -179,8 +185,8 @@ class PersistentObject extends DescriptedObject {
 		foreach($rcs as $rc){
 			$sup = get_parent_class($rc);
 			if ($sup != 'persistentobject' && $sup != 'descriptedobject' && $sup != 'pwbobject' && $sup != ''){
-				$o1 = new $rc(array(),false);
-				$o2 = new $sup(array(),false);
+				$o1 = PersistentObject::getMetaData($rc);
+				$o2 = PersistentObject::getMetaData($sup);
 				$rss[] = '('.$o2->tableName().'.id = '.$o1->tableName().'.super'.
 					' or '. $o1->tableName().'.super IS NULL)';
 			}
@@ -369,7 +375,7 @@ class PersistentObject extends DescriptedObject {
 		if ($id==0) {$n=null;return$n;}
 		$o =&PersistentObject::findGlobalObject($class, $id);
 		if ($o!==null) return $o;
-		//$obj = & new $class(array(),false);
+		//$obj = & PersistentObject::getMetaData($class);
 		//$obj = & $obj->loadFromId($id);
 		//return $obj;
 		return PersistentObject::getWithIndex($class,array('id'=>$id));
@@ -423,9 +429,9 @@ class PersistentObject extends DescriptedObject {
 		$rcss = get_subclasses($c);
 		$rcs = array_reverse($rcss);
 		foreach($rcs as $rc){
-			$o =& new $rc(array(),false);
+			$o =& PersistentObject::getMetaData($rc);
 			if ($o->canBeLoaded($rec)){
-				return $o;
+				return new $rc(array(), false);
 			}
 		}
 		$o =& new $c(array(), false);
@@ -578,7 +584,7 @@ class PersistentObject extends DescriptedObject {
 		$p0 = getClass($this);
 		$pcs = get_superclasses($p0);
 		foreach($pcs as $pc){
-			$o1 =& new $pc(array(),false);
+			$o1 =& PersistentObject::getMetaData($pc);
 			//echo 'Checking class ' . getClass($o1). ' for field ' . $field . '<br />';
 			if (getClass($o1) == 'pwbobject') {
 				print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());

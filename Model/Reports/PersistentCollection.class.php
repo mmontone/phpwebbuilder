@@ -47,7 +47,7 @@ class PersistentCollection extends Report{
 
 	function getTables() {
 		$datatype = $this->getDataType();
-		$obj = new $datatype(array(),false);
+		$obj =& PersistentObject::getMetaData($datatype);
 		return $obj->getTables();
 	}
 	/**
@@ -55,7 +55,7 @@ class PersistentCollection extends Report{
 	  */
 	function tableName() {
 		$datatype =& $this->getDataType();
-		$obj = new $datatype(array(),false);
+		$obj =& PersistentObject::getMetaData($datatype);
 		return $obj->tableName();
 	}
 	/**

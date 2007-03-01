@@ -144,7 +144,7 @@ class Report extends Collection{
     function getTargetTable() {
     	$var =& $this->getTargetVar();
         $dt = $var->class;
-        $obj =& new $dt(array(),false);
+        $obj =& PersistentObject::getMetaData($dt);
         return $obj->getTablePrefixed($var->prefix);
     }
 
@@ -155,7 +155,7 @@ class Report extends Collection{
 	}
 
 	function &defineVar($id, $class) {
-		$o =& new $class(array(),false);
+		$o =& PersistentObject::getMetaData($class);
         $this->addTables($o->getTablesPrefixed($id . '_'));
         return $this->primDefineVar($id, $class);
 	}
@@ -278,7 +278,7 @@ class Report extends Collection{
 	  */
 	function &getObject(){
 		$dt = $this->getDataType();
-		$o  =& new $dt(array(),false);
+		$o  =& PersistentObject::getMetaData($dt);
 		return $o;
 	}
 	/**
@@ -328,7 +328,7 @@ class Report extends Collection{
 	    $target =& $this->getTargetVar();
 	    if (is_object($target)){
 	        $datatype = $target->class;
-	        $obj = new $datatype(array(),false);
+	        $obj = PersistentObject::getMetaData($datatype);
             return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
 	    } else {
 	    	return $this->tables;
@@ -502,13 +502,13 @@ class Report extends Collection{
 			$old->loadFrom($data);
 			return $this->fillExtras($old, $data);
 		}
-		$obj =& new $dt(array(),false);
+		$obj =& PersistentObject::getMetaData($dt);
 		return $this->fillExtras($obj->loadFromRec($data), $data);
 	}
 	function getDataTypeSqlId(){
 		if(!isset($this->dataTypeSqlId)){
 			$dt = $this->getDataType();
-			$obj =& new $dt(array(),false);
+			$obj =& PersistentObject::getMetaData($dt);
 			$this->dataTypeSqlId =$obj->id->sqlName();
 		}
 		return $this->dataTypeSqlId;

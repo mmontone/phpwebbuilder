@@ -339,7 +339,7 @@ class PathExpression extends Expression {
         $prefix = $target_var->prefix;
         $pre = substr($prefix,0);
 
-		$o =& new $datatype(array(),false);
+		$o =& PersistentObject::getMetaData($datatype);
 
 		foreach ($pp as $index) {
             #@gencheck
@@ -348,7 +348,7 @@ class PathExpression extends Expression {
             }
             @#
             $class =& $o->$index->getDataType();
-			$obj =& new $class(array(),false);
+			$obj =& PersistentObject::getMetaData($class);
 
             $otable = $o->tableForFieldPrefixed($index, $pre);
 
@@ -402,7 +402,7 @@ class ObjectPathExpression extends PathExpression {
 		$o =& $ret[0];
 		$type = $this->parent->getExpressionType($report);
 		if ($type!=''){
-			$o =& new $type(array(),false);
+			$o =& PersistentObject::getMetaData($type);
 		}
 		$attr = '`'.$o->getTablePrefixed($ret[1]) .'`.`id`';
         return $attr;
