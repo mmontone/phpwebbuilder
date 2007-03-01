@@ -4,9 +4,9 @@ class IdField extends NumField {
     function &visit(&$obj) {
         return $obj->visitedIdField($this);
     }
-    function fieldName ($operation) {
+    function fieldNamePrefixed ($operation, $pfx) {
         if ($operation == 'SELECT') {
-            return parent::fieldName ($operation);
+            return parent::fieldNamePrefixed ($operation, $pfx);
         }
     }
 

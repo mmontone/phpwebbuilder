@@ -55,7 +55,7 @@ class DescriptedObject extends PWBObject {
 	 * it's index fields)
 	 */
 	function printString(){
-		return $this->indexValues();
+		return $this->primPrintString('Values: ' . $this->indexValues());
 	}
 	/**
 	 * Removes all changes made to the object
@@ -105,7 +105,9 @@ class DescriptedObject extends PWBObject {
 	 * Loads the object's values from an associative array
 	 */
     function loadFrom(&$reg) {
-		if ($this->isNotTopClass($this)){
+		// TODO LATER
+        //$this->attachFieldsEvents();
+        if ($this->isNotTopClass($this)){
 			$this->parent->loadFrom($reg);
 		}
 		$ok = true;
@@ -125,6 +127,13 @@ class DescriptedObject extends PWBObject {
 			return true;
 		}
 	}
+
+    function attachFieldsEvents() {
+        foreach($this->allFieldNames() as $f) {
+            $field =& $this->fieldNamed($f);
+            $field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
+        }
+    }
 	/**
 	 * Returns if the object is not a top class (that is, it's direct superclass is not persistent or descripted object)
 	 */
@@ -408,9 +417,6 @@ class DescriptedObject extends PWBObject {
 			$fs =& $this->allFieldsAllLevels();
 		} else {
 			$fs =& $this->allFieldsThisLevel();
-            if ($operation == 'INSERT') {
-            	unset($fs['id']);
-            }
 		}
 
         foreach ($fs as $name => $field) {

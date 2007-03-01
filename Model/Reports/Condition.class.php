@@ -313,6 +313,11 @@ class PathExpression extends Expression {
 		$pp = explode('.', $this->path);
         $target = $pp[0];
 
+        if ($target == '') {
+            $t =& $report->getTargetVar();
+            $arr = array(&$t, array());
+            return $arr;
+        }
 
         $target_var =& $report->getVar($target);
         if (!is_object($target_var)) {
@@ -485,19 +490,27 @@ class ExistsExpression extends Expression {
 class InExpression extends Expression {
 	var $query;
     var $field;
+    var $attr;
 
     function InExpression($field, &$query) {
         $this->query =& $query;
-        $this->field = $field;
+        $this->field =& new ObjectPathExpression($field);
+        $this->field->parent =& $this;
+
         parent::Expression();
+    }
+
+    function getExpressionType() {
+        return '';
     }
 
     function evaluateIn(&$report) {
 		$this->query->parent =& $report;
+        $this->attr = $this->field->evaluateIn($report);
     }
 
     function printString() {
-        return $this->field . ' IN (' . $this->query->inSQL() . ')';
+        return $this->attr . ' IN (' . $this->query->inSQL() . ')';
     }
 }
 ?>

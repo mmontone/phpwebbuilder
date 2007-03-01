@@ -38,10 +38,12 @@ class IndexField extends NumField {
 
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
-        $this->buffered_target =& $target;
-		$n = null;
-		$this->buffered_value =& $n;
-		$this->triggerEvent('changed', $this);
+        if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
+            $this->buffered_target =& $target;
+    		$n = null;
+    		$this->buffered_value =& $n;
+    		$this->triggerEvent('changed', $this);
+        }
 	}
 
 	function getTargetId() {

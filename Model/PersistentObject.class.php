@@ -24,11 +24,6 @@ class PersistentObject extends DescriptedObject {
 	function PersistentObject($parems=array(),$create=true){
 		parent::PWBObject($parems);
 		if ($create) {
-			foreach($this->allFieldNames() as $f) {
-				$field =& $this->fieldNamed($f);
-				$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
-			}
-
 			$this->initializeObject();
 		}
 	}
@@ -207,6 +202,8 @@ class PersistentObject extends DescriptedObject {
 			return $record;
 		}
 	}
+
+
 	/**
 	 * Returns the query for creating the object
 	 */
@@ -584,7 +581,7 @@ class PersistentObject extends DescriptedObject {
 			$o1 =& new $pc(array(),false);
 			//echo 'Checking class ' . getClass($o1). ' for field ' . $field . '<br />';
 			if (getClass($o1) == 'pwbobject') {
-				print_backtrace_and_exit('Field not found: ' . $field);
+				print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());
 			}
 
             if (in_array($field, $o1->allFieldNamesThisLevel())) {
