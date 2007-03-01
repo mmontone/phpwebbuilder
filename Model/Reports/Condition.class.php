@@ -1,7 +1,18 @@
 <?php
 
 function unify_types($t1, $t2){
-	print_backtrace_and_exit('Type error: '.$t1.' and '.$t2);
+	$a1=get_superclasses($t1);
+	$a2=get_superclasses($t2);
+	array_unshift($a1,$t1);
+	array_unshift($a2,$t2);
+	$arr = array_intersect($a1,$a2);
+	if (count($arr)==0){
+		print_backtrace_and_exit('Type error: '.$t1.' and '.$t2);
+	} else {
+		$type = array_shift($arr);
+		//print_backtrace("$t1 and $t2 give $type");
+		return $type;
+	}
 }
 
 class Condition extends Expression {
@@ -84,6 +95,7 @@ class Expression {
 		print_backtrace_and_exit('Subclass responsibility');
 	}
 	function getExpressionType(){return null;}
+	function setType($type){$this->type = $type;}
 }
 
 class NotExp extends Expression {
@@ -276,15 +288,15 @@ class ObjectExpression extends Expression {
 
 	function ObjectExpression(&$object,$class=null) {
 		$this->object =& $object;
-		$this->class = $class;
+		$this->type = $class;
 		parent::Expression();
 	}
 
 	function evaluateIn(&$report) {
-		if ($this->class===null) {
+		if ($this->type===null) {
 			return $this->object->getId();
 		} else {
-			return $this->object->getIdOfClass($this->class);
+			return $this->object->getIdOfClass($this->type);
 		}
 	}
 }
@@ -341,14 +353,13 @@ class PathExpression extends Expression {
             $var = $report->getVar($pre);
             if ($var==null){
             	$report->defineVar($pre,$class);
+	            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
+	                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($pre.'_') .'`.`id`')));
+
+	            $exp->evaluateIn($report);
+	            $this->parent->addEvalExpression($exp);
             }
 			$pre .= '_';
-            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
-                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($pre) .'`.`id`')));
-
-            $exp->evaluateIn($report);
-            $this->parent->addEvalExpression($exp);
-
 			$o =& $obj;
 		}
 		$arr = array(&$o, $pre);
@@ -372,32 +383,19 @@ class AttrPathExpression extends PathExpression {
 		$attr = $otable . '.' . $this->attr;
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
-	function getExpressionType(&$report){
-		if ($this->type==''){
-			$rp =& $this->registerPath($report);
-			$this->type = $rp[0]->{$this->attr}->getDataType();
-		}
-		return $this->type;
-	}
 }
 
-class ObjectPathExpression extends AttrPathExpression {
+class ObjectPathExpression extends PathExpression {
 	var $type;
 
 	function ObjectPathExpression($path, $type='') {
 		$this->type = $type;
-		$path = explode('.',$path);
-		if (count($path)>1) $att = array_pop($path); else $att='';
-		parent::AttrPathExpression(implode('.',$path), $att);
+		parent::PathExpression($path);
 	}
 	function evaluateIn(&$report) {
-		if ($this->attr!=''){
-			return parent::evaluateIn($report);
-		}
 		$ret =& $this->registerPath($report);
 		$o =& $ret[0];
-		//$type = $this->getExpressionType($report);
-		$type = $this->type;
+		$type = $this->parent->getExpressionType($report);
 		if ($type!=''){
 			$o =& new $type(array(),false);
 		}
