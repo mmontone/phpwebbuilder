@@ -44,7 +44,7 @@ class Report extends Collection{
       var $group = array();
 	  var $vars = array();
 	  var $select_exp;
-	  var $select = null;
+	  var $sqls = array();
       var $evaluated=false;
       var $parent = null;
       var $target_var=null;
@@ -60,7 +60,10 @@ class Report extends Collection{
     	//print_backtrace('Returning target var: ' . print_r($this->target_var,true) . ' in ' . $this->printString());
         return $this->target_var;
     }
-
+	function evaluateAll(){
+		$this->inSQL();
+		$this->selectsql();
+	}
     function &getVar($id) {
         //print_backtrace('Looking for variable: ' . $id . ' in ' . $this->printString());
         if (isset($this->vars[$id])) {
@@ -97,6 +100,9 @@ class Report extends Collection{
 
 		if (isset($params['fields'])){
 			$this->fields =$params['fields'];
+		}
+		if (isset($params['sqls'])){
+			$this->sqls =$params['sqls'];
 		}
 		if (isset($params['from'])){
 			foreach($params['from'] as $var=>$class){
@@ -169,6 +175,7 @@ class Report extends Collection{
 	function setPathCondition(&$condition) {
 		//print_backtrace($this->printString() . ' setting path condition: ' . print_r($condition,true));
 		$this->select_exp->addExpression($condition);
+		unset($this->sqls['where']);
         $this->evaluated=false;
 	}
 	/**
@@ -190,24 +197,19 @@ class Report extends Collection{
 	  */
 
 	function conditions() {
+		if (!isset($this->sqls['where'])){
+			$select_exp =& $this->getSelectExp();
+			$printed = $select_exp->printString();
 
-		/*
-		$cond = '1=1';
-		foreach ($this->getConditions() as $c) {
-			$cond .= ' AND `'. $c[0] .'` '. $c[1] .' '. $c[2];
+			if ($printed == '') {
+			  $cond = ' ';
+			}
+			else {
+			  $cond = ' WHERE ' . $printed;
+			}
+			$this->sqls['where'] = $cond;
 		}
-		$cond = ' WHERE ' . $cond;*/
-
-		$select_exp =& $this->getSelectExp();
-		$printed = $select_exp->printString();
-
-		if ($printed == '') {
-		  $cond = ' ';
-		}
-		else {
-		  $cond = ' WHERE ' . $printed;
-		}
-		return $cond;
+		return $this->sqls['where'];
 	}
 
 	function &getConditions() {
@@ -243,9 +245,12 @@ class Report extends Collection{
 		return $sql;
 	}
 	function inSQL(){
-		$obj =& $this->getObject();
-		$var =& $this->getTargetVar();
-		$sql = 'SELECT '. $obj->id->fieldNamePrefixed('SELECT', $var->prefix) .' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
+		if (!isset($this->sqls['in_fields'])){
+			$obj =& $this->getObject();
+			$var =& $this->getTargetVar();
+			$this->sqls['in_fields'] = $obj->id->fieldNamePrefixed('SELECT', $var->prefix);
+		}
+		$sql = 'SELECT '.  $this->sqls['in_fields'].' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
         return $sql;
 	}
 	function size() {
@@ -285,24 +290,22 @@ class Report extends Collection{
 	  * Returns all the field names, backquote encapsed
 	  */
 	function fieldNames(){
-		if ($this->select !== null) {
-			return $this->select;
-		}
-
-		foreach($this->getFields() as $f=>$n){
-			if (!is_numeric($f)){
-				$ret []= $f .' as `'. $n.'`';
-			} else {
-				$ret []= '`'. $this->parseField($n).'`';
+		if (!isset($this->sqls['fields'])){
+			foreach($this->getFields() as $f=>$n){
+				if (!is_numeric($f)){
+					$ret []= $f .' as `'. $n.'`';
+				} else {
+					$ret []= '`'. $this->parseField($n).'`';
+				}
 			}
+			if ($this->getDataType()!='PersistentObject'){
+	            $obj =& $this->getObject();
+	            $var =& $this->getTargetVar();
+	            $ret []= $obj->fieldNamesPrefixed('SELECT', $var->prefix);
+	        }
+			$this->sqls['fields'] = implode(',',$ret);
 		}
-		if ($this->getDataType()!='PersistentObject'){
-            $obj =& $this->getObject();
-            $var =& $this->getTargetVar();
-            //print_backtrace('Target var in ' . $this->printString() . ': ' . print_r($var,true));
-            $ret []= $obj->fieldNamesPrefixed('SELECT', $var->prefix);
-        }
-        return  implode(',',$ret);
+		return $this->sqls['fields'];
 	}
 
     function freeVar() {
@@ -314,14 +317,17 @@ class Report extends Collection{
 	}
 
 	function select($string) {
-		$this->select = $string;
+		$this->sqls['fields'] = $string;
 	}
 
 	/**
 	  * Returns the tables to be used
 	  */
 	function tableNames(){
-		return implode(',', $this->getTables());
+		if (!isset($this->sqls['tables'])){
+			$this->sqls['tables'] = implode(',', $this->getTables());
+		}
+		return $this->sqls['tables'];
 	}
 
 	function getTables() {
@@ -579,7 +585,7 @@ Compiler::usesClass(__FILE__,'OQLCompiler');
 if (!function_exists('select')){
 	function select($query){
         $oc =& new OQLCompiler;
-		$res = $oc->fromQuery($query,get_defined_vars());
+		$res = $oc->fromQuery($query);
         return $res;
 	}
 }
