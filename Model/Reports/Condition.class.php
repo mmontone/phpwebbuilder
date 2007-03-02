@@ -46,6 +46,8 @@ class Condition extends Expression {
     }
 
 	function evaluateIn(&$report) {
+		$this->exp1->setParent($this);
+		$this->exp2->setParent($this);
 		$this->evaluated_e1 = $this->exp1->evaluateIn($report);
 		$this->evaluated_e2 = $this->exp2->evaluateIn($report);
 	}
@@ -96,6 +98,9 @@ class Expression {
 	}
 	function getExpressionType(){return null;}
 	function setType($type){$this->type = $type;}
+	function setParent(&$parent){
+    	$this->parent =& $parent;
+    }
 }
 
 class NotExp extends Expression {
@@ -156,6 +161,7 @@ class AndExp extends Expression {
 
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
+			$this->exps[$e]->setParent($this);
 			$this->exps[$e]->evaluateIn($report);
 		}
     }
@@ -218,6 +224,7 @@ class OrExp extends Expression {
 
 	function evaluateIn(&$report) {
 		foreach(array_keys($this->exps) as $e) {
+			$this->exps[$e]->setParent($this);
 			$this->exps[$e]->evaluateIn($report);
 		}
 	}
@@ -347,7 +354,7 @@ class PathExpression extends Expression {
                 print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $datatype . '(' . getClass($this) . ' with path: ' . $this->path . ')');
             }
             @#
-            $class =& $o->$index->getDataType();
+            $class = $o->$index->getDataType();
 			$obj =& PersistentObject::getMetaData($class);
 
             $otable = $o->tableForFieldPrefixed($index, $pre);
