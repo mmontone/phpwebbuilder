@@ -126,8 +126,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
     function getTablesPrefixed($prefix) {
-        $allObjectTables =& Session::getAttribute('allObjectTables');
-        if (!isset($allObjectTables[getClass($this)])){
+        if (!isset($this->allObjectTables)){
 	        $tns[] = $this->tableName() . ' AS ' . $this->tableNamePrefixed('{$prefix}');
 	        $p0 = getClass($this);
 	        $pcs = get_superclasses($p0);
@@ -149,10 +148,10 @@ class PersistentObject extends DescriptedObject {
 	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o2->tableNamePrefixed('{$prefix}').'.id = '. $o1->tableNamePrefixed('{$prefix}').'.super';
 	            }
 	        }
-	        $allObjectTables[getClass($this)] = implode(' ',$tns);
+	        $this->allObjectTables = implode(' ',$tns);
         }
         $tableNames = '';
-        eval('$tableNames = "'.$allObjectTables[getClass($this)].'";');
+        $tableNames = eval('return "'.$this->allObjectTables.'";');
         return array($tableNames);
     }
 

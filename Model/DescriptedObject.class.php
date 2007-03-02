@@ -412,20 +412,34 @@ class DescriptedObject extends PWBObject {
     }
 
     function fieldNamesPrefixed($operation, $prefix) {
-		$fieldnames = array();
 		if ($operation=='SELECT'){
-			$fs =& $this->allFieldsAllLevels();
+			if (!isset($this->allFieldsNamesAllLevels)){
+				$fieldnames = array();
+				$fs =& $this->allFieldsAllLevels();
+		        foreach ($fs as $name => $field) {
+				    $fn = $field->fieldNamePrefixed($operation, '{$prefix}');
+		            if ($fn != null) {
+		            	$fieldnames[] = $fn;
+		            }
+				}
+		        $this->allFieldsNamesAllLevels=  implode(',', $fieldnames);
+			}
+			$fieldsNames = eval('return "'.$this->allFieldsNamesAllLevels.'";');
 		} else {
-			$fs =& $this->allFieldsThisLevel();
+				if (!isset($this->allFieldsNamesThisLevel)){
+				$fieldnames = array();
+				$fs =& $this->allFieldsThisLevel();
+		        foreach ($fs as $name => $field) {
+				    $fn = $field->fieldNamePrefixed($operation, '{$prefix}');
+		            if ($fn != null) {
+		            	$fieldnames[] = $fn;
+		            }
+				}
+		        $this->allFieldsNamesThisLevel=  implode(',', $fieldnames);
+			}
+			$fieldsNames = eval('return "'.$this->allFieldsNamesThisLevel.'";');
 		}
-
-        foreach ($fs as $name => $field) {
-		    $fn = $field->fieldNamePrefixed($operation, $prefix);
-            if ($fn != null) {
-            	$fieldnames[] = $fn;
-            }
-		}
-        return implode(',', $fieldnames);
+		return $fieldsNames;
     }
 }
 
