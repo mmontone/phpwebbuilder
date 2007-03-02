@@ -5,7 +5,8 @@ $allObjectsInMem = array();
 class WeakReference {
 	var $refId;
 	function WeakReference(&$referenced){
-		$this->setTarget($referenced);
+		if ($referenced!=null)
+			$this->setTarget($referenced);
 	}
 	function setTarget(&$obj){
 		$this->refId = $obj->getInstanceId();
