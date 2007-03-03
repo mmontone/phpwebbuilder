@@ -21,16 +21,24 @@ class PersistentObject extends DescriptedObject {
 		$this->idN = $id;
 		$this->registerGlobalObject();
 	}
-	function PersistentObject($parems=array(),$create=true){
+	function PersistentObject($parems=array(),$create=true, $createMetaData=false){
+		$this->createMetaData = $createMetaData;
 		parent::PWBObject($parems);
 		if ($create) {
 			$this->initializeObject();
 		}
 	}
 	function &getMetaData($class){
-		global $metadata;
+		$metadata =& Session::getAttribute('persistentObjects');
+		//global $metadata;
+		$class = strtolower($class);
 		if (!isset($metadata[$class])){
-			$metadata[$class] =& new $class(array(), false);;
+			$metadata[$class] =& new $class(array(), false, true);
+			if ($metadata[$class]->isNotTopClass($metadata[$class])) {
+				$metadata[$class]->setParent(PersistentObject::getMetaData(get_parent_class($class)));
+			}
+			$metadata[$class]->basicInitialize();
+
 		}
 		return $metadata[$class];
 	}
@@ -132,9 +140,11 @@ class PersistentObject extends DescriptedObject {
 	        $pcs = get_superclasses($p0);
 	        $o0 =& $this;
 	        foreach($pcs as $pc){
-	            $o1 =& PersistentObject::getMetaData($pc);
 	            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
+	            	$o1 =& PersistentObject::getMetaData($pc);
 	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o1->tableNamePrefixed('{$prefix}').'.id = '.$o0->tableNamePrefixed('{$prefix}').'.super';
+	            } else {
+	            	break;
 	            }
 	            $o0 =& $o1;
 	            $p0 = $pc;
@@ -146,6 +156,8 @@ class PersistentObject extends DescriptedObject {
 	            $o2 =& PersistentObject::getMetaData($pc);
 	            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
 	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o2->tableNamePrefixed('{$prefix}').'.id = '. $o1->tableNamePrefixed('{$prefix}').'.super';
+	            } else {
+	            	break;
 	            }
 	        }
 	        $this->allObjectTables = implode(' ',$tns);
@@ -319,6 +331,7 @@ class PersistentObject extends DescriptedObject {
 	 * Perform post-creation tasks for the object (initialization and inheritance)
 	 */
 	function & createInstance() {
+		if ($this->createMetaData) return $this;
 		if ($this->isNotTopClass($this)) {
 			$c = get_parent_class(getClass($this));
 			$this->setParent(new $c(array(),false));

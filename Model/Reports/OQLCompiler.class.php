@@ -3,32 +3,35 @@
 class OQLCompiler {
 	var $error;
 	function fromQuery($query) {
-			$oqlg =&PHPCC::createGrammar(
-				'<oql(
-				   identifier::=/[a-z_][a-z_0-9]*/i.
-				   phpvar::=/\$[a-z_][a-z_0-9]*/i.
-				   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|\<\>|<=|>=|\>|\<|LIKE|IS/i <value>.
-				   valueorfunction::=<identifier> ["(" {<identifier>; ","} ")"].
-				   expression::=logical=><condition> operator->/AND|OR/i <expression>|
-				   			condition=><condition>|
-				   			not=>/NOT/i <expression>|
-							exists=>/EXISTS/i "(" <oql> ")"|
-							in=><variable> /IN/i "(" <oql> ")".
-				   oql::=class->(name=>[[<identifier> ":"]<identifier>]|phpvar=><phpvar>)
-					   		 fields->["(" fields->{<valueorfunction> "as" <identifier> ; ","} ")"]
-					   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
-					   		 where->["where" expression-><expression>]
-						.
-				   variable::={<identifier> ; "."}.
-				   value::=var=><variable>|
-				   		value=>(
-							number=>/[0-9]+/|
-					   		str=>/\'[^\']+\'/|
-					   		phpvar=><phpvar>|
-					   		bool=>/TRUE|FALSE/i).
-				   )>'
-				);
-			$oqlg->addPointCuts(array (
+			global $grammars;
+				if (!isset($grammars['oqlGrammar'])){
+				$grammars['oqlGrammar'] =&PHPCC::createGrammar(
+					'<oql(
+					   identifier::=/[a-z_][a-z_0-9]*/i.
+					   phpvar::=/\$[a-z_][a-z_0-9]*/i.
+					   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|\<\>|<=|>=|\>|\<|LIKE|IS/i <value>.
+					   valueorfunction::=<identifier> ["(" {<identifier>; ","} ")"].
+					   expression::=logical=><condition> operator->/AND|OR/i <expression>|
+					   			condition=><condition>|
+					   			not=>/NOT/i <expression>|
+								exists=>/EXISTS/i "(" <oql> ")"|
+								in=><variable> /IN/i "(" <oql> ")".
+					   oql::=class->(name=>[[<identifier> ":"]<identifier>]|phpvar=><phpvar>)
+						   		 fields->["(" fields->{<valueorfunction> "as" <identifier> ; ","} ")"]
+						   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
+						   		 where->["where" expression-><expression>]
+							.
+					   variable::={<identifier> ; "."}.
+					   value::=var=><variable>|
+					   		value=>(
+								number=>/[0-9]+/|
+						   		str=>/\'[^\']+\'/|
+						   		phpvar=><phpvar>|
+						   		bool=>/TRUE|FALSE/i).
+					   )>'
+					);
+				}
+			$grammars['oqlGrammar']->setPointCuts(array (
 					'condition' => new FunctionObject($this, 'parseCondition'),
 					'expression' => new FunctionObject($this, 'parseExpression'),
 					'oql' => new FunctionObject($this, 'parseOql'),
@@ -37,11 +40,17 @@ class OQLCompiler {
 					//'variable' => new FunctionObject($this, 'parseVariable'),
 					//'value' => new FunctionObject($this, 'parseValue'),
 			));
-			$config =& $oqlg->compile($query);
+			$config =& $grammars['oqlGrammar']->compile($query);
 			if ($config==null) {
-				$this->error = $oqlg->error;
+				$this->error = $grammars['oqlGrammar']->error;
 			}
 			return $config;
+		}
+		function toSQL($query){
+			$repstr = $this->fromQuery($query);
+			eval('$rep =& '.$repstr.';');
+			$rep->evaluateAll();
+			return 'new Report(array("sqls"=>"'.$repstr.'")';
 		}
 		function &parseOQL(&$query){
 			if ($query['class']!==null){
