@@ -6,9 +6,9 @@ class MultiParser extends Parser {
 		parent :: Parser();
 		$this->parser = & $parser;
 	}
-	function setParent(&$parent){
-		parent :: setParent($parent);
-		$this->parser->setParent($this);
+	function setParent(&$parent, &$grammar){
+		parent :: setParent($parent, $grammar);
+		$this->parser->setParent($this, $grammar);
 	}
 	function parse($tks) {
 		$res = array (1,$tks);

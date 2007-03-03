@@ -6,10 +6,10 @@ class ListParser extends Parser {
 		$this->sep = & $separator;
 		$this->parser = & $parser;
 	}
-	function setParent(&$parent){
-		parent :: setParent($parent);
-		$this->sep->setParent($this);
-		$this->parser->setParent($this);
+	function setParent(&$parent, &$grammar){
+		parent :: setParent($parent, $grammar);
+		$this->sep->setParent($this, $grammar);
+		$this->parser->setParent($this, $grammar);
 	}
 	function parse($tks) {
 		/*first, we parse the list*/
@@ -17,7 +17,7 @@ class ListParser extends Parser {
 			$this->parser,
 			$this->sep
 		)));
-		$mp->setParent($this);
+		$mp->setParent($this, $this->grammar);
 		$res = $mp->parse($tks);
 		/* then, we parse again, in the tail of the list */
 		$res1 = $this->parser->parse($res[1]);

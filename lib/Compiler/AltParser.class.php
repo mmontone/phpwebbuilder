@@ -11,10 +11,10 @@ class AltParser extends Parser {
 		parent :: Parser();
 		$this->children =& $children;
 	}
-	function setParent(&$parent){
-		parent :: setParent($parent);
+	function setParent(&$parent, &$grammar){
+		parent :: setParent($parent, $grammar);
 		foreach (array_keys($this->children) as $k) {
-			$this->children[$k]->setParent($this);
+			$this->children[$k]->setParent($this, $grammar);
 		}
 	}
 	function parse($tks) {

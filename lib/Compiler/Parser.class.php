@@ -7,10 +7,10 @@ class Parser {
 		return $gr->get($name);
 	}
 	function &getGrammar() {
-		return $this->parentParser->getGrammar();
+		return $this->grammar;
 	}
-	function setParent(&$parent){
-		$this->parentParser =& $parent;
+	function setParent(&$parent, &$grammar){
+		$this->grammar =& $grammar;
 		$this->setErrorHandler($parent);
 	}
 	function setErrorHandler(&$eh){

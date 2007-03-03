@@ -6,14 +6,17 @@ class Grammar {
 	function Grammar($params) {
 		$this->params = & $params;
 		foreach (array_keys($this->params['nt']) as $k) {
-			$this->params['nt'][$k]->setParent($this);
+			$this->params['nt'][$k]->setParent($this, $this);
 		}
 	}
 	function &get($name) {
 		return $this->params['nt'][$name];
 	}
 	function addPointCuts($ps){
-		$this->pointcuts= array_merge($ps,$this->pointcuts);
+		$this->setPointcuts(array_merge($ps,$this->pointcuts));
+	}
+	function setPointCuts($ps){
+		$this->pointcuts=$ps;
 	}
 	function &getGrammar() {
 		return $this;
@@ -34,11 +37,11 @@ class Grammar {
 		}
 	}
 	function &compile($str) {
+		$this->error = null;
 		$root =& $this->getRoot();
 		$res = $root->parse($str);
 		if (preg_match('/^[\s\t\n]*$/',$res[1])){
 			$res1 =& $root->process($res[0]);
-			$this->error = null;
 			return $this->process($this->params['root'],$res1);
 		} else {
 			$n=null;
