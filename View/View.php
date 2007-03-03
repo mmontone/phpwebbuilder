@@ -6,6 +6,7 @@ compile_once (dirname(__FILE__).'/PageRenderer.class.php');
 compile_once (dirname(__FILE__).'/CometPageRenderer.class.php');
 compile_once (dirname(__FILE__).'/XULPageRenderer.class.php');
 compile_once (dirname(__FILE__).'/templates/ViewCreator.class.php');
+compile_once (dirname(__FILE__).'/templates/TemplateProxy.class.php');
 compile_once (dirname(__FILE__).'/templates/XMLParser.class.php');
 compile_once (dirname(__FILE__).'/XML/DOMXMLNode.class.php');
 compile_once (dirname(__FILE__).'/XML/XMLModification.class.php');

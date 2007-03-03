@@ -41,7 +41,7 @@ class ViewCreator {
 		$tps = array();
 		$tpr =& new HTMLTemplate();
 		foreach($xs as $x){
-			$tps[]=&$tpr->xml2template($x);
+			$tps[]=&new TemplateProxy($tpr->xml2template($x));
 		}
 		$this->addTemplates($tps);
 	}
@@ -155,7 +155,6 @@ class ViewCreator {
 			} else {
 				$templates_xml = unserialize(file_get_contents($temp_file));
 			}
-
 		}
 		return $templates_xml;
 	}
@@ -171,7 +170,7 @@ class ViewCreator {
 		}
 	}
 	function &instantiateFor(&$template, &$component){
-		$h = $template->getAttribute('handler');
+		$h = $template->getHandler();
 		if ($h != null && Compiler::requiredClass($h)){
 			$handler =& new $h;
 			$handler->setComponent($component);

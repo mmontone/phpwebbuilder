@@ -149,6 +149,9 @@ class XMLNodeModificationsTracker extends XMLNode {
 		//$this->flushModifications();
 		return $xml;
 	}
+	function getHandler() {
+		return $this->getAttribute('handler');
+	}
 }
 
 ?>
