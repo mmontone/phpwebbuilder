@@ -18,7 +18,22 @@ class IndexField extends NumField {
 			parent :: NumField($name, $isIndex);
 		}
 	}
-	function createInstance($params){
+
+   function printString(){
+        /*
+        $target =& $this->getTarget();
+        if (!is_object($target)) {
+        	$t = 'null';
+        }
+        else {
+        	$t = $target->printString();
+        }
+
+        return $this->primPrintString($this->colName . ' value: ' . $this->getValue() . ' target: ' . $t);*/
+        return $this->primPrintString($this->colName . ' value: ' . $this->getValue());
+    }
+
+    function createInstance($params){
 		parent::createInstance($params);
 		$this->nullValue = & $params['null_value'];
 		$this->collection = & new PersistentCollection($params['type']);
@@ -39,10 +54,11 @@ class IndexField extends NumField {
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
+
             $this->buffered_target =& $target;
-    		$n = null;
-    		$this->buffered_value =& $n;
-    		$this->triggerEvent('changed', $this);
+    		$this->buffered_value =& $target->getId();
+            $this->setModified(true);
+            $this->triggerEvent('changed', $this);
         }
 	}
 
@@ -52,7 +68,7 @@ class IndexField extends NumField {
 	}
 
 	function & getTarget() {
-		if (!$this->buffered_target) {
+		if ($this->buffered_target == null) {
 			$this->buffered_target =& $this->loadTarget();
 		}
 		return $this->buffered_target;
@@ -79,10 +95,11 @@ class IndexField extends NumField {
 	}
 
 	function setValue($value) {
-		parent::setValue((integer)$value);
-
-		$n = null;
-		$this->buffered_target =& $n;
+		if ($this->value != $value) {
+            $n = null;
+            $this->buffered_target =& $n;
+            parent::setValue($value);
+        }
 	}
 
 	function getValue() {
@@ -124,7 +141,7 @@ class IndexField extends NumField {
     #@gencheck
     function SQLvalue() {
         if ($this->getValue() == 0) {
-        	print_backtrace('Warning!!: Index field sql value is 0. Field name: ' . $this->varName);
+        	print_backtrace('Warning!!: Index field sql value is 0. Field name: ' . $this->colName);
         }
         return parent::SQLvalue();
     }

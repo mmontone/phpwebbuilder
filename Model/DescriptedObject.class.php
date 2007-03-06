@@ -55,7 +55,7 @@ class DescriptedObject extends PWBObject {
 	 * it's index fields)
 	 */
 	function printString(){
-		return $this->primPrintString('Values: ' . $this->indexValues());
+		return $this->primPrintString('values: ' . $this->indexValues());
 	}
 	/**
 	 * Removes all changes made to the object

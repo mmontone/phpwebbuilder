@@ -133,11 +133,11 @@ class DataField extends ValueModel {
 	 * Sets (buffers) the value of the field
 	 */
 	function setValue($data) {
-		if ($data !== $this->buffered_value) {
+		if ($data != $this->buffered_value) {
 			$this->buffered_value =& $data;
-			$this->setModified(true);
-			$no_params = null;
-			$this->triggerEvent('changed', $no_params);
+            $n = null;
+            $this->setModified(true);
+			$this->triggerEvent('changed', $this);
 		}
 	}
 	/**
@@ -154,7 +154,7 @@ class DataField extends ValueModel {
 	 */
 	function commitChanges() {
 		if ($this->isModified()) {
-			$this->primitiveCommitChanges();
+		    $this->primitiveCommitChanges();
 			$this->setModified(false);
 			$this->triggerEvent('commited', $this);
 		}
@@ -187,7 +187,6 @@ class DataField extends ValueModel {
 	}
 
 	function setModified($b) {
-		//print_backtrace('Modified ' . $this->varName . $this->__instance_id . ': ' . $b);
 		$this->modified = $b;
 	}
 	/**
@@ -244,7 +243,7 @@ class DataField extends ValueModel {
 		return $this->getValue() == '';
 	}
 	function printString(){
-		return $this->primPrintString($this->displayString);
+		return $this->primPrintString($this->colName);
 	}
 }
 
