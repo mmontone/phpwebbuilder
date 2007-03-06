@@ -2,9 +2,13 @@
 
 class DataField extends ValueModel {
 	/**
-	 * The field name
+	 * The column name
 	 */
 	var $colName;
+	/**
+	 * The field name
+	 */
+	var $varName;
 	/**
 	 * The Value
 	 */
@@ -59,7 +63,8 @@ class DataField extends ValueModel {
 	 */
 	function createInstance($ps) {
 		$ps= $this->creationParams = array_merge($this->defaultValues($ps),$ps);
-		$this->colName = $ps['fieldName'];
+		$this->colName = $ps['columnName'];
+		$this->varName = $ps['fieldName'];
 		$this->isIndex = $ps['is_index'];
 		$this->displayString = $ps['display'];
 	}
@@ -69,7 +74,8 @@ class DataField extends ValueModel {
 	function defaultValues($params){
 		return array(
 				'is_index'=>false,
-				'display'=>ucfirst($params['fieldName'])
+				'display'=>ucfirst($params['fieldName']),
+				'columnName'=>$params['fieldName']
 			);
 	}
 	function & visit(& $obj) {
@@ -99,7 +105,7 @@ class DataField extends ValueModel {
 	 * Returns the sql name of the field
 	 */
 	function sqlName(){
-		return $this->owner->getTablePrefixed('').'_'.$this->colName;
+		return $this->owner->getTablePrefixed('').'_'.$this->varName;
 	}
 	/**
 	 * Returns the sql value of the field
@@ -181,7 +187,7 @@ class DataField extends ValueModel {
 	}
 
 	function setModified($b) {
-		//print_backtrace('Modified ' . $this->colName . $this->__instance_id . ': ' . $b);
+		//print_backtrace('Modified ' . $this->varName . $this->__instance_id . ': ' . $b);
 		$this->modified = $b;
 	}
 	/**

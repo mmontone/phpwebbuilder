@@ -339,7 +339,7 @@ class PathExpression extends Expression {
             $var = $report->getVar($pre);
             if ($var==null){
             	$report->defineVar($pre,$class);
-	            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $index . '`'),
+	            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $o->$index->colName . '`'),
 	                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($pre.'_') .'`.`id`')));
 
 	            $exp->evaluateIn($report);
@@ -366,7 +366,7 @@ class AttrPathExpression extends PathExpression {
         $result =& $this->getTargetVar($report);
         $target_var =& $result[0];
         $otable = $o[0]->tableForFieldPrefixed($this->attr, $o[1]);
-		$attr = $otable . '.' . $this->attr;
+		$attr = $otable . '.' . $o[0]->{$this->attr}->colName;
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
 }

@@ -124,7 +124,7 @@ class IndexField extends NumField {
     #@gencheck
     function SQLvalue() {
         if ($this->getValue() == 0) {
-        	print_backtrace('Warning!!: Index field sql value is 0. Field name: ' . $this->colName);
+        	print_backtrace('Warning!!: Index field sql value is 0. Field name: ' . $this->varName);
         }
         return parent::SQLvalue();
     }

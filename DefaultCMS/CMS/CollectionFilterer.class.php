@@ -17,7 +17,7 @@ class CollectionFilterer extends PersistentObjectPresenter {
 	function &addField(&$field){
 		$fc =& parent::addField($field);
 		$cs =& $this->col->getConditions();
-		$fc->value->setSearchValue($cs, $field->colName);
+		$fc->value->setSearchValue($cs, $field->varName);
 		return $fc;
 	}
 	function filter(){

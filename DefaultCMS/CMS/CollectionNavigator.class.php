@@ -43,8 +43,8 @@ class CollectionNavigator extends Component {
 				$this->addComponent($fc, $f);
 				$fc->addComponent(new ActionLink($this, 'sort', $f, $n));
 			} else {
-				$this->addComponent($fc, $f->colName);
-				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->colName));
+				$this->addComponent($fc, $f->varName);
+				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->varName));
 			}
 		}
 	}

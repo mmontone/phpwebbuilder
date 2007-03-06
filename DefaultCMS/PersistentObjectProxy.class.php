@@ -18,7 +18,7 @@ class PersistentObjectProxy extends PersistentObject {
 	}
 
 	function addField (&$field) {
-		$name = $field->colName;
+		$name = $field->varName;
         $this->$name =& $this->fieldProxyFor($field);
         $this->fieldNames[$name]=$name;
         if ($field->isIndex) {

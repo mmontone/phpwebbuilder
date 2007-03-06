@@ -107,7 +107,7 @@ class ObjectMapper {
 			$f =& $ifs[$i];
 			$tca =& new FieldMapper;
 			$df =& $tca->createFor($f);
-			$unis []= $df->createUnique($i);
+			$unis []= $df->createUnique();
 		}
 		$uni = implode(', ',$unis);
 		if (trim($uni)!="") {

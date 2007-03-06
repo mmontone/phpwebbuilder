@@ -21,8 +21,8 @@ class FieldMapper extends PWBFactory{
 		return "^".$this->type()."$";
 	}
 	function unique(){}
-	function createUnique($i){
-		return  "`".$i."`".$this->unique();
+	function createUnique(){
+		return  "`".$this->field->colName."`".$this->unique();
 	}
 	function checkField($f){
 		return $this->compareType($f["Type"]);
