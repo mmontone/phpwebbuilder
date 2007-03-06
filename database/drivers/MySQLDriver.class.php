@@ -26,8 +26,8 @@ class MySQLDriver extends DBDriver {
 		$arr = array();
 		if ($res===true) {
 			$arr[]="Query suceeded";
-		} else if ($res===false) {
-			$arr[]="Query failed " . mysql_error();
+		} else if (is_exception($res)) {
+			$arr[]="Query failed " . $res->printHtml();
 			trigger_error(mysql_error(),E_USER_NOTICE);
 		} else {
 			while ($rec = $this->fetchRecord($res)) $arr[]= $rec;

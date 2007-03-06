@@ -30,6 +30,8 @@ class ObjectMapper {
 		$db =& DBSession::Instance();
 		$res = $db->query($sql);
 			if(mysql_num_rows($res)) {
+				$arr = $db->fetchArray($res);
+				$this->tableName=array_pop($arr[0]);
 				$ret ="";
 				$sql = $db->driver->showColumnsFromTableSQL($table);
 				$res = $db->query($sql);
@@ -146,11 +148,11 @@ class TablesChecker {
 			}
 		}
 		foreach ($arr as $o) {
-			$obj = new $o;
+			$obj = PersistentObject::getMetaData($o);
 			$dbc = new ObjectMapper;
-			$dbc->object=$obj;
+			$dbc->object=&$obj;
 			$mod .= $dbc->analizeMods();
-			$table = $obj->getTablePrefixed('');
+			$table = $dbc->tableName;
 			unset($tables[$table]);
 			if ($mod!='' && $stepping) return $mod;
 		}
