@@ -65,8 +65,7 @@ class Condition extends Expression {
                 $and->addExpression($this->eval_exps[$e]);
             }
 
-            $me =& new Condition;
-            $me->operation = $this->operation;
+            $me =& new Condition(array('exp1'=>null, 'exp2'=>null, 'operation'=>$this->operation));
             $me->evaluated_e1 =& $this->evaluated_e1;
             $me->evaluated_e2 =& $this->evaluated_e2;
 
