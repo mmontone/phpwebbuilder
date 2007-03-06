@@ -23,11 +23,11 @@ class PasswordField extends TextField  {
          	return "'".$this->getValue()."'" . ", " ;
     	}
       }
-    function fieldName ($operation) {
+    function fieldNamePrefixed ($operation, $prefix) {
 	    	if ($this->getValue() == "") {
 	    		return "";
 	    	} else {
-      		return $this->colName . ", ";
+      			return parent::fieldNamePrefixed ($operation, $prefix);
     		}
     }
     function updateString() {
