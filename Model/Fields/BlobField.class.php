@@ -15,9 +15,12 @@ class BlobField extends DataField {
    }
    function &getCompleteValue(){
    	   $this->getComplete = true;
-   	   $rec = $this->owner->basicLoad();
-   	   $this->getComplete = false;
-   	   return $rec[$this->sqlName()];;
+   	   $r =& new Report();
+   	   $r->fields[$this->colName] = 'data';
+   	   $r->defineVar('o', getClass($this->owner));
+   	   $r->setPathCondition(new EqualCondition(array('exp1'=>new ObjectPathExpression('o'),'exp2'=>new ObjectExpression($this->owner))));
+   	   $elem =& $r->first();
+   	   return $elem->data->getValue();
    }
 
 }

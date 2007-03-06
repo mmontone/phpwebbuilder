@@ -174,65 +174,6 @@ class PersistentObject extends DescriptedObject {
 		$tns = $this->getTables();
 		return $tns[0];
 	}
-
-	/**
-	 * Returns the id comparison for the object
-	 */
-	function idRelations(){
-		return $this->getTable().'.id=' . $this->getID();
-	}
-	/**
-	 * Compares the object with another one, and returns if it's the same one.
-	 */
-	function is(&$other){
-		#@typecheck $other:PersistentObject@#
-		return parent::is($other) || (get_class($other)==get_class($this) && $other->getId() == $this->getId());
-	}
-	/**
-	 * Returns the relations for the tables so only one object is present
-	 * on each row
-	 */
-	function idRestrictions(){
-		$rcs = get_related_classes(getClass($this));
-		$rcs [] = getClass($this);
-		$rss []='1=1';
-		foreach($rcs as $rc){
-			$sup = get_parent_class($rc);
-			if ($sup != 'persistentobject' && $sup != 'descriptedobject' && $sup != 'pwbobject' && $sup != ''){
-				$o1 = PersistentObject::getMetaData($rc);
-				$o2 = PersistentObject::getMetaData($sup);
-				$rss[] = '('.$o2->tableName().'.id = '.$o1->tableName().'.super'.
-					' or '. $o1->tableName().'.super IS NULL)';
-			}
-		}
-		return implode(' AND ', $rss);
-	}
-	/**
-	 * Loads the object from the database
-	 */
-	function &basicLoad() {
-		$sql = $this->loadSQL();
-		$db =& DBSession::Instance();
-		$rec = $db->SQLExec($sql, FALSE, $this, $rows=0);
-		if (is_exception($rec)) {
-			return $rec;
-		}
-		else {
-			$record = $db->fetchRecord($rec);
-			return $record;
-		}
-	}
-
-
-	/**
-	 * Returns the query for creating the object
-	 */
-	function loadSQL(){
-		return 'SELECT ' . $this->fieldNames('SELECT') . ' FROM ' . $this->tableNames() . ' WHERE '.$this->idRelations(). ';';
-	}
-	/**
-	 * Inserts this level of the object
-	 */
 	function &basicInsert() {
 		$values = '';
 		$this->PWBversion->setValue(0);
@@ -342,6 +283,7 @@ class PersistentObject extends DescriptedObject {
 		return $this;
 	}
 	function initializeObject(){
+		$this->attachFieldsEvents();
 		//print_backtrace(getClass($this));
 	}
 	/**
@@ -390,9 +332,6 @@ class PersistentObject extends DescriptedObject {
 		if ($id==0) {$n=null;return$n;}
 		$o =&PersistentObject::findGlobalObject($class, $id);
 		if ($o!==null) return $o;
-		//$obj = & PersistentObject::getMetaData($class);
-		//$obj = & $obj->loadFromId($id);
-		//return $obj;
 		return PersistentObject::getWithIndex($class,array('id'=>$id));
 	}
 	/**
@@ -419,20 +358,12 @@ class PersistentObject extends DescriptedObject {
 		return $cs->first();
 	}
 	/**
-	 * Loads an object from an id
-	 */
-	function & loadFromId($id) {
-		$this->setID($id);
-		$rec =& $this->basicLoad();
-		if (!$rec) return $f = false;
-		return $this->loadFromRec($rec);
-	}
-	/**
 	 * Loads an object from a database record
 	 */
 	function &loadFromRec(&$rec){
 		$obj =& $this->chooseSubclass($rec);
 		$obj->loadFrom($rec);
+		$obj->attachFieldsEvents();
 		$obj->initializeObject();
 		return $obj;
 	}
