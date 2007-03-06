@@ -29,7 +29,7 @@ class PersistentObject extends DescriptedObject {
 		}
 	}
 	function &getMetaData($class){
-		$metadata =& Session::getAttribute('persistentObjects');
+		$metadata =& Session::getAttribute('persistentObjectsMetaData');
 		//global $metadata;
 		$class = strtolower($class);
 		if (!isset($metadata[$class])){
@@ -59,9 +59,11 @@ class PersistentObject extends DescriptedObject {
 	}
 	function registerGlobalObject(){
 		global $persistentObjects;
-		$id = $this->getId();
-		if ($id!=0)
+
+        $id = $this->getId();
+		if ($id!=0) {
 			$persistentObjects[getClass($this)][$id] =& $this;
+        }
 	}
 	function &getRealChild(){
 		if (!isset($this->child)) {
