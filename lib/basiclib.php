@@ -466,12 +466,12 @@ function backtrace() {
 /**
  * prints the backtrace.
  */
-function print_backtrace($error) {
+function print_backtrace($error='') {
 	echo backtrace_string($error);
 
 }
 
-function print_backtrace_and_exit($error) {
+function print_backtrace_and_exit($error='') {
 	print_backtrace($error);
 	echo '<br />';
 	echo '<a href=' . site_url .'?restart=yes>Restart application</a>';

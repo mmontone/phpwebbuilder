@@ -4,9 +4,8 @@ $allObjectsInMem = array();
 
 class PWBObject
 {
-    var $event_listeners = array();
+    //var $event_listeners = array();
     var $disabled_events = array();
-    var $config;
     var $__instance_id = null;
     var $creationParams;
 
@@ -172,8 +171,17 @@ class PWBObject
         if (!$this->isEnabledEvent($event_selector)) {
             //echo 'The event is disabled: ' . $event_selector  .' in: ' . getClass($this) . '<br/>';
             return;
+        } else {
+        	$this->doTriggerEvent($event_selector, $params);
         }
-
+        /*global $events_triggered;
+        if (!isset($events_triggered[$event_selector])){
+        	@$events_triggered[$event_selector][getClass($this)] = 1;
+        } else {
+        	@$events_triggered[$event_selector][getClass($this)]++;
+        }*/
+    }
+    function doTriggerEvent($event_selector, &$params){
         $listeners =& $this->event_listeners[$event_selector];
 
         #@track_events echo 'Triggering event: ' . $event_selector . ' in '. $this->printString() . '<br/>';@#

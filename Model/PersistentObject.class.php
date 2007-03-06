@@ -247,7 +247,7 @@ class PersistentObject extends DescriptedObject {
 			return $res;
 		}
 		if ($rows!=1) {
-			$ex =& new PWBException(array('message' => 'Could not update'));
+			$ex =& new PWBException(array('message' => 'Could not insert'));
 			return $ex;
 		}
 		$this->existsObject = true;
