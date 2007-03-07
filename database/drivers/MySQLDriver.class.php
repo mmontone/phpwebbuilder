@@ -66,7 +66,7 @@ class MySQLDriver extends DBDriver {
     	#@sql_echo	echo($sql. '<br/>');@#
     	$this->openDatabase();
 		$this->setLastSQL($sql);
-        #@sql_echo if (substr($sql,0,6)=='SELECT') {$reg = mysql_query ('EXPLAIN '.$sql);print_r($this->fetchArray($reg)); echo '<br/>';}@#
+        #@sql_echo if (substr($sql,0,6)=='SELECT') {$reg = mysql_query ('EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
         $reg = mysql_query ($sql);
         $this->closeDatabase();
         if (!$reg) {

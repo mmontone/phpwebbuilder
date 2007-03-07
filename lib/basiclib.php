@@ -59,7 +59,7 @@ function mixin($text) {
 	$body = $matches[2];
 	//echo 'Mixin body: ' . $body . '<br/>';
 	global $mixins;
-	$mixins[$name] = $body;
+	$mixins[$name] = str_replace("\n", '',$body);
 	return 'global $_mixin_file;$_mixin_file[\''.$name.'\']=\''.Compiler::actualFile().'\';';
 }
 /*
@@ -90,8 +90,6 @@ function use_mixin($text) {
 			print_backtrace_and_exit('Mixin '.$name .' not defined');
 		}
 	}
-	$code .= "\n";
-
 	return $code;
 }
 
@@ -100,7 +98,7 @@ function optionalCompile($tag, $code) {
 		return $code;
 	}
 	else {
-		return '';
+		return preg_replace('/[^\n]/', '',$code);
 	}
 }
 

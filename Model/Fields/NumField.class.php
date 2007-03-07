@@ -5,6 +5,7 @@ class NumField extends DataField {
 	function createInstance($params){
 		parent::createInstance($params);
 		$this->range = @$params['range'];
+		$this->value=0;
 	}
 	function defaultValues($params){
 		return array_merge(array('range'=>null, 'numtype'=>'int'), parent::defaultValues($params));

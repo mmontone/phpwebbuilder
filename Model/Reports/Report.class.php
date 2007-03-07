@@ -586,6 +586,7 @@ if (!function_exists('select')){
 	function select($query){
         $oc =& new OQLCompiler;
 		$res = $oc->fromQuery($query);
+		if ($oc->error!=null || $res=='') print_backtrace_and_exit($oc->error);
         return $res;
 	}
 }
