@@ -25,12 +25,18 @@ class SeqParser extends Parser {
 	}
 	function parse($tks) {
 		$res = array (FALSE,$tks);
+		$ret = array();
 		foreach (array_keys($this->children) as $k) {
 			$res = $this->children[$k]->parse($res[1]);
-			$ret[$k] = $res[0];
-			if ($res[0] === FALSE ) {
-				return array (FALSE,$tks);
+			if ($res[0] === FALSE) {
+				if (count($ret)==0 || (count($ret)==1 && $ret[0]==null)){
+					return array (FALSE,$tks);
+				} else {
+					//print_backtrace('giving null');
+					return array (null,$tks);
+				}
 			}
+			$ret[$k] = $res[0];
 		}
 
 		return array ($ret,$res[1]);

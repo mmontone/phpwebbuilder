@@ -2,13 +2,14 @@
 
 
 class AltParser extends Parser {
-	function AltParser($children) {
+	function AltParser($children, $backtrack=false) {
 		if (!is_array($children)) {
 			echo 'NOT ARRAY!';
 			print_r($children);
 			exit;
 		}
 		parent :: Parser();
+		$this->backtrack = $backtrack;
 		$this->children =& $children;
 	}
 	function setParent(&$parent, &$grammar){
@@ -21,7 +22,10 @@ class AltParser extends Parser {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$res = $c->parse($tks);
-			if ($res[0] !== FALSE) {
+			if ($res[0] !== FALSE
+				&& (!$this->backtrack || $res[0] !== null)
+				) {
+				//if ($res[0]==null) print_backtrace(getClass($c). ' '.htmlentities($this->print_tree()));
 				$res[0]= array($k,$res[0]);
 				return $res;
 			}

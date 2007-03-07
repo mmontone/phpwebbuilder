@@ -22,7 +22,7 @@ class ListParser extends Parser {
 		/* then, we parse again, in the tail of the list */
 		$res1 = $this->parser->parse($res[1]);
 		/* if the tail failed, the parse failed */
-		if ($res1[0] === FALSE)
+		if ($res1[0] === FALSE || $res1[0] === null)
 			return array (
 				FALSE,
 				$tks

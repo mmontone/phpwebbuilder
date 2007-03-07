@@ -12,7 +12,6 @@ class PHPCC {
     			'list'=>new FunctionObject($n=null, 'PHPCC::createList'),
     			'sequence'=>new FunctionObject($n=null, 'PHPCC::createSequence'),
     			'multiparser'=>new FunctionObject($n=null, 'PHPCC::createMultiParser'),
-    			'multioneparser'=>new FunctionObject($n=null, 'PHPCC::createMultiOneParser'),
     			'grammar'=>new FunctionObject($n=null, 'PHPCC::createNTS'),
 				'symbol'=>new FunctionObject($n=null, 'PHPCC::createSymbol'),
 				'ereg'=>new FunctionObject($n=null, 'PHPCC::createEreg'),
@@ -31,7 +30,7 @@ class PHPCC {
     		'root'=>'grammar',
     		'nt'=>array(
     			'alternative'=>new ListParser(new SeqParser(array(new MaybeParser(
-    							new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('=>')))),new SubParser('sequence'))),new Symbol('|')),
+    							new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('=>')))),new SubParser('sequence'))),new EregSymbol('/\|\||\|/')),
     			'maybe'=>new SeqParser(array(new Symbol('['),new SubParser('alternative'),new Symbol(']'))),
     			'list'=>new SeqParser(array(new Symbol('{'),new SubParser('alternative'),new Symbol(';'),new SubParser('alternative'),new Symbol('}'))),
     			'sequence'=>new MultiParser(new SeqParser(array(new MaybeParser(
@@ -44,10 +43,8 @@ class PHPCC {
     								new SubParser('subparser'),
     								'alt'=>new SeqParser(array(new Symbol('('),new SubParser('alternative'),new Symbol(')'))),
     								//new SubParser('multiparser'),
-    								//new SubParser('multioneparser'),
     							))))),
-    			'multiparser'=>new SeqParser(array('name'=>new SubParser('alternative'),new Symbol('*'),)),
-    			'multioneparser'=>new SeqParser(array('name'=>new SubParser('alternative'),new Symbol('+'),)),
+    			'multiparser'=>new SeqParser(array('name'=>new SubParser('alternative'),new EregSymbol('\*|\+'),)),
     			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"),new Symbol('>'),)),
     			'symbol'=>new EregSymbol('/"[^"]+"/'),
     			'ereg'=>new EregSymbol('/\/[^\/]+\/\w*/'),
@@ -84,6 +81,7 @@ class PHPCC {
     function &createAlternative(&$params){
 	    if (count($params)==1 && $params[0][0]==null) return $params[0][1];
 	    $ks = array_keys($params);
+	    $backtrace = false;
 	    for($i=0;$i<count($params);$i+=2){
 	    	$param = $params[$ks[$i]];
 	    	if ($param[0]===null) {
@@ -91,8 +89,9 @@ class PHPCC {
 	    	} else {
 	    		$ret [$param[0][0]] = $param[1];
 	    	}
+	    	$backtrace = $backtrace || @$params[$ks[$i+1]]=='||';
 	    }
-	    $alt =& new AltParser($ret);
+	    $alt =& new AltParser($ret, $backtrace);
 	    return $alt;
     }
     function &createNTS(&$params){
@@ -116,11 +115,11 @@ class PHPCC {
     	return $s;
     }
     function &createMultiParser(&$params){
-    	$s =& new MultiParser($params['name']);
-    	return $s;
-    }
-    function &createMultiOneParser(&$params){
-    	$s =& new MultiOneParser($params['name']);
+    	if ($params['iterator']=='*'){
+    		$s =& new MultiParser($params['name']);
+    	} else {
+	    	$s =& new MultiOneParser($params['name']);
+    	}
     	return $s;
     }
     function &createSubparser(&$sp){

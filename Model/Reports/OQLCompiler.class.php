@@ -11,12 +11,12 @@ class OQLCompiler {
 					   phpvar::=/\$[a-z_][a-z_0-9]*/i.
 					   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|\<\>|<=|>=|\>|\<|LIKE|IS/i <value>.
 					   valueorfunction::=<identifier> ["(" {<identifier>; ","} ")"].
-					   expression::=logical=><condition> operator->/AND|OR/i <expression>|
-					   			condition=><condition>|
+					   expression::=
 					   			not=>/NOT/i <expression>|
 								exists=>/EXISTS/i "(" <oql> ")"|
-								in=><variable> /IN/i "(" <oql> ")".
-					   oql::=class->(name=>[[<identifier> ":"]<identifier>]|phpvar=><phpvar>)
+								in=><variable> /IN/i "(" <oql> ")"||
+								logical=><condition> [operator->/AND|OR/i <expression>].
+					   oql::=class->[name=>[<identifier> ":"]<identifier>|phpvar=><phpvar>]
 						   		 fields->["(" fields->{<valueorfunction> "as" <identifier> ; ","} ")"]
 						   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
 						   		 where->["where" expression-><expression>]
@@ -53,16 +53,14 @@ class OQLCompiler {
 			return 'new Report(array("sqls"=>"'.$repstr.'")';
 		}
 		function &parseOQL(&$query){
-			if ($query['class']!==null){
-				if ($query['class']['selector']=='name'){
-					$class=array();
-					if ($query['class']['result'][1]!=null) $class[]="'class'=>'".$query['class']['result'][1]."'";
-					if ($query['class']['result'][0][0]!=null) $class[]="'target'=>'".$query['class']['result'][0][0]."'";
-					$ret = "'subq'=>new Report(array(".implode(',',$class).")),";
-				} else {
+			if (@$query['class']['selector']=='phpvar'){
 					$ret = "'subq'=>".$query['class']['result'].",";
+				} else {
+					$class=array();
+					if (@$query['class']['result'][1]!=null) $class[]="'class'=>'".@$query['class']['result'][1]."'";
+					if (@$query['class']['result'][0][0]!=null) $class[]="'target'=>'".@$query['class']['result'][0][0]."'";
+					$ret = "'subq'=>new Report(array(".implode(',',$class).")),";
 				}
-			}
 			if ($query['fields']['fields']!==null){
 				$ret .= "'fields'=>array(";
 				foreach($query['fields']['fields'] as $f){
@@ -117,8 +115,6 @@ class OQLCompiler {
 				case 'not':
 					$v = 'new NotExp('.$cond['result'][1].')';
 					return $v;
-				case 'condition':
-					return $cond['result'];
 				case 'exists':
 					$v =  'new ExistsExpression('.$cond['result'][2].')';
 					return $v;
@@ -126,13 +122,16 @@ class OQLCompiler {
 					$v =  'new InExpression("'.$cond['result'][0].'",'.$cond['result'][3].')';
 					return $v;
 				default:
-					if (strcasecmp($cond['result']['operator'],'AND')==0){
+					if ($cond['result'][1]==null){
+						return $cond['result'][0];
+					}
+					if (strcasecmp($cond['result'][1]['operator'],'AND')==0){
 						$class= 'AndExp';
-					} else if (strcasecmp($cond['result']['operator'],'OR')==0) {
+					} else if (strcasecmp($cond['result'][1]['operator'],'OR')==0) {
 						$class= 'OrExp';
 					}
 					$ret = 'new '.$class.'(array('.$cond['result'][0].
-							','.$cond['result'][1].'))';
+							','.$cond['result'][1][0].'))';
 					return $ret;
 			}
 		}

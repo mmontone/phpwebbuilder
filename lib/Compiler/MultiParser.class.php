@@ -12,7 +12,7 @@ class MultiParser extends Parser {
 	}
 	function parse($tks) {
 		$res = array (1,$tks);
-		while ($res[0] !== FALSE) {
+		while ($res[0] !== FALSE && $res[0] !== null) {
 			$res = $this->parser->parse($res[1]);
 			$ret[] = $res[0];
 		}
