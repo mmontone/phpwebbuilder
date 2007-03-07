@@ -70,7 +70,9 @@ class IndexField extends NumField {
 	}
 	function registerCollaborators(){
 		$t =& $this->getTarget();
-		$t->registerPersistence();
+		if ($t!=null){
+			$t->registerPersistence();
+		}
 	}
 	function getTargetId() {
 		//return $this->buffered_target->getIdOfClass($this->collection->dataType);

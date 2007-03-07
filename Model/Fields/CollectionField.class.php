@@ -67,6 +67,7 @@ class CollectionField extends DataField {
 		if ($this->owner->isPersisted()){
 			$elem->registerPersistence();
 		}
+		$this->collection->add($elem);
 	}
 	/*
     function add(&$elem){
