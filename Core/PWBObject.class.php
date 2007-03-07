@@ -136,7 +136,12 @@ class PWBObject
 
     function addInterestIn($event, &$function) {
        	#@track_events echo 'Adding interest in ' .  $this->printString() . '#' .$event . $function->printString() . '<br/>';@#
-        $this->event_listeners[$event][] =& WeakFunctionObject::fromFunctionObject($function);
+       	$i=@$this->event_handlers[$event]++;
+        $this->event_listeners[$event][$i] =& WeakFunctionObject::fromFunctionObject($function);
+        return $i;
+    }
+    function retractInterestIn($event, $handle){
+		unset($this->event_listeners[$event][$handle]);
     }
 	/**
 	 * Registers a callback for the changed event
@@ -210,33 +215,7 @@ class PWBObject
 	 */
 
 	function release() {	}
-	/**
-	 * Removes the hadler associated with the listener and selector
-	 */
 
-	function retractInterestIn($event_selector, &$listener) {
-    	$listeners =& $this->event_listeners[$event_selector];
-
-		reset($listeners);
-		$match = false;
-
-		while (!$match && (list($key, $array_obj) = each($listeners))) {
-		 	$match = $listener->is($array_obj['listener']->getTarget());
-		 	next($listeners);
-		}
-		if (!$match) {
-			print_backtrace('Fatal error removing listener');
-			exit;
-		}
-
-		while (list($next_key, $array_obj) = each($listeners)) {
-			$listeners[$key] =& $listeners[$next_key];
-			$key = $next_key;
-			next($listeners);
-		}
-
-		unset($listeners[$key]);
-    }
 	/** Returns if the receiver is an Ancestor of the parameter */
     function isAncestorOf(&$object) {
     	return in_array(getClass($this), get_superclasses(getClass($object)));
