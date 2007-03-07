@@ -36,7 +36,7 @@ class MySQLDriver extends DBDriver {
 	}
 
     function beginTransaction() {
-    	$this->openDatabase();
+    	$this->openDatabase(false);
         /* If transactions are not supported, go on silently (logging is another option)*/
         mysql_query ("START TRANSACTION;"); /* or
             die (print_backtrace(mysql_error() . ": $sql"));*/
@@ -45,7 +45,7 @@ class MySQLDriver extends DBDriver {
     }
 
     function commit() {
-        $this->openDatabase();
+        $this->openDatabase(false);
         /* If transactions are not supported, go on silently (logging is another option)*/
         mysql_query ("COMMIT;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
@@ -54,7 +54,7 @@ class MySQLDriver extends DBDriver {
     }
 
     function rollBack() {
-        $this->openDatabase();
+        $this->openDatabase(false);
         /* If transactions are not supported, go on silently (logging is another option)*/
         mysql_query ("ROLLBACK;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
@@ -62,9 +62,9 @@ class MySQLDriver extends DBDriver {
         $this->closeDatabase();
     }
 
-    function &query($sql) {
+    function &query($sql, $persistent=false) {
     	#@sql_echo	echo($sql. '<br/>');@#
-    	$this->openDatabase();
+    	$this->openDatabase($persistent);
 		$this->setLastSQL($sql);
         #@sql_echo if (substr($sql,0,6)=='SELECT') {$reg = mysql_query ('EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
         $reg = mysql_query ($sql);
@@ -88,18 +88,31 @@ class MySQLDriver extends DBDriver {
     function fetchrecord($res) {
     	return @mysql_fetch_assoc($res);
     }
-    function openDatabase() {
-    	if (!$this->conn){
-	      $this->conn = mysql_connect(constant('serverhost'), constant('baseuser'), constant('basepass'));
-	      if (!$this->conn){
-	          $this->registerDBError('CONNECT');
-	          return false;
-	      }
-	      $b = mysql_select_db(constant('basename'));
-	      if (!$b){
-	          $this->registerDBError('SELECTDB ' . constant('basename'));
-	          return false;
-	      }
+    function openDatabase($persistent) {
+    	if ($persistent){
+    		if (!$this->pconn){
+	      		$this->pconn = mysql_pconnect(constant('serverhost'), constant('baseuser'), constant('basepass'));
+    		} else {
+    			return;
+    		}
+    		$con =& $this->pconn;
+    	} else {
+    		if (!$this->conn){
+	      		$this->conn = mysql_connect(constant('serverhost'), constant('baseuser'), constant('basepass'));
+    		} else {
+    			return;
+    		}
+    		$con =& $this->conn;
+    		$this->pconn =& $this->conn;
+    	}
+	    if (!$con){
+	        $this->registerDBError('CONNECT');
+	        return false;
+	    }
+	    $b = mysql_select_db(constant('basename'));
+	    if (!$b){
+	        $this->registerDBError('SELECTDB ' . constant('basename'));
+	        return false;
     	}
     	return true;
     }
@@ -158,7 +171,7 @@ class MySQLDriver extends DBDriver {
 	}
 
 	function getMySQLVersion() {
-		$this->openDatabase();
+		$this->openDatabase(true);
 		$res = $this->query('SELECT VERSION();');
 		$ver = mysql_result($res, 0);
 		$this->closeDatabase();

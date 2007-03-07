@@ -255,7 +255,7 @@ class Report extends Collection{
 	}
 	function size() {
 		$db = & DBSession::Instance();
-		$reg = $db->query($this->sizeSQL());
+		$reg = $db->query($this->sizeSQL(),true);
 		if ($reg===false) {
 			return false;
 		} else {
@@ -473,7 +473,7 @@ class Report extends Collection{
 			$this->elements = array();
 			$sql = $this->selectsql();
 			$db =& DBSession::Instance();
-			$reg = $db->SQLExec($sql, FALSE, $this,$rows=0);
+			$reg = $db->query($sql,true);
 			if ($reg===false) return false;
 			while ($data = $db->fetchrecord($reg)) {
 				$this->addElement($this->makeElement($data));
@@ -580,16 +580,24 @@ class Report extends Collection{
 #@preprocessor
 //compile _once(dirname(__FILE__).'/OQLCompiler.class.php');
 Compiler::usesClass(__FILE__,'OQLCompiler');
-//@#
-
-if (!function_exists('select')){
-	function select($query){
-        $oc =& new OQLCompiler;
-		$res = $oc->fromQuery($query);
-		if ($oc->error!=null || $res=='') print_backtrace_and_exit($oc->error);
-        return $res;
-	}
+if (Compiler::compileOpt('recursive')){
+	return '
+		function select($query){
+	        $oc =& new OQLCompiler;
+			$res = $oc->fromQuery($query);
+			if ($oc->error!=null || $res==\'\') print_backtrace_and_exit($oc->error);
+	        return $res;
+		}';
+} else {
+	return '
+		function select($query){
+	        $oc =& new OQLCompiler;
+			$res = $oc->fromQuery($query);
+			if ($oc->error!=null || $res==\'\') print_backtrace_and_exit($oc->error);
+	        return $res;
+		}';
 }
+//@#
 
 /*
 

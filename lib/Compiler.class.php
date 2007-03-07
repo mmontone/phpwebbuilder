@@ -51,7 +51,6 @@ class Compiler {
 				$f = file_get_contents($file);
 				$f = $this->compileString($f,'/__FILE__/s',
 					lambda('','$x = \'\\\''.$file.'\\\'\';return $x;'));
-
 				$f = $this->compileString($f,'/'.'#@'.//START_MACRO
 									'([[:alpha:]|\_]+[0-9]*)[\s\t]*' .
 									''.//START_PARAMS
@@ -59,7 +58,6 @@ class Compiler {
 									'@#'.//END_MACRO
 									'/s','processMacro'
 					);
-
 				if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
 					if (!$this->compilingClasses) {
 						if (Compiler::CompileOpt('optimal'))$this->getInvolvedClasses($f,$file);
@@ -201,7 +199,9 @@ class Compiler {
 			$this->addClassUsageRule('/::[\s\t\n]*GetWithId\(\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',1);
-			$f = '<?php '.$this->compileFile($file).' ?>';
+			$f = $this->compileFile($file);
+			$f.='$GLOBALS[\'allRelatedClasses\']=unserialize(\''.str_replace('\'','\\\'',serialize(find_subclasses())). '\');';
+			$f = '<?php '.$f.' ?>';
 			if (Compiler::CompileOpt('optimal')){
 				$this->compiledOutput = $tmpname;
 				Compiler::markAsCompiled('Compiler', __FILE__);
@@ -232,17 +232,9 @@ class Compiler {
 			// Notes: 's' makes '.' match 'newline'
 			//        '?' after '*' means no-greedy matching
 			//var_dump($matches);
-
-
-            $str = preg_replace_callback($pat, $func, $str);
+			$str = preg_replace_callback($pat, $func, $str);
 			//ereg('\/\*@[[:alpha:]]\s*(.*)\*\/', $f, $matches);
-            if ($func == 'processMacro') {
-                $f = fopen('/home/marian/workspace/eurekacozzuol/log.txt', 'a');
-                fwrite($f, $pat . $func . "\n");
-                fclose($f);
-            }
-
-
+			//echo($str);
 			return $this->compileString($str,$pat, $func); // Recursive call (macros generating code with macros)
 		} else {
 			//echo 'Compiled string: ' . $str . '<br />';

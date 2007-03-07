@@ -223,8 +223,8 @@ class DBSession {
     	return $this->driver->fetchrecord($res);
     }
 
-    function openDatabase() {
-    	return $this->driver->openDatabase();
+    function openDatabase($persistent) {
+    	return $this->driver->openDatabase($persistent);
     }
     function closeDatabase() {
       return $this->driver->closeDatabase();
@@ -234,8 +234,8 @@ class DBSession {
 		return $this->driver->fetchArray($res);
 	}
 
-	function query($q) {
-		return $this->driver->query($q);
+	function query($q, $persistent=false) {
+		return $this->driver->query($q, $persistent);
 	}
 
 	function batchExec($sqls) {

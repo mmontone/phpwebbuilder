@@ -409,7 +409,7 @@ function trace_params() {
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
 function find_subclasses() {
-	$PWBclasses =& Session::getAttribute('PWBclasses');
+	$PWBclasses =& get_allRelatedClasses();
 	$arr = get_declared_classes();
 	$ret = array ();
 	foreach ($arr as $o) {
@@ -422,13 +422,25 @@ function find_subclasses() {
 			}
 		}
 	}
+	return $PWBclasses;
 }
+
+function &get_allRelatedClasses(){
+	$GLOBALS['allRelatedClasses'];
+	if ($GLOBALS['allRelatedClasses']==null){
+		$GLOBALS['allRelatedClasses'] =& Session::getAttribute('PWBclasses');
+		$GLOBALS['allRelatedClasses']=array();
+	}
+	return $GLOBALS['allRelatedClasses'];
+
+}
+
 /**
  * Returns the subclasses of the specified class, in higher-to-lower order
  */
 function get_subclasses($str) {
-	$PWBclasses =& Session::getAttribute('PWBclasses');
-	if (count($PWBclasses) == 0)
+	$PWBclasses =& get_allRelatedClasses();
+	if ($PWBclasses==null)
 		find_subclasses();
 	return $PWBclasses[strtolower($str)];
 }
@@ -436,7 +448,6 @@ function get_subclasses($str) {
  * Returns the subclasses of the specified class, in lower-to-higher order
  */
 function get_superclasses($str) {
-	$PWBclasses =& Session::getAttribute('PWBclasses');
 	$ret = array ();
 	$pc = get_parent_class($str);
 	while ($pc != '') {
