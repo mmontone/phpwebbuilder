@@ -22,14 +22,16 @@ class CollectionField extends DataField {
     function getDataType() {
         return $this->collection->getDataType();
     }
-
+	function registerCollaborators(){
+		$this->collection->collect('registerPersistence()');
+	}
     function createInstance($params) {
         parent :: createInstance($params);
 
         if (!isset($params['indirect'])) {
             $this->direct = true;
 
-            if ($params['reverseField']==null) {
+            if (!isset($params['reverseField'])) {
                 $this->collection = & new JoinedPersistentCollection($params['type'], $params['joinTable'], $params['joinField']);
                 $this->creationParams['reverseField'] = $params['joinTable'].'.'.$params['joinFieldOwn'];
             } else {
@@ -60,12 +62,20 @@ class CollectionField extends DataField {
         }
     }
 
+	function add(&$elem){
+		$elem->{$this->creationParams['reverseField']}->setTarget($this->owner);
+		if ($this->owner->isPersisted()){
+			$elem->registerPersistence();
+		}
+	}
+	/*
     function add(&$elem){
         $m =& $this->createElement();
         $f1 = $this->creationParams['joinField'];
         $m->$f1->setTarget($elem);
         return $m->save();
     }
+    */
     function &createElement(){
         $m =& new PersistentObject();
         $params = $this->creationParams;

@@ -29,7 +29,7 @@ class DescriptedObject extends PWBObject {
 	/**
 	 * Commits the changes to each field.
 	 */
-
+	var $toPersist = false;
 
 	function commitChanges() {
 		//print_backtrace('Committing changes');
@@ -78,6 +78,28 @@ class DescriptedObject extends PWBObject {
 	function setModified($b) {
 		//print_backtrace(get_class($this) . '(' . $this->__instance_id . ') set modified: ' . $b);
 		$this->modified = $b;
+		if ($b) $this->registerModifications();
+	}
+	function registerModifications(){
+		if ($this->isPersisted()){
+			$db =& DBSession::Instance();
+			$db->registerObject($this);
+		}
+	}
+	function registerPersistence(){
+		if (!$this->isPersisted()){
+			$db =& DBSession::Instance();
+			$db->registerObject($this);
+		}
+	}
+	function isPersisted(){
+		return $this->existsObject || $this->toPersist;
+	}
+	function registerCollaborators(){
+		foreach($this->allFieldNames() as $f) {
+			$field =& $this->fieldNamed($f);
+			$field->registerCollaborators();
+		}
 	}
 	/**
 	 * Initializes the default fields for the object
@@ -105,8 +127,9 @@ class DescriptedObject extends PWBObject {
 	 * Loads the object's values from an associative array
 	 */
     function loadFrom(&$reg) {
+		// Do not update if modified
+		if ($this->isModified()) return true;
 		// TODO LATER
-        //$this->attachFieldsEvents();
         if ($this->isNotTopClass($this)){
 			$this->parent->loadFrom($reg);
 		}
@@ -115,7 +138,6 @@ class DescriptedObject extends PWBObject {
 			$field = & $this-> $index;
 			$ok = $ok and $field->loadFrom($reg);
 		}
-
 		if (!$ok) {
 			$this->flushChanges();
 			return false;

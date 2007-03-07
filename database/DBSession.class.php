@@ -5,11 +5,11 @@
 class DBSession {
 	var $lastError;
 	var $lastSQL = '';
-	var $rollback_on_error = false;
+	var $rollback_on_error = true;
 	var $rollback = false;
 	var $nesting = 0;
 	var $commands = array();
-
+	var $registeredObjects = null;
     function registerSave(&$object) {
     	if ($object->existsObject()) {
    			$this->addCommand(new UpdateObjectDBCommand($object));
@@ -37,8 +37,37 @@ class DBSession {
 		}
 		$this->rollback = false;
 		$this->commands = array();
-    }
 
+		$this->registeredObjects = null;
+    }
+	function registerObject(&$object){
+		if ($this->registeredObjects!==null){
+			#@sql_echo echo('registering '.$object->printString());@#
+			$set = isset($this->registeredObjects[$object->getInstanceId()]);
+			$this->registeredObjects[$object->getInstanceId()]=&$object;
+			$object->toPersist = true;
+			if (!$set && !$object->existsObject){
+				$object->registerCollaborators();
+			}
+		}
+	}
+	function &beginRegisteringAndTransaction(){
+
+		$db =& DBSession::beginRegistering();
+		$db->beginTransaction();
+		return $db;
+	}
+	function &beginRegistering(){
+		$db =& DBSession::Instance();
+		if ($db->registeredObjects==null)$db->registeredObjects=array();
+		return $db;
+	}
+	function flushChanges(){
+		foreach(array_keys($this->registeredObjects) as $k){
+			$this->registeredObjects[$k]->flushChanges();
+		}
+		$this->registeredObjects=null;
+	}
     function rollbackTransaction() {
 		$this->driver->rollback();
 
@@ -60,13 +89,25 @@ class DBSession {
 		#@sql_echo print_backtrace('Beggining transaction ('. $this->nesting . ')');@#
 	}
 
-	function commit() {
+	function &commit() {
+		$db =& DBSession::Instance();
+		return $db->doCommit();
+	}
+	function &doCommit(){
 		#@gencheck if ($this->nesting <= 0)
         {
 		  print_backtrace('Error: trying to commit a non existing transaction');
 		}//@#
 
         if ($this->nesting == 1) {
+			if ($this->registeredObjects!==null){
+				while(!empty($this->registeredObjects)){
+					$ks = array_keys($this->registeredObjects);
+					$elem =& $this->registeredObjects[$ks[0]];
+					unset($this->registeredObjects[$ks[0]]);
+					$this->save($elem);
+				}
+			}
 			if (!$this->rollback) {
 				#@sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');@#
 				$this->commitTransaction();
@@ -87,6 +128,8 @@ class DBSession {
 		}//@#
 
 		$this->nesting--;
+		$n=null;
+		return $n;
 	}
 
 	function rollback() {
@@ -195,11 +238,12 @@ class DBSession {
 	}
 
 	function &save(&$object) {
-		$this->registerSave($object);
+		$db=&DBSession::Instance();
+		$db->registerSave($object);
 		$res =& $object->save();
 		if (is_exception($res)) {
-			if ($this->rollback_on_error) {
-				$this->rollback();
+			if ($db->rollback_on_error) {
+				$db->rollback();
 			}
 		}
 

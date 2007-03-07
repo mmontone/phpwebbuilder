@@ -91,7 +91,7 @@ class DataField extends ValueModel {
 	function fieldName($operation) {
 		return $this->fieldNamePrefixed($operation,'');
 	}
-
+	function registerCollaborators(){}
     function fieldNamePrefixed($operation, $prefix) {
         if ($operation=='SELECT'){
             return $this->owner->tableNamePrefixed($prefix).'.`'.$this->colName

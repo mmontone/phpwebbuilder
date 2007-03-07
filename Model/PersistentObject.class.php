@@ -407,6 +407,7 @@ class PersistentObject extends DescriptedObject {
 		}
 		else {
 			$res =& $this->insert();
+			$this->triggerEvent('id_changed',$n=null);
 		}
 
 		return $res;

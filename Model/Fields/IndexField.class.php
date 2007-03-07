@@ -50,18 +50,28 @@ class IndexField extends NumField {
 	function getDataType() {
 		return $this->datatype;
 	}
-
+	function refreshId(){
+		parent::setValue($this->getTargetId());
+	}
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
-
+			if ($this->buffered_target !== null){
+				$this->buffered_target->retractInterestIn('id_changed', $this->idChangedHandler);
+			}
+			$this->idChangedHandler = $target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
             $this->buffered_target =& $target;
-    		$this->buffered_value =& $target->getId();
             $this->setModified(true);
             $this->triggerEvent('changed', $this);
+            if ($this->owner->isPersisted()){
+            	$target->registerPersistence();
+            }
         }
 	}
-
+	function registerCollaborators(){
+		$t =& $this->getTarget();
+		$t->registerPersistence();
+	}
 	function getTargetId() {
 		//return $this->buffered_target->getIdOfClass($this->collection->dataType);
 		return $this->buffered_target->getIdOfClass($this->datatype);
@@ -138,14 +148,18 @@ class IndexField extends NumField {
 		return new AspectAdaptor($this, 'Target');
 	}
 
-    #@gencheck
+
     function SQLvalue() {
         if ($this->getValue() == 0) {
+        	 #@gencheck
         	print_backtrace('Warning!!: Index field sql value is 0. Field name: ' . $this->colName);
+		    //@#
+		    return "NULL, ";
+        } else {
+        	return parent::SQLvalue();
         }
-        return parent::SQLvalue();
     }
-    //@#
+
 }
 
 ?>
