@@ -42,7 +42,7 @@ class DBSession {
     }
 	function registerObject(&$object){
 		if ($this->registeredObjects!==null){
-			#@sql_echo echo('registering '.$object->printString());@#
+			#@sql_echo echo 'Registering '.$object->printString() . '<br/>';@#
 			$set = isset($this->registeredObjects[$object->getInstanceId()]);
 			$this->registeredObjects[$object->getInstanceId()]=&$object;
 			$object->toPersist = true;
@@ -133,6 +133,11 @@ class DBSession {
 	}
 
 	function rollback() {
+		if ($this->rollback_on_error) return;
+        return $this->primRollback();
+	}
+
+    function primRollback() {
 		#@gencheck if ($this->nesting <= 0)
         {
           print_backtrace('Error: trying to rollback a non existing transaction');
@@ -140,7 +145,7 @@ class DBSession {
 
         #@sql_echo print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');@#
 
-		if ($this->nesting == 1) {
+        if ($this->nesting == 1) {
 			$this->rollbackTransaction();
 		}
 		else {
@@ -237,30 +242,64 @@ class DBSession {
 		return $this->driver->batchExec($sqls);
 	}
 
-	function &save(&$object) {
+	#@php4
+    function &save(&$object) {
 		$db=&DBSession::Instance();
 		$db->registerSave($object);
-		$res =& $object->save();
-		if (is_exception($res)) {
-			if ($db->rollback_on_error) {
-				$db->rollback();
+        $e =& $object->save();
+        if (is_exception($e))
+        {
+            if ($db->rollback_on_error) {
+				$db->primRollback();
 			}
+            return $e->raise();
 		}
+	}//@#
 
-		return $res;
-	}
+    #@php5
+    function &save(&$object) {
+        $db=&DBSession::Instance();
+        $db->registerSave($object);
+        try {
+            $e =& $object->save();
+        }
+        catch (Exception $e) {
+            if ($db->rollback_on_error) {
+                $db->primRollback();
+            }
+            return $e->raise();
+        }
+    }//@#
 
-	function &delete(&$object) {
+	#@php5
+    function &delete(&$object) {
 		$this->registerDelete($object);
 
-		$res =& $object->delete();
-		if (is_exception($res)) {
+		try {
+            $e =& $object->delete();
+		} catch (Exception $e)
+        {
 			if ($this->rollback_on_error) {
-				$this->rollback();
+				$this->primRollback();
 			}
+            $e->raise();
 		}
-		return $res;
-	}
+	}//@#
+
+
+    #@php4
+    function &delete(&$object) {
+        $this->registerDelete($object);
+
+        $e =& $object->delete();
+        if (is_exception($e))
+        {
+            if ($this->rollback_on_error) {
+                $this->primRollback();
+            }
+            return $e->raise();
+        }
+    }//@#
 
 	function rollbackOnError($b = true) {
 		$this->rollback_on_error = $b;

@@ -37,6 +37,7 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     	$this->callback('cancel');
     }
 
+    #@php4
     function save(){
     	if ($this->obj->validateAll()) {
     		$this->callbackWith('object_edited', $this->obj);
@@ -44,7 +45,18 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
     		$this->triggerEvent('invalid', $this->obj);
     		$this->displayValidationErrors($this->obj->validation_errors);
     	}
-    }
+    }//@#
+
+    #@php5
+    function save(){
+        try {
+            $this->obj->validateAll();
+            $this->callbackWith('object_edited', $this->obj);
+        } catch (Exception $e) {
+            $this->triggerEvent('invalid', $this->obj);
+            $this->displayValidationErrors($this->obj->validation_errors);
+        }
+    }//@#
 
     function displayValidationErrors($errors) {
 		$this->addComponent(new ValidationErrorsDisplayer($errors), 'validation_errors');

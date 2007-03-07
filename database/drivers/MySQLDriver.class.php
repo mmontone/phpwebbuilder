@@ -72,7 +72,8 @@ class MySQLDriver extends DBDriver {
         if (!$reg) {
         	$error =& $this->registerDBError($sql);
         	#@sql_echo $lastError =& $this->getLastError(); echo $lastError->printHtml() . '<br />';@#
-    		return $error;
+    		return $error->raise();
+
         }
         return $reg;
     }

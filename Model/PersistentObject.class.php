@@ -191,7 +191,7 @@ class PersistentObject extends DescriptedObject {
 		}
 		if ($rows!=1) {
 			$ex =& new PWBException(array('message' => 'Could not insert'));
-			return $ex;
+			return $ex->raise();
 		}
 		$this->existsObject = true;
 		return $res;
@@ -283,7 +283,7 @@ class PersistentObject extends DescriptedObject {
 		return $this;
 	}
 	function initializeObject(){
-		$this->attachFieldsEvents();
+		//$this->attachFieldsEvents();
 		//print_backtrace(getClass($this));
 	}
 	/**

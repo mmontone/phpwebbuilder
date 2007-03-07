@@ -52,21 +52,41 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
     	$this->objectEdited($this->obj);
     }
 
+    #@php4
     function objectEdited(&$object) {
 		$db =& DBSession::Instance();
 		$db->beginTransaction();
 		$ex =& $db->save($object);
-		if (is_exception($ex)) {
-			$db->rollback();
+		if (is_exception($ex))
+        {
+		   	$db->rollback();
 			$dialog =& ErrorDialog::Create($ex->getMessage());
 			$dialog->onAccept(new FunctionObject($this, 'doNothing'));
 			$this->call($dialog);
 		}
-		else {
+		else
+        {
 			$db->commit();
 			$object->commitChanges();
 		}
-	}
+	}//@#
+
+    #@php5
+    function objectEdited(&$object) {
+        $db =& DBSession::Instance();
+        $db->beginTransaction();
+        try {
+            $db->save($object);
+            $db->commit();
+            $object->commitChanges();
+        }
+        catch (Exception $ex) {
+            $db->rollback();
+            $dialog =& ErrorDialog::Create($ex->getMessage());
+            $dialog->onAccept(new FunctionObject($this, 'doNothing'));
+            $this->call($dialog);
+        }
+    }//@#
 
 	function doNothing() {
 
@@ -89,7 +109,8 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'deleteConfirmed', array('object' => &$obj)), 'on_no' => new FunctionObject($this, 'deleteRejected')));
 	}
 
-	function deleteConfirmed($params, $objparams) {
+	#@php4
+    function deleteConfirmed($params, $objparams) {
 		$obj =& $objparams['object'];
 		$db =& DBSession::Instance();
 		$db->beginTransaction();
@@ -102,7 +123,25 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 			$db->commit();
 			$this->callback('object_deleted');
 		}
-	}
+	}//@#
+
+    #@php5
+    function deleteConfirmed($params, $objparams) {
+        $obj =& $objparams['object'];
+        $db =& DBSession::Instance();
+        $db->beginTransaction();
+        try {
+            $db->delete($obj);
+            $db->commit();
+            $this->callback('object_deleted');
+        }
+        catch (Exception $ex) {
+            $db->rollback();
+            $this->call($nd =& NotificationDialog::Create('Error deleting object: ' . $ex->getMessage()));
+            $nd->registerCallbacks(array('on_accept' => new FunctionObject($this, 'warningAccepted')));
+        }
+    }//@#
+
 
 	function deleteRejected() {
 

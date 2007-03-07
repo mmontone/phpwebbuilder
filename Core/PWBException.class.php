@@ -1,9 +1,21 @@
 <?php
 
-class PWBException extends PWBObject {
+#@php5
+class PWBException extends Exception {
+//@#
+
+#@php4 class PWBException extends PWBObject {
+//@#
 	var $message;
 	var $content;
 	var $backtrace;
+
+    #@php5
+    public function __construct($params) {
+        $this->createInstance($params);
+        parent::__construct($params['message'], 0);
+    }
+    //@#
 
     function createInstance($params) {
 		$this->message =& $params['message'];
@@ -11,13 +23,21 @@ class PWBException extends PWBObject {
     	$this->backtrace = debug_backtrace();
 	}
 
-    function raise(&$handler) {
-    	$handler->executeWith($this);
+    #@php4
+    function &raise() {
+    	return $this;
     }
 
     function getMessage() {
 		return $this->message;
     }
+    //@#
+
+    #@php5
+    function &raise() {
+    	throw $this;
+    }
+    //@#
 
     function &getContent() {
     	return $this->content;

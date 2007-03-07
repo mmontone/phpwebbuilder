@@ -197,7 +197,7 @@ class PWBObject
         foreach(array_keys($listeners) as $l) {
           	$listener =& $listeners[$l];
             if ($listener->isNotNull()) {
-        		#@track_events echo 'Dispatching to ' . $listener->printString() . '<br/>';@#
+        		#@track_events echo $this->printString() . '>>' . $event_selector . ' dispatching to ' .  $listener->printString() . '<br/>';@#
                 $listener->executeWithWith($this, $params);
         	} else {
 				#@track_events echo 'Unsetting listener ' . $listener->printString() . '<br/>';@#

@@ -102,6 +102,19 @@ function optionalCompile($tag, $code) {
 	}
 }
 
+function php5($code) {
+    return optionalCompile('php5', $code);
+}
+
+function php4($code) {
+	if (!defined('php5')) {
+		return $code;
+	}
+    else {
+    	return '';
+    }
+}
+
 
 function debugview($text) {
 	return optionalCompile('debugview', $text);

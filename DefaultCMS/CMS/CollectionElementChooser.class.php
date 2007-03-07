@@ -15,22 +15,41 @@ class CollectionElementChooser extends CollectionNavigator {
     	$ec->registerCallback('object_edited', new FunctionObject($this,'objectEdited'));
 		$this->call($ec);
 	}
-
+    #@php5
 	function objectEdited(&$object) {
 		$db =& DBSession::Instance();
 		$db->beginTransaction();
-		$ex =& $db->save($object);
-		if (is_exception($ex)) {
+		try {
+            $ex =& $db->save($object);
+            $this->refresh();
+            $db->commit();
+        }
+		catch (Exception $ex)
+        {
 			$db->rollback();
 			$dialog =& ErrorDialog::Create($ex->getMessage());
 			$dialog->onAccept(new FunctionObject($this, 'doNothing'));
 			$this->call($dialog);
 		}
-		else {
-			$this->refresh();
-			$db->commit();
-		}
-	}
+    }//@#
+
+    #@php4
+    function objectEdited(&$object) {
+    	$db =& DBSession::Instance();
+        $db->beginTransaction();
+        $ex =& $db->save($object);
+        if (is_exception($ex))
+        {
+            $db->rollback();
+            $dialog =& ErrorDialog::Create($ex->getMessage());
+            $dialog->onAccept(new FunctionObject($this, 'doNothing'));
+            $this->call($dialog);
+        }
+        {
+            $this->refresh();
+            $db->commit();
+        }
+    }//@#
 
 	function &addLine(&$obj) {
 		$fc = & new PersistentObjectViewer($obj, $this->fields);

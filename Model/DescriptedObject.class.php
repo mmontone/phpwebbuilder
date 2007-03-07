@@ -365,7 +365,12 @@ class DescriptedObject extends PWBObject {
 		$this->validateFields();
 		$this->validateObject();
 
-		return empty($this->validation_errors);
+		#@php5
+        if (!$this->isValid()) {
+        	$ex =& new PWBValidationError(array('object' => $this));
+            $ex->raise();
+        }//@#
+        return $this->isValid();
 	}
 	/**
 	 * validates the object, and return if it's valid
@@ -464,5 +469,10 @@ class DescriptedObject extends PWBObject {
 		return $fieldsNames;
     }
 }
+
+class PWBValidationError extends PWBException {
+
+}
+
 
 ?>
