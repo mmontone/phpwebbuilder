@@ -448,7 +448,6 @@ function &get_allRelatedClasses(){
 function &getSessionGlobal($name){
 	if (!isset($GLOBALS[$name])){
 		$GLOBALS[$name] =& Session::getAttribute($name);
-		$GLOBALS[$name]=array();
 	}
 	return $GLOBALS[$name];
 }
@@ -458,7 +457,7 @@ function &getSessionGlobal($name){
  */
 function get_subclasses($str) {
 	$PWBclasses =& get_allRelatedClasses();
-	if ($PWBclasses===null)
+	if ($PWBclasses==null)
 		find_subclasses();
 	return $PWBclasses[strtolower($str)];
 }
