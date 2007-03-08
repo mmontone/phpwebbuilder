@@ -416,8 +416,8 @@ function find_metadata(){
 			$ob->getTables();
 		}
 	}
-	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.addslashes(serialize($GLOBALS['allRelatedClasses'])).'\');';
-	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.addslashes(serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
+	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.str_replace('\'','\\\'',serialize($GLOBALS['allRelatedClasses'])).'\');';
+	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.str_replace('\'','\\\'',serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
 	return $ret;
 }
 
@@ -446,7 +446,7 @@ function &get_allRelatedClasses(){
 }
 
 function &getSessionGlobal($name){
-	if ($GLOBALS[$name]==null){
+	if (!isset($GLOBALS[$name])){
 		$GLOBALS[$name] =& Session::getAttribute($name);
 		$GLOBALS[$name]=array();
 	}
@@ -458,7 +458,7 @@ function &getSessionGlobal($name){
  */
 function get_subclasses($str) {
 	$PWBclasses =& get_allRelatedClasses();
-	if ($PWBclasses==null)
+	if ($PWBclasses===null)
 		find_subclasses();
 	return $PWBclasses[strtolower($str)];
 }
