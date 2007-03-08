@@ -13,8 +13,7 @@ class WeakReference {
 		$this->refClass = getClass($obj);
 	}
 	function &getTarget(){
-		global $allObjectsInMem;
-		$obj =& $allObjectsInMem[$this->refId];
+		$obj =& $GLOBALS['allObjectsInMem'][$this->refId];
 		#@gencheck if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}@#
 		return $obj;
 	}

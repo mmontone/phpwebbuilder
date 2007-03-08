@@ -82,15 +82,14 @@ class PWBObject
 	function equalTo(&$other_pwb_object) {
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
-	function &getInstanceId(){
+	function getInstanceId(){
 		#@gencheck if($this->__instance_id===null) print_backtrace(getClass($this).' doesn\'t have an id');@#
 		return $this->__instance_id;
 	}
 	function __wakeup() {
-		global $allObjectsInMem;
-		$id =& $this->getInstanceId();
-		#@gencheck if (isset($allObjectsInMem[$id]) && !$this->is($allObjectsInMem[$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' .$allObjectsInMem[$id]->printString(). ' instead of a '.$this->printString());@#
-		$allObjectsInMem[$id] =& $this;
+		$id = $this->getInstanceId();
+		#@gencheck if (isset( $GLOBALS['allObjectsInMem'][$id]) && !$this->is( $GLOBALS['allObjectsInMem'][$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' . $GLOBALS['allObjectsInMem'][$id]->printString(). ' instead of a '.$this->printString());@#
+		$GLOBALS['allObjectsInMem'][$id] =& $this;
 	}
 	/**
 	 *  Returns if the object is the same as the parameter

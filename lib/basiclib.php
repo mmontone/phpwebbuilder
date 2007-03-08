@@ -575,15 +575,10 @@ $lambda_vars = array();
 
 function lambda($args, $code, $env = array ()) {
 	static $n = 0;
-	global $lambda_vars;
-	$functionName = sprintf('ref_lambda_%d', ++ $n);
-	$lambda_vars[$functionName]['environment_vars'] = & $env;
-	$declaration = sprintf('function &%s(%s) {global $lambda_vars;extract($lambda_vars["' . $functionName . '"]["environment_vars"],EXTR_REFS); ' /*.'trigger_error(backtrace_string(\''.str_replace('\'','\\\'',$code).'\'), E_USER_NOTICE);' */
-	 . '%s}', $functionName, $args, $code);
+	$functionName = 'ref_lambda_'. (++ $n);
+	$GLOBALS['lambda_vars'][$functionName] = & $env;
+	$declaration = "function &$functionName($args) {extract(\$GLOBALS['lambda_vars']['$functionName'],EXTR_REFS); $code}";
 	$ok = eval ($declaration);
-   	global $last_lambda;
-   	$last_lambda []= $args.'==>'.$code;
-
 	if($ok===FALSE /* or ! preg_match('/return(\s)*\$\w+;/s',$code)*/)
 		print_backtrace($args.'==>'.$code);
 	return $functionName;
@@ -592,8 +587,7 @@ function lambda($args, $code, $env = array ()) {
  * Frees the space used for the variable's context
  */
 function delete_lambda($name) {
-	global $lambda_vars;
-	unset($lambda_vars[$name]);
+	unset($GLOBALS['lambda_vars'][$name]);
 }
 
 /**
