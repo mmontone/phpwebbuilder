@@ -1,7 +1,9 @@
 <?php
 
-require_once 'md.php';
-require_once 'query_lang.php';
+if (defined('md') && constant('md')!='none'){
+	require_once 'md.php';
+}
+//require_once 'query_lang.php';
 require_once 'Compiler.class.php';
 
 //require_once 'md2.php';
@@ -402,9 +404,24 @@ function trace_params() {
 		trace($name . "=" . $value . "<BR>");
 }
 
-/**
- * The array containing all classes and their subclasses
- */
+function find_metadata(){
+	$GLOBALS['allRelatedClasses']=array();
+	find_subclasses();
+	$GLOBALS['persistentObjectsMetaData']=array();
+	foreach(get_subclasses('PersistentObject') as $sc){
+		if (Compiler::classCompiled($sc)){
+			$ob =& PersistentObject::getMetaData($sc);
+			$ob->fieldNames('SELECT');
+			$ob->fieldNames('UPDATE');
+			$ob->getTables();
+		}
+	}
+	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.addslashes(serialize($GLOBALS['allRelatedClasses'])).'\');';
+	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.addslashes(serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
+	return $ret;
+}
+
+
 /**
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
@@ -414,7 +431,7 @@ function find_subclasses() {
 	$ret = array ();
 	foreach ($arr as $o) {
 		$vars = get_class_vars($o);
-		if (isset ($vars["isClassOfPWB"]) && $vars["isClassOfPWB"]) {
+		if (Compiler::classCompiled($o) && isset ($vars["isClassOfPWB"]) && $vars["isClassOfPWB"]) {
 			$PWBclasses[strtolower($o)] = array ();
 			$pcs = get_superclasses($o);
 			foreach ($pcs as $pc) {
@@ -422,17 +439,18 @@ function find_subclasses() {
 			}
 		}
 	}
-	return $PWBclasses;
 }
 
 function &get_allRelatedClasses(){
-	$GLOBALS['allRelatedClasses'];
-	if ($GLOBALS['allRelatedClasses']==null){
-		$GLOBALS['allRelatedClasses'] =& Session::getAttribute('PWBclasses');
-		$GLOBALS['allRelatedClasses']=array();
-	}
-	return $GLOBALS['allRelatedClasses'];
+	return getSessionGlobal('allRelatedClasses');
+}
 
+function &getSessionGlobal($name){
+	if ($GLOBALS[$name]==null){
+		$GLOBALS[$name] =& Session::getAttribute($name);
+		$GLOBALS[$name]=array();
+	}
+	return $GLOBALS[$name];
 }
 
 /**

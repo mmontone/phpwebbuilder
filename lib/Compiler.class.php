@@ -143,6 +143,11 @@ class Compiler {
 		}
 
 	}
+	function classCompiled($class){
+		$inst =& Compiler::Instance();
+		return (isset($inst->classesCompiled[$inst->class_in_file[strtolower($class)]]))
+			|| (!$inst->compiling && class_exists($class));
+	}
 	function compileClass($class){
 		/*Chequeno no compilada, Compilo las anteriores, marco esta como compilada, compilo las siguientes*/
 		$file = $this->class_in_file[strtolower($class)];
@@ -200,19 +205,25 @@ class Compiler {
 			$this->addClassUsageRule('/\'type\'[\s\t\n]*=>[\s\t\n]*\'?(\w+)\'?/i',1);
 			$this->addClassUsageRule('/->defineVar\(\'\w+\'[\s\t\n]*,[\s\t\n]*\'?(\w+)\'?[\s\t\n]*\)/i',1);
 			$f = $this->compileFile($file);
-			$f.='$GLOBALS[\'allRelatedClasses\']=unserialize(\''.str_replace('\'','\\\'',serialize(find_subclasses())). '\');';
+			//$meta=find_metadata();
 			$f = '<?php '.$f.' ?>';
 			if (Compiler::CompileOpt('optimal')){
 				$this->compiledOutput = $tmpname;
+				$this->compiling = true;
 				Compiler::markAsCompiled('Compiler', __FILE__);
 				Compiler::markAsCompiled('OQLCompiler', __FILE__);
 				Compiler::markAsCompiled('parent', __FILE__);
 				$this->compiled = array();
 				$this->compilingClasses = true;
-				$f = '<?php '.$this->compileClass(constant('app_class')).' ?>';
+				$f = '<?php '.$this->compileClass(constant('app_class'));
+				$meta = find_metadata();
+				$f .= $meta.' ?>';
+
 				$cf = $this->getCompFile();
 				$cfo = fopen($cf, 'w');
+				$this->compiling = false;
 				fwrite($cfo, serialize($this));
+				$this->compiling = true;
 				fclose($cfo);
 				fwrite($fo, $f);
 				fclose($fo);

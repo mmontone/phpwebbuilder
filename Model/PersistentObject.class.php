@@ -29,8 +29,7 @@ class PersistentObject extends DescriptedObject {
 		}
 	}
 	function &getMetaData($class){
-		$metadata =& Session::getAttribute('persistentObjectsMetaData');
-		//global $metadata;
+		$metadata =& getSessionGlobal('persistentObjectsMetaData');
 		$class = strtolower($class);
 		if (!isset($metadata[$class])){
 			$metadata[$class] =& new $class(array(), false, true);
@@ -38,7 +37,9 @@ class PersistentObject extends DescriptedObject {
 				$metadata[$class]->setParent(PersistentObject::getMetaData(get_parent_class($class)));
 			}
 			$metadata[$class]->basicInitialize();
-
+			foreach($metadata[$class]->fieldNames as $name){
+				unset($metadata[$class]->$name->collection);
+			}
 		}
 		return $metadata[$class];
 	}
