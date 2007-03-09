@@ -57,9 +57,9 @@ class IndexField extends NumField {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
 			if ($this->buffered_target !== null){
-				$this->buffered_target->retractInterestIn('id_changed', $this->idChangedHandler);
+				$this->buffered_target->retractInterestIn('id_changed', $this);
 			}
-			$this->idChangedHandler = $target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
+			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
             $this->buffered_target =& $target;
             $this->setModified(true);
             $this->triggerEvent('changed', $this);

@@ -20,17 +20,14 @@ class PWBObject
     function PWBObject($params=array()) {
 		#@check is_array($params)@#
 		if (!Session::isStarted()) {
-			global $allObjectsInMem;
-			$iid=count($allObjectsInMem)-1000;
+			$iid=count($GLOBALS['allObjectsInMem'])-1000;
 		} else {
 			$iid =& Session::getAttribute('instance_id');
 		}
-		//echo ' id: '.$iid;
 		$this->__instance_id = ++$iid;
-		//$this->creationParams = array_merge($this->defaultValues($params),$params);
 		$this->creationParams =& $params;
 		$this->__wakeup();
-		$this->createInstance($this->creationParams);
+		$this->createInstance($params);
 	}
 
     function disableEvent($event) {
@@ -120,13 +117,8 @@ class PWBObject
 
     function addEventListener($event_specs, &$listener) {
         #@check is_array($event_specs)@#
-        $callback = array();
-        $i = 1;
-
         foreach ($event_specs as $event_selector => $event_callback) {
-  			$callback[$i] =& new FunctionObject($listener, $event_callback);
-			$this->addInterestIn($event_selector, $callback[$i]);
-  			$i++;
+			$this->addInterestIn($event_selector, new FunctionObject($listener, $event_callback));
         }
     }
 	/**
@@ -135,20 +127,18 @@ class PWBObject
 
     function addInterestIn($event, &$function) {
        	#@track_events echo 'Adding interest in ' .  $this->printString() . '#' .$event . $function->printString() . '<br/>';@#
-       	$i=@$this->event_handlers[$event]++;
-        $this->event_listeners[$event][$i] =& WeakFunctionObject::fromFunctionObject($function);
-        return $i;
+       	//$i=@$this->event_handlers[$event]++;
+       	$t =& $function->getTarget();
+        $this->event_listeners[$event][$t->getInstanceId()] =& WeakFunctionObject::fromFunctionObject($function);
     }
-    function retractInterestIn($event, $handle){
-		unset($this->event_listeners[$event][$handle]);
+    function retractInterestIn($event, &$handler){
+		unset($this->event_listeners[$event][$handler->getInstanceId()]);
     }
 	/**
 	 * Registers a callback for the changed event
 	 */
     function onChangeSend($call_back_selector, & $listener) {
-		$this->addEventListener(array (
-			'changed' => $call_back_selector
-		), $listener);
+		$this->addInterestIn('changed',new FunctionObject($listener, $call_back_selector));
 	}
 	/**
 	 * Triggers a changed event

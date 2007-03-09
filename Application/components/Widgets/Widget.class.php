@@ -99,32 +99,19 @@ class Widget extends Component {
 		$v = $this->value_model->getValue();
 		return $v;
 	}
-	function onChangeSend($selector, & $target) {
-		#@typecheck $selector:string, $target:object@#
-		$this->addEventListener(array (
-			'changed' => $selector
-		), $target);
-	}
-
 	function onFocusSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addEventListener(array (
-			'focus' => $selector
-		), $target);
+		$this->addInterestIn('focus',new FunctionObject($target, $selector));
 	}
 
 	function onBlurSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addEventListener(array (
-			'blur' => $selector
-		), $target);
+		$this->addInterestIn('blur',new FunctionObject($target, $selector));
 	}
 
 	function onClickSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addEventListener(array (
-			'click' => $selector
-		), $target);
+		$this->addInterestIn('click',new FunctionObject($target, $selector));
 	}
 
 	function onEnterClickOn(&$comp) {

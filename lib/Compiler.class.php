@@ -31,6 +31,7 @@ class Compiler {
 	var $file_uses_class= array();
 	var $file_reqs_class= array();
 	var $usageRules = array();
+	var $compiling=false;
 	function Compiler() {
 		$this->toCompile = explode(',', @constant('compile'));
 		$this->toCompileSuffix = implode('-', $this->toCompile);
@@ -145,7 +146,7 @@ class Compiler {
 	}
 	function classCompiled($class){
 		$inst =& Compiler::Instance();
-		return (isset($inst->classesCompiled[$inst->class_in_file[strtolower($class)]]))
+		return (isset($inst->classesCompiled[@$inst->class_in_file[strtolower($class)]]))
 			|| (!$inst->compiling && class_exists($class));
 	}
 	function compileClass($class){

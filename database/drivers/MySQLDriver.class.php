@@ -2,6 +2,7 @@
 
 class MySQLDriver extends DBDriver {
 	var $conn;
+	var $pconn;
 	var $tables_type = 'MyISAM';
 
     function &SQLExec ($sql, $getID=false, $obj=null, &$rows) {

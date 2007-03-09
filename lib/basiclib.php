@@ -431,7 +431,7 @@ function find_subclasses() {
 	$ret = array ();
 	foreach ($arr as $o) {
 		$vars = get_class_vars($o);
-		if (Compiler::classCompiled($o) && isset ($vars["isClassOfPWB"]) && $vars["isClassOfPWB"]) {
+		if (isset ($vars["isClassOfPWB"]) && Compiler::classCompiled($o)) {
 			$PWBclasses[strtolower($o)] = array ();
 			$pcs = get_superclasses($o);
 			foreach ($pcs as $pc) {

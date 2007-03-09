@@ -7,13 +7,11 @@ class SessionHandler{
 			$sht= 'PHP';
 		}
 		$shc = $sht.'SessionHandler';
-		global $sessionHandlerInstance;
-		$sessionHandlerInstance = new $shc;
-		$sessionHandlerInstance->setSessionHooks();
+		$GLOBALS['sessionHandlerInstance'] =& new $shc;
+		$GLOBALS['sessionHandlerInstance']->setSessionHooks();
 	}
 	function &Instance(){
-		global $sessionHandlerInstance;
-		return $sessionHandlerInstance;
+		return $GLOBALS['sessionHandlerInstance'];
 	}
 	function isStarted(){
 		return true;
