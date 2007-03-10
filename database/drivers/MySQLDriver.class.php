@@ -41,7 +41,7 @@ class MySQLDriver extends DBDriver {
         /* If transactions are not supported, go on silently (logging is another option)*/
         mysql_query ("START TRANSACTION;"); /* or
             die (print_backtrace(mysql_error() . ": $sql"));*/
-        trigger_error("Starting transaction");
+        //trigger_error("Starting transaction");
         $this->closeDatabase();
     }
 
@@ -50,7 +50,7 @@ class MySQLDriver extends DBDriver {
         /* If transactions are not supported, go on silently (logging is another option)*/
         mysql_query ("COMMIT;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
-        trigger_error("Comitting transaction");
+        //trigger_error("Comitting transaction");
         $this->closeDatabase();
     }
 
@@ -59,7 +59,7 @@ class MySQLDriver extends DBDriver {
         /* If transactions are not supported, go on silently (logging is another option)*/
         mysql_query ("ROLLBACK;"); /*or
             die (print_backtrace(mysql_error() . ": $sql"));*/
-        trigger_error("Rolling back transaction");
+        //trigger_error("Rolling back transaction");
         $this->closeDatabase();
     }
 

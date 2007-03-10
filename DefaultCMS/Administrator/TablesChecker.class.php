@@ -32,6 +32,7 @@ class ObjectMapper {
 			if(mysql_num_rows($res)) {
 				$arr = $db->fetchArray($res);
 				$this->tableName=array_pop($arr[0]);
+				$table = $this->tableName;
 				$ret ="";
 				$sql = $db->driver->showColumnsFromTableSQL($table);
 				$res = $db->query($sql);
@@ -87,7 +88,7 @@ class ObjectMapper {
 					$ret .= ";";
 				}
 			} else {
-				$ret =	"\nCREATE TABLE `$table` (" ;
+				$ret =	"\nCREATE TABLE `".$table."` (" ;
 				$ret .= $this->createFields($this->object->fieldsWithNames($this->object->fieldNames));
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
@@ -111,7 +112,7 @@ class ObjectMapper {
 		}
 		$uni = implode(', ',$unis);
 		if (trim($uni)!="") {
-			return  " UNIQUE index$table(".$uni.")";
+			return  " UNIQUE index".$this->tableName."(".$uni.")";
 		} else{
 			return "";
 		}

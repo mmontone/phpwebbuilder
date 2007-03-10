@@ -108,6 +108,28 @@ class PageRenderer // extends PWBObject
 	 * http://www.htmlhelp.com/reference/html40/entities/
 	 */
 
+	function toHTML2($s) {
+		//$s = htmlentities($s);
+		$s = htmlspecialchars($s);
+		$s = str_replace('ñ', '&ntilde;', $s);
+		$s = str_replace('¿', '&iquest;', $s);
+		$s = str_replace('Ñ', '&Ntilde;', $s);
+		$s = str_replace('á', '&aacute;', $s);
+		$s = str_replace('é', '&eacute;', $s);
+		$s = str_replace('í', '&iacute;', $s);
+		$s = str_replace('ó', '&oacute;', $s);
+		$s = str_replace('ú', '&uacute;', $s);
+		$s = str_replace('Á', '&Aacute;', $s);
+		$s = str_replace('É', '&Eacute;', $s);
+		$s = str_replace('Í', '&Iacute;', $s);
+		$s = str_replace('Ó', '&Oacute;', $s);
+		$s = str_replace('Ú', '&Uacute;', $s);
+		$s = str_replace('º', '&ordm;', $s);
+		$s = str_replace('ª', '&ordf;', $s);
+		return $s;
+		//return mb_convert_encoding($s,"HTML-ENTITIES","auto");
+	}
+
 	function toHTML($s) {
 		$s = str_replace('&', '&amp;', $s);
 		$s = str_replace('ñ', '&ntilde;', $s);
@@ -170,6 +192,7 @@ class PageRenderer // extends PWBObject
 	}
 	function toAjax($s) {
 		return $this->toXML($this->toHTML($s));
+		//return $this->toHTML2($s);
 	}
 
 }
@@ -199,7 +222,6 @@ class StandardPageRenderer extends HTMLPageRenderer {
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 
 		$view =& $win->wholeView;
-	//	$ret = '';
 		$ret .= "<html>\n<head><title>" .$view->title .	"</title>";
 		$ret .= $this->app->renderExtraHeaderContent();
 
@@ -302,6 +324,9 @@ class AjaxPageRenderer extends PageRenderer {
 		#@typecheck $win:Window@#
 		header("Content-type: text/xml");
 		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
+		$xml .= '<!DOCTYPE html
+		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		$xml .= "\n<ajax>";
 		$xml .= $win->wholeView->renderAjaxResponseCommand();
 		$xml .= $this->renderJSCommands($win);
@@ -329,10 +354,4 @@ class AjaxPageRenderer extends PageRenderer {
 
 }
 
-class DebugAjaxPageRenderer extends AjaxPageRenderer
-{
-	function renderActionLinkAction(& $action_link) {
-		return 'callAction(&#34;' . $action_link->getId() . '&#34;);';
-	}
-}
 ?>

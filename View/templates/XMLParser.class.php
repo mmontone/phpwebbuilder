@@ -16,7 +16,13 @@ class XMLParser {
        xml_parser_set_option($parser,XML_OPTION_CASE_FOLDING,FALSE);
        $arr = array();
        $this->xmls=&$arr;
-       $err = xml_parse($parser, $data);
+       if (strpos($data,'<!DOCTYPE')!==FALSE){
+    	   $err = xml_parse($parser, $data);
+       } else {
+	       $entities_url = 'http://'.Compiler::getRealPath($_SERVER['SERVER_NAME'].dirname($_SERVER['PHP_SELF']).'/'.pwb_url.'View/templates/entities.dtd');
+	       $entities='<!DOCTYPE templates PUBLIC "-//PWB//DTD TEMPLATES 1.0 //EN" "'.$entities_url.'">';
+	       $err = xml_parse($parser, $entities.$data);
+       }
        $x =& $this->xmls[0];
  	   if (!$x->childNodes) {
           die(sprintf("XML error: %s at line %d, column %d, %s, %s",

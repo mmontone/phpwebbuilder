@@ -338,13 +338,9 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Reloads the object from the database
 	 */
-	function &reloaded() {
-		$class = getClass($this);
-		if ($this->existsObject) {
-			return PersistentObject::GetWithId($class, $this->getID());
-		} else {
-			return new $class;
-		}
+	function &reload() {
+		PersistentObject::getWithIndex(getClass($this),array('id'=>$this->getId()));
+		return $this;
 	}
 	/**
 	 * Gets the object from the database, using the specified index values
@@ -423,14 +419,16 @@ class PersistentObject extends DescriptedObject {
 			$p->id->setValue($this->super->getValue());
 			$res =& $p->update();
 		}
-
 		if (!is_exception($res)){
 			$res =& $this->basicUpdate();
+			$this->markAsUpdated();
 		}
 
 		return $res;
 	}
-
+	function markAsUpdated(){
+		DBUpdater::markUpdated(getClass($this));
+	}
 	function flushUpdate() {
 		if ($this->isNotTopClass($this)) {
 			$p = & $this->getParent();
@@ -449,10 +447,9 @@ class PersistentObject extends DescriptedObject {
 			$res =& $p->insert();
 			$this->super->setValue($p->id->getValue());
 		}
-
 		if (!is_exception($res)){
 			$res =& $this->basicInsert();
-
+			$this->markAsUpdated();
 			/*
 			if (!is_exception($res) && $this->isNotTopClass($this)){
 				$res =& $p->delete();

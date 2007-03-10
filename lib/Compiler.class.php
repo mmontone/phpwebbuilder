@@ -151,7 +151,7 @@ class Compiler {
 	}
 	function compileClass($class){
 		/*Chequeno no compilada, Compilo las anteriores, marco esta como compilada, compilo las siguientes*/
-		$file = $this->class_in_file[strtolower($class)];
+		$file = @$this->class_in_file[strtolower($class)];
 		if ($file==null) {
 			//echo "$class was not defined ".print_r($this->actualFile,TRUE);
 			return '';
@@ -336,7 +336,7 @@ function mkdir_r($dirName, $rights=0777){
 
 $compilerInstance =& new Compiler;
 $compfile = $compilerInstance->getCompFile();
-if (Compiler::CompileOpt('optimal') && file_exists($compfile) && !$_REQUEST['recompile']){
+if (Compiler::CompileOpt('optimal') && file_exists($compfile) && !@$_REQUEST['recompile']){
 	$compilerInstance = unserialize(file_get_contents($compfile));
 }
 

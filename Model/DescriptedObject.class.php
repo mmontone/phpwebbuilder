@@ -264,9 +264,6 @@ class DescriptedObject extends PWBObject {
 			$this->indexFields[$name] = $name;
 		}
 		$field->owner = & $this;
-
-		// Bad!! This doesn't work ($this is not appropiate)
-		//$field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
 	}
 	/**
 	 * Registers that the field was changed

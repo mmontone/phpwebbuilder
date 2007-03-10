@@ -254,6 +254,7 @@ class DBSession {
 			}
             return $e->raise();
 		}
+		return $object;
 	}//@#
 
     #@php5

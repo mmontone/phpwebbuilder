@@ -20,7 +20,7 @@ class PWBObject
     function PWBObject($params=array()) {
 		#@check is_array($params)@#
 		if (!Session::isStarted()) {
-			$iid=count($GLOBALS['allObjectsInMem'])-1000;
+			$iid=count(@$GLOBALS['allObjectsInMem'])-1000;
 		} else {
 			$iid =& Session::getAttribute('instance_id');
 		}

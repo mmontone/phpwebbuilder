@@ -59,6 +59,7 @@ class ActionDispatcher {
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
 		if (isset($form['bm'])) {$event['window']->goToUrl($form['bm']);}
+		DBUpdater::updateAll();
 		return $event['window'];
 	}
 	function updateViews(& $updates) {

@@ -48,7 +48,7 @@ class Condition extends Expression {
 
 	function evaluateIn(&$report) {
 		$this->exp1->setParent($this);
-		$this->exp2->setParent($this);		
+		$this->exp2->setParent($this);
 		$this->evaluated_e1 = $this->exp1->evaluateIn($report);
 		$this->evaluated_e2 = $this->exp2->evaluateIn($report);
 	}
@@ -315,16 +315,16 @@ class PathExpression extends Expression {
         $target_var =& $result[0];
 
         $pp = $result[1];
-        $datatype = $target_var->class;
+        $datatype=$class = $target_var->class;
         $prefix = $target_var->prefix;
         $pre = substr($prefix,0);
 
-		$o =& PersistentObject::getMetaData($datatype);
+		$o =& PersistentObject::getMetaData($class);
 
 		foreach ($pp as $index) {
             #@gencheck
             if (!is_object($o->$index)) {
-                print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $datatype . '(' . getClass($this) . ' with path: ' . $this->path . ')');
+                print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $class . '(' . getClass($this) . ' with path: ' . $this->path . ')');
             }
             @#
             $class =& $o->$index->getDataType();
@@ -347,6 +347,7 @@ class PathExpression extends Expression {
 			$pre .= '_';
 			$o =& $obj;
 		}
+		$this->type= $class;
 		$arr = array(&$o, $pre);
 		return $arr;
 	}
@@ -388,10 +389,6 @@ class ObjectPathExpression extends PathExpression {
         return $attr;
 	}
 	function getExpressionType(&$report){
-		if ($this->type==''){
-			$rp =& $this->registerPath($report);
-			$this->type = getClass($rp[0]);
-		}
 		return $this->type;
 	}
 }
