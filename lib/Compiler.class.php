@@ -317,7 +317,7 @@ if (!function_exists('sys_get_temp_dir')) {
 		else {
 			// Try to use system's temporary directory
 			// as random name shouldn't exist
-			$temp_file = tempnam('', '');
+			$temp_file = tempnam(basedir.'/tmp/', '');
 			if ($temp_file) {
 				$temp_dir = dirname($temp_file);
 				return $temp_dir;
