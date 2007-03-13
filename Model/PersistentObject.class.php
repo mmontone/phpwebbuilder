@@ -545,6 +545,12 @@ class PersistentObject extends DescriptedObject {
 	// GARBAGE COLLECTION
 	var $color='black';
 	var $buffered=false;
+	function addGCFields(){
+		if (constant('garbage_collector')){
+			$this->addField(new VersionField("refCount", FALSE));	$this->refCount->setValue(0);
+			$this->addField(new BoolField(array('fieldName'=>"rootObject",'default'=>true)));	$this->rootObject->setValue(false);
+		}
+	}
 	function makeRootObject(){
 		$this->rootObject->setValue(true);
 	}
@@ -553,11 +559,11 @@ class PersistentObject extends DescriptedObject {
 		$this->posibleGarbageRoot();
 	}
 	function incrementRefCount(){
-		return;
+		if (!constant('garbage_collector')) return;
 		$this->refCount->increment();
 	}
 	function decrementRefCount(){
-		return;
+		if (!constant('garbage_collector')) return;
 		$this->refCount->decrement();
 		if ($this->refCount->getValue()==0){
 			$this->release();
