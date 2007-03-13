@@ -148,6 +148,7 @@ class TablesChecker {
 				$tables[$tname] = $tname;
 			}
 		}
+		$mod='';
 		foreach ($arr as $o) {
 			$obj = PersistentObject::getMetaData($o);
 			$dbc = new ObjectMapper;

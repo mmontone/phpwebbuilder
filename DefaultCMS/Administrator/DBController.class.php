@@ -21,16 +21,16 @@ class DBController extends Component {
 
 		$this->vnum_aspect =& new AspectAdaptor($this, 'CurrentVersionNumber');
 		$this->addComponent(new Text($this->vnum_aspect), 'version');
-
+		/*
 		if (!$next_versions->isEmpty()) {
 			$this->selected_version =& new ObjectHolder($next_versions->first());
 			$this->addComponent(new Label('Switch to version:'), 'switch_label');
 			$this->addComponent(new Select($this->selected_version, $next_versions), 'select_version');
 			$this->addComponent(new CommandLink(array('text' => 'Switch version', 'proceedFunction' => new FunctionObject($this, 'switchVersion')), $next_versions), 'switch_version');
 		}
-		else {
+		else {*/
 			$this->showDBUpdater();
-		}
+		//}
 	}
 
 	function showDBUpdater() {

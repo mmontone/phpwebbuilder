@@ -2,7 +2,8 @@
 
 class IndexFieldViewerFactory extends ViewerFactory {
 	function &createInstanceFor(&$field){
-		return new Label($field->viewValue());
+		$l=&new Label($field->viewValue());
+		return $l;
 	}
 }
 

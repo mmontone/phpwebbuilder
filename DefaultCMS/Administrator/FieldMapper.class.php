@@ -53,7 +53,7 @@ class PasswordFieldFieldMapper extends TextFieldFieldMapper {
 
 class NumFieldFieldMapper extends FieldMapper {
 	function type (){
-		$nt = $this->field->creationParams['numtype'];
+		$nt = @$this->field->creationParams['numtype'];
 		if ($nt != '' && $nt != 'int') {
 			return "float";
 		} else {
@@ -61,7 +61,7 @@ class NumFieldFieldMapper extends FieldMapper {
 		}
 	}
 	function typeEreg(){
-		$nt = $this->field->creationParams['numtype'];
+		$nt = @$this->field->creationParams['numtype'];
 		if ($nt != '' && $nt != 'int') {
 			return "float";
 		} else {

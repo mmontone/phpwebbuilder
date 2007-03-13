@@ -102,7 +102,7 @@ class Compiler {
 		if(Compiler::CompileOpt('optimal')){
 			$inst =& Compiler::Instance();
 			$c = $inst->compileClass($class);
-			if ($c!=null && !class_exists($class)){
+			if ($c!=null){
 				$old = file_get_contents($inst->compiledOutput);
 				$f = fopen($inst->compiledOutput, 'w');
 				fwrite($f,substr($old, 0,-2).$c.'?>');
@@ -217,8 +217,9 @@ class Compiler {
 				$this->compiled = array();
 				$this->compilingClasses = true;
 				$f = '<?php '.$this->compileClass(constant('app_class'));
-				$meta = find_metadata();
-				$f .= $meta.' ?>';
+				$f .=
+					//find_metadata().
+					' ?>';
 
 				$cf = $this->getCompFile();
 				$cfo = fopen($cf, 'w');

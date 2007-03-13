@@ -2,7 +2,8 @@
 
 class TextAreaEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new TextAreaComponent($field);
+		$tac =&new TextAreaComponent($field);
+		return $tac;
 	}
 }
 

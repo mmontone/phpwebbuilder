@@ -187,6 +187,10 @@ function getTypeOf($arg){
 	}
 }
 
+function addsimplequoteslashes($body){
+	return str_replace('\'', '\\\'', $body);
+}
+
 #@lam $x,$y -> return $x + $y;@#
 function lam($text) {
 	//echo 'Trying to lam: ' . $text;
@@ -194,7 +198,7 @@ function lam($text) {
 	$matches = explode('->',$text, 2);
 	$params = $matches[0];
 	$body = $matches[1];
-	$t = "lambda('$params','$body', get_defined_vars())";
+	$t = "lambda('$params','".addsimplequoteslashes($body)."', get_defined_vars())";
 	return $t;
 }
 
@@ -416,8 +420,8 @@ function find_metadata(){
 			$ob->getTables();
 		}
 	}
-	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.str_replace('\'','\\\'',serialize($GLOBALS['allRelatedClasses'])).'\');';
-	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.str_replace('\'','\\\'',serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
+	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.addsimplequoteslashes(serialize($GLOBALS['allRelatedClasses'])).'\');';
+	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.addsimplequoteslashes(serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
 	return $ret;
 }
 

@@ -2,7 +2,8 @@
 
 class IndexFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field) {
-		return new IndexFieldChooser($field);
+		$if =& new IndexFieldChooser($field);
+		return $if;
 	}
 }
 

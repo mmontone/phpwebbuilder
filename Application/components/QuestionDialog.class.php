@@ -10,10 +10,11 @@ class QuestionDialog extends Component
 	}
 	function &create($message){
 		if (Application::rendersAjax()) {
-			return new ModalQuestionDialog($message);
+			$qd =&new ModalQuestionDialog($message);
 		} else {
-			return new QuestionDialog($message);
+			$qd =&new QuestionDialog($message);
 		}
+		return $qd;
 	}
 	function initialize(){
 		$this->addComponent(new Label($this->message), 'question');
