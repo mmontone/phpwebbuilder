@@ -546,8 +546,8 @@ class PersistentObject extends DescriptedObject {
 	var $color='black';
 	var $buffered=false;
 	function addGCFields(){
-		if (constant('garbage_collector')){
-			$this->addField(new VersionField("refCount", FALSE));	$this->refCount->setValue(0);
+		if (defined('garbage_collection')){
+			$this->addField(new VersionField(array('fieldName'=>"refCount",'default'=>'0')));	$this->refCount->setValue('0');
 			$this->addField(new BoolField(array('fieldName'=>"rootObject",'default'=>true)));	$this->rootObject->setValue(false);
 		}
 	}
@@ -559,11 +559,11 @@ class PersistentObject extends DescriptedObject {
 		$this->posibleGarbageRoot();
 	}
 	function incrementRefCount(){
-		if (!constant('garbage_collector')) return;
+		if (!defined('garbage_collection')) return;
 		$this->refCount->increment();
 	}
 	function decrementRefCount(){
-		if (!constant('garbage_collector')) return;
+		if (!defined('garbage_collection')) return;
 		$this->refCount->decrement();
 		if ($this->refCount->getValue()==0){
 			$this->release();
@@ -657,5 +657,20 @@ class PersistentObject extends DescriptedObject {
 			$this->delete();
 		};
 	}
+	function ResetRefCounts(){
+		$DB=& DBSession::beginRegisteringAndTransaction();
+		echo 'setting 0';
+		foreach(get_subclasses('PersistentObject') as $sc){
+			$obs =& new PersistentCollection($sc);
+			$obs->collect(lambda('&$elem', '$elem->refCount->setValue(0);'));
+		}
+		echo 'setting ref';
+		foreach(get_subclasses('PersistentObject') as $sc){
+			$obs =& new PersistentCollection($sc);
+			$obs->collect(lambda('&$elem', '$elem->mapChild("incrementRefCount");'));
+		}
+		$DB->commit();
+	}
+
 }
 ?>
