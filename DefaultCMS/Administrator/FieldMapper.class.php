@@ -12,7 +12,7 @@ class FieldMapper extends PWBFactory{
 		return $obj->findModifications($this);
 	}
 	function creation(&$obj) {
-		return "\n   `".$this->field->colName ."` ". $this->type().", ";
+		return "\n   `".$this->field->colName ."` ". $this->allType().", ";
 	}
 	function compareType ($t) {
 		return eregi($this->typeEreg(), $t);
@@ -24,8 +24,20 @@ class FieldMapper extends PWBFactory{
 	function createUnique(){
 		return  "`".$this->field->colName."`".$this->unique();
 	}
+	function getDefault(){
+		return $this->field->creationParams['default'];
+	}
 	function checkField($f){
-		return $this->compareType($f["Type"]);
+		return $this->compareType($f["Type"]) && ($f["Default"]==$this->getDefault());
+	}
+	function allType(){
+		$df = $this->getDefault();
+		$type = $this->type();
+		if ($df==null){
+			return $type;
+		} else {
+			return $type.' NOT NULL DEFAULT '.$df;
+		}
 	}
 }
 
@@ -90,16 +102,19 @@ class IdFieldFieldMapper extends NumFieldFieldMapper {
 
 class VersionFieldFieldMapper extends NumFieldFieldMapper {
 	function type(){
-		return "int(11) unsigned NOT NULL DEFAULT 0";
+		return "int(11) unsigned";
+	}
+	function getDefault(){
+		return 0;
 	}
 }
 
 class SuperFieldFieldMapper extends NumFieldFieldMapper {
 	function type(){
-		return "int(11) unsigned UNIQUE NOT NULL DEFAULT 0";
+		return "int(11) unsigned UNIQUE";
 	}
-	function checkField($f){
-		return $this->compareType($f["Type"]) && $f['Null']=='NO';
+	function getDefault(){
+		return 0;
 	}
 }
 

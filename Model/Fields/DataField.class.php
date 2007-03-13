@@ -74,6 +74,7 @@ class DataField extends ValueModel {
 	function defaultValues($params){
 		return array(
 				'is_index'=>false,
+				'default'=>null,
 				'display'=>ucfirst($params['fieldName']),
 				'columnName'=>$params['fieldName']
 			);
@@ -245,6 +246,9 @@ class DataField extends ValueModel {
 	function printString(){
 		return $this->primPrintString($this->colName);
 	}
+
+	//GARBAGE COLLECTION
+	function mapChild($method){}
 }
 
 ?>

@@ -7,6 +7,12 @@ class NumField extends DataField {
 		$this->range = @$params['range'];
 		$this->value=0;
 	}
+	function increment(){
+		$this->setValue($this->getValue()+1);
+	}
+	function decrement(){
+		$this->setValue($this->getValue()-1);
+	}
 	function defaultValues($params){
 		return array_merge(array('range'=>null, 'numtype'=>'int'), parent::defaultValues($params));
 	}

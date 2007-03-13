@@ -299,6 +299,8 @@ class DBSession {
                 $this->primRollback();
             }
             return $e->raise();
+        } else {
+        	return $object;
         }
     }//@#
 

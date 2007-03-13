@@ -408,6 +408,10 @@ function trace_params() {
 		trace($name . "=" . $value . "<BR>");
 }
 
+function reset_metadata(){
+	$GLOBALS['persistentObjectsMetaData']=array();
+}
+
 function find_metadata(){
 	$GLOBALS['allRelatedClasses']=array();
 	find_subclasses();

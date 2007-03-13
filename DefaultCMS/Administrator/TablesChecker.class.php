@@ -88,6 +88,7 @@ class ObjectMapper {
 					$ret .= ";";
 				}
 			} else {
+				$this->tableName=$table;
 				$ret =	"\nCREATE TABLE `".$table."` (" ;
 				$ret .= $this->createFields($this->object->fieldsWithNames($this->object->fieldNames));
 				$ret .= "\n   PRIMARY KEY  (`id`)";
@@ -123,11 +124,11 @@ class ObjectMapper {
 		if (isset($fields[$name])) {
 			$f =& $fields[$name];
 			if (!$field->checkField($f)) {
-				$ret = "\n    MODIFY `$name` ".$field->type().", ";
+				$ret = "\n    MODIFY `$name` ".$field->allType().", ";
 			} else $ret = "";
 			return $ret;
 		} else {
-			$add = "\n    ADD COLUMN `$name` ". $field->type().", ";
+			$add = "\n    ADD COLUMN `$name` ". $field->allType().", ";
 			return $add;
 		}
 	}
@@ -136,6 +137,7 @@ class ObjectMapper {
 class TablesChecker {
 	function checkTables($stepping=false){
 		$arr = get_subclasses("PersistentObject");
+		reset_metadata();
 		/*Comparing existing tables, existing objects, and added objects*/
 		/*If a table has not an object table, we have to delete it*/
 		$sql = "SHOW TABLES FROM `" . basename. '` LIKE \''.baseprefix.'%\'';
