@@ -79,7 +79,7 @@ class PWBObject
 	function equalTo(&$other_pwb_object) {
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
-	function getInstanceId(){
+	function &getInstanceId(){
 		#@gencheck if($this->__instance_id===null) print_backtrace(getClass($this).' doesn\'t have an id');@#
 		return $this->__instance_id;
 	}
@@ -125,14 +125,26 @@ class PWBObject
 	 * Adds a listener for the event, with the specified callback function
 	 */
 
-    function addInterestIn($event, &$function) {
-       	#@track_events echo 'Adding interest in ' .  $this->printString() . '#' .$event . $function->printString() . '<br/>';@#
-       	//$i=@$this->event_handlers[$event]++;
-       	$t =& $function->getTarget();
-        $this->event_listeners[$event][$t->getInstanceId()] =& WeakFunctionObject::fromFunctionObject($function);
+    function addInterestIn($event, &$function, $params = array()) {
+       	#@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
+       	$i=@$this->event_handlers[$event]++;
+        //$this->event_listeners[$event][$i] =& WeakFunctionObject::fromFunctionObject($function);
+        $params['function'] =& $function;
+        $params['event'] = $event;
+        $event_handler =& EventHandler::FromParams($params);
+        $this->event_listeners[$event][$i] =& $event_handler;
+        //$this->event_listeners[$event][$i] =& WeakFunctionObject::fromFunctionObject($event_handler);
+        return $i;
     }
-    function retractInterestIn($event, &$handler){
-		unset($this->event_listeners[$event][$handler->getInstanceId()]);
+    function retractInterestIn($event, $handle){
+		#@track_events
+        if (isset($this->event_listeners[$event][$handle])) {
+        	$s = $this->event_listeners[$event][$handle]->printString();
+        }
+        echo 'Retracting interest in ' .  $this->printString() . '>>' .$event .  $s . '<br/>';
+        //@#
+
+        unset($this->event_listeners[$event][$handle]);
     }
 	/**
 	 * Registers a callback for the changed event
@@ -163,7 +175,7 @@ class PWBObject
 
     function triggerEvent($event_selector, &$params) {
         if (!$this->isEnabledEvent($event_selector)) {
-            //echo 'The event is disabled: ' . $event_selector  .' in: ' . getClass($this) . '<br/>';
+            #@track_events //echo 'The event is disabled: ' . $event_selector  .' in: ' . $this->printString() . '<br/>';@#
             return;
         } else {
         	$this->doTriggerEvent($event_selector, $params);
@@ -178,7 +190,11 @@ class PWBObject
     function doTriggerEvent($event_selector, &$params){
         $listeners =& $this->event_listeners[$event_selector];
 
-        #@track_events echo 'Triggering event: ' . $event_selector . ' in '. $this->printString() . '<br/>';@#
+        #@track_events
+        global $triggeredEvents;
+        $triggeredEvents++;
+        echo 'Triggering event: ' . $event_selector . ' in '. $this->printString() . '<br/>';
+        //@#
 
         if ($listeners == null) return;
 
@@ -186,7 +202,6 @@ class PWBObject
         foreach(array_keys($listeners) as $l) {
           	$listener =& $listeners[$l];
             if ($listener->isNotNull()) {
-        		#@track_events echo $this->printString() . '>>' . $event_selector . ' dispatching to ' .  $listener->printString() . '<br/>';@#
                 $listener->executeWithWith($this, $params);
         	} else {
 				#@track_events echo 'Unsetting listener ' . $listener->printString() . '<br/>';@#
@@ -195,7 +210,7 @@ class PWBObject
         }
     }
 	/**
-	 * Event Handlres
+	 * Event Handlers
 	 */
 	/**
 	 * Removes all the listeners and the handles of the object.
@@ -244,10 +259,11 @@ class PWBObject
 	}
 
     function printString() {
+    	return $this->debugPrintString();
+    }
+
+    function debugPrintString() {
     	return $this->primPrintString();
     }
 }
-
-
-
 ?>

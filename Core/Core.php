@@ -18,4 +18,5 @@ compile_once (dirname(__FILE__).'/ValueObjects/String.class.php');
 compile_once (dirname(__FILE__).'/ValueObjects/Vector.class.php');
 compile_once (dirname(__FILE__).'/conditions/PWBCondition.class.php');
 compile_once (dirname(__FILE__).'/PWBDateTime.class.php');
+compile_once (dirname(__FILE__).'/Events/Events.php');
 ?>

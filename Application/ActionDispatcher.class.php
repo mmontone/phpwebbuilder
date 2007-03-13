@@ -1,4 +1,9 @@
 <?php
+
+$deferredEvents = array();
+$deferredAndOnceEvents = array('ordered' => array(), 'hash' => array());
+#@track_events $triggeredEvents = 0; @#
+
 class ActionDispatcher {
 	function & dispatch() {
 		$ad =& new ActionDispatcher;
@@ -59,9 +64,46 @@ class ActionDispatcher {
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
 		if (isset($form['bm'])) {$event['window']->goToUrl($form['bm']);}
-		DBUpdater::updateAll();
+        DBUpdater::updateAll();
+		$this->ExecuteDeferredEvents();
+        #@track_events
+        global $triggeredEvents;
+        echo $triggeredEvents . ' events triggered in total<br/>';
+        //@#
 		return $event['window'];
 	}
+
+    function ExecuteDeferredEvents() {
+        global $deferredEvents;
+        global $deferredAndOnceEvents;
+
+        #@track_events $count = 0; @#
+        while (!(empty($deferredEvents) and empty($deferredAndOnceEvents['ordered']))) {
+            while (!empty($deferredEvents)) {
+                $ks = array_keys($deferredEvents);
+                $handler =& $deferredEvents[$ks[0]];
+                unset($deferredEvents[$ks[0]]);
+                $handler->execute();
+                #@track_events $count++; @#
+            }
+
+            while (!empty($deferredAndOnceEvents['ordered'])) {
+                $ks = array_keys($deferredAndOnceEvents['ordered']);
+
+                $arr =& $deferredAndOnceEvents['ordered'][$ks[0]];
+                $key = $arr['key'];
+                $event = $arr['event'];
+
+                unset($deferredAndOnceEvents['ordered'][$ks[0]]);
+                $handler =& $deferredAndOnceEvents['hash'][$key][$event];
+                unset($deferredAndOnceEvents['hash'][$key][$event]);
+                $handler->execute();
+                #@track_events $count++; @#
+            }
+        #@track_events echo 'Executed '. $count . ' deferred events in total<br/>';@#
+        }
+    }
+
 	function updateViews(& $updates) {
 		$ks = array_keys($updates);
 		foreach ($ks as $k) {

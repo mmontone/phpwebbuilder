@@ -81,6 +81,17 @@ class CollectionField extends DataField {
         $m->$f1->setTarget($elem);
         return $m->save();
     }
+    */
+
+    /*
+    function remove(&$elem){
+        $m =& $this->createElement();
+        $params = $this->creationParams;
+        $sql = 'DELETE FROM '.$params['joinTable']. ' WHERE '. $params['joinField'].'=' .$elem->getIdOfClass($params['joinField']).' AND ' .$params['joinFieldOwn'] .'='.$this->owner->getId();
+        $db =& DBSession::instance();
+        return $db->query($sql);
+    }*/
+
     function &createElement(){
         $m =& new PersistentObject();
         $params = $this->creationParams;
@@ -92,13 +103,7 @@ class CollectionField extends DataField {
         $m->$f1->setTarget($this->owner);
         return $m;
     }
-    function remove(&$elem){
-        $m =& $this->createElement();
-        $params = $this->creationParams;
-        $sql = 'DELETE FROM '.$params['joinTable']. ' WHERE '. $params['joinField'].'=' .$elem->getIdOfClass($params['joinField']).' AND ' .$params['joinFieldOwn'] .'='.$this->owner->getId();
-        $db =& DBSession::instance();
-        return $db->query($sql);
-    }*/
+
     function defaultValues($params) {
         $v = array (
             'fieldName' => $params['type'] . $params['reverseField'],
@@ -127,6 +132,7 @@ class CollectionField extends DataField {
     function updateString() {
     }
     function loadFrom(& $reg) {
+        $this->collection->refresh();
         return true;
     }
     function & elements() {

@@ -50,13 +50,17 @@ class DescriptedObject extends PWBObject {
 		$this->setModified(false);
 		$this->triggerEvent('changes_committed', $this);
 	}
-	/**
-	 * Prints a visual representation of the object (the values of
-	 * it's index fields)
-	 */
-	function printString(){
-		return $this->primPrintString('values: ' . $this->indexValues());
-	}
+
+    function debugPrintString() {
+    	$ret = array();
+
+        $idFields = $this->allFields();
+        foreach ($idFields as $index => $field) {
+            $ret []= $index . ':' .  $field->viewValue();
+        }
+        $ret = implode(',',$ret);
+        return $this->primPrintString($ret);
+    }
 	/**
 	 * Removes all changes made to the object
 	 */
@@ -77,14 +81,35 @@ class DescriptedObject extends PWBObject {
 
 	function setModified($b) {
 		//print_backtrace(get_class($this) . '(' . $this->__instance_id . ') set modified: ' . $b);
-		$this->modified = $b;
+		#@gencheck
+        if ($this->isDeleted()) {
+        	print_backtrace_and_exit('Error: modifying a deleted object ( ' . $this->printString() . ')');
+        }//@#
+        $this->modified = $b;
 		if ($b) $this->registerModifications();
 	}
+
+    function setDeleted($b) {
+    	$this->deleted = true;
+    }
+
+    function isDeleted() {
+    	return $this->deleted;
+    }
+
+    function registerForPersistence() {
+    	$this->toPersist = true;
+    }
+
 	function registerModifications(){
 		if ($this->isPersisted()){
 			$db =& DBSession::Instance();
 			$db->registerObject($this);
 		}
+        #@sql_echo
+        else {
+            echo 'Not registering modification of ' . $this->printString() . '<br/>';
+        }//@#
 	}
 	function registerPersistence(){
 		if (!$this->isPersisted()){

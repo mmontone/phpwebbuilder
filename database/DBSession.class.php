@@ -38,21 +38,24 @@ class DBSession {
 		$this->rollback = false;
 		$this->commands = array();
 
-		$this->registeredObjects = null;
+		$n = null;
+        $this->registeredObjects =& $n;
     }
+
 	function registerObject(&$object){
-		if ($this->registeredObjects!==null){
-			#@sql_echo echo 'Registering '.$object->printString() . '<br/>';@#
+		if ($this->registeredObjects!==null) {
+			#@sql_echo echo ( 'Registering '.$object->printString() . '<br/>');@#
 			$set = isset($this->registeredObjects[$object->getInstanceId()]);
-			$this->registeredObjects[$object->getInstanceId()]=&$object;
+			$this->registeredObjects[$object->getInstanceId()] =& $object;
 			$object->toPersist = true;
 			if (!$set && !$object->existsObject){
 				$object->registerCollaborators();
 			}
 		}
 	}
-	function &beginRegisteringAndTransaction(){
 
+
+	function &beginRegisteringAndTransaction(){
 		$db =& DBSession::beginRegistering();
 		$db->beginTransaction();
 		return $db;
@@ -62,12 +65,17 @@ class DBSession {
 		if ($db->registeredObjects==null)$db->registeredObjects=array();
 		return $db;
 	}
+
 	function flushChanges(){
-		foreach(array_keys($this->registeredObjects) as $k){
-			$this->registeredObjects[$k]->flushChanges();
-		}
-		$this->registeredObjects=null;
+		if (is_array($this->registeredObjects)) {
+            foreach(array_keys($this->registeredObjects) as $k){
+    			$this->registeredObjects[$k]->flushChanges();
+    		}
+    		$n = null;
+            $this->registeredObjects =& $n;
+        }
 	}
+
     function rollbackTransaction() {
 		$this->driver->rollback();
 
@@ -100,14 +108,7 @@ class DBSession {
 		}//@#
 
         if ($this->nesting == 1) {
-			if ($this->registeredObjects!==null){
-				while(!empty($this->registeredObjects)){
-					$ks = array_keys($this->registeredObjects);
-					$elem =& $this->registeredObjects[$ks[0]];
-					unset($this->registeredObjects[$ks[0]]);
-					$this->save($elem);
-				}
-			}
+            $this->saveRegisteredObjects();
 			if (!$this->rollback) {
 				#@sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');@#
 				$this->commitTransaction();
@@ -123,7 +124,7 @@ class DBSession {
 				print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');
 			}
 			else {
-				print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');
+				print_backtrace('Rolling back transaction ('. $this->nesting . ')<br/>');
 			}
 		}//@#
 
@@ -131,6 +132,48 @@ class DBSession {
 		$n=null;
 		return $n;
 	}
+
+    #@php5
+    function saveRegisteredObjects() {
+    	ActionDispatcher::ExecuteDeferredEvents();
+
+        if ($this->registeredObjects!==null){
+            try {
+                $toRollback = array();
+                while(!empty($this->registeredObjects)){
+                    $ks = array_keys($this->registeredObjects);
+                    $elem =& $this->registeredObjects[$ks[0]];
+                    unset($this->registeredObjects[$ks[0]]);
+                    $toRollback[] =& $elem;
+                    $this->save($elem);
+                }
+            }
+            catch (Exception $e) {
+                $this->registeredObjects = $toRollback;
+                $e->raise();
+            }
+        }
+    }//@#
+
+    #@php4
+    function saveRegisteredObjects() {
+        ActionDispatcher::ExecuteDeferredEvents();
+
+        if ($this->registeredObjects!==null) {
+            $toRollback = array();
+            while(!empty($this->registeredObjects)){
+                $ks = array_keys($this->registeredObjects);
+                $elem =& $this->registeredObjects[$ks[0]];
+                unset($this->registeredObjects[$ks[0]]);
+                $toRollback[] =& $elem;
+                $e =& $this->save($elem);
+                if (is_exception($e)) {
+                    $this->registeredObjects = $toRollback;
+                    return $e->raise();
+                }
+            }
+        }
+    }//@#
 
 	function rollback() {
 		if ($this->rollback_on_error) return;
@@ -332,13 +375,13 @@ class DBCommand {
 
 class CreateObjectDBCommand extends DBCommand {
 	function commit() {
-		#@sql_echo 	echo 'Committing creation: ' . getClass($this->object) . '<br />';@#
+		#@sql_echo 	echo 'Committing creation: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->commitMetaFields();
 	}
 
 	function rollback() {
-		#@sql_echo echo 'Rolling back creation: ' . getClass($this->object) . '<br />';@#
+		#@sql_echo echo 'Rolling back creation: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->flushInsert();
 	}
@@ -346,13 +389,13 @@ class CreateObjectDBCommand extends DBCommand {
 
 class UpdateObjectDBCommand extends DBCommand {
 	function commit() {
-		#@sql_echo echo 'Committing update: ' . getClass($this->object) . '<br />';@#
+		#@sql_echo echo 'Committing update: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->commitMetaFields();
 	}
 
 	function rollback() {
-		#@sql_echo echo 'Rolling back update: ' . getClass($this->object) . '<br />';@#
+		#@sql_echo echo 'Rolling back update: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->flushUpdate();
 	}
@@ -364,7 +407,7 @@ class DeleteObjectDBCommand extends DBCommand {
 	}
 
 	function rollback() {
-		#@sql_echo  echo 'Rolling back delete: ' . getClass($this->object) . '<br />';@#
+		#@sql_echo  echo 'Rolling back delete: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->existsObject=TRUE;
 	}

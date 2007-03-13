@@ -22,6 +22,15 @@ class FunctionObject
         $this->method_name =& $method_name;
         $this->params =& $params;
     }
+
+    function getMethodName() {
+    	return $this->method_name;
+    }
+
+    function getParams() {
+    	return $this->params;
+    }
+
 	function setTarget(&$target){
 		$this->target =& $target;
 	}

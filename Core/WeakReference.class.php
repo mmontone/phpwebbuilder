@@ -40,7 +40,7 @@ class WeakReference {
 
 class WeakFunctionObject extends FunctionObject{
 	function &fromFunctionObject(&$fo){
-		$wr =& new WeakFunctionObject($fo->getTarget(), $fo->method_name, $fo->params);
+		$wr =& new WeakFunctionObject($fo->getTarget(), $fo->getMethodName(), $fo->getParams());
 		return $wr;
 	}
 	function setTarget(&$target){
@@ -53,6 +53,48 @@ class WeakFunctionObject extends FunctionObject{
 		return $this->target->isNotNull();
 	}
 }
+
+/*
+class WeakFunctionObject {
+    var $function;
+    var $target;
+
+    function WeakFunctionObject(&$function) {
+    	$this->function =& $function;
+        $this->target =& new WeakReference($function->getTarget());
+        $n = null;
+        $this->function->setTarget($n);
+    }
+
+    function &fromFunctionObject(&$fo){
+        $wr =& new WeakFunctionObject($fo);
+        return $wr;
+    }
+
+    function isNotNull(){
+        return $this->target->isNotNull();
+    }
+
+    function printString() {
+    	return '[' . getClass($this) . ' on: ' . $this->function->printString() . ']';
+    }
+
+    function executeWithWith(&$param1, &$param2) {
+    	$this->function->setTarget($this->target->getTarget());
+        $this->function->executeWithWith($param1, $param2);
+        $n = null;
+        $this->function->setTarget($n);
+    }
+
+    function executeWith(&$params) {
+    	$this->function->setTarget($this->target->getTarget());
+        $this->function->executeWith($params);
+        $n = null;
+        $this->function->setTarget($n);
+    }
+}
+*/
+
 
 class WeakCollection extends Collection {
 	function &at($index){

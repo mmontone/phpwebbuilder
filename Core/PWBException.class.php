@@ -31,6 +31,10 @@ class PWBException extends Exception {
     function getMessage() {
 		return $this->message;
     }
+
+    function printString() {
+    	return $this->primPrintString('message: ' . $this->getMessage());
+    }
     //@#
 
     #@php5

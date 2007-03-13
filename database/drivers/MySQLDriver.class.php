@@ -5,6 +5,7 @@ class MySQLDriver extends DBDriver {
 	var $pconn;
 	var $tables_type = 'MyISAM';
 
+    #@php4
     function &SQLExec ($sql, $getID=false, $obj=null, &$rows) {
        	$rows=0;
        	$this->setLastSQL($sql);
@@ -14,8 +15,26 @@ class MySQLDriver extends DBDriver {
 	        $rows = mysql_affected_rows();
 	        return $reg;
         }
-        return $reg;
-    }
+        else {
+        	$reg->setTargetObject($obj);
+            return $reg->raise();
+        }
+    }//@#
+
+    #@php5
+    function &SQLExec ($sql, $getID=false, $obj=null, &$rows) {
+        $rows=0;
+        $this->setLastSQL($sql);
+        try {
+            $reg = &$this->query ($sql);
+            if ($getID) { $obj->setID(mysql_insert_id());};
+            $rows = mysql_affected_rows();
+            return $reg;
+        } catch (DBError $ex) {
+        	$ex->setTargetObject($obj);
+            return $ex->raise();
+        }
+    }//@#
 
     function initialize() {
 		if (defined('tables_type')) {

@@ -51,15 +51,17 @@ class IndexField extends NumField {
 		return $this->datatype;
 	}
 	function refreshId(){
-		parent::setValue($this->getTargetId());
+		$this->changed();
 	}
+
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
 			$this->removeTarget();
 			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
             $this->buffered_target =& $target;
-            $target->incrementRefCount();
+            $this->buffered_value = $target->getId();
+			$target->incrementRefCount();
             $this->setModified(true);
             $this->triggerEvent('changed', $this);
             if ($this->owner->isPersisted()){
@@ -67,7 +69,7 @@ class IndexField extends NumField {
             }
         }
 	}
-	function removeTarget(){
+    function removeTarget(){
 		if ($this->buffered_target !== null){
 			$this->buffered_target->retractInterestIn('id_changed', $this);
 			$this->mapChild('decrementRefCount');

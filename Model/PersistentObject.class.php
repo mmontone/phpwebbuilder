@@ -14,6 +14,8 @@ class PersistentObject extends DescriptedObject {
 	 * Sets the objec's ID, and notifies all the fields
 	 * (only the ones of this level)
 	 */
+     var $deleted = false;
+
 	function setID($id) {
 		foreach ($this->allFieldNamesThisLevel() as $field) {
 			$this->$field->setID($id);
@@ -66,6 +68,15 @@ class PersistentObject extends DescriptedObject {
 			$persistentObjects[getClass($this)][$id] =& $this;
         }
 	}
+
+    function unregisterGlobalObject() {
+    	global $persistentObjects;
+        $id = $this->getId();
+        if ($id!=0) {
+            unset($persistentObjects[getClass($this)][$id]);
+        }
+    }
+
 	function &getRealChild(){
 		if (!isset($this->child)) {
 			return $this;
@@ -409,6 +420,14 @@ class PersistentObject extends DescriptedObject {
 
 		return $res;
 	}
+
+    /*
+     * Raises a database error
+     */
+    function &raiseDBError(&$error) {
+    	return $error->raise();
+    }
+
 	/**
 	 * Updates the object in the database
 	 */
@@ -485,21 +504,31 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &delete() {
 		$res = null;
-		if ($this->canDelete())  {
+		$ex =& $this->verifyDeletion();
+        if (!is_exception($ex)) {
 			if ($this->isNotTopClass($this)) {
 				$p = & $this->getParent();
 				$res =& $p->delete();
 			}
 			if (!is_exception($res))  {
 				$res =& $this->basicDelete();
+                if (!is_exception($res))  {
+                	$this->setDeleted(true);
+                    return $res;
+                }
 			}
 		}
-		else {
-			$res =& new PWBException(array('message' => 'Cannot delete object'));
-		}
+
 		return $res;
 	}
-		/**
+
+    function verifyDeletion() {
+    	if (!$this->canDelete())  {
+            $ex =& new DBError(array('message' => 'Cannot delete object'));
+            return $ex->raise();
+        }
+    }
+	/**
 	 * finds all similar objects (objects with same atributes set in same values)
 	 * Returns a PersistentCollection
 	 */
