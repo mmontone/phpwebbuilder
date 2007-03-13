@@ -68,6 +68,11 @@ class CollectionField extends DataField {
 			$elem->registerPersistence();
 		}
 		$this->collection->add($elem);
+		$elem->incrementRefCount();
+	}
+	function remove(&$elem){
+		$elem->{$this->creationParams['reverseField']}->removeTarget();
+		$elem->decrementRefCount();
 	}
 	/*
     function add(&$elem){
@@ -76,7 +81,6 @@ class CollectionField extends DataField {
         $m->$f1->setTarget($elem);
         return $m->save();
     }
-    */
     function &createElement(){
         $m =& new PersistentObject();
         $params = $this->creationParams;
@@ -94,7 +98,7 @@ class CollectionField extends DataField {
         $sql = 'DELETE FROM '.$params['joinTable']. ' WHERE '. $params['joinField'].'=' .$elem->getIdOfClass($params['joinField']).' AND ' .$params['joinFieldOwn'] .'='.$this->owner->getId();
         $db =& DBSession::instance();
         return $db->query($sql);
-    }
+    }*/
     function defaultValues($params) {
         $v = array (
             'fieldName' => $params['type'] . $params['reverseField'],
@@ -140,5 +144,9 @@ class CollectionField extends DataField {
         // This field collection should be inmutable
         return $this->collection->isEmpty();
     }
+	//GARBAGE COLLECTION
+    function mapChild($method){
+		$this->collection->collect($method.'()');
+	}
 }
 ?>

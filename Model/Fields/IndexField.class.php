@@ -56,17 +56,23 @@ class IndexField extends NumField {
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
-			if ($this->buffered_target !== null){
-				$this->buffered_target->retractInterestIn('id_changed', $this);
-			}
+			$this->removeTarget();
 			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
             $this->buffered_target =& $target;
+            $target->incrementRefCount();
             $this->setModified(true);
             $this->triggerEvent('changed', $this);
             if ($this->owner->isPersisted()){
             	$target->registerPersistence();
             }
         }
+	}
+	function removeTarget(){
+		if ($this->buffered_target !== null){
+			$this->buffered_target->retractInterestIn('id_changed', $this);
+			$this->mapChild('decrementRefCount');
+		}
+		$this->setValue(0);
 	}
 	function registerCollaborators(){
 		$t =& $this->getTarget();
@@ -161,7 +167,13 @@ class IndexField extends NumField {
         	return parent::SQLvalue();
         }
     }
-
+    //GARBAGE COLLECTION
+    function mapChild($method){
+		$t =& $this->getTarget();
+		if ($t!=null){
+			$t->$method();
+		}
+	}
 }
 
 ?>

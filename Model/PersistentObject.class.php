@@ -541,5 +541,115 @@ class PersistentObject extends DescriptedObject {
 			}
 		}
 	}
+
+	// GARBAGE COLLECTION
+	var $color='black';
+	var $buffered=false;
+	function makeRootObject(){
+		$this->rootObject->setValue(true);
+	}
+	function deleteRootObject(){
+		$this->rootObject->setValue(false);
+		$this->posibleGarbageRoot();
+	}
+	function incrementRefCount(){
+		return;
+		$this->refCount->increment();
+	}
+	function decrementRefCount(){
+		return;
+		$this->refCount->decrement();
+		if ($this->refCount->getValue()==0){
+			$this->release();
+		} else {
+			$this->posibleGarbageRoot();
+		}
+	}
+	function release(){
+		foreach($this->allFieldNames() as $f){
+			$this->$f->mapChild('decrementRefCount');
+		}
+		$this->color='black';
+		if (!$this->buffered){
+			$this->delete();
+		}
+	}
+	function posibleGarbageRoot(){
+		$this->color='purple';
+		$this->buffered=true;
+		$GLOBALS['bufferedRoots'][$this->getInstanceId()]=&$this;
+	}
+	function CollectCycles(){
+		PersistentObject::MarkRoots();
+		PersistentObject::ScanRoots();
+		PersistentObject::CollectRoots();
+	}
+	function MarkRoots(){
+		foreach(array_keys($GLOBALS['bufferedRoots']) as $k){
+			$n =& $GLOBALS['bufferedRoots'][$k];
+			if ($n->color=='purple'){
+				$n->markGray();
+			} else {
+				$n->buffered=false;
+				unset($GLOBALS['bufferedRoots'][$k]);
+				if ($n->color=='black' and $n->refCount->getValue()==0){
+					$n->delete();
+				}
+			}
+		}
+	}
+	function ScanRoots(){
+		foreach(array_keys($GLOBALS['bufferedRoots']) as $k){
+			$GLOBALS['bufferedRoots'][$k]->scan();
+		}
+	}
+	function CollectRoots(){
+		foreach(array_keys($GLOBALS['bufferedRoots']) as $k){
+			$n =& $GLOBALS['bufferedRoots'][$k];
+			$n->buffered=false;
+			unset($GLOBALS['bufferedRoots'][$k]);
+			$n->collectWhite();
+		}
+	}
+	function markGray(){
+		if ($this->rootObject->getValue())return;
+		if ($this->color!='gray'){
+			$this->color='gray';
+			foreach($this->allFieldNames() as $f){
+				$this->$f->mapChild(
+					#@lam &$t->	$t->refCount->decrement();$t->markGray();@#
+	    		);
+			}
+		}
+	}
+	function scan(){
+		if ($this->color=='gray'){
+			if ($this->refCount->getValue()>0){
+				$this->scanBlack();
+			} else {
+				$this->color='white';
+				foreach($this->allFieldNames() as $f){
+					$this->$f->mapChild('scan');
+				}
+			}
+		}
+	}
+	function scanBlack(){
+		$this->color='black';
+		foreach($this->allFieldNames() as $f){
+			$this->$f->mapChild(
+				#@lam &$t->	$t->refCount->increment();if ($t->color!='black'){$t->scanBlack();}@#
+    		);
+		}
+	}
+	function collectWhite(){
+		if ($this->color=='white' and !$this->buffered){
+			$this->color='black';
+			foreach($this->allFieldNames() as $f){
+				$this->$f->mapChild('collectWhite');
+			}
+			$this->delete();
+		};
+	}
 }
 ?>
