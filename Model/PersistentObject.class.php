@@ -576,10 +576,24 @@ class PersistentObject extends DescriptedObject {
 	var $buffered=false;
 	function addGCFields(){
 		if (defined('garbage_collection')){
-			$this->addField(new VersionField(array('fieldName'=>"refCount",'default'=>'0')));	$this->refCount->setValue('0');
+			$this->addField(new NumField(array('fieldName'=>"refCount",'default'=>'0')));	$this->refCount->setValue('0');
 			$this->addField(new BoolField(array('fieldName'=>"rootObject",'default'=>true)));	$this->rootObject->setValue(false);
+		} else {
+			$this->refCount =& new ValueHolder(0);
+			$this->rootObject =& new ValueHolder(true);
 		}
 	}
+	function removedAsTarget(&$elem, $field){
+		foreach($this->allFieldNames() as $f){
+			$this->$f->removedAsTarget($elem, $field);
+		}
+	}
+	function addedAsTarget(&$elem, $field){
+		foreach($this->allFieldNames() as $f){
+			$this->$f->addedAsTarget($elem, $field);
+		}
+	}
+
 	function makeRootObject(){
 		$this->rootObject->setValue(true);
 	}
@@ -587,117 +601,134 @@ class PersistentObject extends DescriptedObject {
 		$this->rootObject->setValue(false);
 		$this->posibleGarbageRoot();
 	}
-	function incrementRefCount(){
-		if (!defined('garbage_collection')) return;
+	function &incrementRefCount(){
+		if (!defined('garbage_collection')) return $this;
 		$this->refCount->increment();
+		return $this;
 	}
 	function decrementRefCount(){
-		if (!defined('garbage_collection')) return;
+		if (!defined('garbage_collection')) return $this;
 		$this->refCount->decrement();
-		if ($this->refCount->getValue()==0){
-			$this->release();
-		} else {
-			$this->posibleGarbageRoot();
-		}
+		$this->posibleGarbageRoot();
 	}
 	function release(){
-		foreach($this->allFieldNames() as $f){
-			$this->$f->mapChild('decrementRefCount');
-		}
+		$this->mapChild(
+			#@lam &$e->$e->decrementRefCount();return $e;@#
+		);
 		$this->color='black';
 		if (!$this->buffered){
+			#@persistence_echo echo 'deleting garbage:'.$this->printString().'<br/>';@#
 			$this->delete();
 		}
 	}
 	function posibleGarbageRoot(){
-		$this->color='purple';
 		$this->buffered=true;
-		$GLOBALS['bufferedRoots'][$this->getInstanceId()]=&$this;
+		$gs =& getSessionGlobal('bufferedRoots');
+		$gs[$this->getInstanceId()]=&$this;
+		#@persistence_echo echo 'possible garbage: '.$this->printString().'<br/>';@#
 	}
 	function CollectCycles(){
 		PersistentObject::MarkRoots();
 		PersistentObject::ScanRoots();
 		PersistentObject::CollectRoots();
 	}
+	function isErasable(){
+		return $this->color=='black' and $this->refCount->getValue()==0 && !$this->rootObject->getValue();
+	}
 	function MarkRoots(){
-		foreach(array_keys($GLOBALS['bufferedRoots']) as $k){
-			$n =& $GLOBALS['bufferedRoots'][$k];
+		$gs =& getSessionGlobal('bufferedRoots');
+		if ($gs==null) $gs=array();
+		#@persistence_echo echo 'finding garbage<br/>';@#
+		foreach(array_keys($gs) as $k){
+			$n =& $gs[$k];
+			if ($n->isErasable()){
+				$n->buffered=false;
+				unset($gs[$k]);
+				$n->release();
+			} else {
+				$n->color='purple';
+			}
+		}
+		foreach(array_keys($gs) as $k){
+			$n =& $gs[$k];
+			#@persistence_echo echo 'possible garbage root: '.$n->printString().'<br/>';@#
 			if ($n->color=='purple'){
 				$n->markGray();
 			} else {
 				$n->buffered=false;
-				unset($GLOBALS['bufferedRoots'][$k]);
-				if ($n->color=='black' and $n->refCount->getValue()==0){
+				unset($gs[$k]);
+				if ($n->isErasable()){
 					$n->delete();
 				}
 			}
 		}
 	}
 	function ScanRoots(){
-		foreach(array_keys($GLOBALS['bufferedRoots']) as $k){
+		foreach(array_keys(getSessionGlobal('bufferedRoots')) as $k){
 			$GLOBALS['bufferedRoots'][$k]->scan();
 		}
 	}
 	function CollectRoots(){
-		foreach(array_keys($GLOBALS['bufferedRoots']) as $k){
-			$n =& $GLOBALS['bufferedRoots'][$k];
+		$gs =& getSessionGlobal('bufferedRoots');
+		foreach(array_keys($gs) as $k){
+			$n =& $gs[$k];
 			$n->buffered=false;
-			unset($GLOBALS['bufferedRoots'][$k]);
+			unset($gs[$k]);
 			$n->collectWhite();
 		}
 	}
 	function markGray(){
-		if ($this->rootObject->getValue())return;
 		if ($this->color!='gray'){
+			#@persistence_echo echo 'marking gray: '.$this->printString().'<br/>';@#
 			$this->color='gray';
-			foreach($this->allFieldNames() as $f){
-				$this->$f->mapChild(
-					#@lam &$t->	$t->refCount->decrement();$t->markGray();@#
-	    		);
-			}
+			$this->mapChild(
+				#@lam &$t->	$t->refCount->decrement();$t->markGray();return $t;@#
+    		);
 		}
 	}
 	function scan(){
 		if ($this->color=='gray'){
-			if ($this->refCount->getValue()>0){
+			if ($this->refCount->getValue()>0 || $this->rootObject->getValue()){
 				$this->scanBlack();
 			} else {
 				$this->color='white';
-				foreach($this->allFieldNames() as $f){
-					$this->$f->mapChild('scan');
-				}
+				$this->mapChild(
+					#@lam &$e->$e->scan();return $e;@#
+				);
 			}
 		}
 	}
 	function scanBlack(){
 		$this->color='black';
-		foreach($this->allFieldNames() as $f){
-			$this->$f->mapChild(
-				#@lam &$t->	$t->refCount->increment();if ($t->color!='black'){$t->scanBlack();}@#
-    		);
-		}
+		#@persistence_echo echo 'not erasable: '.$this->printString().'<br/>';@#
+		$this->mapChild(
+			#@lam &$t->	$t->refCount->increment();if ($t->color!='black'){$t->scanBlack();}return $t;@#
+   		);
 	}
 	function collectWhite(){
 		if ($this->color=='white' and !$this->buffered){
+			#@persistence_echo echo 'removing '.$this->printString().'<br/>';@#
 			$this->color='black';
-			foreach($this->allFieldNames() as $f){
-				$this->$f->mapChild('collectWhite');
-			}
+			$this->mapChild(
+				#@lam &$e->$e->collectWhite();return $e;@#
+			);
 			$this->delete();
 		};
 	}
+	function mapChild($fun){
+		foreach($this->allFieldNames() as $f){
+			$this->$f->mapChild($fun);
+		}
+	}
 	function ResetRefCounts(){
 		$DB=& DBSession::beginRegisteringAndTransaction();
-		echo 'setting 0';
+		$obs =& new Collection;
 		foreach(get_subclasses('PersistentObject') as $sc){
-			$obs =& new PersistentCollection($sc);
-			$obs->collect(lambda('&$elem', '$elem->refCount->setValue(0);'));
+			$obs0 =& new PersistentCollection($sc);
+			$obs0->for_each(lambda('&$elem', '$obs->atPut($elem->getInstanceId(), $elem);return $obs;', get_defined_vars()));
 		}
-		echo 'setting ref';
-		foreach(get_subclasses('PersistentObject') as $sc){
-			$obs =& new PersistentCollection($sc);
-			$obs->collect(lambda('&$elem', '$elem->mapChild("incrementRefCount");'));
-		}
+		$obs->for_each(lambda('&$elem', '$elem->refCount->setValue(0);return $elem;'));
+		$obs->for_each(lambda('&$elem', '$elem->mapChild(lambda(\'&$e\',\'$e->incrementRefCount();return $e;\'));return $elem;'));
 		$DB->commit();
 	}
 

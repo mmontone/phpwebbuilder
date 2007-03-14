@@ -131,6 +131,11 @@ function sql_echo($text) {
 	return optionalCompile('sql_echo', $text);
 }
 
+function persistence_echo($text) {
+	return optionalCompile('persistence_echo', $text);
+}
+
+
 function track_events($text) {
 	return optionalCompile('track_events', $text);
 }

@@ -74,6 +74,16 @@ class CollectionField extends DataField {
 		$elem->{$this->creationParams['reverseField']}->removeTarget();
 		$elem->decrementRefCount();
 	}
+	function removedAsTarget(&$elem, $field){
+		if ($this->creationParams['reverseField']==$field && $elem->hasType($this->creationParams['type'])){
+			$elem->decrementRefCount();
+		}
+	}
+	function addedAsTarget(&$elem, $field){
+		if ($this->creationParams['reverseField']==$field&& $elem->hasType($this->creationParams['type'])){
+			$elem->incrementRefCount();
+		}
+	}
 	/*
     function add(&$elem){
         $m =& $this->createElement();
@@ -151,8 +161,8 @@ class CollectionField extends DataField {
         return $this->collection->isEmpty();
     }
 	//GARBAGE COLLECTION
-    function mapChild($method){
-		$this->collection->collect($method.'()');
+    function mapChild($function){
+		$this->collection->for_each($function);
 	}
 }
 ?>

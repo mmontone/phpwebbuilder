@@ -60,8 +60,9 @@ class IndexField extends NumField {
 			$this->removeTarget();
 			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
             $this->buffered_target =& $target;
-            $this->buffered_value = $target->getId();
-			$target->incrementRefCount();
+			$this->buffered_value = $target->getId();
+            $target->incrementRefCount();
+            $target->addedAsTarget($this->owner, $this->varName);
             $this->setModified(true);
             $this->triggerEvent('changed', $this);
             if ($this->owner->isPersisted()){
@@ -72,7 +73,10 @@ class IndexField extends NumField {
     function removeTarget(){
 		if ($this->buffered_target !== null){
 			$this->buffered_target->retractInterestIn('id_changed', $this);
-			$this->mapChild('decrementRefCount');
+			$self =& $this;
+			$this->mapChild(
+				#@lam $e->$e->decrementRefCount();$e->removedAsTarget($self->owner, $self->varName);return $e;@#
+			);
 		}
 		$this->setValue(0);
 	}
@@ -170,10 +174,10 @@ class IndexField extends NumField {
         }
     }
     //GARBAGE COLLECTION
-    function mapChild($method){
+    function mapChild($function){
 		$t =& $this->getTarget();
 		if ($t!=null){
-			$t->$method();
+			$function($t);
 		}
 	}
 }

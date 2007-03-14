@@ -43,8 +43,8 @@ class DBSession {
     }
 
 	function registerObject(&$object){
-		if ($this->registeredObjects!==null) {
-			#@sql_echo echo ( 'Registering '.$object->printString() . '<br/>');@#
+		if ($this->registeredObjects!==null){
+			#@persistence_echo echo 'Registering '.$object->printString() . '<br/>';@#
 			$set = isset($this->registeredObjects[$object->getInstanceId()]);
 			$this->registeredObjects[$object->getInstanceId()] =& $object;
 			$object->toPersist = true;
@@ -106,9 +106,9 @@ class DBSession {
         {
 		  print_backtrace('Error: trying to commit a non existing transaction');
 		}//@#
-
+		#@persistence_echo echo 'commiting '.$this->nesting.'<br/>';@#
         if ($this->nesting == 1) {
-            $this->saveRegisteredObjects();
+			$this->saveRegisteredObjects();
 			if (!$this->rollback) {
 				#@sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');@#
 				$this->commitTransaction();
@@ -166,12 +166,14 @@ class DBSession {
                 $elem =& $this->registeredObjects[$ks[0]];
                 unset($this->registeredObjects[$ks[0]]);
                 $toRollback[] =& $elem;
+				#@persistence_echo echo 'saving '.$elem->printString().'<br/>';@#
                 $e =& $this->save($elem);
                 if (is_exception($e)) {
                     $this->registeredObjects = $toRollback;
                     return $e->raise();
                 }
             }
+			PersistentObject::CollectCycles();
         }
     }//@#
 

@@ -28,7 +28,10 @@ class FieldMapper extends PWBFactory{
 		return $this->field->creationParams['default'];
 	}
 	function checkField($f){
-		return $this->compareType($f["Type"]) && ($f["Default"]==$this->getDefault());
+		return $this->compareType($f["Type"]) &&
+				(($f["Default"]===null && ($f["Null"]==='YES' || $f["Extra"]=='auto_increment') && $this->getDefault()===null)
+				|| ($f["Default"]==$this->getDefault() && $f["Default"]!==null
+					&& $f["Null"]==='NO'));
 	}
 	function allType(){
 		$df = $this->getDefault();
@@ -105,7 +108,7 @@ class VersionFieldFieldMapper extends NumFieldFieldMapper {
 		return "int(11) unsigned";
 	}
 	function getDefault(){
-		return 0;
+		return '0';
 	}
 }
 

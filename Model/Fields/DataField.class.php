@@ -67,6 +67,7 @@ class DataField extends ValueModel {
 		$this->varName = $ps['fieldName'];
 		$this->isIndex = $ps['is_index'];
 		$this->displayString = $ps['display'];
+		$this->value = $ps['default'];
 	}
 	/**
 	 * Returns the default initialization values of the object
@@ -249,6 +250,8 @@ class DataField extends ValueModel {
 
 	//GARBAGE COLLECTION
 	function mapChild($method){}
+	function removedAsTarget(&$elem, $field){}
+	function addedAsTarget(&$elem, $field){}
 }
 
 ?>
