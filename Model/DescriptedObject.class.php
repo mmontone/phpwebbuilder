@@ -178,7 +178,7 @@ class DescriptedObject extends PWBObject {
     function attachFieldsEvents() {
         foreach($this->allFieldNames() as $f) {
             $field =& $this->fieldNamed($f);
-            $field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'));
+            $field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'), array('execute on triggering' => true));
         }
     }
 	/**

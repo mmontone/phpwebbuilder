@@ -4,11 +4,10 @@ $allObjectsInMem = array();
 
 class PWBObject
 {
-    //var $event_listeners = array();
+    var $event_listeners = array();
     var $disabled_events = array();
     var $__instance_id = null;
     var $creationParams;
-
 
 	/**
 	 * Special var, for get_subclass
@@ -126,19 +125,28 @@ class PWBObject
 	 */
 
     function addInterestIn($event, &$function, $params = array()) {
-       	#@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
-       	$i=@$this->event_handlers[$event]++;
-        //$this->event_listeners[$event][$i] =& WeakFunctionObject::fromFunctionObject($function);
+       	$target =& $function->getTarget();
+        if (is_object($target)) {
+        	$handle = 't_' . $target->__instance_id;
+            if (isset($this->event_listeners[$event][$handle])) {
+                #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
+        	   return;
+            }
+        }
+        else {
+        	$handle = count($this->event_listeners[$event]);
+        }
+
+        #@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
         $params['function'] =& $function;
         $params['event'] = $event;
         $event_handler =& EventHandler::FromParams($params);
-        $this->event_listeners[$event][$i] =& $event_handler;
-        //$this->event_listeners[$event][$i] =& WeakFunctionObject::fromFunctionObject($event_handler);
-        return $i;
+        $this->event_listeners[$event][$handle] =& $event_handler;
+        return $handle;
     }
     function retractInterestIn($event, $handle){
 		#@track_events
-        if (isset($this->event_listeners[$event][$handle])) {
+        if (@isset($this->event_listeners[$event][$handle])) {
         	$s = $this->event_listeners[$event][$handle]->printString();
         }
         echo 'Retracting interest in ' .  $this->printString() . '>>' .$event .  $s . '<br/>';

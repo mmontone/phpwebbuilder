@@ -1,5 +1,9 @@
 <?php
 
+$deferredEvents = array();
+$deferredAndOnceEvents = array('ordered' => array(), 'hash' => array());
+#@track_events $triggeredEvents = 0; @#
+
 class EventHandler {
     var $function;
     var $event;
@@ -60,6 +64,37 @@ class EventHandler {
 
     function isNotNull() {
     	return $this->function->isNotNull();
+    }
+
+    function ExecuteDeferredEvents() {
+        global $deferredEvents;
+        global $deferredAndOnceEvents;
+
+        #@track_events $count = 0; @#
+        while (!(empty($deferredEvents) and empty($deferredAndOnceEvents['ordered']))) {
+            while (!empty($deferredEvents)) {
+                $ks = array_keys($deferredEvents);
+                $handler =& $deferredEvents[$ks[0]];
+                unset($deferredEvents[$ks[0]]);
+                $handler->execute();
+                #@track_events $count++; @#
+            }
+
+            while (!empty($deferredAndOnceEvents['ordered'])) {
+                $ks = array_keys($deferredAndOnceEvents['ordered']);
+
+                $arr =& $deferredAndOnceEvents['ordered'][$ks[0]];
+                $key = $arr['key'];
+                $event = $arr['event'];
+
+                unset($deferredAndOnceEvents['ordered'][$ks[0]]);
+                $handler =& $deferredAndOnceEvents['hash'][$key][$event];
+                unset($deferredAndOnceEvents['hash'][$key][$event]);
+                $handler->execute();
+                #@track_events $count++; @#
+            }
+        #@track_events echo 'Executed '. $count . ' deferred events in total<br/>';@#
+        }
     }
 }
 

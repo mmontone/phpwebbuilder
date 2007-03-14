@@ -21,22 +21,20 @@ class CollectionNavigator extends Component {
 	}
 
 	function initialize() {
-		$this->col->addInterestIn('changed', new FunctionObject($this, 'refresh'));
+		$this->col->addInterestIn('changed', new FunctionObject($this, 'refresh'), array('execute once' => true));
         $this->addNavigationButtons();
 		$this->addComponent(new ActionLink($this, 'filter', 'filter', $n = null), 'filter');
 		$this->addComponent(new ActionLink($this, 'refresh', 'refresh', $n = null), 'refresh');
 		$this->firstElement =& new ValueHolder($fp = 1);
-		$this->firstElement->onChangeSend('refresh', $this);
+        $this->firstElement->addInterestIn('changed', new FunctionObject($this, 'refresh'), array('execute once' =>true));
 		$this->addComponent(new Input($this->firstElement), 'firstElem');
-		//$this->firstElem->addEventListener(array('change'=>'refresh'), $this);
 		$this->addComponent(new CompositeWidget, 'objs');
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->addComponent(new Text($this->size), 'realSize');
 		$this->pageSize =& new ValueHolder($pz = 10);
-		$this->pageSize->onChangeSend('refresh', $this);
+        $this->pageSize->addInterestIn('changed', new FunctionObject($this, 'refresh'), array('execute once' => true));
 		$this->addComponent(new Input($this->pageSize), 'pSize');
-		//$this->pSize->addEventListener(array('change'=>'refresh'), $this);
 		foreach ($this->fields as $n=>$f) {
 			$fc = & new CompositeWidget;
 			if (is_string($f)) {

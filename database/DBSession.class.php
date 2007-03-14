@@ -135,7 +135,7 @@ class DBSession {
 
     #@php5
     function saveRegisteredObjects() {
-    	ActionDispatcher::ExecuteDeferredEvents();
+    	//ActionDispatcher::ExecuteDeferredEvents();
 
         if ($this->registeredObjects!==null){
             try {
@@ -157,7 +157,7 @@ class DBSession {
 
     #@php4
     function saveRegisteredObjects() {
-        ActionDispatcher::ExecuteDeferredEvents();
+        //ActionDispatcher::ExecuteDeferredEvents();
 
         if ($this->registeredObjects!==null) {
             $toRollback = array();
