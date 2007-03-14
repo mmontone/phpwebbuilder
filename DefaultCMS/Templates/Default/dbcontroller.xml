@@ -18,6 +18,7 @@
 		<input type="button" value="Execute SQL" id="exec_sql"/>
 		<input type="button" value="Execute OQL" id="exec_oql"/>
 		<input type="button" value="Update the Database" id="exec_update"/>
+		<input type="button" value="Execute PHP" id="exec_php"/>
 		<container id="sql_res"/>
 		<h1>Check Table Structure</h1>
 		<span>Step by step</span><input type="checkbox" value="Step by step" id="stepping"/>

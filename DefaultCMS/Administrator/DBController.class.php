@@ -41,7 +41,8 @@ class DBController extends Component {
 		$this->addComponent(new Text($this->sql_result), 'sql_res');
 		$this->addComponent(new ActionLink($this, 'exec_sql', 'Execute the SQL', $n3=null), 'exec_sql');
 		$this->addComponent(new ActionLink($this, 'exec_oql', 'Execute in OQL', $n3=null), 'exec_oql');
-		$this->addComponent(new ActionLink($this, 'exec_update', 'Update the Database', $n3=null), 'exec_update');
+		//$this->addComponent(new ActionLink($this, 'exec_update', 'Update the Database', $n3=null), 'exec_update');
+		$this->addComponent(new ActionLink($this, 'exec_php', 'Execute PHP', $n3=null), 'exec_php');
 
 		$this->addComponent(new Label('Check Table Structure'));
 		$this->addComponent(new Label('Step by step checking'));
@@ -155,7 +156,15 @@ class DBController extends Component {
 	}
 	function exec_sql() {
 		$this->do_sql($sql = stripslashes($this->sql->getValue()));
+		//$this->sql->setValue($sql);
+	}
+	function exec_php(){
+		$sql = stripslashes($this->sql->getValue());
 		$this->sql->setValue($sql);
+		ob_start();
+		eval($sql);
+		$this->sql_result->setValue(ob_get_contents());
+		ob_end_clean();
 	}
 	function exec_update() {
 		$db =& DBSession::Instance();
