@@ -4,10 +4,11 @@ $allObjectsInMem = array();
 
 class PWBObject
 {
-    var $event_listeners = array();
+    //var $event_listeners = array();
     var $disabled_events = array();
     var $__instance_id = null;
     var $creationParams;
+
 
 	/**
 	 * Special var, for get_subclass
@@ -78,7 +79,7 @@ class PWBObject
 	function equalTo(&$other_pwb_object) {
 		return $this->getInstanceId() == $other_pwb_object->getInstanceId();
 	}
-	function &getInstanceId(){
+	function getInstanceId(){
 		#@gencheck if($this->__instance_id===null) print_backtrace(getClass($this).' doesn\'t have an id');@#
 		return $this->__instance_id;
 	}
