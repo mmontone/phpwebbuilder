@@ -425,7 +425,7 @@ class PersistentObject extends DescriptedObject {
      * Raises a database error
      */
     function &raiseDBError(&$error) {
-    	return $error->raise();
+    	return $error->primRaise();
     }
 
 	/**

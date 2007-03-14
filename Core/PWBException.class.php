@@ -24,7 +24,7 @@ class PWBException extends Exception {
 	}
 
     #@php4
-    function &raise() {
+    function &primRaise() {
     	return $this;
     }
 
@@ -38,10 +38,14 @@ class PWBException extends Exception {
     //@#
 
     #@php5
-    function &raise() {
+    function &primRaise() {
     	throw $this;
     }
     //@#
+
+    function &raise() {
+    	return $this->primRaise();
+    }
 
     function &getContent() {
     	return $this->content;

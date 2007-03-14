@@ -5,7 +5,7 @@
 class DBSession {
 	var $lastError;
 	var $lastSQL = '';
-	var $rollback_on_error = true;
+	var $rollback_on_error = false;
 	var $rollback = false;
 	var $nesting = 0;
 	var $commands = array();
