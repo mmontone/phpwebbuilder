@@ -46,22 +46,23 @@ class WikiComponent extends Widget{
 		$bookmark = $ls[0];
 		$name = $ls[1];
 		if (strcasecmp('http://',substr($bookmark,0,7))==0){
-    		return new Link($bookmark, $name, 'blank');
+    		$ret =& new Link($bookmark, $name, 'blank');
 		} else if (strcasecmp('https://',substr($bookmark,0,8))==0){
-    		return new Link($bookmark, $name, 'blank');
+    		$ret =&new Link($bookmark, $name, 'blank');
 		} else if (strcasecmp('mailto:',substr($bookmark,0,7))==0){
-			return new Link($bookmark, $name);
+			$ret =&new Link($bookmark, $name);
 		} else {
     		$app =& Window::getActiveInstance();
     		$pms = $app->urlManager->getBookmarkAndParams($bookmark);
     		$nl =& new NavigationLink($pms['bm'], $name, $pms['params']);
     		if ($nl->checkAddingPermissions()) {
-    			return $nl;
+    			$ret =&$nl;
     		} else {
-    			return new Label($name);
+    			$ret =&new Label($name);
     		}
 
 		}
+		return $ret;
     }
 }
 ?>

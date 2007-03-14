@@ -35,7 +35,7 @@ class Session extends PersistentObject{
 	}
 	function isStarted(){
 		$sh =& SessionHandler::Instance();
-		return $sh!=null && $sh->isStarted();
+		return $sh!==null && $sh->isStarted();
 	}
 }
 

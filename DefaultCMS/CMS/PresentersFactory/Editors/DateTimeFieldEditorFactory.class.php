@@ -2,7 +2,8 @@
 
 class DateTimeFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new DateTimeInput($field->getValue());
+		$dt =& new DateTimeInput($field->getValue());
+		return $dt;
 	}
 }
 

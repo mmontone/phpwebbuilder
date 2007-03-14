@@ -46,9 +46,11 @@ class XMLParser {
 
    function cdata($parser, $cdata)
    {
-   		if ($this->text==null && trim($cdata)!=''){
-   			$this->text =& new XMLTextNode($cdata);
-   			$this->xmls[count($this->xmls)-1]->appendChild($this->text);
+   		if ($this->text==null){
+   			if (trim($cdata)!=''){
+   				$this->text =& new XMLTextNode($cdata);
+   				$this->xmls[count($this->xmls)-1]->appendChild($this->text);
+   			}
    		} else {
    			$this->text->data.=$cdata;
    		}

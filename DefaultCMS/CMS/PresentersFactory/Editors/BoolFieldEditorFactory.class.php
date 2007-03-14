@@ -2,7 +2,8 @@
 
 class BoolFieldEditorFactory extends EditorFactory {
 	function &createInstanceFor(&$field){
-		return new CheckBox($field);
+		$bf =&new CheckBox($field);
+		return  $bf;
 	}
 }
 
