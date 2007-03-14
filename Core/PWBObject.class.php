@@ -8,6 +8,7 @@ class PWBObject
     var $disabled_events = array();
     var $__instance_id = null;
     var $creationParams;
+    var $event_handles = 0;
 
 
 	/**
@@ -125,17 +126,21 @@ class PWBObject
 	 * Adds a listener for the event, with the specified callback function
 	 */
 
+    function makeHandle(&$object) {
+        return 't_' . $object->__instance_id;
+    }
+
     function addInterestIn($event, &$function, $params = array()) {
        	$target =& $function->getTarget();
         if (is_object($target)) {
-        	$handle = 't_' . $target->__instance_id;
+        	$handle = $this->makeHandle($target);
             if (isset($this->event_listeners[$event][$handle])) {
                 #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
         	   return;
             }
         }
         else {
-        	$handle = count($this->event_listeners[$event]);
+        	$handle = ++$this->event_handles;
         }
 
         #@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
@@ -145,8 +150,9 @@ class PWBObject
         $this->event_listeners[$event][$handle] =& $event_handler;
         return $handle;
     }
-    function retractInterestIn($event, $handle){
-		#@track_events
+    function retractInterestIn($event, &$listener){
+		$handle = $this->makeHandle($listener);
+        #@track_events
         if (@isset($this->event_listeners[$event][$handle])) {
         	$s = $this->event_listeners[$event][$handle]->printString();
         }

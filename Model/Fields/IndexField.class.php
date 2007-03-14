@@ -58,7 +58,7 @@ class IndexField extends NumField {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
 			$this->removeTarget();
-			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
+			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'), array('execute on triggering' => true));
             $this->buffered_target =& $target;
 			$this->buffered_value = $target->getId();
             $target->incrementRefCount();
