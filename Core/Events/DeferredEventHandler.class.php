@@ -18,7 +18,7 @@ class DeferredEventHandler extends EventHandler {
     }
 
     function enqueue() {
-        #@track_events 'Deferring event: ' . $this->debugPrintString() . '<br/>';@#
+        #@track_events 'Deferring event: ' . $this->printString() . '<br/>';@#
     	global $deferredEvents;
 
         $deferredEvents[] =& $this;
@@ -26,14 +26,9 @@ class DeferredEventHandler extends EventHandler {
 
     function execute() {
     	#@track_events
-        //echo 'Executing ' . getClass($this) . ' on: ' . $this->debugPrintString() . '<br/>';
-        echo 'Executing ' . getClass($this) . ' on: ' . $this->debugPrintString() . ' backtrace: ' . $this->backtrace_string .'</br>';
+        echo 'Executing ' . getClass($this) . ' on: ' . $this->printString() .'</br>';
         //@#
         return $this->function->executeWithWith($this->triggerer, $this->params);
-    }
-
-    function debugPrintString() {
-        return $this->triggerer->debugPrintString() . '>>' . $this->event;
     }
 }
 ?>

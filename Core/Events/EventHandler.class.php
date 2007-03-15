@@ -58,6 +58,10 @@ class EventHandler {
         return $this->function->getTarget();
     }
 
+    function getEvent() {
+    	return $this->event;
+    }
+
     function printString() {
     	return '[' . getClass($this) . ' function: ' . $this->function->printString() . ' event: ' . $this->event . ']';
     }

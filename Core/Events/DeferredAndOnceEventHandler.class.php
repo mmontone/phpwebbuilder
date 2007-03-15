@@ -8,7 +8,7 @@ class DeferredAndOnceEventHandler extends DeferredEventHandler {
     }
 
     function enqueue() {
-        #@track_events echo 'Deferring event (once): ' . $this->debugPrintString() . '<br/>';@#
+        #@track_events echo 'Deferring event (once): ' . $this->printString() . '<br/>';@#
         global $deferredAndOnceEvents;
 
         $key = 't_' . $this->triggerer->__instance_id;

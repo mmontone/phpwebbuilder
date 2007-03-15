@@ -64,15 +64,17 @@ class CollectionField extends DataField {
 
 	function add(&$elem){
 		$elem->{$this->creationParams['reverseField']}->setTarget($this->owner);
-		if ($this->owner->isPersisted()){
+        if ($this->owner->isPersisted()){
 			$elem->registerPersistence();
 		}
 		$this->collection->add($elem);
 		$elem->incrementRefCount();
+        $this->collection->changed();
 	}
 	function remove(&$elem){
 		$elem->{$this->creationParams['reverseField']}->removeTarget();
-		$elem->decrementRefCount();
+        $elem->decrementRefCount();
+        $this->collection->changed();
 	}
 	function removedAsTarget(&$elem, $field){
 		if ($this->creationParams['reverseField']==$field && $elem->hasType($this->creationParams['type'])){
