@@ -68,7 +68,7 @@ class PWBObject
 		return is_a($this,$class);
 	}
 	function hasType($class) {
-		return $this->isA($class) || $this->hasMixin($class);
+		return is_a($this,$class) or $this->hasMixin($class);
 	}
 	function hasMixin($mixin) {
 		$varname = '__use_mixin_'.$mixin;

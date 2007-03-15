@@ -323,7 +323,7 @@ function getfilesrec($pred, $dir) {
 		$ret = array ();
 		$gestor = opendir($dir);
 		while (false !== ($f = readdir($gestor))) {
-			if (substr($f, -1) != '.')
+			if ($f != '.' && $f!='..')
 				$ret = array_merge(getfilesrec($pred, implode(array (
 					$dir,
 					'/',
@@ -473,7 +473,12 @@ function get_subclasses($str) {
 	$PWBclasses =& get_allRelatedClasses();
 	if ($PWBclasses==null)
 		find_subclasses();
-	return $PWBclasses[strtolower($str)];
+	$sub = $PWBclasses[strtolower($str)];
+	if ($sub===null){
+		return array();
+	} else {
+		return $sub;
+	}
 }
 /**
  * Returns the subclasses of the specified class, in lower-to-higher order
@@ -608,10 +613,12 @@ function lambda($args, $code, $env = array ()) {
 	static $n = 0;
 	$functionName = 'ref_lambda_'. (++ $n);
 	$GLOBALS['lambda_vars'][$functionName] = & $env;
-	$declaration = "function &$functionName($args) {extract(\$GLOBALS['lambda_vars']['$functionName'],EXTR_REFS); $code}";
-	$ok = eval ($declaration);
-	if($ok===FALSE /* or ! preg_match('/return(\s)*\$\w+;/s',$code)*/)
-		print_backtrace($args.'==>'.$code);
+	//$declaration = implode('', array('function &',$functionName,'(',$args,') {extract($GLOBALS[\'lambda_vars\'][\'',$functionName,'\'],EXTR_REFS); ',$code,'}'));
+	$declaration = 'function &'.$functionName.'('.$args.') {extract($GLOBALS[\'lambda_vars\'][\''.$functionName.'\'],EXTR_REFS); '.$code.'}';
+	//$ok =
+		eval ($declaration);
+	//if($ok===FALSE /* or ! preg_match('/return(\s)*\$\w+;/s',$code)*/)
+		//print_backtrace($args.'==>'.$code);
 	return $functionName;
 }
 /**

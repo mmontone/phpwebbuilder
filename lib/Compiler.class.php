@@ -178,6 +178,7 @@ class Compiler {
 		return $this->compileFile($x);
 	}
 	function getRealPath($file){
+	   if (strpos($file, './')==FALSE) return $file;
 	   $address = split('(/|\\\\)', $file);
 	   $keys = array_keys($address, '..');
 

@@ -21,13 +21,13 @@ class EventHandler {
         $this->event = $params['event'];
     }
 
-    function FromParams($params) {
-        if ($params['execute on triggering']) {
+    function &FromParams($params) {
+        if (isset($params['execute on triggering'])) {
         	$h =& new WhenEventTriggeredHandler($params);
             return $h;
         }
 
-        if ($params['execute once']) {
+        if (isset($params['execute once'])) {
         	$h =& new DeferredAndOnceEventHandler($params);
             return $h;
         }
@@ -71,11 +71,12 @@ class EventHandler {
     }
 
     function ExecuteDeferredEvents() {
-        global $deferredEvents;
-        global $deferredAndOnceEvents;
+        $deferredEvents=& $GLOBALS['deferredEvents'];
+        $deferredAndOnceEvents =& $GLOBALS['deferredAndOnceEvents'];
+        $deferredAndOnceEventsOrdered =& $deferredAndOnceEvents['ordered'];
 
         #@track_events $count = 0; @#
-        while (!(empty($deferredEvents) and empty($deferredAndOnceEvents['ordered']))) {
+        while (!(empty($deferredEvents) and empty($deferredAndOnceEventsOrdered))) {
             while (!empty($deferredEvents)) {
                 $ks = array_keys($deferredEvents);
                 $handler =& $deferredEvents[$ks[0]];
@@ -84,14 +85,14 @@ class EventHandler {
                 #@track_events $count++; @#
             }
 
-            while (!empty($deferredAndOnceEvents['ordered'])) {
-                $ks = array_keys($deferredAndOnceEvents['ordered']);
+            while (!empty($deferredAndOnceEventsOrdered)) {
+                $ks = array_keys($deferredAndOnceEventsOrdered);
 
-                $arr =& $deferredAndOnceEvents['ordered'][$ks[0]];
+                $arr =& $deferredAndOnceEventsOrdered[$ks[0]];
                 $key = $arr['key'];
                 $event = $arr['event'];
 
-                unset($deferredAndOnceEvents['ordered'][$ks[0]]);
+                unset($deferredAndOnceEventsOrdered[$ks[0]]);
                 $handler =& $deferredAndOnceEvents['hash'][$key][$event];
                 unset($deferredAndOnceEvents['hash'][$key][$event]);
                 $handler->execute();

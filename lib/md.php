@@ -63,7 +63,7 @@ if (defined('mdc_dir')) {
 	$md_dir = constant('mdc_dir');
 }
 
-if (defined('md') and constant('md')=='compiled') {
+if (constant('md')=='compiled') {
 	load_compiled_md_files($mdc_dir);
 }
 else {
@@ -79,7 +79,7 @@ function load_md_files($dir) {
 
 
 function load_compiled_md_files($dir) {
-	foreach(getfilesrec(lambda('$file','$v=substr($file, -4)==".php";return $v;', $a=array()), $dir) as $f){
+	foreach(getfilesrec(lambda('$file','$v=substr($file, -4)==\'.php\';return $v;'), $dir) as $f){
         //echo "Requiring $f <br />";
         require_once $f;
  	}
