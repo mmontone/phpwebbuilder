@@ -1,7 +1,9 @@
 <?php
 
 function unify_types($t1, $t2){
-	$a1=get_superclasses($t1);
+	$t1 = strtolower($t1);
+    $t2 = strtolower($t2);
+    $a1=get_superclasses($t1);
 	$a2=get_superclasses($t2);
 	array_unshift($a1,$t1);
 	array_unshift($a2,$t2);
@@ -11,7 +13,8 @@ function unify_types($t1, $t2){
 	} else {
 		$type = array_shift($arr);
 		//print_backtrace("$t1 and $t2 give $type");
-		return $type;
+		echo 'Unifying ' . $t1 . ' and ' . $t2 . ' result: ' . $type . '<br/>';
+        return $type;
 	}
 }
 
