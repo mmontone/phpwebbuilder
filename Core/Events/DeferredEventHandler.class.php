@@ -4,13 +4,6 @@ class DeferredEventHandler extends EventHandler {
     var $triggerer;
     var $params;
 
-    function initialize($params) {
-        parent::initialize($params);
-        /*if ($this->function->getMethodName() == 'refresh') {
-        	print_backtrace_and_exit('Registering for refresh');
-        }*/
-    }
-
     function executeWithWith(&$triggerer, &$params) {
         $this->triggerer =& $triggerer;
         $this->params =& $params;

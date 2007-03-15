@@ -127,20 +127,21 @@ class PWBObject
 	 */
 
     function makeHandle(&$object) {
-        return 't_' . $object->__instance_id;
+        if (is_object($object)) {
+            return 't_' . $object->__instance_id;
+        }
+        else {
+        	return ++$this->event_handles;
+        }
+
     }
 
     function addInterestIn($event, &$function, $params = array()) {
        	$target =& $function->getTarget();
-        if (is_object($target)) {
-        	$handle = $this->makeHandle($target);
-            if (isset($this->event_listeners[$event][$handle])) {
-                #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
-        	   return;
-            }
-        }
-        else {
-        	$handle = ++$this->event_handles;
+       	$handle = $this->makeHandle($target);
+        if (isset($this->event_listeners[$event][$handle])) {
+            #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
+            return;
         }
 
         #@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#

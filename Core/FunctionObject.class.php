@@ -19,8 +19,8 @@ class FunctionObject
         }//@#
 
         $this->setTarget($target);
-        $this->method_name =& $method_name;
-        $this->params =& $params;
+        $this->method_name = $method_name;
+        $this->params = $params;
     }
 
     function getMethodName() {

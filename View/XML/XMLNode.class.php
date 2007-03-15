@@ -263,10 +263,16 @@ class XMLNode extends DOMXMLNode {
 		}
 		$n = null;
 		return $n;*/
-		$templates =& new Collection();
-		$templates->addAll($this->templates);
 		//TODO Mixins and optimize order
-		return $templates->detect(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
+		$es = & $this->templates;
+		foreach (array_keys($es) as $k) {
+			if ($es[$k]->isTemplateForClass($component)){
+				return $es[$k];
+			}
+		}
+		$n = null;
+		return $n;
+		//return $templates->detect(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
 		/*
 		 $ts=& $templates->filter(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
 		 if (!$ts->isEmpty()) {

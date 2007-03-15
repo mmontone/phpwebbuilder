@@ -4,11 +4,13 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		if (count($this->childNodes) != 1) {
 			$tv = & new XMLNodeModificationsTracker();
 			foreach ($this->childNodes as $h) {
+				//$t = unserialize(serialize($h));
 				$t = & $this->xml2template($h);
 				$tv->insert_in($t,$tv->nextNode++);
 			}
 		} else {
 			$fc =& $this->first_child();
+			//$tv = unserialize(serialize($fc));
 			$tv = & $this->xml2template($fc);
 		}
 		return $tv;

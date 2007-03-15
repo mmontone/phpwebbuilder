@@ -10,7 +10,7 @@ class WeakReference {
 	}
 	function setTarget(&$obj){
 		$this->refId = $obj->getInstanceId();
-		$this->refClass = getClass($obj);
+		#@gencheck $this->refClass = getClass($obj); @#
 	}
 	function &getTarget(){
 		$obj =& $GLOBALS['allObjectsInMem'][$this->refId];
@@ -18,8 +18,7 @@ class WeakReference {
 		return $obj;
 	}
 	function isNotNull(){
-		global $allObjectsInMem;
-		return (isset($allObjectsInMem[$this->refId]));
+		return (isset($GLOBALS['allObjectsInMem'][$this->refId]));
 	}
 
     function primPrintString($str){

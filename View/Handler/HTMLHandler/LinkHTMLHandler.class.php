@@ -18,5 +18,6 @@ class LinkHTMLHandler extends WidgetHTMLHandler{
 	function initializeDefaultView(&$view){
 		$view->setTagName('a');
 	}
+	function setEvents(&$comp){}
 }
 ?>

@@ -16,5 +16,8 @@ class TextHTMLHandler extends WidgetHTMLHandler{
 			$this->redraw();
 		}
 	}
+	function setEvents(&$comp){
+		$comp->value_model->onChangeSend('valueChanged',$this);
+	}
 }
 ?>

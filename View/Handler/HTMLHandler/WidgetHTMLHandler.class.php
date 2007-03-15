@@ -8,6 +8,9 @@ class WidgetHTMLHandler extends HTMLHandler{
 	}
 	function setComponent(&$comp){
 		parent::setComponent($comp);
+		$this->setEvents($comp);
+	}
+	function setEvents(&$comp){
 		$comp->invalid->onChangeSend('updateInvalid',$this);
 		$comp->events->onChangeSend('updateEvent',$this);
 		$comp->disabled->onChangeSend('updateDisabled',$this);
