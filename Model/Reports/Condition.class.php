@@ -13,8 +13,7 @@ function unify_types($t1, $t2){
 	} else {
 		$type = array_shift($arr);
 		//print_backtrace("$t1 and $t2 give $type");
-		echo 'Unifying ' . $t1 . ' and ' . $t2 . ' result: ' . $type . '<br/>';
-        return $type;
+		return $type;
 	}
 }
 
