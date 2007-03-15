@@ -31,9 +31,9 @@ class DateTimeField extends DataField {
 	}
 	function setValue(&$d){
 		#@typecheck $d : PWBDateTime@#
-		$this->value =& $d;
 		$d->onChangeSend('changed',$this);
-		if ($d !== $this->buffered_value) {
+
+        if (!($d->isLike($this->buffered_value))) {
 			$this->buffered_value =& $d;
 			$this->setModified(true);
 			$this->triggerEvent('changed', $no_params = null);

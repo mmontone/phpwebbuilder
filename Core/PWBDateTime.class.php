@@ -9,8 +9,18 @@ class PWBDateTime extends PWBObject{
     }
     function setValue($date){
     	#@check is_string($date)@#
-    	$this->date = $date;
-    	$this->triggerEvent('changed', $date);
+    	if ($this->date != $date) {
+            $this->date = $date;
+        	$this->triggerEvent('changed', $date);
+        }
+    }
+
+    function getDate() {
+    	return $this->date;
+    }
+
+    function isLike(&$PWBDateTime) {
+    	return is_a($PWBDateTime, 'PWBDateTime') and ($this->getDate() == $PWBDateTime->getDate());
     }
     function getValue(){return$this->date;}
     function &dateArray () {
