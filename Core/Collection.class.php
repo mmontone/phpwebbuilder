@@ -195,14 +195,24 @@ class Collection extends PWBObject {
 		$res = & $this->foldl(new Collection,lambda('&$col,&$elem', 'if ($pred($elem)) $col->add($elem); return $col;', get_defined_vars()));
 		return $res;
 	}
+	function & detect($pred) {
+		//$res = & $this->foldl(new Collection,lambda('&$col,&$elem', ' $col->add($elem); return $col;', get_defined_vars()));
+		$es = & $this->elements();
+		foreach (array_keys($es) as $k) {
+			if ($pred($es[$k])){
+				return $es[$k];
+			}
+		}
+		$n = null;
+		return $n;
+	}
 	/**
 	 *  If you dont' know foldl, then don't use it
 	 */
 	function & foldl(& $z, $f) {
 		$acc = & $z;
 		$es = & $this->elements();
-		$ks = array_keys($es);
-		foreach ($ks as $k) {
+		foreach (array_keys($es) as $k) {
 			$acc = & $f ($acc, $es[$k]);
 		}
 		return $acc;
@@ -241,19 +251,19 @@ class Collection extends PWBObject {
 	 *  Adds all of the elements of the array to the collection
 	 */
 	function addAll($arr) {
-        $e = $this->disableEvent('changed');
+        /*$e = $this->disableEvent('changed');
         $ks = array_keys($arr);
         foreach ($ks as $k) {
             $this->add($arr[$k]);
         }
 
-        $this->enableEvent($e);
+        $this->enableEvent($e);*/
+        $this->elements = array_merge($this->elements(),$arr);
         $this->triggerEvent('changed', $this);
 	}
 
 	function addAllFromCollection(&$collection) {
-		$self =& $this;
-		$collection->for_each(lambda('&$x', '$self->add($x);', get_defined_vars()));
+		$this->addAll($collection->elements());
 	}
 
 	/**

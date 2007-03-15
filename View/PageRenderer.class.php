@@ -191,8 +191,8 @@ class PageRenderer // extends PWBObject
 		return $s;
 	}
 	function toAjax($s) {
-		return $this->toXML($this->toHTML($s));
-		//return $this->toHTML2($s);
+		//return $this->toXML($this->toHTML($s));
+		return $this->toHTML2($s);
 	}
 
 }
@@ -323,18 +323,14 @@ class AjaxPageRenderer extends PageRenderer {
 	function ajaxRenderPage(&$win){
 		#@typecheck $win:Window@#
 		header("Content-type: text/xml");
-		$xml = '<?xml version="1.0" encoding="ISO-8859-1" ?>';
-		$xml .= '<!DOCTYPE html
+		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
+		echo '<!DOCTYPE html
 		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
-		$xml .= "\n<ajax>";
-		$xml .= $win->wholeView->renderAjaxResponseCommand();
-		$xml .= $this->renderJSCommands($win);
-		$xml .= "</ajax>";
-
-		//$this->page->flushModifications();
-
-		echo $xml;
+		echo '<ajax>';
+		echo $win->wholeView->renderAjaxResponseCommand();
+		echo $this->renderJSCommands($win);
+		echo '</ajax>';
 	}
 
 	function renderJSCommands(&$window) {

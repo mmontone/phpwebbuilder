@@ -163,7 +163,7 @@ class ViewCreator {
 		$t =& $ts->templateForClass($component);
 		if ($t!==null) {
 			$v =& $this->instantiateFor($t,$component);
-			#@debugview $this->addTemplateName($v, 'Global:'.$t->getAttribute('class').'('.getClass($component).':'.$component->getSimpleId().')');@#
+			#@debugview $this->addTemplateName($v, 'Global:'.$t->getClass().'('.getClass($component).':'.$component->getSimpleId().')');@#
 			return $v;
 		} else {
 			return $this->defaultTemplate($component);

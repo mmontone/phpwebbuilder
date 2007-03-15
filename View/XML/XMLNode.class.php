@@ -134,7 +134,8 @@ class XMLNode extends DOMXMLNode {
 				} if (false) //@#
 					return;
 			}
-			$out .= implode('',array('<',$this->tagName));
+			$tn = $this->tagName;
+			$out .= implode('',array('<',$tn));
 
 
 			foreach ($this->attributes as $name => $val) {
@@ -150,7 +151,7 @@ class XMLNode extends DOMXMLNode {
 					$out .= $cn[$k]->renderNonEcho();
 				}
 				//echo implode(array("\n</".$this->tagName.'>'));
-				$out .= implode(array('</'.$this->tagName.'>'));
+				$out .= implode(array('</'.$tn.'>'));
 			}
 			$this->cache = $out;
 		}
@@ -234,6 +235,16 @@ class XMLNode extends DOMXMLNode {
 		foreach (array_keys($temp) as $k2) {
 			$t[] = & $temp[$k2];
 		}
+		usort($t, lambda('$t0, $t1','
+					$c0=$t0->getClass();
+					$c1=$t1->getClass();
+					if(in_array($c1,get_subclasses($c0))){
+						return 1;
+					} else {
+						return -1;
+					}'));
+		//array_walk($t,lambda('$v,$k', 'echo " ".$k . "=>". $v->getClass();'));
+		//echo '<br/>';
 		foreach (array_keys($cont) as $k3) {
 			$c[] = & $cont[$k3];
 		}
@@ -255,9 +266,10 @@ class XMLNode extends DOMXMLNode {
 		$templates =& new Collection();
 		$templates->addAll($this->templates);
 		//TODO Mixins and optimize order
-		$ts =& $templates->filter(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
-		if (!$ts->isEmpty()) {
-			$t = $ts->first();
+		return $templates->detect(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
+		/*
+		 $ts=& $templates->filter(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
+		 if (!$ts->isEmpty()) {
 			$es =& $ts->elements();
 			foreach(array_keys($es) as $k){
 				$tt =& $es[$k];
@@ -265,13 +277,12 @@ class XMLNode extends DOMXMLNode {
 					$t =& $tt;
 				}
 			}
-
 			return $t;
 		}
 		else {
 			$n = null;
 			return $n;
-		}
+		}*/
 	}
 
 	function & containerForClass(& $component) {
