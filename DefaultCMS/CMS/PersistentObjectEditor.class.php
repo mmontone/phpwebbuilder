@@ -70,13 +70,32 @@ class PersistentObjectEditor extends PersistentObjectPresenter {
 		$qd->registerCallbacks(array('on_yes' => new FunctionObject($this, 'deleteConfirmed',array('object' => $obj)), 'on_no' => new FunctionObject($this, 'deleteRejected')));
 	}
 
-	function deleteConfirmed($params, $fparams) {
+	#@php4
+    function deleteConfirmed($params, $fparams) {
 		$obj =& $fparams['object'];
 		$ok = $obj->delete();
 		$this->callback('refresh');
+	}//@#
+
+    #@php5
+    function deleteConfirmed($params, $fparams) {
+        try {
+            $obj =& $fparams['object'];
+            $obj->delete();
+            $this->callback('refresh');
+        }
+        catch (Exception $e) {
+        	$dialog =& NotificationDialog::Create('The object could not be deleted');
+            $dialog->onAccept(new FunctionObject($this, 'doNothing'));
+            $this->call($dialog);
+        }
+    }//@#
+
+	function doNothing() {
+
 	}
 
-	function deleteRejected() {
+    function deleteRejected() {
 
 	}
 }
