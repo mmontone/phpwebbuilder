@@ -131,7 +131,7 @@ class DescriptedObject extends PWBObject {
 	 */
 	function basicInitialize() {
 		$this->addField(new idField("id", FALSE));
-		$this->addField(new VersionField("PWBversion", FALSE)); $this->PWBversion->setValue(0);
+		$this->addField(new VersionField("PWBversion", FALSE));
 		$this->addGCFields();
 		if ($this->isNotTopClass($this)) {
 			$this->addField(new superField("super", FALSE));

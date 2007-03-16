@@ -1,15 +1,19 @@
 <?php
-
 class VersionField extends NumField {
-    function &visit(&$obj) {
-        return $obj->visitedNumField($this);
-    }
+	function createInstance($params) {
+		parent :: createInstance($params);
+		$this->value = -1;
+	}
 
-    function setValue($value) {
+	function & visit(& $obj) {
+		return $obj->visitedNumField($this);
+	}
+
+	function setValue($value) {
 		// Don't register a modification
-		$this->buffered_value =& $value;
-    }
-   function flushChanges() {
+		$this->buffered_value = & $value;
+	}
+	function flushChanges() {
 
 	}
 
@@ -17,10 +21,9 @@ class VersionField extends NumField {
 
 	}
 
-    function shouldLoadFrom($reg) {
-    	$val = @$reg[$this->sqlName()];
-        return ($this->getValue() == 0) or ($this->getValue() < $val);
-    }
+	function shouldLoadFrom($reg) {
+		$val = @ $reg[$this->sqlName()];
+		return $this->getValue() < $val;
+	}
 }
-
 ?>
