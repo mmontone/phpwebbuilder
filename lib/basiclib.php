@@ -228,11 +228,12 @@ function &getdyn($var) {
     $arr = $dyn_vars[$var];
 	return $arr[count($arr) - 1];
 }
-
+/*
 #@dlet a=array(), c=& new MyObject
   {
 	print_r(getdyn('c'));
   }//@#
+*/
 function dlet($text) {
 	preg_match('/(.)*[\s\t]*\{(.*)\}/s', $text, $matches);
 	$vars = $matches[1];
@@ -473,13 +474,25 @@ function get_subclasses($str) {
 	$PWBclasses =& get_allRelatedClasses();
 	if ($PWBclasses==null)
 		find_subclasses();
-	$sub = $PWBclasses[strtolower($str)];
+	$sub = @$PWBclasses[strtolower($str)];
 	if ($sub===null){
 		return array();
 	} else {
 		return $sub;
 	}
 }
+
+function get_subclasses_and_class($class){
+	$arr = get_subclasses($class);
+	$arr[]=strtolower($class);
+	return $arr;
+}
+
+function is_subclass($class_sub, $class_parent){
+	return in_array(strtolower($class_sub), get_subclasses_and_class($class_parent));
+}
+
+
 /**
  * Returns the subclasses of the specified class, in lower-to-higher order
  */

@@ -74,6 +74,17 @@ class PWBObject
 		$varname = '__use_mixin_'.$mixin;
 		return isset($this->$varname);
 	}
+	function getTypes(){
+		$c =& $GLOBALS['types'][getClass($this)];
+		if ($c===null){
+			foreach(array_keys(get_class_vars(getClass($this))) as $k=>$v){
+				if (substr($v, 0,12)=='__use_mixin_')
+					$arr[$k]=strtolower(substr($v, 12));
+			}
+			$c = array_merge(array(getClass($this)), $arr);
+		}
+		return $c;
+	}
 	/**
 	 *  Returns if the object is the same as the parameter, or a copy
 	 */

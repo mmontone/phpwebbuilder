@@ -3,6 +3,7 @@
 class XMLNodeModificationsTracker extends XMLNode {
 	var $modifications;
 	var $toFlush = null;
+	var $registering = false;
 	function XMLNodeModificationsTracker($tag_name = null, $attributes = array ()) {
 		$this->toFlush =& new WeakReference($n=null);
 		parent :: XMLNode($tag_name, $attributes);
@@ -48,15 +49,19 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$element->controller = & $controller;
 		return $element;
 	}
-
+	function render(){
+		$this->registering = true;
+		return parent::render();
+	}
 	function appendChild(& $child) {
-		// I don't want modifications on the $child to be taken into account by the page renderer
-		//$child->flushModifications();
-		$ac =& new AppendChildXMLNodeModification($this, $child);
-		$child->toFlush->setTarget($ac);
+		if ($this->registering){
+			$ac =& new AppendChildXMLNodeModification($this, $child);
+			$child->toFlush->setTarget($ac);
+		}
 		$ret = parent :: appendChild($child);
-		$this->addChildMod($child->parentPosition,$ac);
-		// Tag the child as an appended  node. See what happens when a "append" modification is found in AjaxPageRenderer
+		if ($this->registering){
+			$this->addChildMod($child->parentPosition,$ac);
+		}
 		return $ret;
 	}
 	function willFlush(){
@@ -70,30 +75,34 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function replaceChild(& $new_child, & $old_child) {
 		// I don't want modifications on the $new_child to be taken into account by the page renderer
 		//$new_child->flushModifications();
-		if ($old_child->willFlushNode()) {
-			$tf =& $old_child->toFlush->getTarget();
-			$tf->apply_replace($new_child);
-			$new_child->toFlush->setTarget($tf);
-		} else {
-			$rc =& new ReplaceChildXMLNodeModification($new_child, $old_child, $this);
-			$new_child->toFlush->setTarget($rc);
-			$this->addChildMod($old_child->parentPosition,$rc);
+		if ($this->registering){
+			if ($old_child->willFlushNode()) {
+				$tf =& $old_child->toFlush->getTarget();
+				$tf->apply_replace($new_child);
+				$new_child->toFlush->setTarget($tf);
+			} else {
+				$rc =& new ReplaceChildXMLNodeModification($new_child, $old_child, $this);
+				$new_child->toFlush->setTarget($rc);
+				$this->addChildMod($old_child->parentPosition,$rc);
+			}
 		}
 		return parent :: replaceChild($new_child, $old_child);
 	}
 
 	function removeChild(& $child) {
-		if ($child->willFlushNode()) {
-			$tf =& $child->toFlush->getTarget();
-			if (getClass($tf) == 'replacechildxmlnodemodification'){
-				$this->addChildMod($child->parentPosition,new RemoveChildXMLNodeModification($this, $child));
-			} else {
-				$this->removeChildMod($child->parentPosition);
+		if ($this->registering){
+			if ($child->willFlushNode()) {
+				$tf =& $child->toFlush->getTarget();
+				if (getClass($tf) == 'replacechildxmlnodemodification'){
+					$this->addChildMod($child->parentPosition,new RemoveChildXMLNodeModification($this, $child));
+				} else {
+					$this->removeChildMod($child->parentPosition);
+				}
 			}
-		}
-		else {
-			$mod =& new RemoveChildXMLNodeModification($this, $child);
-			$this->addChildMod($child->parentPosition,$mod);
+			else {
+				$mod =& new RemoveChildXMLNodeModification($this, $child);
+				$this->addChildMod($child->parentPosition,$mod);
+			}
 		}
 		return parent :: removeChild($child);
 	}
@@ -104,19 +113,27 @@ class XMLNodeModificationsTracker extends XMLNode {
 	}
 
 	function setAttribute($attribute, $value) {
-		$this->addChildMod($attribute,new SetAttributeXMLNodeModification($this, $attribute, $value));
+		if ($this->registering){
+			$this->addChildMod($attribute,new SetAttributeXMLNodeModification($this, $attribute, $value));
+		}
 		return parent :: setAttribute($attribute, $value);
 	}
 
 	function removeAttribute($attribute) {
-		$this->addChildMod($attribute,new RemoveAttributeXMLNodeModification($this,$attribute));
+		if ($this->registering){
+			$this->addChildMod($attribute,new RemoveAttributeXMLNodeModification($this,$attribute));
+		}
 		return parent::removeAttribute($attribute);
 	}
 
 	function insertBefore(&$old, &$new){
-		$new->toFlush->setTarget(new InsertBeforeXMLNodeModification($this, $old, $new));
+		if ($this->registering){
+			$new->toFlush->setTarget(new InsertBeforeXMLNodeModification($this, $old, $new));
+		}
 		$ret = parent :: insertBefore($old, $new);
-		$this->addChildMod($new->parentPosition,$new);
+		if ($this->registering){
+			$this->addChildMod($new->parentPosition,$new);
+		}
 		return $ret;
 	}
 	function printTree(){

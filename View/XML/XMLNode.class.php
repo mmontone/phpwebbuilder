@@ -233,18 +233,15 @@ class XMLNode extends DOMXMLNode {
 			$i[$k1] = & $childId[$k1];
 		}
 		foreach (array_keys($temp) as $k2) {
-			$t[] = & $temp[$k2];
+			$class_temp = $temp[$k2]->getClass();
+			foreach(get_subclasses_and_class($class_temp) as $class){
+				if ((!isset($t[strtolower($class)])) || is_subclass($class_temp, $t[strtolower($class)]->getClass())){
+					$t[strtolower($class)] = & $temp[$k2];
+				} else {
+					//break;
+				}
+			}
 		}
-		usort($t, lambda('$t0, $t1','
-					$c0=$t0->getClass();
-					$c1=$t1->getClass();
-					if(in_array($c1,get_subclasses($c0))){
-						return 1;
-					} else {
-						return -1;
-					}'));
-		//array_walk($t,lambda('$v,$k', 'echo " ".$k . "=>". $v->getClass();'));
-		//echo '<br/>';
 		foreach (array_keys($cont) as $k3) {
 			$c[] = & $cont[$k3];
 		}
@@ -253,42 +250,14 @@ class XMLNode extends DOMXMLNode {
 		$this->addTemplatesAndContainers($v->templates, $v->containers, $v->childById);
 	}
 	function &templateForClass(& $component) {
-		/*$res = array ();
-		$ks = array_keys($this->templates);
-		foreach ($ks as $k) {
-			$t = & $this->templates[$k];
-			if ($t->isTemplateForClass($component)) {
-				return $t;
-			}
-		}
-		$n = null;
-		return $n;*/
-		//TODO Mixins and optimize order
-		$es = & $this->templates;
-		foreach (array_keys($es) as $k) {
-			if ($es[$k]->isTemplateForClass($component)){
-				return $es[$k];
+		$ts =& $this->templates;
+		foreach ($component->getTypes() as $m) {
+			if (isset($ts[$m])){
+				return $ts[$m];
 			}
 		}
 		$n = null;
 		return $n;
-		//return $templates->detect(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
-		/*
-		 $ts=& $templates->filter(lambda('&$template', '$b=$template->isTemplateForClass($component);return $b;', get_defined_vars()));
-		 if (!$ts->isEmpty()) {
-			$es =& $ts->elements();
-			foreach(array_keys($es) as $k){
-				$tt =& $es[$k];
-				if (in_array($t->getClass(), get_superclasses($tt->getClass()))) {
-					$t =& $tt;
-				}
-			}
-			return $t;
-		}
-		else {
-			$n = null;
-			return $n;
-		}*/
 	}
 
 	function & containerForClass(& $component) {

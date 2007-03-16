@@ -4,19 +4,21 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 		if (count($this->childNodes) != 1) {
 			$tv = & new XMLNodeModificationsTracker();
 			foreach ($this->childNodes as $h) {
-				//$t = unserialize(serialize($h));
-				$t = & $this->xml2template($h);
+				$t = & $this->duplicate($h);
 				$tv->insert_in($t,$tv->nextNode++);
 			}
 		} else {
 			$fc =& $this->first_child();
-			//$tv = unserialize(serialize($fc));
-			$tv = & $this->xml2template($fc);
+			$tv = & $this->duplicate($fc);
 		}
 		return $tv;
 	}
 
-
+	function &duplicate(&$fc){
+		//$tv = unserialize(serialize($fc));
+		//if (getClass($fc)!=getClass($tv)) echo 'copying '.getClass($fc).' to '.getClass($tv);
+		return $this->xml2template($fc);
+	}
 	function renderEcho() {
 		echo $this->renderNonEcho();
 	}
