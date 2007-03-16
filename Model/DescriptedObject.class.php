@@ -154,7 +154,14 @@ class DescriptedObject extends PWBObject {
     function loadFrom(&$reg) {
 		// Do not update if modified
 		if ($this->isModified()) return true;
-		// TODO LATER
+
+        // Do not update if incorrect version
+        $version_field =& $this->PWBversion;
+        if (!$version_field->shouldLoadFrom($reg)) {
+        	return true;
+        }
+
+        // TODO LATER
         if ($this->isNotTopClass($this)){
 			$this->parent->loadFrom($reg);
 		}

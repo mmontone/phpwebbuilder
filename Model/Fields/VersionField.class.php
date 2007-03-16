@@ -16,6 +16,11 @@ class VersionField extends NumField {
 	function commitChanges() {
 
 	}
+
+    function shouldLoadFrom($reg) {
+    	$val = @$reg[$this->sqlName()];
+        return ($this->getValue() == 0) or ($this->getValue() < $val);
+    }
 }
 
 ?>
