@@ -3,7 +3,7 @@
 class XMLNodeModificationsTracker extends XMLNode {
 	var $modifications;
 	var $toFlush = null;
-	var $registering = false;
+	var $registering = true;
 	function XMLNodeModificationsTracker($tag_name = null, $attributes = array ()) {
 		$this->toFlush =& new WeakReference($n=null);
 		parent :: XMLNode($tag_name, $attributes);
