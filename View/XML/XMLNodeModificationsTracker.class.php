@@ -3,7 +3,7 @@
 class XMLNodeModificationsTracker extends XMLNode {
 	var $modifications;
 	var $toFlush = null;
-	var $registering = true;
+	var $registering = false;
 	function XMLNodeModificationsTracker($tag_name = null, $attributes = array ()) {
 		$this->toFlush =& new WeakReference($n=null);
 		parent :: XMLNode($tag_name, $attributes);
@@ -49,9 +49,9 @@ class XMLNodeModificationsTracker extends XMLNode {
 		$element->controller = & $controller;
 		return $element;
 	}
-	function render(){
+	function renderNonEcho(){
 		$this->registering = true;
-		return parent::render();
+		return parent::renderNonEcho();
 	}
 	function appendChild(& $child) {
 		if ($this->registering){
