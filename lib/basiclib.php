@@ -286,7 +286,7 @@ function includeAll() {
 	}
 	define('app', "MyInstances,MyComponents");
 
-	if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
+	if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal') || Compiler::CompileOpt('minimal')) {
 		$comp =& Compiler::Instance();
 		$file = $comp->getTempDir('').strtolower(constant('app_class')).'.php';
 		if (!file_exists($file)) {$_REQUEST['recompile'] = 'yes';}
@@ -450,7 +450,7 @@ function find_subclasses() {
 			$PWBclasses[strtolower($o)] = array ();
 			$pcs = get_superclasses($o);
 			foreach ($pcs as $pc) {
-				$PWBclasses[$pc][] = $o;
+				$PWBclasses[$pc][] = strtolower($o);
 			}
 		}
 	}
@@ -485,13 +485,16 @@ function get_subclasses($str) {
 function get_subclasses_and_class($class){
 	$arr = get_subclasses($class);
 	$arr[]=strtolower($class);
+	//array_unshift($arr, strtolower($class));
 	return $arr;
 }
 
 function is_subclass($class_sub, $class_parent){
 	return in_array(strtolower($class_sub), get_subclasses_and_class($class_parent));
 }
-
+function is_strict_subclass($class_sub, $class_parent){
+	return in_array(strtolower($class_sub), get_subclasses($class_parent));
+}
 
 /**
  * Returns the subclasses of the specified class, in lower-to-higher order

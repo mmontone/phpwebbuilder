@@ -235,7 +235,7 @@ class XMLNode extends DOMXMLNode {
 		foreach (array_keys($temp) as $k2) {
 			$class_temp = $temp[$k2]->getClass();
 			foreach(get_subclasses_and_class($class_temp) as $class){
-				if ((!isset($t[strtolower($class)])) || is_subclass($class_temp, $t[strtolower($class)]->getClass())){
+				if ((!isset($t[strtolower($class)])) || is_strict_subclass($class_temp, $t[strtolower($class)]->getClass())){
 					$t[strtolower($class)] = & $temp[$k2];
 				} else {
 					//break;
