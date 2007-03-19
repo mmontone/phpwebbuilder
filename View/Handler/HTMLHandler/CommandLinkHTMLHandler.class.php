@@ -8,8 +8,5 @@ class CommandLinkHTMLHandler extends WidgetHTMLHandler{
 		return $v;
 	}
 	function initializeView(&$view){}
-    function printString() {
-    	return $this->primPrintString($this->component->printString());
-    }
 }
 ?>

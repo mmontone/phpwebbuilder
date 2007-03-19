@@ -47,5 +47,8 @@ class ViewHandler extends PWBFactory{
 		return $v;
 	}
 	function prepareToRender() {}
+	function printString() {
+    	return $this->primPrintString($this->component->printString());
+    }
 }
 ?>

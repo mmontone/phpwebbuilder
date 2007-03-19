@@ -195,60 +195,64 @@ class StandardPageRenderer extends HTMLPageRenderer {
 
 		return $xml;
 	}
+	var $cached;
 	function renderPage(&$win){
 		#@typecheck $win:Window@#
-		$ret = '<!DOCTYPE html
-		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+		if ($this->cached==null) {
+			$ret = '<!DOCTYPE html
+			     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+			     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 
-		$view =& $win->wholeView;
-		$ret .= "<html>\n<head><title>" .$view->title .	"</title>";
-		$ret .= $this->app->renderExtraHeaderContent();
+			$view =& $win->wholeView;
+			$ret .= "<html>\n<head><title>" .$view->title .	"</title>";
+			$ret .= $this->app->renderExtraHeaderContent();
 
-		foreach ($this->app->style_sheets as $c) {
-			$d = '';
-			foreach($c as $k=>$v) {
-				$d .= $k.'="'.$v.'" ';
+			foreach ($this->app->style_sheets as $c) {
+				$d = '';
+				foreach($c as $k=>$v) {
+					$d .= $k.'="'.$v.'" ';
+				}
+				$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" " . $d . " />";
 			}
-			$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" " . $d . " />";
-		}
 
 
-		$ret .= '</head><body>';
-		if (Compiler::CompileOpt('debugview') || defined('debugview')){
-			$ret .='<div>' .
-						'<form action="'.site_url . 'Action.php" '.
-							' method="post"'.
-							' enctype="multipart/form-data">';
-			if(isset($_REQUEST['app'])) {
-				$ret .=		'<input type="hidden" name="app" value="'.$_REQUEST['app'].'" />';
+			$ret .= '</head><body>';
+			if (Compiler::CompileOpt('debugview') || defined('debugview')){
+				$ret .='<div>' .
+							'<form action="'.site_url . 'Action.php" '.
+								' method="post"'.
+								' enctype="multipart/form-data">';
+				if(isset($_REQUEST['app'])) {
+					$ret .=		'<input type="hidden" name="app" value="'.$_REQUEST['app'].'" />';
+				}
+				$ret .=			'<input type="hidden" name="event_target" value="app" />' .
+								'<input type="hidden" name="event" value="reset_templates" />' .
+								'Debug View ' .
+								'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
+								'<input type="submit" value="Reload Templates"/>' .
+								'<a href="Action.php?restart=yes'.(isset($_REQUEST['app'])?'&app='.getClass($this->app):'').'">Restart application</a>' .
+							'</form>'.
+							'</div>';
+
 			}
-			$ret .=			'<input type="hidden" name="event_target" value="app" />' .
-							'<input type="hidden" name="event" value="reset_templates" />' .
-							'Debug View ' .
-							'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
-							'<input type="submit" value="Reload Templates"/>' .
-							'<a href="Action.php?restart=yes'.(isset($_REQUEST['app'])?'&app='.getClass($this->app):'').'">Restart application</a>' .
-						'</form>'.
-						'</div>';
+			foreach ($this->app->scripts as $s) {
+				$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
+			}
 
+			$ret .= "\n<script type=\"text/javascript\">";
+
+			foreach ($this->app->jsscripts as $s) {
+				  $ret .= $s;
+			}
+			$ret .= "</script>";
+			$this->cached = $ret;
 		}
-		foreach ($this->app->scripts as $s) {
-			$ret .= "\n<script type=\"text/javascript\" src=\"" . $s . "\"></script>";
-		}
-
-		$ret .= "\n<script type=\"text/javascript\">";
-
-		foreach ($this->app->jsscripts as $s) {
-			  $ret .= $s;
-		}
-		$ret .= $this->renderJSCommands($win);
-		$ret .= "</script>";
-
-		$ret .= $win->wholeView->render();
-		$ret .= '</body></html>';
-
-		echo $ret;
+		echo $this->cached;
+		echo "\n<script type=\"text/javascript\">";
+		echo $this->renderJSCommands($win);
+		echo "</script>";
+		echo $win->wholeView->render();
+		echo '</body></html>';
 	}
 
 	function showXML() {
