@@ -8,7 +8,8 @@ class XMLParser {
    var $text;
    function &parse($data,$f)
    {
-       $parser = xml_parser_create('ISO-8859-1');
+       //$parser = xml_parser_create('ISO-8859-1');
+       $parser = xml_parser_create('UTF-8');
 
        xml_set_object($parser, $this);
        xml_set_element_handler($parser, 'tag_open', 'tag_close');

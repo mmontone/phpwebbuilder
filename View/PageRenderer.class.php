@@ -174,15 +174,12 @@ class PageRenderer // extends PWBObject
 		return $s;
 	}
 	function toAjax($s) {
-		//return $this->toXML($this->toHTML($s));
-		return $this->toHTML2($s);
+		return $s;
 	}
 
 }
 
-class HTMLPageRenderer extends PageRenderer {
-
-}
+class HTMLPageRenderer extends PageRenderer {}
 
 class StandardPageRenderer extends HTMLPageRenderer {
 	function initializeScripts(&$app) {
@@ -264,27 +261,6 @@ class StandardPageRenderer extends HTMLPageRenderer {
 	}
 }
 
-class DebugModificationsPageRenderer extends StandardPageRenderer {
-	function renderPage(&$app) {
-		//$this->page->updateFullPath();
-		header("Content-type: text/xml");
-		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
-		echo $this->page->printString();
-		//$this->page->flushModifications();
-		exit;
-	}
-}
-
-class DebugPageRenderer extends StandardPageRenderer {
-	function renderPage() {
-		header("Content-type: text/xml");
-		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
-		echo $this->page->render();
-		//$this->page->flushModifications();
-		exit;
-	}
-}
-
 class AjaxPageRenderer extends PageRenderer {
 	function initPage(&$win){
 		parent::initPage($win);
@@ -307,9 +283,7 @@ class AjaxPageRenderer extends PageRenderer {
 		#@typecheck $win:Window@#
 		header("Content-type: text/xml");
 		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
-		echo '<!DOCTYPE html
-		     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-		     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		echo '<ajax>';
 		echo $win->wholeView->renderAjaxResponseCommand();
 		echo $this->renderJSCommands($win);
@@ -326,7 +300,13 @@ class AjaxPageRenderer extends PageRenderer {
 
 		return $xml;
 	}
-
+	function toAjax($s) {
+		if (isset($_REQUEST['ajax'])){
+			return $this->toXML($this->toHTML($s));
+		} else {
+			return parent::toAjax($s);
+		}
+	}
 }
 
 ?>

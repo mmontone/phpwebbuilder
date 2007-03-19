@@ -8,7 +8,7 @@ class TextAreaComponentHTMLHandler extends WidgetHTMLHandler{
 	}
 	function getPrintValue(){
 		$pv = $this->component->printValue();
-		return $pv==''?'&amp;nbsp;':$pv;
+		return $pv==''?'&nbsp;':$pv;
 	}
 	function prepareToRender() {
 		$this->view->appendChild(new XMLTextNode($this->getPrintValue()));
