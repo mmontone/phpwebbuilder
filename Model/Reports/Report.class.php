@@ -427,6 +427,10 @@ class Report extends Collection{
 	function &getLimit() {
 		return $this->limit;
 	}
+
+    function setLimit($limit) {
+    	$this->limit = $limit;
+    }
 	/**
 	  * Returns the offset SQL
 	  */
@@ -438,6 +442,10 @@ class Report extends Collection{
 	function &getOffset() {
 		return $this->offset;
 	}
+
+    function setOffset($offset) {
+    	$this->offset = $offset;
+    }
 	/**
 	  * Returns the complete query for filling the report
 	  */
@@ -445,7 +453,7 @@ class Report extends Collection{
 	function selectsql(){
 		$this->evaluateSelect();
         return 'SELECT ' . $this->fieldNames() . ' FROM ' . $this->restrictions()  .$this->group(). $this->order() . $this->limit();
-	}
+   	}
 
 	/**
 	  * Removes all cached elements
@@ -534,7 +542,7 @@ class Report extends Collection{
         	$vars[] = $var->id . ':' . $var->class;
         }
 
-        return $this->primPrintString('(' . $this->getDataType() . ') Vars: ' . implode(',', $vars));
+        return $this->primPrintString('(' . $this->getDataType() . ') vars: ' . implode(',', $vars));
 	}
 
     /*

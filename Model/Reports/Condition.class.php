@@ -12,7 +12,7 @@ function unify_types($t1, $t2){
 		print_backtrace_and_exit('Type error: '.$t1.' and '.$t2);
 	} else {
 		$type = array_shift($arr);
-		//print_backtrace("$t1 and $t2 give $type");
+		//echo "Unifying $t1 and $t2 give $type<br/>";
 		return $type;
 	}
 }
@@ -323,14 +323,27 @@ class PathExpression extends Expression {
 
 		$o =& PersistentObject::getMetaData($class);
 
-		foreach ($pp as $index) {
+		$keys = array_keys($pp);
+        $lastkey = $keys[count($pp) - 1];
+
+        foreach ($pp as $index) {
             #@gencheck
             if (!is_object($o->$index)) {
                 print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $class . '(' . getClass($this) . ' with path: ' . $this->path . ')');
             }
-            @#
-            $class =& $o->$index->getDataType();
+            //@#
+
+
+            if ($index == $lastkey and $this->type != '') {
+                $class = $this->type;
+            }
+            else {
+                $class =& $o->$index->getDataType();
+            }
+
 			$obj =& PersistentObject::getMetaData($class);
+
+            $target_obj =& PersistentObject::getMetaData($o->$index->getDataType());
 
             $otable = $o->tableForFieldPrefixed($index, $pre);
 
@@ -339,9 +352,9 @@ class PathExpression extends Expression {
             //$report->addTables($obj->getTablesPrefixed($pre));
             $var = $report->getVar($pre);
             if ($var==null){
-            	$report->defineVar($pre,$class);
+            	$report->defineVar($pre, $class);
 	            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $o->$index->colName . '`'),
-	                                             'exp2' => new ValueExpression('`' . $obj->getTablePrefixed($pre.'_') .'`.`id`')));
+	                                             'exp2' => new ValueExpression('`' . $target_obj->getTablePrefixed($pre.'_') .'`.`id`')));
 
 	            $exp->evaluateIn($report);
 	            $this->parent->addEvalExpression($exp);
@@ -349,7 +362,11 @@ class PathExpression extends Expression {
 			$pre .= '_';
 			$o =& $obj;
 		}
-		$this->type= $class;
+
+        if ($this->type == '') {
+            $this->type = $class;
+        }
+
 		$arr = array(&$o, $pre);
 		return $arr;
 	}
