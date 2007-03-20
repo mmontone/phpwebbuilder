@@ -41,7 +41,10 @@ class ViewCreator {
 		$tps = array();
 		$tpr =& new HTMLTemplate();
 		foreach($xs as $x){
-			$tps[]=&new TemplateProxy($tpr->xml2template($x));
+			$tpl =& $tpr->xml2template($x);
+			$tpl->getTemplatesAndContainers();
+			$tps[]=&new TemplateProxy($tpl);
+
 		}
 		$this->addTemplates($tps);
 	}

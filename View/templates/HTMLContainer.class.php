@@ -40,11 +40,14 @@ class HTMLContainer extends XMLNodeModificationsTracker {
 		return true;
 	}
 	function isContainerForClass(&$component){
-		return $component->hasType($this->getAttribute("class"));
+		return $component->hasType($this->getClass());
 	}
 	function &createCopy(){
 		$c = new HTMLContainer();
 		return $c;
+	}
+	function getClass() {
+		return strtolower($this->getAttribute('class'));
 	}
 }
 

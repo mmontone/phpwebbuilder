@@ -22,7 +22,7 @@ class Application {
 	}
 	function addWindow(&$win, $pos){
 		$this->windows[$pos]=&$win;
-		$this->windows[$pos]->createView();
+		$win->createView();
 	}
 	function createView(){
 		$this->page_renderer =& PageRenderer::create($this);
@@ -166,17 +166,24 @@ class Application {
 	function getRealId() {
 		return "app".CHILD_SEPARATOR . getClass($this);
 	}
-
+	var $needsView=array();
 	function needsView(& $comp) {
-		$pv =& $comp->parentView();
-		$this->viewCreator->createElemView($pv,$comp);
+		$this->needsView[]=&$comp;
 	}
-
+	function assignViews(){
+		foreach(array_keys($this->needsView) as $k){
+			$comp =& $this->needsView[$k];
+			$pv =& $comp->parentView();
+			$this->viewCreator->createElemView($pv,$comp);
+		}
+		$this->needsView=array();
+	}
 	function translate($msg) {
 		return Translator::TranslateWith(translator,$msg);
 	}
 	function launch() {
 		$window =& ActionDispatcher::dispatch();
+		$window->parent->assignViews();
 		$window->render();
 	}
 	function &getWidgets(){
