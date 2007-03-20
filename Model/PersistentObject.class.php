@@ -35,12 +35,21 @@ class PersistentObject extends DescriptedObject {
 		$class = strtolower($class);
 		if (!isset($metadata[$class])){
 			$metadata[$class] =& new $class(array(), false, true);
-			if ($metadata[$class]->isNotTopClass($metadata[$class])) {
-				$metadata[$class]->setParent(PersistentObject::getMetaData(get_parent_class($class)));
+			$meta =& $metadata[$class];
+			if ($meta->isNotTopClass($metadata[$class])) {
+				$meta->setParent(PersistentObject::getMetaData(get_parent_class($class)));
 			}
-			$metadata[$class]->basicInitialize();
-			foreach($metadata[$class]->fieldNames as $name){
-				unset($metadata[$class]->$name->collection);
+			$meta->basicInitialize();
+			foreach($meta->fieldNames as $name){
+				foreach (array('value','collection','buffered_value','modified','disabled_events','event_handles','isClassOfPWB')
+					as $var){
+					unset($meta->$name->$var);
+				}
+
+			}
+			foreach (array('existsObject','idN','color','buffered','modified','validation_errors','toPersist','disabled_events','creationParams','event_handles','createMetaData','isClassOfPWB')
+				as $var){
+				unset($meta->$var);
 			}
 		}
 		return $metadata[$class];
@@ -385,7 +394,8 @@ class PersistentObject extends DescriptedObject {
 		foreach($rcs as $rc){
 			$o =& PersistentObject::getMetaData($rc);
 			if ($o->canBeLoaded($rec)){
-				return new $rc(array(), false);
+				$o =& new $rc(array(), false);
+				return $o;
 			}
 		}
 		$o =& new $c(array(), false);

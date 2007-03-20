@@ -290,6 +290,7 @@ class DescriptedObject extends PWBObject {
 	function addField(& $field) {
 		#@typecheck $field:ValueModel@#
 		$name = $field->varName;
+		#@check !isset($this-> $name)@#
 		$this-> $name = & $field;
 		$this->fieldNames[$name] = $name;
 		if ($field->isIndex()) {
