@@ -166,24 +166,17 @@ class Application {
 	function getRealId() {
 		return "app".CHILD_SEPARATOR . getClass($this);
 	}
-	var $needsView=array();
+
 	function needsView(& $comp) {
-		$this->needsView[]=&$comp;
+		$pv =& $comp->parentView();
+		$this->viewCreator->createElemView($pv,$comp);
 	}
-	function assignViews(){
-		foreach(array_keys($this->needsView) as $k){
-			$comp =& $this->needsView[$k];
-			$pv =& $comp->parentView();
-			$this->viewCreator->createElemView($pv,$comp);
-		}
-		$this->needsView=array();
-	}
+
 	function translate($msg) {
 		return Translator::TranslateWith(translator,$msg);
 	}
 	function launch() {
 		$window =& ActionDispatcher::dispatch();
-		$window->parent->assignViews();
 		$window->render();
 	}
 	function &getWidgets(){
@@ -197,7 +190,7 @@ class Application {
 
 	function &getRootComponent() {
 		return $this->getComponent();
-	}
+	} 
 	function triggerEvent($ev){
 		$this->$ev();
 	}

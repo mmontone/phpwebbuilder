@@ -35,6 +35,7 @@ class Window extends PWBObject{
 			$this->wholeView->getTemplatesAndContainers();
 			$this->setTitle($this->parent->getTitle());
 			$this->component->linkToApp($this->parent);
+			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
 			$app->page_renderer->initialRender($this);
 	}
 	function addChildMod($pos,&$mod){
@@ -56,9 +57,6 @@ class Window extends PWBObject{
 		return $this->opened && (count($this->toFlush->modifications) + count($this->ajaxCommands)) >0;
 	}
 	function render() {
-		if (!$this->opened){
-			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
-		}
 		$this->closeStream=false;
 		$this->opened=true;
 		$this->modWindows();
