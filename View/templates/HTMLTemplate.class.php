@@ -15,12 +15,16 @@ class HTMLTemplate extends XMLNodeModificationsTracker {
 	}
 
 	function &duplicate(&$fc){
+		#@php5
 		$n = null;
 		$fc->parentNode =& $n;
 		$tv = unserialize(serialize($fc));
-		//if (getClass($fc)!=getClass($tv)) echo 'copying '.getClass($fc).' to '.getClass($tv);
-		//return $this->xml2template($fc);
 		return $tv;
+		//@#
+		#@php4
+		return $this->xml2template($fc);
+		//@#
+
 	}
 	function renderEcho() {
 		echo $this->renderNonEcho();
