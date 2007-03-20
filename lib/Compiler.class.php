@@ -59,9 +59,9 @@ class Compiler {
 									'@#'.//END_MACRO
 									'/s','processMacro'
 					);
-				if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
+				if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
 					if (!$this->compilingClasses) {
-						if (Compiler::CompileOpt('optimal'))$this->getInvolvedClasses($f,$file);
+						if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('optimal'))$this->getInvolvedClasses($f,$file);
 						$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 						eval(str_replace('compile_once','',$f));
 					}
@@ -219,7 +219,7 @@ class Compiler {
 				$this->compilingClasses = true;
 				$f = '<?php '.$this->compileClass(constant('app_class'));
 				$f .=
-					//find_metadata().
+					find_metadata().
 					' ?>';
 
 				$cf = $this->getCompFile();
@@ -231,6 +231,21 @@ class Compiler {
 				fwrite($fo, $f);
 				fclose($fo);
 				return; //DO NOT INCLUDE ANYTHING ELSE.
+			}
+			if (Compiler::CompileOpt('minimal')){
+				$f = '<?php
+							function __autoload($class) {
+
+							  $inst =& Compiler::Instance();
+						      //echo "autoloading $class";print_r($inst->class_in_file);
+   						      $file = @$inst->class_in_file[$class];
+							  if ($file!==null) Compiler::compile($file);
+					        }
+					  ?>';
+				unset($_REQUEST['recompile']);
+				foreach ($this->toCompile as $k=>$v){
+					if ($v=='minimal'){unset($this->toCompile[$k]);}
+				}
 			}
 			fwrite($fo, $f);
 			fclose($fo);
@@ -338,7 +353,7 @@ function mkdir_r($dirName, $rights=0777){
 
 $compilerInstance =& new Compiler;
 $compfile = $compilerInstance->getCompFile();
-if (Compiler::CompileOpt('optimal') && file_exists($compfile) && !@$_REQUEST['recompile']){
+if ((Compiler::CompileOpt('optimal') || Compiler::CompileOpt('minimal') ) && file_exists($compfile) && !@$_REQUEST['recompile']){
 	$compilerInstance = unserialize(file_get_contents($compfile));
 }
 
