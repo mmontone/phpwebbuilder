@@ -344,7 +344,7 @@ class Component extends PWBObject
         else {
         	$id = 'without id';
         }
-        return getClass($this). ':'.$this->getInstanceId() . '('. $id .')';
+        return $this->primPrintString($id);
 	}
 
 }
