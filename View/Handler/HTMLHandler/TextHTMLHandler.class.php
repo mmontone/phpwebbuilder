@@ -17,7 +17,8 @@ class TextHTMLHandler extends WidgetHTMLHandler{
 		}
 	}
 	function setEvents(&$comp){
-		$comp->value_model->onChangeSend('valueChanged',$this);
+		parent::setEvents($comp);
+        $comp->value_model->onChangeSend('valueChanged',$this);
 	}
 }
 ?>
