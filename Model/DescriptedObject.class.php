@@ -90,11 +90,11 @@ class DescriptedObject extends PWBObject {
 	}
 
     function setDeleted($b) {
-    	$this->deleted = true;
+    	$this->__deleted = true;
     }
 
     function isDeleted() {
-    	return $this->deleted;
+    	return $this->__deleted;
     }
 
     function registerForPersistence() {
