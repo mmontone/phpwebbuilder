@@ -96,7 +96,7 @@ class DataField extends ValueModel {
 	function registerCollaborators(){}
     function fieldNamePrefixed($operation, $prefix) {
         if ($operation=='SELECT'){
-            return $this->owner->tableNamePrefixed($prefix).'.`'.$this->colName
+            return $this->owner->metadata->tableNamePrefixed($prefix).'.`'.$this->colName
                    .'` AS `'.$this->sqlName() .'`';
         } else {
             return '`'.$this->colName . '`';
@@ -107,7 +107,7 @@ class DataField extends ValueModel {
 	 * Returns the sql name of the field
 	 */
 	function sqlName(){
-		return $this->owner->getTablePrefixed('').'_'.$this->varName;
+		return $this->owner->metadata->getTablePrefixed('').'_'.$this->varName;
 	}
 	/**
 	 * Returns the sql value of the field
@@ -136,7 +136,7 @@ class DataField extends ValueModel {
 	 */
 	function setValue($data) {
 		if ($data != $this->buffered_value) {
-			$this->buffered_value =& $data;
+			$this->buffered_value = $data;
             $n = null;
             $this->setModified(true);
 			$this->triggerEvent('changed', $this);
@@ -174,7 +174,7 @@ class DataField extends ValueModel {
 	}
 
 	function primitiveCommitChanges() {
-		$this->value =& $this->buffered_value;
+		$this->value = $this->buffered_value;
 		$this->setModified(false);
 	}
 	function primitiveFlushChanges() {

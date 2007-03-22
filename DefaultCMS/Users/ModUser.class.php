@@ -6,7 +6,7 @@ class ModUser extends Component {
 	}
 	function createInstance(){
 		$u =& User::logged();
-		$fs = $u->allFieldNames();
+		$fs = $u->metadata->allFieldNames();
 		unset($fs['UserRoleuser']);
 		unset($fs['super']);
 		unset($fs['id']);

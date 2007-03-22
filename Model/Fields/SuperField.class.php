@@ -7,7 +7,7 @@ class SuperField extends NumField {
 
 	function setValue($value) {
 		// Don't register modifications
-    	$this->buffered_value =& $value;
+    	$this->buffered_value = $value;
     }
 
     function &validate() {

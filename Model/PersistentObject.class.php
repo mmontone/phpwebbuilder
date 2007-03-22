@@ -17,7 +17,7 @@ class PersistentObject extends DescriptedObject {
      var $__deleted = false;
 
 	function setID($id) {
-		foreach ($this->allFieldNamesThisLevel() as $field) {
+		foreach ($this->metadata->allFieldNamesThisLevel() as $field) {
 			$this->$field->setID($id);
 		}
 		$this->idN = $id;
@@ -31,29 +31,26 @@ class PersistentObject extends DescriptedObject {
 		}
 	}
 	function &getMetaData($class){
-		$metadata =& getSessionGlobal('persistentObjectsMetaData');
-		$class = strtolower($class);
-		if (!isset($metadata[$class])){
-			$metadata[$class] =& new $class(array(), false, true);
-			$meta =& $metadata[$class];
-			if ($meta->isNotTopClass($metadata[$class])) {
-				$meta->setParent(PersistentObject::getMetaData(get_parent_class($class)));
-			}
-			$meta->basicInitialize();
-			foreach($meta->fieldNames as $name){
-				foreach (array('value','collection','buffered_value','modified','disabled_events','event_handles','isClassOfPWB')
-					as $var){
-					unset($meta->$name->$var);
-				}
-
-			}
-			foreach (array('existsObject','idN','color','buffered','modified','validation_errors','toPersist','disabled_events','creationParams','event_handles','createMetaData','isClassOfPWB')
-				as $var){
-				unset($meta->$var);
-			}
-		}
-		return $metadata[$class];
+		return PersistentObjectMetaData::getMetaData($class);
 	}
+		/**
+	 * Returns the fields with specified names
+	 */
+	function & fieldsWithNames($names) {
+		$arr = array ();
+		foreach ($names as $name) {
+			$f =& $this->fieldNamed($name);
+			#@gencheck if ($f==null)
+			{
+				print_backtrace('Object '.getClass($this).' doesn\'t have field '.
+					$name.' in '.print_r($names, TRUE));
+			}
+			//@#
+			$arr[$name] = & $f;
+		}
+		return $arr;
+	}
+
 	function __wakeup(){
 		parent::__wakeup();
 		$this->registerGlobalObject();
@@ -115,95 +112,15 @@ class PersistentObject extends DescriptedObject {
 	function existsObject() {
 		return $this->existsObject;
 	}
-	/**
-	 * Gets all the fields of all the levels for the SQL query
-	 */
-	function &allFieldsAllLevels(){
-		$rcs = get_related_classes(getClass($this));
-		$fs = array();
-		foreach($rcs as $rc){
-			if ($rc != 'persistentobject' && $rc != 'descriptedobject' && $rc != 'pwbobject') {
-				$o = PersistentObject::getMetaData($rc);
-				$fs = array_merge($fs, $o->allSQLFields());
-			}
-		}
-		$fs = array_merge($fs, $this->allSQLFields());
-		return $fs;
-	}
-	/**
-	 * Returns the table name for the object.
-	 */
-	function tableName() {
-		return $this->tableNamePrefixed('');
-	}
-
-    function tableNamePrefixed($prefix) {
-    	return '`' . $this->getTablePrefixed($prefix) . '`';
-    }
-	function getTable() {
-		return $this->getTablePrefixed('target_');
-	}
-
-    function getTablePrefixed($prefix) {
-        return constant('baseprefix') . $prefix . $this->table;
-    }
-
-	/**
-	 * Returns the table names for the object (including all
-	 * hierarchy that involves it)
-	 */
-	function getTables() {
-		return $this->getTablesPrefixed('target_');
-	}
-
-    function getTablesPrefixed($prefix) {
-        if (!isset($this->allObjectTables)){
-	        $tns[] = $this->tableName() . ' AS ' . $this->tableNamePrefixed('{$prefix}');
-	        $p0 = getClass($this);
-	        $pcs = get_superclasses($p0);
-	        $o0 =& $this;
-	        foreach($pcs as $pc){
-	            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-	            	$o1 =& PersistentObject::getMetaData($pc);
-	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName().' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o1->tableNamePrefixed('{$prefix}').'.id = '.$o0->tableNamePrefixed('{$prefix}').'.super';
-	            } else {
-	            	break;
-	            }
-	            $o0 =& $o1;
-	            $p0 = $pc;
-	        }
-	        $scs = get_subclasses(getClass($this));
-	        foreach($scs as $sc){
-	            $o1 =& PersistentObject::getMetaData($sc);
-	            $pc = get_parent_class($sc);
-	            $o2 =& PersistentObject::getMetaData($pc);
-	            if ($pc != 'persistentobject' && $pc != 'descriptedobject' && $pc != 'pwbobject' && $pc != ''){
-	                $tns[] = 'LEFT OUTER JOIN '.$o1->tableName(). ' AS ' . $o1->tableNamePrefixed('{$prefix}') . ' ON '. $o2->tableNamePrefixed('{$prefix}').'.id = '. $o1->tableNamePrefixed('{$prefix}').'.super';
-	            } else {
-	            	break;
-	            }
-	        }
-	        $this->allObjectTables = implode(' ',$tns);
-        }
-        $tableNames = '';
-        $tableNames = eval('return "'.$this->allObjectTables.'";');
-        return array($tableNames);
-    }
-
-
-	function tableNames(){
-		$tns = $this->getTables();
-		return $tns[0];
-	}
 	function &basicInsert() {
 		$values = '';
 		$this->PWBversion->setValue(0);
 		$this->PWBversion->primitiveCommitChanges();
-		foreach ($this->allFieldsThisLevel() as $index => $field) {
+		foreach ($this->fieldsWithNames($this->metadata->allFieldNamesThisLevel()) as $index => $field) {
 			$values .= $field->insertValue();
 		}
 		$values = substr($values, 0, -2);
-		$sql = 'INSERT INTO ' . $this->tableName() . ' (' . $this->fieldNames('INSERT') . ') VALUES ('.$values.')';
+		$sql = 'INSERT INTO ' . $this->metadata->tableName() . ' (' . $this->metadata->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DBSession::Instance();
 		$rows=0;
 		$res =& $db->SQLExec($sql, TRUE, $this, $rows);
@@ -224,11 +141,11 @@ class PersistentObject extends DescriptedObject {
 		$values = '';
 		$ver = $this->PWBversion->getValue();
 		$this->PWBversion->setValue($this->PWBversion->getValue()+1);
-		foreach ($this->allFieldsThisLevel() as $index => $field) {
+		foreach ($this->fieldsWithNames($this->metadata->allFieldNamesThisLevel()) as $index => $field) {
 			$values .= $field->updateString();
 		}
 		$values = substr($values, 0, -2);
-		return "UPDATE " . $this->tableName() . " SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
+		return "UPDATE " . $this->metadata->tableName() . " SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
 	}
 	/**
 	 * Updates this level of the object, taking into account versioning
@@ -244,7 +161,7 @@ class PersistentObject extends DescriptedObject {
 		else {
 			if ($rows == 0) {
 				$db =& DBSession::Instance();
-				$rec =& $db->query('SELECT PWBversion FROM ' . $this->tableName() . ' WHERE id=' . $this->getId());
+				$rec =& $db->query('SELECT PWBversion FROM ' . $this->metadata->tableName() . ' WHERE id=' . $this->getId());
 				if ($rec['PWBversion'] !== $this->PWBversion->getValue()) {
 					$ex =& new DBError(array('message' => 'Versioning error'));
 				}
@@ -264,14 +181,14 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function canDelete(){
 		$can = TRUE;
-		foreach ($this->allFieldsThisLevel() as $f) {
+		foreach ($this->fieldsWithNames($this->metadata->allFieldNamesThisLevel()) as $f) {
 			$can = $can && $f->canDelete();
 		}
 		return $can;
 	}
 	function &basicDelete() {
 		if (!$this->existsObject) return true;
-		$sql = 'DELETE FROM ' . $this->tableName() . ' WHERE id=' . $this->getId();
+		$sql = 'DELETE FROM ' . $this->metadata->tableName() . ' WHERE id=' . $this->getId();
 		$db =& DBSession::Instance();
 		$res =& $db->SQLExec($sql, FALSE, $this, $rows=0);
 		if (!is_exception($res)) {
@@ -284,7 +201,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function indexValues() {
 		$ret = "";
-		$idFields = $this->allIndexFields();
+		$idFields = $this->fieldsWithNames($this->metadata->allIndexFieldNames());
 		foreach ($idFields as $index => $field) {
 			$ret .= $field->viewValue() . ", ";
 		}
@@ -296,28 +213,29 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function & createInstance() {
 		if ($this->createMetaData) return $this;
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$c = get_parent_class(getClass($this));
 			$this->setParent(new $c(array(),false));
 		}
+		$this->metadata =& PersistentObjectMetaData::getMetaData(getClass($this));
 		$this->basicInitialize();
 		return $this;
 	}
 	function initializeObject(){
-		//$this->attachFieldsEvents();
+		$this->attachFieldsEvents();
 		//print_backtrace(getClass($this));
 	}
 	/**
 	 * Setter for the parent of the object.
 	 * @access private
 	 */
-	function setParent(& $obj) {
-		$this->parent = & $obj;
+	function setParent(& $parent) {
+		$this->parent = & $parent;
 		$obj->child =& $this;
-		$arr = $this->parent->allFieldNames();
+		$pmd =& PersistentObjectMetaData::getMetaData(getClass($parent));
+		$arr = array_diff($pmd->allFieldNames(), array('id', 'PWBversion', 'super','refCount', 'rootObject'));
 		foreach ($arr as $name) {
-			if ($name != 'id' && $name != 'super')
-				$this-> $name = & $this->parent-> $name;
+			$this-> $name = & $parent-> $name;
 		}
 	}
 	/**
@@ -325,23 +243,6 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function & getParent() {
 		return $this->parent;
-	}
-	/**
-	 * Returns an array of the sql names of the fields (all levels)
-	 */
-	function & allSQLFields() {
-		return $this->fieldsWithSQLNames($this->allFieldNames());
-	}
-	/**
-	 * Returns an array of the sql names of the specified fields
-	 */
-	function & fieldsWithSQLNames($names) {
-		$arr = array ();
-		foreach ($names as $name) {
-			$f =& $this->fieldNamed($name);
-			$arr[$f->sqlName()] = & $f;
-		}
-		return $arr;
 	}
 	/**
 	 * @category Persistence
@@ -375,48 +276,6 @@ class PersistentObject extends DescriptedObject {
 		return $cs->first();
 	}
 	/**
-	 * Loads an object from a database record
-	 */
-	function &loadFromRec(&$rec){
-		$obj =& $this->chooseSubclass($rec);
-		$obj->loadFrom($rec);
-		$obj->attachFieldsEvents();
-		$obj->initializeObject();
-		return $obj;
-	}
-	/**
-	 * Chooses the right subclass for the object
-	 */
-	function &chooseSubclass(&$rec){
-		$c = getClass($this);
-		$rcss = get_subclasses($c);
-		$rcs = array_reverse($rcss);
-		foreach($rcs as $rc){
-			$o =& PersistentObject::getMetaData($rc);
-			if ($o->canBeLoaded($rec)){
-				$o =& new $rc(array(), false);
-				return $o;
-			}
-		}
-		$o =& new $c(array(), false);
-		return $o;
-	}
-	/**
-	 * Checks if the subclass can be loaded from the record
-	 */
-	function canBeLoaded(&$rec){
-		return isset($rec[$this->id->sqlName()]);
-	}
-	/**
-	 * Prepares the object to be saved (for cascading and inheritance-by-relation)
-	 */
-	function prepareToSave(){
-		$fs =& $this->allFields();
-		foreach(array_keys($fs) as $k){
-			$fs[$k]->prepareToSave();
-		}
-	}
-	/**
 	 * Persists the object in the database. Returns if everything worked
 	 */
 	function &save() {
@@ -443,7 +302,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &update() {
 		$res = null;
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$p = & $this->getParent();
 			$p->id->setValue($this->super->getValue());
 			$res =& $p->update();
@@ -459,7 +318,7 @@ class PersistentObject extends DescriptedObject {
 		DBUpdater::markUpdated(getClass($this));
 	}
 	function flushUpdate() {
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$p = & $this->getParent();
 			$p->flushUpdate();
 		}
@@ -471,7 +330,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &insert() {
 		$res = null;
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$p = & $this->getParent();
 			$res =& $p->insert();
 			$this->super->setValue($p->id->getValue());
@@ -480,7 +339,7 @@ class PersistentObject extends DescriptedObject {
 			$res =& $this->basicInsert();
 			$this->markAsUpdated();
 			/*
-			if (!is_exception($res) && $this->isNotTopClass($this)){
+			if (!is_exception($res) && DescriptedObject::isNotTopClass(getClass($this))){
 				$res =& $p->delete();
 			}
 			*/
@@ -490,7 +349,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function flushInsert() {
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$p = & $this->getParent();
 			$p->flushInsert();
 			$this->super->primitiveFlushChanges();
@@ -500,7 +359,7 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function commitMetaFields() {
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$p = & $this->getParent();
 			$p->commitMetaFields();
 			$this->super->primitiveCommitChanges();
@@ -516,7 +375,7 @@ class PersistentObject extends DescriptedObject {
 		$res = null;
 		$ex =& $this->verifyDeletion();
         if (!is_exception($ex)) {
-			if ($this->isNotTopClass($this)) {
+			if (DescriptedObject::isNotTopClass(getClass($this))) {
 				$p = & $this->getParent();
 				$res =& $p->delete();
 			}
@@ -552,35 +411,6 @@ class PersistentObject extends DescriptedObject {
 		}
 		return $col;
 	}
-
-	function tableForField($field) {
-		return $this->tableForFieldPrefixed($field, '');
-	}
-
-    function tableForFieldPrefixed($field, $prefix) {
-		$o1 =& $this;
-		//echo 'Checking class ' . getClass($o1). ' field ' . $field . '<br />';
-		if (in_array($field, $o1->allFieldNamesThisLevel())) {
-			//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
-			return $o1->getTablePrefixed($prefix);
-		}
-
-		$p0 = getClass($this);
-		$pcs = get_superclasses($p0);
-		foreach($pcs as $pc){
-			$o1 =& PersistentObject::getMetaData($pc);
-			//echo 'Checking class ' . getClass($o1). ' for field ' . $field . '<br />';
-			if (getClass($o1) == 'pwbobject') {
-				print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());
-			}
-
-            if (in_array($field, $o1->allFieldNamesThisLevel())) {
-				//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
-				return $o1->getTablePrefixed($prefix);
-			}
-		}
-	}
-
 	// GARBAGE COLLECTION
 	var $color='black';
 	var $buffered=false;
@@ -594,12 +424,12 @@ class PersistentObject extends DescriptedObject {
 		}
 	}
 	function removedAsTarget(&$elem, $field){
-		foreach($this->allFieldNames() as $f){
+		foreach($this->metadata->allFieldNames() as $f){
 			$this->$f->removedAsTarget($elem, $field);
 		}
 	}
 	function addedAsTarget(&$elem, $field){
-		foreach($this->allFieldNames() as $f){
+		foreach($this->metadata->allFieldNames() as $f){
 			$this->$f->addedAsTarget($elem, $field);
 		}
 	}
@@ -726,7 +556,7 @@ class PersistentObject extends DescriptedObject {
 		};
 	}
 	function mapChild($fun){
-		foreach($this->allFieldNames() as $f){
+		foreach($this->metadata->allFieldNames() as $f){
 			$this->$f->mapChild($fun);
 		}
 	}

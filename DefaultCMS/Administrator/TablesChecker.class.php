@@ -41,7 +41,7 @@ class ObjectMapper {
 					$arr2 [$f["Field"]]=$f;
 				}
 				$this->gotFields = $arr2;
-				$arr = $this->checkFields($this->object->fieldsWithNames($this->object->fieldNames));
+				$arr = $this->checkFields($this->object->class->fieldsWithNames($this->object->class->fieldNames));
 				$temp = '';
 				foreach ($arr as $name=>$f) {
 					$temp .= $f;
@@ -90,7 +90,7 @@ class ObjectMapper {
 			} else {
 				$this->tableName=$table;
 				$ret =	"\nCREATE TABLE `".$table."` (" ;
-				$ret .= $this->createFields($this->object->fieldsWithNames($this->object->fieldNames));
+				$ret .= $this->createFields($this->object->class->fieldsWithNames($this->object->class->fieldNames));
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
 				if ($u) {
@@ -103,10 +103,10 @@ class ObjectMapper {
 	}
 	function uniques() {
 		$table = $this->object->getTable();
-		$ifs =& $this->object->allIndexFields();
+		$ifs =& $this->object->allIndexFieldNames();
 		$unis=array();
-		foreach ($this->object->indexFields as $i){
-			$f =& $ifs[$i];
+		foreach ($ifs as $i){
+			$f =& $this->object->class->$i;
 			$tca =& new FieldMapper;
 			$df =& $tca->createFor($f);
 			$unis []= $df->createUnique();
@@ -152,10 +152,12 @@ class TablesChecker {
 		}
 		$mod='';
 		foreach ($arr as $o) {
-			$obj = PersistentObject::getMetaData($o);
+			$obj =& PersistentObject::getMetaData($o);
 			$dbc = new ObjectMapper;
 			$dbc->object=&$obj;
+			$obj->createObject();
 			$mod .= $dbc->analizeMods();
+			$obj->disposeObject();
 			$table = $dbc->tableName;
 			unset($tables[$table]);
 			if ($mod!='' && $stepping) return $mod;

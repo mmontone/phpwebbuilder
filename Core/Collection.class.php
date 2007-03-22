@@ -37,7 +37,7 @@ class Collection extends PWBObject {
 	 */
 	function & at($pos) {
 		$es = & $this->elements();
-		if (!empty($es)) {
+		if (!empty($es) && !is_exception($es)) {
 			return $es[$pos];
 		}
 		else {

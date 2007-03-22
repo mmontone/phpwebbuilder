@@ -425,12 +425,10 @@ function find_metadata(){
 	$GLOBALS['persistentObjectsMetaData']=array();
 	foreach(get_subclasses('PersistentObject') as $sc){
 		if (Compiler::classCompiled($sc)){
-			$ob =& PersistentObject::getMetaData($sc);
-			$ob->fieldNames('SELECT');
-			$ob->fieldNames('UPDATE');
-			$ob->getTables();
+			PersistentObject::getMetaData($sc);
 		}
 	}
+	//print_backtrace(strlen(serialize($GLOBALS['persistentObjectsMetaData'])));
 	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.addsimplequoteslashes(serialize($GLOBALS['allRelatedClasses'])).'\');';
 	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.addsimplequoteslashes(serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
 	return $ret;

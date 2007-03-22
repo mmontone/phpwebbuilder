@@ -107,7 +107,7 @@ class EqualCondition extends Condition {
 
 class Expression {
 	var $parent;
-
+	var $type;
     function Expression() {
 
 	}
@@ -294,7 +294,6 @@ class PathExpression extends Expression {
 	function &getTargetVar(&$report) {
 		$pp = explode('.', $this->path);
         $target = $pp[0];
-
         if ($target == '') {
             $t =& $report->getTargetVar();
             $arr = array(&$t, array());
@@ -315,16 +314,14 @@ class PathExpression extends Expression {
     function &registerPath(&$report) {
 		$result =& $this->getTargetVar($report);
         $target_var =& $result[0];
-
         $pp = $result[1];
         $datatype=$class = $target_var->class;
         $prefix = $target_var->prefix;
-        $pre = substr($prefix,0);
-
-		$o =& PersistentObject::getMetaData($class);
+        $pre = $prefix;
+		$o =& PersistentObjectMetaData::getMetaData($class);
 
 		$keys = array_keys($pp);
-        $lastkey = $keys[count($pp) - 1];
+        $lastkey = @$keys[count($pp) - 1];
 
         foreach ($pp as $index) {
             #@gencheck
@@ -338,12 +335,12 @@ class PathExpression extends Expression {
                 $class = $this->type;
             }
             else {
-                $class =& $o->$index->getDataType();
+                $class =& $o->getDataType($index);
             }
 
-			$obj =& PersistentObject::getMetaData($class);
+			$obj =& PersistentObjectMetaData::getMetaData($class);
 
-            $target_obj =& PersistentObject::getMetaData($o->$index->getDataType());
+            $target_obj =& PersistentObjectMetaData::getMetaData($o->getDataType($index));
 
             $otable = $o->tableForFieldPrefixed($index, $pre);
 
@@ -353,7 +350,7 @@ class PathExpression extends Expression {
             $var = $report->getVar($pre);
             if ($var==null){
             	$report->defineVar($pre, $class);
-	            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $o->$index->colName . '`'),
+	            $exp =& new EqualCondition(array('exp1' => new ValueExpression('`' . $otable. '`.`' . $o->getColName($index) . '`'),
 	                                             'exp2' => new ValueExpression('`' . $target_obj->getTablePrefixed($pre.'_') .'`.`id`')));
 
 	            $exp->evaluateIn($report);
@@ -385,7 +382,7 @@ class AttrPathExpression extends PathExpression {
         $result =& $this->getTargetVar($report);
         $target_var =& $result[0];
         $otable = $o[0]->tableForFieldPrefixed($this->attr, $o[1]);
-		$attr = $otable . '.' . $o[0]->{$this->attr}->colName;
+		$attr = $otable . '.' . $o[0]->getColName($this->attr);
 		return '`' . str_replace('.','`.`',$attr) . '`';
 	}
 }
@@ -402,7 +399,7 @@ class ObjectPathExpression extends PathExpression {
 		$o =& $ret[0];
 		$type = $this->parent->getExpressionType($report);
 		if ($type!=''){
-			$o =& PersistentObject::getMetaData($type);
+			$o =& PersistentObjectMetaData::getMetaData($type);
 		}
 		$attr = '`'.$o->getTablePrefixed($ret[1]) .'`.`id`';
         return $attr;

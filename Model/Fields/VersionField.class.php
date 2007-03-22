@@ -11,7 +11,7 @@ class VersionField extends NumField {
 
 	function setValue($value) {
 		// Don't register a modification
-		$this->buffered_value = & $value;
+		$this->buffered_value = $value;
 	}
 	function flushChanges() {
 

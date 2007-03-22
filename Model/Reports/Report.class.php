@@ -246,9 +246,9 @@ class Report extends Collection{
 	}
 	function inSQL(){
 		if (!isset($this->sqls['in_fields'])){
-			$obj =& $this->getObject();
+			$meta =& $this->getMetaData();
 			$var =& $this->getTargetVar();
-			$this->sqls['in_fields'] = $obj->id->fieldNamePrefixed('SELECT', $var->prefix);
+			$this->sqls['in_fields'] = $meta->fieldNamePrefixed('id','SELECT', $var->prefix);
 		}
 		$sql = 'SELECT '.  $this->sqls['in_fields'].' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();
         return $sql;
@@ -267,8 +267,8 @@ class Report extends Collection{
 	 * Returns the field of the datatype, plus the extra fields requested
 	 */
 	function allFields(){
-		$obj =& $this->getObject();
-		$arr = array_merge($obj->allIndexFieldNames(), $this->getFields());
+		$meta =& $this->getMetaData();
+		$arr = array_merge($meta->allIndexFieldNames(), $this->getFields());
 		return $arr;
 	}
 	/**
@@ -281,10 +281,8 @@ class Report extends Collection{
 	/**
 	  * Returns a New object of the dataype
 	  */
-	function &getObject(){
-		$dt = $this->getDataType();
-		$o  =& PersistentObject::getMetaData($dt);
-		return $o;
+	function &getMetaData(){
+		return PersistentObject::getMetaData($this->getDataType());
 	}
 	/**
 	  * Returns all the field names, backquote encapsed
@@ -299,9 +297,9 @@ class Report extends Collection{
 				}
 			}
 			if ($this->getDataType()!='PersistentObject'){
-	            $obj =& $this->getObject();
+	            $meta =& $this->getMetaData();
 	            $var =& $this->getTargetVar();
-	            $ret []= $obj->fieldNamesPrefixed('SELECT', $var->prefix);
+	            $ret []= $meta->fieldNamesPrefixed('SELECT', $var->prefix);
 	        }
 			$this->sqls['fields'] = implode(',',$ret);
 		}
@@ -334,7 +332,7 @@ class Report extends Collection{
 	    $target =& $this->getTargetVar();
 	    if (is_object($target)){
 	        $datatype = $target->class;
-	        $obj = PersistentObject::getMetaData($datatype);
+	        $obj =& PersistentObject::getMetaData($datatype);
             return array_union_values($obj->getTablesPrefixed($target->prefix), $this->tables);
 	    } else {
 	    	return $this->tables;
@@ -481,8 +479,17 @@ class Report extends Collection{
 			$this->elements = array();
 			$sql = $this->selectsql();
 			$db =& DBSession::Instance();
-			$reg = $db->query($sql,true);
-			if ($reg===false) return false;
+			#@php4
+				$reg =& $db->query($sql,true);
+				if (is_exception($reg)) return $reg;
+			//@#
+			#@php5
+				try{
+					$reg = $db->query($sql,true);
+				} catch(Exception $e){
+					return $reg;
+				}
+			//@#
 			while ($data = $db->fetchrecord($reg)) {
 				$this->addElement($this->makeElement($data));
 			}
@@ -516,19 +523,20 @@ class Report extends Collection{
 			$old->loadFrom($data);
 			return $this->fillExtras($old, $data);
 		}
-		$obj =& PersistentObject::getMetaData($dt);
+		$obj =& PersistentObjectMetaData::getMetaData($dt);
 		return $this->fillExtras($obj->loadFromRec($data), $data);
 	}
 	function getDataTypeSqlId(){
 		if(!isset($this->dataTypeSqlId)){
 			$dt = $this->getDataType();
-			$obj =& PersistentObject::getMetaData($dt);
-			$this->dataTypeSqlId =$obj->id->sqlName();
+			$obj =& PersistentObjectMetaData::getMetaData($dt);
+			$this->dataTypeSqlId =$obj->getIdSQLName();
 		}
 		return $this->dataTypeSqlId;
 	}
 	function &fillExtras(&$obj,$data){
-		$ret = $obj->fieldNames('SELECT');
+		$md =& PersistentObjectMetaData::getMetaData(getClass($obj));
+		$ret = $md->fieldNames('SELECT');
 	 	foreach($data as $n=>$m){
 	 		if (!isset($obj->$n) || !is_a($obj->$n, 'DataField')){
 	 			$obj->$n =& new ValueHolder($m);

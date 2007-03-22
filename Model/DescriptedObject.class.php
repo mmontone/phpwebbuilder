@@ -33,7 +33,7 @@ class DescriptedObject extends PWBObject {
 
 	function commitChanges() {
 		//print_backtrace('Committing changes');
-		foreach($this->allFieldNames() as $f) {
+		foreach($this->metadata->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->commitChanges();
 		}
@@ -43,7 +43,7 @@ class DescriptedObject extends PWBObject {
 
 	function primitiveCommitChanges() {
 		//print_backtrace('Primitive committing changes');
-		foreach($this->allFieldNames() as $f) {
+		foreach($this->metadata->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->primitiveCommitChanges();
 		}
@@ -54,9 +54,10 @@ class DescriptedObject extends PWBObject {
     function debugPrintString() {
     	$ret = array();
 
-        $idFields = $this->allFields();
-        foreach ($idFields as $index => $field) {
-            $ret []= $index . ':' .  $field->viewValue();
+		$md =& PersistentObjectMetaData::getMetaData(getClass($this));
+        $idFields = $md->allIndexFieldNames();
+        foreach ($idFields as $field) {
+            $ret []= $field . ':' .  $this->$field->viewValue();
         }
         $ret = implode(',',$ret);
         return $this->primPrintString($ret);
@@ -66,7 +67,7 @@ class DescriptedObject extends PWBObject {
 	 */
 	function flushChanges() {
 		//print_backtrace('Flushing changes');
-		foreach($this->allFieldNames() as $f) {
+		foreach($this->metadata->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->flushChanges();
 		}
@@ -106,7 +107,7 @@ class DescriptedObject extends PWBObject {
 			$db =& DBSession::Instance();
 			$db->registerObject($this);
 		}
-        #@sql_echo
+        #@persistence_echo
         else {
             echo 'Not registering modification of ' . $this->printString() . '<br/>';
         }//@#
@@ -115,13 +116,21 @@ class DescriptedObject extends PWBObject {
 		if (!$this->isPersisted()){
 			$db =& DBSession::Instance();
 			$db->registerObject($this);
+			#@persistence_echo
+            echo 'registering persistence of ' . $this->printString() . '<br/>';
+        	//@#
 		}
+			#@persistence_echo
+			else {
+				echo 'NOT registering persistence of ' . $this->printString() . '<br/>';
+			}
+			//@#
 	}
 	function isPersisted(){
 		return $this->existsObject || $this->toPersist;
 	}
 	function registerCollaborators(){
-		foreach($this->allFieldNames() as $f) {
+		foreach($this->metadata->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->registerCollaborators();
 		}
@@ -133,7 +142,7 @@ class DescriptedObject extends PWBObject {
 		$this->addField(new idField("id", FALSE));
 		$this->addField(new VersionField("PWBversion", FALSE));
 		$this->addGCFields();
-		if ($this->isNotTopClass($this)) {
+		if (DescriptedObject::isNotTopClass(getClass($this))) {
 			$this->addField(new superField("super", FALSE));
 		}
 		$this->displayString = ucfirst(getClass($this));
@@ -162,11 +171,11 @@ class DescriptedObject extends PWBObject {
         }
 
         // TODO LATER
-        if ($this->isNotTopClass($this)){
+        if (DescriptedObject::isNotTopClass(getClass($this))){
 			$this->parent->loadFrom($reg);
 		}
 		$ok = true;
-		foreach ($this->allFieldNamesThisLevel() as $index) {
+		foreach ($this->metadata->allFieldNamesThisLevel() as $index) {
 			$field = & $this-> $index;
 			$ok = $ok and $field->loadFrom($reg);
 		}
@@ -183,7 +192,7 @@ class DescriptedObject extends PWBObject {
 	}
 
     function attachFieldsEvents() {
-        foreach($this->allFieldNames() as $f) {
+        foreach($this->metadata->allFieldNames() as $f) {
             $field =& $this->fieldNamed($f);
             $field->addInterestIn('changed', new FunctionObject($this, 'fieldChanged'), array('execute on triggering' => true));
         }
@@ -192,74 +201,8 @@ class DescriptedObject extends PWBObject {
 	 * Returns if the object is not a top class (that is, it's direct superclass is not persistent or descripted object)
 	 */
 	function isNotTopClass($class) {
-		$cn = strtolower(get_parent_class($class));
-		return (strcmp($cn, 'persistentobject') != 0 && strcmp($cn, 'descriptedobject') != 0);
-	}
-	/**
-	 * Returns this level's field (inheritance-wise)
-	 */
-    function & allFieldsThisLevel() {
-		return $this->fieldsWithNames($this->allFieldNamesThisLevel());
-	}
-	/**
-	 * Returns all the fields
-	 */
-	function & allFields() {
-		return $this->fieldsWithNames($this->allFieldNames());
-	}
-	/**
-	 * Returns the fields with specified names
-	 */
-	function & fieldsWithNames($names) {
-		$arr = array ();
-		foreach ($names as $name) {
-			$f =& $this->fieldNamed($name);
-			if ($f==null){
-				print_backtrace('Object '.getClass($this).' doesn\'t have field '.
-					$name.' in '.print_r($names, TRUE));
-			}
-			$arr[$name] = & $f;
-		}
-		return $arr;
-	}
-	/**
-	 * Returns all the field names
-	 */
-	function allFieldNames() {
-		if ($this->isNotTopClass(getClass($this))) {
-			if ($this->parent == null)
-				print_backtrace(getClass($this));
-
-			return array_merge($this->parent->allFieldNames(), $this->allFieldNamesThisLevel());
-		}
-		else {
-			return $this->allFieldNamesThisLevel();
-		}
-	}
-	/**
-	 * Returns all the index field's names
-	 */
-	function allIndexFieldNames() {
-		if ($this->isNotTopClass(getClass($this))) {
-			if ($this->parent == null)
-				backtrace();
-			return array_merge($this->parent->allIndexFieldNames(), $this->indexFields);
-		}
-		else {
-			return $this->indexFields;
-		}
-	}
-	/**
-	 * Returns all the index field's
-	 */
-	function & allIndexFields() {
-		return $this->fieldsWithNames($this->allIndexFieldNames());
-	}
-	/**
-	 * Returns this level's field names (inheritance-wise)
-	 */
-	function allFieldNamesThisLevel() {
-		return $this->fieldNames;
+		#@gencheck if (is_object($class)) print_backtrace('not string');@#
+		return is_strict_subclass(get_parent_class($class), 'persistentobject');
 	}
 	/**
 	 * sets the field with the name
@@ -290,7 +233,7 @@ class DescriptedObject extends PWBObject {
 	function addField(& $field) {
 		#@typecheck $field:ValueModel@#
 		$name = $field->varName;
-		#@check !isset($this-> $name)@#
+		#@gencheck if (isset($this-> $name)) print_backtrace($this->printString() . ' already has '.$name.' which is a '.getTypeOf($this->$name));@#
 		$this-> $name = & $field;
 		$this->fieldNames[$name] = $name;
 		if ($field->isIndex()) {
@@ -310,6 +253,12 @@ class DescriptedObject extends PWBObject {
 	 */
 	function fieldID($s) {
 		return $s;
+	}
+	/**
+	 * Returns all the fields
+	 */
+	function & allFields() {
+		return $this->fieldsWithNames($this->metadata->allFieldNames());
 	}
 	/**
 	 * Visitor
@@ -422,7 +371,7 @@ class DescriptedObject extends PWBObject {
 		$n = array();
 		$this->validation_errors =& $n;
 
-		foreach ($this->allFieldNames() as $f) {
+		foreach ($this->metadata->allFieldNames() as $f) {
 			$field =& $this->fieldNamed($f);
 			$field->validated();
 		}
@@ -433,7 +382,7 @@ class DescriptedObject extends PWBObject {
 	function validateFields() {
 		$ret = true;
 
-		foreach ($this->allFieldNames() as $f) {
+		foreach ($this->metadata->allFieldNames() as $f) {
 			if (!$this->validateField($f)) {
 				$ret = false;
 			}
@@ -459,45 +408,6 @@ class DescriptedObject extends PWBObject {
 	function validate() {
 		return false;
 	}
-    /**
-	 * Returns a SQL string for accesing the fields for the specified operation
-	 */
-
-
-    function fieldNames($operation) {
-    	return $this->fieldNamesPrefixed($operation, 'target_');
-    }
-
-    function fieldNamesPrefixed($operation, $prefix) {
-		if ($operation=='SELECT'){
-			if (!isset($this->allFieldsNamesAllLevels)){
-				$fieldnames = array();
-				$fs =& $this->allFieldsAllLevels();
-		        foreach ($fs as $name => $field) {
-				    $fn = $field->fieldNamePrefixed($operation, '{$prefix}');
-		            if ($fn != null) {
-		            	$fieldnames[] = $fn;
-		            }
-				}
-		        $this->allFieldsNamesAllLevels=  implode(',', $fieldnames);
-			}
-			$fieldsNames = eval('return "'.$this->allFieldsNamesAllLevels.'";');
-		} else {
-				if (!isset($this->allFieldsNamesThisLevel)){
-				$fieldnames = array();
-				$fs =& $this->allFieldsThisLevel();
-		        foreach ($fs as $name => $field) {
-				    $fn = $field->fieldNamePrefixed($operation, '{$prefix}');
-		            if ($fn != null) {
-		            	$fieldnames[] = $fn;
-		            }
-				}
-		        $this->allFieldsNamesThisLevel=  implode(',', $fieldnames);
-			}
-			$fieldsNames = eval('return "'.$this->allFieldsNamesThisLevel.'";');
-		}
-		return $fieldsNames;
-    }
 }
 
 class PWBValidationError extends PWBException {

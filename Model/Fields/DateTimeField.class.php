@@ -15,6 +15,9 @@ class DateTimeField extends DataField {
     }
 	function loadFrom($reg) {
 		$val = $reg[$this->sqlName()];
+		$this->setDate($val);
+	}
+	function setDate($val){
 		$this->setValue(new PWBDateTime($val));
 	}
     function &validate() {

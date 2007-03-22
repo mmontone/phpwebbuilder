@@ -10,8 +10,8 @@ class File extends PersistentObject {
                $this->addField(new BlobField("bin_data", FALSE));
                $this->addField(new TextArea("description", FALSE));
        }
-	   function allFieldNamesThisLevel(){
-	   	   $arr = parent::allFieldNamesThisLevel();
+	   function &fieldsWithNames($names){
+	   	   $arr =& parent::fieldsWithNames($names);
 	   	   if (!$this->bin_data->getComplete) unset($arr['bin_data']);
 	   	   return $arr;
 	   }
