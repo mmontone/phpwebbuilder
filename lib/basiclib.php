@@ -509,7 +509,11 @@ function get_superclasses_upto($str,$class) {
 		$ret[] = $pc;
 		$pc = strtolower(get_parent_class($pc));
 	}
-	return $ret;
+	if ($pc!==$class) {
+		return array();
+	} else {
+		return $ret;
+	}
 }
 
 /**
