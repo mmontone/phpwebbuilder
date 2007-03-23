@@ -187,7 +187,6 @@ class DescriptedObject extends PWBObject {
 				$field =&$this->fields[$sc][$index];
 				$ok = $ok and $field->loadFrom($reg);
 				$field->setID($this->fields[$sc]['id']->getValue());
-				unset($field->owner);
 			}
         }
         //if (DescriptedObject::isNotTopClass(getClass($this))) {header('Content-type: text/plain');unset($this->metadata);print_r($this->fields);exit;}

@@ -6,8 +6,8 @@ class DBError extends PWBException {
     var $target;
 
 	function createInstance($params) {
-		$this->number = $params['number'];
-		$this->sql = $params['sql'];
+		$this->number = @$params['number'];
+		$this->sql = @$params['sql'];
         $this->target =& $params['target'];
 		parent::createInstance($params);
 	}
