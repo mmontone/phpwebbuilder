@@ -8,11 +8,10 @@ class MySQLDriver extends DBDriver {
     #@php4
     function &SQLExec ($sql, $getID=false, $obj=null, &$rows) {
        	$rows=0;
-       	$this->setLastSQL($sql);
         $reg =& $this->query ($sql);
         if (!is_exception($reg)) {
-	        if ($getID) { $obj->setID(mysql_insert_id());};
-	        $rows = mysql_affected_rows();
+	        if ($getID) { $obj->setID($this->getLastId());};
+	        $rows = $this->getRowsAffected();
 	        return $reg;
         }
         else {
@@ -20,15 +19,19 @@ class MySQLDriver extends DBDriver {
             return $reg->raise();
         }
     }//@#
-
+	function getLastId(){
+		return mysql_insert_id();
+	}
+	function getRowsAffected(){
+		return mysql_affected_rows();
+	}
     #@php5
     function &SQLExec ($sql, $getID=false, $obj=null, &$rows) {
         $rows=0;
-        $this->setLastSQL($sql);
         try {
             $reg = &$this->query ($sql);
-            if ($getID) { $obj->setID(mysql_insert_id());};
-            $rows = mysql_affected_rows();
+            if ($getID) { $obj->setID($this->getLastId());};
+            $rows = $this->getRowsAffected();
             return $reg;
         } catch (DBError $ex) {
         	$ex->setTargetObject($obj);

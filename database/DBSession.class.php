@@ -91,7 +91,7 @@ class DBSession {
 			$this->driver->beginTransaction();
 		}
 
-		#@sql_echo print_backtrace('Beggining transaction ('. $this->nesting . ')');@#
+		#@sql_echo echo 'Beggining transaction ('. $this->nesting . ')';@#
 	}
 
 	function &commit() {
@@ -107,7 +107,7 @@ class DBSession {
         if ($this->nesting == 1) {
 			$this->saveRegisteredObjects();
 			if (!$this->rollback) {
-				#@sql_echo print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');@#
+				#@sql_echo echo 'Commiting transaction ('. $this->nesting . ')<br/>';@#
 				$this->commitTransaction();
 			}
 			else {
@@ -232,7 +232,12 @@ class DBSession {
 	function &SQLExec($sql, $getID, &$obj, &$rows) {
        	return $this->driver->SQLExec($sql, $getID, $obj, $rows);
     }
-
+	function getLastId(){
+		return $this->driver->getLastId();
+	}
+	function getRowsAffected(){
+		return $this->driver->getRowsAffected();
+	}
     function queryDB($query){
     	return $this->driver->queryDB($query);
     }

@@ -111,7 +111,14 @@ class PersistentObject extends DescriptedObject {
 		$sql = 'INSERT INTO ' . $md->tableName() . ' (' . $md->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DBSession::Instance();
 		$rows=0;
-		$res =& $db->SQLExec($sql, TRUE, $this, $rows);
+		$res =& $db->query ($sql);
+        if (!is_exception($res)) {
+        	$nid = $db->getLastId();
+	        foreach (array_keys($this->fields[$class]) as $index) {
+				$this->fields[$class][$index]->setID($nid);
+			}
+	        $rows = $db->getRowsAffected();
+        }
 		if (is_exception($res)) {
 			return $res;
 		}
@@ -291,12 +298,12 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &insert() {
 		$res = null;
-		foreach(array_reverse($this->getPersistentClasses()) as $sc){
+		foreach($this->getPersistentClasses() as $sc){
+			if (DescriptedObject::isNotTopClass($sc)) {
+				$this->fields[$sc]['super']->setValue($this->fields[strtolower(get_parent_class($sc))]['id']->getValue());
+			}
 			$res =& $this->basicInsert($sc);
 			if (is_exception($res)){break;}
-			if (DescriptedObject::isNotTopClass($sc)) {
-				$this->fields[$sc]['super']->setValue($this->fields[get_parent_class($sc)]['id']->getValue());
-			}
 		}
 		if (!is_exception($res)){
 			$this->markAsUpdated();
