@@ -216,12 +216,14 @@ class PersistentObjectMetaData {
 		$p0 = $o1->className;
 		$pcs = get_superclasses($p0);
         foreach($pcs as $pc){
-			$o1 =& PersistentObject::getMetaData($pc);
-			#@gencheck if (getClass($o1) == 'pwbobject')
-			{
-				print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());
-			}
-			//@#
+			#@gencheck if ($pc == 'pwbobject')
+            {
+                print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());
+            }
+            //@#
+
+            $o1 =& PersistentObject::getMetaData($pc);
+
 
             if (in_array($field, $o1->allFieldNamesThisLevel())) {
 				return $o1->getTablePrefixed($prefix);
