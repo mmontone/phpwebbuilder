@@ -189,9 +189,6 @@ class PersistentObject extends DescriptedObject {
 		$sql = 'DELETE FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class);
 		$db =& DBSession::Instance();
 		$res =& $db->SQLExec($sql, FALSE, $this, $rows=0);
-		if (!is_exception($res)) {
-			$this->existsObject=FALSE;
-		}
 		return $res;
 	}
 	/**
@@ -342,6 +339,7 @@ class PersistentObject extends DescriptedObject {
 				$res =& $this->basicDelete($sc);
 	            if (is_exception($res))  {return $res;}
 			}
+			$this->existsObject=FALSE;
 	    	$this->setDeleted(true);
 	        return $res;
 		}
