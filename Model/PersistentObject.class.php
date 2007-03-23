@@ -272,7 +272,7 @@ class PersistentObject extends DescriptedObject {
 		$res = null;
 		foreach($this->getPersistentClasses() as $sc){
 			$res =& $this->basicUpdate($sc);
-			if (!is_exception($res)){return $res;}
+			if (is_exception($res)){return $res;}
 		}
 		$this->markAsUpdated();
 		return $res;
@@ -293,7 +293,7 @@ class PersistentObject extends DescriptedObject {
 		$res = null;
 		foreach(array_reverse($this->getPersistentClasses()) as $sc){
 			$res =& $this->basicInsert($sc);
-			if (!is_exception($res)){break;}
+			if (is_exception($res)){break;}
 			if (DescriptedObject::isNotTopClass($sc)) {
 				$this->fields[$sc]['super']->setValue($this->fields[get_parent_class($sc)]['id']->getValue());
 			}
@@ -333,7 +333,7 @@ class PersistentObject extends DescriptedObject {
         if (!is_exception($ex)) {
 			foreach($this->getPersistentClasses() as $sc){
 				$res =& $this->basicDelete($sc);
-	            if (!is_exception($res))  {return $res;}
+	            if (is_exception($res))  {return $res;}
 			}
 	    	$this->setDeleted(true);
 	        return $res;

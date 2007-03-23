@@ -14,7 +14,7 @@ class DateTimeField extends DataField {
         return "'".$d->printString()."'" . ", " ;
     }
 	function loadFrom($reg) {
-		$val = $reg[$this->sqlName()];
+		$val = @$reg[$this->sqlName()];
 		$this->setDate($val);
 	}
 	function setDate($val){
