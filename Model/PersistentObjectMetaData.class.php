@@ -209,17 +209,14 @@ class PersistentObjectMetaData {
 
     function tableForFieldPrefixed($field, $prefix) {
 		$o1 =& $this;
-		//echo 'Checking class ' . getClass($o1). ' field ' . $field . '<br />';
 		if (in_array($field, $o1->allFieldNamesThisLevel())) {
-			//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
 			return $o1->getTablePrefixed($prefix);
 		}
 
-		$p0 = getClass($this);
+		$p0 = $o1->className;
 		$pcs = get_superclasses($p0);
-		foreach($pcs as $pc){
+        foreach($pcs as $pc){
 			$o1 =& PersistentObject::getMetaData($pc);
-			//echo 'Checking class ' . getClass($o1). ' for field ' . $field . '<br />';
 			#@gencheck if (getClass($o1) == 'pwbobject')
 			{
 				print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());
@@ -227,10 +224,13 @@ class PersistentObjectMetaData {
 			//@#
 
             if (in_array($field, $o1->allFieldNamesThisLevel())) {
-				//echo 'Found ' . getClass($o1) . '.' . $field. '<br />';
 				return $o1->getTablePrefixed($prefix);
 			}
 		}
+
+        print_backtrace_and_exit('Error');
+
+
 	}
 	/**
 	 * Loads an object from a database record
