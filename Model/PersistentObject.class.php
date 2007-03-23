@@ -57,40 +57,27 @@ class PersistentObject extends DescriptedObject {
 	}
 	function &findGlobalObject($class, $id){
 		global $persistentObjects;
-		$o =& $persistentObjects[strtolower($class)][$id];
-		if ($o===null) {
-			//echo "no encontrado $class id: $id";
-			return $o;
-		} else {
-			//echo "recuperando $class id: $id";
-			return $o->getRealChild();
-		}
+		return $persistentObjects[strtolower($class)][$id];
 	}
 	function registerGlobalObject(){
 		global $persistentObjects;
-
-        $id = $this->getId();
-		if ($id!=0) {
-			$persistentObjects[getClass($this)][$id] =& $this;
-        }
+		foreach($this->getPersistentClasses() as $class){
+	        $id = $this->getIdOfClass($class);
+			if ($id!=0) {
+				$persistentObjects[$class][$id] =& $this;
+	        }
+		}
 	}
 
     function unregisterGlobalObject() {
     	global $persistentObjects;
-        $id = $this->getId();
-        if ($id!=0) {
-            unset($persistentObjects[getClass($this)][$id]);
-        }
-    }
-
-	function &getRealChild(){
-		if (!isset($this->child)) {
-			return $this;
-		} else {
-			return $this->child->getRealChild();
+		foreach($this->getPersistentClasses() as $class){
+	        $id = $this->getIdOfClass($class);
+			if ($id!=0) {
+				unset($persistentObjects[$class][$id]);
+	        }
 		}
-
-	}
+    }
 	/**
 	 * Gets the ID of the object (Of the concrete class)
 	 */
@@ -102,25 +89,26 @@ class PersistentObject extends DescriptedObject {
 	 * have that class, it prints an error message.
 	 */
     function getIdOfClass($class){
-    	if (strcasecmp(getClass($this), $class)==0) {
-    		return $this->getId();
+    	$id =& $this->fields[strtolower($class)]['id'];
+    	if($id!==null){
+    		return $id->getValue();
     	} else {
-    		#@check $this->parent!==null@#
-    		return $this->parent->getIdOfClass($class);
+    		return 0;
     	}
     }
 	function existsObject() {
 		return $this->existsObject;
 	}
-	function &basicInsert() {
+	function &basicInsert($class) {
 		$values = '';
-		$this->PWBversion->setValue(0);
-		$this->PWBversion->primitiveCommitChanges();
-		foreach ($this->fieldsWithNames($this->metadata->allFieldNamesThisLevel()) as $index => $field) {
+		$this->fields[$class]['PWBversion']->setValue(0);
+		$this->fields[$class]['PWBversion']->primitiveCommitChanges();
+		$md =& PersistentObjectMetaData::getMetaData($class);
+		foreach ($this->fields[$class] as $index => $field) {
 			$values .= $field->insertValue();
 		}
 		$values = substr($values, 0, -2);
-		$sql = 'INSERT INTO ' . $this->metadata->tableName() . ' (' . $this->metadata->fieldNames('INSERT') . ') VALUES ('.$values.')';
+		$sql = 'INSERT INTO ' . $md->tableName() . ' (' . $md->fieldNames('INSERT') . ') VALUES ('.$values.')';
 		$db =& DBSession::Instance();
 		$rows=0;
 		$res =& $db->SQLExec($sql, TRUE, $this, $rows);
@@ -137,21 +125,22 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Returns the string for updating the object
 	 */
-	function updateString() {
+	function updateString($class) {
 		$values = '';
-		$ver = $this->PWBversion->getValue();
-		$this->PWBversion->setValue($this->PWBversion->getValue()+1);
-		foreach ($this->fieldsWithNames($this->metadata->allFieldNamesThisLevel()) as $index => $field) {
+		$ver = $this->fields[$class]['PWBversion']->getValue();
+		$this->fields[$class]['PWBversion']->setValue($this->fields[$class]['PWBversion']->getValue()+1);
+		$md =& PersistentObjectMetaData::getMetaData($class);
+		foreach ($this->fields[$class] as $index => $field) {
 			$values .= $field->updateString();
 		}
 		$values = substr($values, 0, -2);
-		return "UPDATE " . $this->metadata->tableName() . " SET $values WHERE id=" . $this->getID() . " AND PWBversion=".$ver;
+		return "UPDATE " . $md->tableName() . " SET $values WHERE id=" . $this->getIdOfClass($class) . " AND PWBversion=".$ver;
 	}
 	/**
 	 * Updates this level of the object, taking into account versioning
 	 */
-	function &basicUpdate() {
-		$sql = $this->updateString();
+	function &basicUpdate($class) {
+		$sql = $this->updateString($class);
 		$db =& DBSession::Instance();
 		$rows=0;
 		$res = $db->SQLExec($sql, FALSE, $this, $rows);
@@ -161,8 +150,9 @@ class PersistentObject extends DescriptedObject {
 		else {
 			if ($rows == 0) {
 				$db =& DBSession::Instance();
-				$rec =& $db->query('SELECT PWBversion FROM ' . $this->metadata->tableName() . ' WHERE id=' . $this->getId());
-				if ($rec['PWBversion'] !== $this->PWBversion->getValue()) {
+				$md =& PersistentObjectMetaData::getMetaData($class);
+				$rec =& $db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class));
+				if ($rec['PWBversion'] !== $this->fields[$class]['PWBversion']->getValue()) {
 					$ex =& new DBError(array('message' => 'Versioning error'));
 				}
 				else {
@@ -181,14 +171,15 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function canDelete(){
 		$can = TRUE;
-		foreach ($this->fieldsWithNames($this->metadata->allFieldNamesThisLevel()) as $f) {
+		foreach ($this->fieldsWithNames($this->metadata->allFieldNames()) as $f) {
 			$can = $can && $f->canDelete();
 		}
 		return $can;
 	}
-	function &basicDelete() {
+	function &basicDelete($class) {
 		if (!$this->existsObject) return true;
-		$sql = 'DELETE FROM ' . $this->metadata->tableName() . ' WHERE id=' . $this->getId();
+		$md =& PersistentObjectMetaData::getMetaData($class);
+		$sql = 'DELETE FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class);
 		$db =& DBSession::Instance();
 		$res =& $db->SQLExec($sql, FALSE, $this, $rows=0);
 		if (!is_exception($res)) {
@@ -213,10 +204,6 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function & createInstance() {
 		if ($this->createMetaData) return $this;
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$c = get_parent_class(getClass($this));
-			$this->setParent(new $c(array(),false));
-		}
 		$this->metadata =& PersistentObjectMetaData::getMetaData(getClass($this));
 		$this->basicInitialize();
 		return $this;
@@ -224,25 +211,6 @@ class PersistentObject extends DescriptedObject {
 	function initializeObject(){
 		$this->attachFieldsEvents();
 		//print_backtrace(getClass($this));
-	}
-	/**
-	 * Setter for the parent of the object.
-	 * @access private
-	 */
-	function setParent(& $parent) {
-		$this->parent = & $parent;
-		$obj->child =& $this;
-		$pmd =& PersistentObjectMetaData::getMetaData(getClass($parent));
-		$arr = array_diff($pmd->allFieldNames(), array('id', 'PWBversion', 'super','refCount', 'rootObject'));
-		foreach ($arr as $name) {
-			$this-> $name = & $parent-> $name;
-		}
-	}
-	/**
-	 * Returns the parent of the object
-	 */
-	function & getParent() {
-		return $this->parent;
 	}
 	/**
 	 * @category Persistence
@@ -302,27 +270,20 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &update() {
 		$res = null;
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$p = & $this->getParent();
-			$p->id->setValue($this->super->getValue());
-			$res =& $p->update();
+		foreach($this->getPersistentClasses() as $sc){
+			$res =& $this->basicUpdate($sc);
+			if (!is_exception($res)){return $res;}
 		}
-		if (!is_exception($res)){
-			$res =& $this->basicUpdate();
-			$this->markAsUpdated();
-		}
-
+		$this->markAsUpdated();
 		return $res;
 	}
 	function markAsUpdated(){
 		DBUpdater::markUpdated(getClass($this));
 	}
 	function flushUpdate() {
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$p = & $this->getParent();
-			$p->flushUpdate();
+		foreach($this->getPersistentClasses() as $sc){
+			$this->fields[$sc]['PWBversion']->primitiveFlushChanges();
 		}
-		$this->PWBversion->primitiveFlushChanges();
 		//echo 'PWBVersion flushed value: ' . getClass($this) . ' : ' . $this->PWBversion->getValue();
 	}
 	/**
@@ -330,42 +291,37 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &insert() {
 		$res = null;
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$p = & $this->getParent();
-			$res =& $p->insert();
-			$this->super->setValue($p->id->getValue());
+		foreach(array_reverse($this->getPersistentClasses()) as $sc){
+			$res =& $this->basicInsert($sc);
+			if (!is_exception($res)){break;}
+			if (DescriptedObject::isNotTopClass($sc)) {
+				$this->fields[$sc]['super']->setValue($this->fields[get_parent_class($sc)]['id']->getValue());
+			}
 		}
 		if (!is_exception($res)){
-			$res =& $this->basicInsert();
 			$this->markAsUpdated();
-			/*
-			if (!is_exception($res) && DescriptedObject::isNotTopClass(getClass($this))){
-				$res =& $p->delete();
-			}
-			*/
 		}
-
 		return $res;
 	}
 
 	function flushInsert() {
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$p = & $this->getParent();
-			$p->flushInsert();
-			$this->super->primitiveFlushChanges();
+		foreach($this->getPersistentClasses() as $sc){
+			if (DescriptedObject::isNotTopClass($sc)) {
+				$this->fields[$sc]['super']->primitiveFlushChanges();
+			}
+			$this->fields[$sc]['id']->primitiveFlushChanges();
 		}
-		$this->id->primitiveFlushChanges();
 		$this->existsObject = false;
 	}
 
 	function commitMetaFields() {
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$p = & $this->getParent();
-			$p->commitMetaFields();
-			$this->super->primitiveCommitChanges();
+		foreach($this->getPersistentClasses() as $sc){
+			if (DescriptedObject::isNotTopClass($sc)) {
+				$this->fields[$sc]['super']->primitiveCommitChanges();
+			}
+			$this->fields[$sc]['id']->primitiveCommitChanges();
+			$this->fields[$sc]['PWBversion']->primitiveCommitChanges();
 		}
-		$this->id->primitiveCommitChanges();
-		$this->PWBversion->primitiveCommitChanges();
 	}
 
 	/**
@@ -375,20 +331,14 @@ class PersistentObject extends DescriptedObject {
 		$res = null;
 		$ex =& $this->verifyDeletion();
         if (!is_exception($ex)) {
-			if (DescriptedObject::isNotTopClass(getClass($this))) {
-				$p = & $this->getParent();
-				$res =& $p->delete();
+			foreach($this->getPersistentClasses() as $sc){
+				$res =& $this->basicDelete($sc);
+	            if (!is_exception($res))  {return $res;}
 			}
-			if (!is_exception($res))  {
-				$res =& $this->basicDelete();
-                if (!is_exception($res))  {
-                	$this->setDeleted(true);
-                    return $res;
-                }
-			}
+	    	$this->setDeleted(true);
+	        return $res;
 		}
-
-		return $res;
+		return $ex;
 	}
 
     function verifyDeletion() {

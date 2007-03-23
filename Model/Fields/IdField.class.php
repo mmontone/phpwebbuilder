@@ -1,6 +1,9 @@
 <?php
 
 class IdField extends NumField {
+    /*function defaultValues($params){
+    	return array_merge(array('columnName'=>'id'),parent::defaultValues($params));
+    }*/
     function &visit(&$obj) {
         return $obj->visitedIdField($this);
     }

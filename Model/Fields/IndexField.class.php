@@ -66,7 +66,10 @@ class IndexField extends NumField {
             $this->setModified(true);
             $this->triggerEvent('changed', $this);
             if ($this->owner->isPersisted()){
+            	#@persistence_echo echo 'registering sibling'. $this->owner->printString().$target->printString().'<br/>';@#
             	$target->registerPersistence();
+            } else {
+            #@persistence_echo echo 'NOT registering sibling'. $this->owner->printString().$target->printString().'<br/>';@#
             }
         }
 	}

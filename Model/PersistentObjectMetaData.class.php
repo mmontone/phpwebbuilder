@@ -3,23 +3,20 @@
 class PersistentObjectMetaData {
 	function PersistentObjectMetaData($class){
 		$this->className = $class;
-		$this->createObject();
+		$this->createObject(false);
 	}
-	function createObject(){
+	function createObject($create=true){
 		$class = $this->className;
 		$meta =& new $class(array(), false, true);
 		$this->class =& $meta;
     	$meta->metadata =& $this;
-		$this->class->basicInitialize();
+		if ($create) $this->class->basicInitialize();
 	}
 	function disposeObject(){
 		unset($this->class);
 	}
 	function initialize(){
-		if (DescriptedObject::isNotTopClass($this->className)) {
-			$pmd =& PersistentObjectMetaData::getMetaData(get_parent_class($this->className));
-			$this->parent =& $pmd;
-		}
+		$this->class->basicInitialize();
 		$this->cacheAllData();
 	}
 	function &getMetaData($class){
@@ -33,6 +30,7 @@ class PersistentObjectMetaData {
 	}
 	function cacheAllData(){
 		$this->fieldNames=$this->class->fieldNames;
+		$this->fields=$this->class->fields;
 		$this->indexFields=$this->class->indexFields;
 		$this->table=$this->class->table;
 		foreach($this->class->fieldNames as $f){
@@ -43,47 +41,34 @@ class PersistentObjectMetaData {
 			$this->sqlname[$f]=$this->class->$f->sqlName();
 	    	$this->selectfieldnameprefixed[$f] = $this->class->$f->fieldNamePrefixed('SELECT', '{$prefix}');
     		$this->othersfieldnameprefixed[$f] = $this->class->$f->fieldNamePrefixed('INSERT', '{$prefix}');
+    		unset($this->class->$f->owner);
 		}
 		$this->fieldNames('SELECT');
 		$this->fieldNames('UPDATE');
 		$this->getTables();
 		$this->disposeObject();
+		/*if (DescriptedObject::isNotTopClass($this->className)){
+			header('Content-type: text/plain');
+			print_r($this);exit;
+		}*/
 	}
 	/**
 	 * Returns all the field names
 	 */
 	function allFieldNames() {
-		if (DescriptedObject::isNotTopClass($this->className)) {
-			#@gencheck
-			if ($this->parent == null)
-				print_backtrace($this->className);
-			//@#
-			return array_merge($this->parent->allFieldNames(), $this->allFieldNamesThisLevel());
-		}
-		else {
-			return $this->allFieldNamesThisLevel();
-		}
+		return $this->fieldNames;
 	}
 	/**
 	 * Returns all the index field's names
 	 */
 	function allIndexFieldNames() {
-		if (DescriptedObject::isNotTopClass($this->className)) {
-			#@gencheck
-			if ($this->parent == null)
-				backtrace();
-			//@#
-			return array_merge($this->parent->allIndexFieldNames(), $this->indexFields);
-		}
-		else {
-			return $this->indexFields;
-		}
+		return $this->indexFields;
 	}
 	/**
 	 * Returns this level's field names (inheritance-wise)
 	 */
 	function allFieldNamesThisLevel() {
-		return $this->fieldNames;
+		return array_keys($this->fields[$this->className]);
 	}
     /**
 	 * Returns a SQL string for accesing the fields for the specified operation
@@ -160,15 +145,15 @@ class PersistentObjectMetaData {
 		return $this->tableNamePrefixed('');
 	}
 
-    function tableNamePrefixed($prefix) {
-    	return '`' . $this->getTablePrefixed($prefix) . '`';
+    function tableNamePrefixed($prefix,$table=null) {
+    	return '`' . $this->getTablePrefixed($prefix,$table) . '`';
     }
 	function getTable() {
 		return $this->getTablePrefixed('target_');
 	}
 
-    function getTablePrefixed($prefix) {
-        return constant('baseprefix') . $prefix . $this->table;
+    function getTablePrefixed($prefix,$table=null) {
+        return constant('baseprefix') . $prefix . (($table==null)?$this->table:$table);
     }
 
 	/**

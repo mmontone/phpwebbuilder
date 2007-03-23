@@ -67,7 +67,7 @@ class Condition extends Expression {
                 $and->addExpression($this->eval_exps[$e]);
             }
 
-            $me =& new Condition(array('exp1'=>null, 'exp2'=>null, 'operation'=>$this->operation));
+            $me =& new Condition(array('exp1'=>$this->exp1, 'exp2'=>$this->exp2, 'operation'=>$this->operation));
             $me->evaluated_e1 =& $this->evaluated_e1;
             $me->evaluated_e2 =& $this->evaluated_e2;
 
@@ -325,7 +325,7 @@ class PathExpression extends Expression {
 
         foreach ($pp as $index) {
             #@gencheck
-            if (!is_object($o->$index)) {
+            if ($o->getDataType($index)===null) {
                 print_backtrace_and_exit('The field ' . $index . ' does not exists in ' . $class . '(' . getClass($this) . ' with path: ' . $this->path . ')');
             }
             //@#

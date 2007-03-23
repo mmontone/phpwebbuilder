@@ -43,14 +43,12 @@ class DBSession {
     }
 
 	function registerObject(&$object){
-		if ($this->registeredObjects!==null){
-			#@persistence_echo echo 'Registering '.$object->printString() . '<br/>';@#
-			$set = isset($this->registeredObjects[$object->getInstanceId()]);
-			$this->registeredObjects[$object->getInstanceId()] =& $object;
-			$object->toPersist = true;
-			if (!$set && !$object->existsObject){
-				$object->registerCollaborators();
-			}
+		#@persistence_echo echo 'Registering '.$object->printString() . '<br/>';@#
+		$set = isset($this->registeredObjects[$object->getInstanceId()]);
+		$this->registeredObjects[$object->getInstanceId()] =& $object;
+		$object->toPersist = true;
+		if (!$set && !$object->existsObject){
+			$object->registerCollaborators();
 		}
 	}
 
@@ -62,7 +60,6 @@ class DBSession {
 	}
 	function &beginRegistering(){
 		$db =& DBSession::Instance();
-		if ($db->registeredObjects==null)$db->registeredObjects=array();
 		return $db;
 	}
 
@@ -71,7 +68,7 @@ class DBSession {
             foreach(array_keys($this->registeredObjects) as $k){
     			$this->registeredObjects[$k]->flushChanges();
     		}
-    		$n = null;
+    		$n = array();
             $this->registeredObjects =& $n;
         }
 	}

@@ -425,7 +425,7 @@ function find_metadata(){
 	$GLOBALS['persistentObjectsMetaData']=array();
 	foreach(get_subclasses('PersistentObject') as $sc){
 		if (Compiler::classCompiled($sc)){
-			PersistentObject::getMetaData($sc);
+			PersistentObjectMetaData::getMetaData($sc);
 		}
 	}
 	//print_backtrace(strlen(serialize($GLOBALS['persistentObjectsMetaData'])));
@@ -498,11 +498,15 @@ function is_strict_subclass($class_sub, $class_parent){
  * Returns the subclasses of the specified class, in lower-to-higher order
  */
 function get_superclasses($str) {
+	return get_superclasses_upto($str,'');
+}
+function get_superclasses_upto($str,$class) {
 	$ret = array ();
-	$pc = get_parent_class($str);
-	while ($pc != '') {
-		$ret[] = strtolower($pc);
-		$pc = get_parent_class($pc);
+	$class = strtolower($class);
+	$pc = strtolower(get_parent_class($str));
+	while ($pc != $class && $pc != '') {
+		$ret[] = $pc;
+		$pc = strtolower(get_parent_class($pc));
 	}
 	return $ret;
 }

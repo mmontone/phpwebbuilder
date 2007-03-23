@@ -9,6 +9,7 @@ class DescriptedObject extends PWBObject {
 	 * Names of the fields of the object
 	 */
     var $fieldNames = array ();
+    var $fields = array ();
 	/**
 	 * Names of the index fields of the object
 	 */
@@ -127,7 +128,7 @@ class DescriptedObject extends PWBObject {
 			//@#
 	}
 	function isPersisted(){
-		return $this->existsObject || $this->toPersist;
+		return $this->existsObject or $this->toPersist;
 	}
 	function registerCollaborators(){
 		foreach($this->metadata->allFieldNames() as $f) {
@@ -135,22 +136,30 @@ class DescriptedObject extends PWBObject {
 			$field->registerCollaborators();
 		}
 	}
+	function getPersistentClasses(){
+		$arr = array_reverse(get_superclasses_upto(getClass($this),'PersistentObject'));
+		$arr[]=getClass($this);
+		return $arr;
+	}
 	/**
 	 * Initializes the default fields for the object
 	 */
 	function basicInitialize() {
-		$this->addField(new idField("id", FALSE));
-		$this->addField(new VersionField("PWBversion", FALSE));
-		$this->addGCFields();
-		if (DescriptedObject::isNotTopClass(getClass($this))) {
-			$this->addField(new superField("super", FALSE));
+		foreach($this->getPersistentClasses() as $sc){
+			$this->table = $sc;
+			$this->actClass = $sc;
+			eval($sc.'::initialize();');
+			$this->displayString = ucfirst(getClass($this));
+			$this->addField(new IdField("id", FALSE));
+			$this->addField(new VersionField("PWBversion", FALSE));
+			if (DescriptedObject::isNotTopClass($sc)) {
+				$this->addField(new SuperField("super", FALSE));
+			} else {
+				$this->addGCFields();
+			}
+			$this->tables[$sc]=$this->table;
 		}
-		$this->displayString = ucfirst(getClass($this));
-		if($this->table==''){
-			$this->table = getClass($this);
-		}
-
-		$this->initialize();
+		unset($this->actClass);
 	}
 	/**
 	 * Initializes the fields for the object
@@ -171,14 +180,17 @@ class DescriptedObject extends PWBObject {
         }
 
         // TODO LATER
-        if (DescriptedObject::isNotTopClass(getClass($this))){
-			$this->parent->loadFrom($reg);
-		}
 		$ok = true;
-		foreach ($this->metadata->allFieldNamesThisLevel() as $index) {
-			$field = & $this-> $index;
-			$ok = $ok and $field->loadFrom($reg);
-		}
+        foreach($this->getPersistentClasses() as $sc){
+			$this->fields[$sc]['id']->loadFrom($reg);
+			foreach (array_keys($this->fields[$sc]) as $index) {
+				$field =&$this->fields[$sc][$index];
+				$ok = $ok and $field->loadFrom($reg);
+				$field->setID($this->fields[$sc]['id']->getValue());
+				unset($field->owner);
+			}
+        }
+        //if (DescriptedObject::isNotTopClass(getClass($this))) {header('Content-type: text/plain');unset($this->metadata);print_r($this->fields);exit;}
 		if (!$ok) {
 			$this->flushChanges();
 			return false;
@@ -233,9 +245,11 @@ class DescriptedObject extends PWBObject {
 	function addField(& $field) {
 		#@typecheck $field:ValueModel@#
 		$name = $field->varName;
+		$field->table = $this->table;
 		#@gencheck if (isset($this-> $name)) print_backtrace($this->printString() . ' already has '.$name.' which is a '.getTypeOf($this->$name));@#
 		$this-> $name = & $field;
 		$this->fieldNames[$name] = $name;
+		$this->fields[$this->actClass][$name]=&$field;
 		if ($field->isIndex()) {
 			$this->indexFields[$name] = $name;
 		}
