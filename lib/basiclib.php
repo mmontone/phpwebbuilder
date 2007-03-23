@@ -61,7 +61,8 @@ function mixin($text) {
 	$body = $matches[2];
 	//echo 'Mixin body: ' . $body . '<br/>';
 	global $mixins;
-	$mixins[$name] = str_replace("\n", '',$body);
+	$mixins[$name] = preg_replace("/\n|\r/", '',$body);
+	//$mixins[$name] = $body;
 	return 'global $_mixin_file;$_mixin_file[\''.$name.'\']=\''.Compiler::actualFile().'\';';
 }
 /*

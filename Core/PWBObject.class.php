@@ -19,7 +19,7 @@ class PWBObject
 	 * Creation
 	 */
     function PWBObject($params=array()) {
-		#@check is_array($params)@#
+		#@gencheck if (!is_array($params)) echo getClass($this). ' was not initialized by an array<br/>';@#
 		if (!Session::isStarted()) {
 			$iid=count(@$GLOBALS['allObjectsInMem'])-1000;
 		} else {

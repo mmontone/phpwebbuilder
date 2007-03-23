@@ -150,10 +150,10 @@ class DescriptedObject extends PWBObject {
 			$this->actClass = $sc;
 			eval($sc.'::initialize();');
 			$this->displayString = ucfirst(getClass($this));
-			$this->addField(new IdField("id", FALSE));
-			$this->addField(new VersionField("PWBversion", FALSE));
+			$this->addMetaField(new IdField("id", FALSE));
+			$this->addMetaField(new VersionField("PWBversion", FALSE));
 			if (DescriptedObject::isNotTopClass($sc)) {
-				$this->addField(new SuperField("super", FALSE));
+				$this->addMetaField(new SuperField("super", FALSE));
 			} else {
 				$this->addGCFields();
 			}
@@ -243,10 +243,13 @@ class DescriptedObject extends PWBObject {
 	 * Adds a field to the object
 	 */
 	function addField(& $field) {
+		#@gencheck if (isset($this->{$field->varName})) print_backtrace($this->printString() . ' already has '.$name.' which is a '.getTypeOf($this->$name));@#
+		$this->addMetaField($field);
+	}
+	function addMetaField(&$field){
 		#@typecheck $field:ValueModel@#
 		$name = $field->varName;
 		$field->table = $this->table;
-		#@gencheck if (isset($this-> $name)) print_backtrace($this->printString() . ' already has '.$name.' which is a '.getTypeOf($this->$name));@#
 		$this-> $name = & $field;
 		$this->fieldNames[$name] = $name;
 		$this->fields[$this->actClass][$name]=&$field;
