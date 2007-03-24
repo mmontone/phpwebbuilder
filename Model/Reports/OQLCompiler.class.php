@@ -20,14 +20,19 @@ class OQLCompiler {
 						   		 fields->["(" fields->{<valueorfunction> "as" <identifier> ; ","} ")"]
 						   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
 						   		 where->["where" expression-><expression>]
+								 order->[/order/i {<variable> /desc|asc/i;","}]
+								 limit->[/limit/i <number>]
 							.
 					   variable::={<identifier> ; "."}.
+					   plainsql::=/\[[^\]]+\]/.
+					   number::=/[0-9]+/.
 					   value::=var=><variable>|
 					   		value=>(
-								number=>/[0-9]+/|
+								number=><number>|
 						   		str=>/\'[^\']+\'/|
 						   		phpvar=><phpvar>|
-						   		bool=>/TRUE|FALSE/i).
+						   		bool=>/TRUE|FALSE/i|
+								plainsql=><plainsql>).
 					   )>'
 					);
 				}
@@ -36,6 +41,7 @@ class OQLCompiler {
 					'expression' => new FunctionObject($this, 'parseExpression'),
 					'oql' => new FunctionObject($this, 'parseOql'),
 					'valueorfunction' => new FunctionObject($this, 'parsevalueorfunction'),
+					'plainsql' => new FunctionObject($this, 'parseplainsql'),
 
 					//'variable' => new FunctionObject($this, 'parseVariable'),
 					//'value' => new FunctionObject($this, 'parseValue'),
@@ -78,7 +84,10 @@ class OQLCompiler {
 				$ret .= "),";
 			}
 			if ($query['where']['expression']!==null){
-				$ret .= "'exp'=>".$query['where']['expression'];
+				$ret .= "'exp'=>".$query['where']['expression'].',';
+			}
+			if ($query['limit']!==null){
+				$ret .= "'limit'=>".$query['limit'][1].',';
 			}
 			$ret = 'CompositeReport::fromArray(array('.$ret.'))';
 			return $ret;
@@ -89,6 +98,10 @@ class OQLCompiler {
 			} else {
 				$val = $arr[0];
 			}
+			return $val;
+		}
+		function &parseplainsql($arr){
+			$val= substr($arr,1,count($arr)-2);
 			return $val;
 		}
 		function &parseCondition(&$cond){
