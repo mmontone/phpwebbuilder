@@ -36,7 +36,7 @@ class DBDriver {
     	#@sql_echo	echo($sql. '<br/>');@#
     	$conn =& $this->openDatabase($persistent);
 		$this->setLastSQL($sql);
-        #@sql_echo if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ('EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
+        #@sql_echo if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ($conn,'EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
         $reg = $this->basicQuery($conn,$sql);
         if (!$reg) {
         	$error =& $this->registerDBError($sql);
