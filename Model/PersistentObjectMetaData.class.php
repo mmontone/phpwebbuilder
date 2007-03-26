@@ -1,6 +1,9 @@
 <?php
 
 class PersistentObjectMetaData {
+	var $className;
+	var $fields = array();
+
 	function PersistentObjectMetaData($class){
 		$this->className = $class;
 		$this->createObject(false);
@@ -209,30 +212,22 @@ class PersistentObjectMetaData {
 
     function tableForFieldPrefixed($field, $prefix) {
 		$o1 =& $this;
+
 		if (in_array($field, $o1->allFieldNamesThisLevel())) {
 			return $o1->getTablePrefixed($prefix);
 		}
 
 		$p0 = $o1->className;
-		$pcs = get_superclasses($p0);
+		$pcs = get_superclasses_upto($p0, 'PersistentObject');
         foreach($pcs as $pc){
-			#@gencheck if ($pc == 'pwbobject')
-            {
-                print_backtrace_and_exit('Field not found: ' . $field . ' in ' . $this->printString());
-            }
-            //@#
+			$o1 =& PersistentObject::getMetaData($pc);
 
-            $o1 =& PersistentObject::getMetaData($pc);
-
-
-            if (in_array($field, $o1->allFieldNamesThisLevel())) {
+			if (in_array($field, $o1->allFieldNamesThisLevel())) {
 				return $o1->getTablePrefixed($prefix);
 			}
 		}
 
-        print_backtrace_and_exit('Error');
-
-
+        print_backtrace_and_exit('Error: field not found ' . $field . ' in ' . $this->className);
 	}
 	/**
 	 * Loads an object from a database record
@@ -275,6 +270,10 @@ class PersistentObjectMetaData {
 	}
 	function getIdSQLName(){
 		return $this->sqlname['id'];
+	}
+
+	function printString() {
+		return '[Metadata of ' . $this->className . ']';
 	}
 
 }
