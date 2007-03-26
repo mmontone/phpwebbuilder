@@ -62,15 +62,14 @@ class CompositeReport extends Report {
         return $arr;
 	}
 
-	function & getConditions() {
-		return array_merge($this->conditions, $this->report->getConditions());
-	}
-
 	function & getSelectExp() {
 		$this->select_exp->evaluateIn($this);
         $e = & new AndExp;
 		$e->addExpression($this->select_exp);
-        $se =& $this->report->getSelectExp();
+		$this->report->evaluated=false;
+		$this->report->select_exp->evaluateIn($this);
+        $se =& $this->report->select_exp;
+
 		$e->addExpression($se);
 
 		return $e;
@@ -108,7 +107,12 @@ class CompositeReport extends Report {
 	}
 
 	function getDataType() {
-		return $this->report->getDataType();
+		if (is_strict_subclass($this->dataType,'PersistentObject')){
+			print_backtrace('composite datatype '.$this->dataType);
+			return $this->dataType;
+		} else {
+			return $this->report->getDataType();
+		}
 	}
 }
 
