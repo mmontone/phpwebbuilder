@@ -151,11 +151,16 @@ class PWBObject
        	$target =& $function->getTarget();
        	$handle = $this->makeHandle($target);
         if (isset($this->event_listeners[$event][$handle])) {
-            #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
-            return;
+            if (!$params['force']) {
+                #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
+                return;
+            }
+            else {
+                $handle = ++$this->event_handles;
+            }
         }
 
-        #@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
+        #@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . ' handle: ' . $handle . '<br/>';@#
         $params['function'] =& $function;
         $params['event'] = $event;
         $event_handler =& EventHandler::FromParams($params);

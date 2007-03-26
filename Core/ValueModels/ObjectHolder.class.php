@@ -40,6 +40,15 @@ class ObjectHolder extends ValueModel
     function modelChanged() {
     	$this->triggerEvent('changed', $this->getValue());
     }
+
+    function printString() {
+    	if (is_null($this->__value)) {
+            return $this->primPrintString('null');
+        }
+        else {
+        	return $this->primPrintString($this->__value->printString());
+        }
+    }
 }
 
 ?>
