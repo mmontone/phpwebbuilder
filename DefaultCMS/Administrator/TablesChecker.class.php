@@ -41,7 +41,7 @@ class ObjectMapper {
 					$arr2 [$f["Field"]]=$f;
 				}
 				$this->gotFields = $arr2;
-				$arr = $this->checkFields($this->object->class->fieldsWithNames($this->object->class->fieldNames));
+				$arr = $this->checkFields($this->object->class->fieldsWithNames($this->object->allFieldNamesThisLevel()));
 				$temp = '';
 				foreach ($arr as $name=>$f) {
 					$temp .= $f;
@@ -66,8 +66,8 @@ class ObjectMapper {
 				if (!$has_super_unique && isset($this->object->fieldNames['super'])) {
 					$temp .= "\n   ADD UNIQUE (`super`), ";
 				}
-				$a = count(array_diff($actunique,$this->object->indexFields));
-				$b = count(array_diff($this->object->indexFields,$actunique));
+				$a = count(array_diff($actunique,$this->object->allIndexFieldNamesThisLevel()));
+				$b = count(array_diff($this->object->allIndexFieldNamesThisLevel(),$actunique));
 				if ($a+$b>0){
 					$ex=false;
 					foreach($indexes as $ind){
@@ -90,7 +90,7 @@ class ObjectMapper {
 			} else {
 				$this->tableName=$table;
 				$ret =	"\nCREATE TABLE `".$table."` (" ;
-				$ret .= $this->createFields($this->object->class->fieldsWithNames($this->object->class->fieldNames));
+				$ret .= $this->createFields($this->object->class->fieldsWithNames($this->object->allFieldNamesThisLevel()));
 				$ret .= "\n   PRIMARY KEY  (`id`)";
 				$u = $this->uniques();
 				if ($u) {
@@ -103,7 +103,7 @@ class ObjectMapper {
 	}
 	function uniques() {
 		$table = $this->object->getTable();
-		$ifs =& $this->object->allIndexFieldNames();
+		$ifs =& $this->object->allIndexFieldNamesThisLevel();
 		$unis=array();
 		foreach ($ifs as $i){
 			$f =& $this->object->class->$i;

@@ -9,12 +9,7 @@ class BlobField extends DataField {
      $value = $this->getValue();
      return "'$value', " ;
    }
-   function setValue($v){
-   	   parent::setValue($v);
-   	   $this->getComplete = ($v!==null);
-   }
    function &getCompleteValue(){
-   	   $this->getComplete = true;
    	   $r =& new Report();
    	   $r->fields[$this->colName] = 'data';
    	   $r->defineVar('o', getClass($this->owner));
@@ -22,6 +17,18 @@ class BlobField extends DataField {
    	   $elem =& $r->first();
    	   return $elem->data->getValue();
    }
+   function fieldNamePrefixed ($operation, $pfx) {
+        if ($operation !== 'SELECT') {
+            return parent::fieldNamePrefixed ($operation, $pfx);
+        }
+    }
+    function updateString() {
+		if ($this->getValue() == "") {
+			return "";
+		} else {
+			return $this->colName . " = " . $this->SQLvalue();
+		}
+	}
 
 }
 ?>
