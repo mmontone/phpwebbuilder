@@ -20,7 +20,7 @@ class PersistentObject extends DescriptedObject {
 		foreach ($this->metadata->allFieldNamesThisLevel() as $field) {
 			$this->$field->setID($id);
 		}
-		$this->idN = $id;
+		//$this->idN = $id;
 		$this->registerGlobalObject();
 	}
 	function PersistentObject($parems=array(),$create=true, $createMetaData=false){
@@ -82,7 +82,7 @@ class PersistentObject extends DescriptedObject {
 	 * Gets the ID of the object (Of the concrete class)
 	 */
 	function getID() {
-		return $this->idN;
+		return $this->id->getValue();
 	}
 	/**
 	 * Gets the ID of the object, of the specified class. If the object doesn't

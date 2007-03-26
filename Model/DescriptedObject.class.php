@@ -9,6 +9,7 @@ class DescriptedObject extends PWBObject {
 	 * Names of the fields of the object
 	 */
     var $fieldNames = array ();
+    var $indexFieldsLevel = array ();
     var $fields = array ();
 	/**
 	 * Names of the index fields of the object
@@ -254,6 +255,7 @@ class DescriptedObject extends PWBObject {
 		$this->fields[$this->actClass][$name]=&$field;
 		if ($field->isIndex()) {
 			$this->indexFields[$name] = $name;
+			$this->indexFieldsLevel[$this->actClass][$name]=$name;
 		}
 		$field->owner = & $this;
 	}
