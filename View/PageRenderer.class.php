@@ -174,7 +174,7 @@ class PageRenderer // extends PWBObject
 		return $s;
 	}
 	function toAjax($s) {
-		return $s;
+		return $this->toXML($this->toHTML($s));
 	}
 
 }

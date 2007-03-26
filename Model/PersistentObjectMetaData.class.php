@@ -16,6 +16,7 @@ class PersistentObjectMetaData {
 		if ($create) $this->class->basicInitialize();
 	}
 	function disposeObject(){
+		//unset($this->fields);
 		unset($this->class);
 	}
 	function initialize(){
@@ -35,6 +36,7 @@ class PersistentObjectMetaData {
 		$this->fieldNames=$this->class->fieldNames;
 		$this->fields=$this->class->fields;
 		$this->indexFields=$this->class->indexFields;
+		$this->indexFieldsLevel=$this->class->indexFieldsLevel;
 		$this->table=$this->class->table;
 		foreach($this->class->fieldNames as $f){
 			$this->colNames[$f] = $this->class->$f->colName;
@@ -66,6 +68,9 @@ class PersistentObjectMetaData {
 	 */
 	function allIndexFieldNames() {
 		return $this->indexFields;
+	}
+	function allIndexFieldNamesThisLevel() {
+		return (array)$this->indexFieldsLevel[$this->className];
 	}
 	/**
 	 * Returns this level's field names (inheritance-wise)
