@@ -11,18 +11,18 @@ class MemoryTest extends UnitTestCase {
 		$this->db = & DBSession:: Instance();
 
 		foreach ($sqls as $sql) {
-			$this->db->SQLExec($sql);
+			$this->db->query($sql);
 		}
 	}
 
 	function tearDown() {
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'users`');
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'MenuSection`');
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'MenuItem`');
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'Role`');
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'RolePermission`');
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'UserRole`');
-		$this->db->SQLExec('DROP TABLE `' . baseprefix . 'Session`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'users`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'MenuSection`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'MenuItem`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'Role`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'RolePermission`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'UserRole`');
+		$this->db->query('DROP TABLE `' . baseprefix . 'Session`');
 
 	}
 }

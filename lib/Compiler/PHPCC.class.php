@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Parser.class.php';
+require_once 'PHPGrammar.class.php';
 
 class PHPCC {
 
@@ -40,11 +41,12 @@ class PHPCC {
     								new SubParser('maybe'),
     								new SubParser('symbol'),
     								new SubParser('ereg'),
-    								new SubParser('subparser'),
-    								'alt'=>new SeqParser(array(new Symbol('('),new SubParser('alternative'),new Symbol(')'))),
-    								//new SubParser('multiparser'),
+    								new SubParser('multiparser'),
     							))))),
-    			'multiparser'=>new SeqParser(array('name'=>new SubParser('alternative'),new EregSymbol('\*|\+'),)),
+    			'multiparser'=>new SeqParser(array('name'=>
+    					new AltParser(array('alt'=>new SeqParser(array(new Symbol('('),new SubParser('alternative'),new Symbol(')'))),
+    					new SubParser('subparser'))),
+					'iterator'=>new MaybeParser(new EregSymbol('/\*|\+/')))),
     			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"),new Symbol('>'),)),
     			'symbol'=>new EregSymbol('/"[^"]+"/'),
     			'ereg'=>new EregSymbol('/\/[^\/]+\/\w*/'),
@@ -57,18 +59,11 @@ class PHPCC {
 
     function &createSequence(&$params){
 	    if (count($params)==1 && $params[0][0]==null) {
-		    if ($params[0][1]['selector']==='alt'){
-		    	return $params[0][1]['result'][1];
-		    } else {
-		    	return $params[0][1]['result'];
-		    }
+	    	return $params[0][1]['result'];
 	    }
 	    $ks = array_keys($params);
 	    for($i=0;$i<count($params);$i++){
 	    	$param = $params[$ks[$i]];
-	    	if ($param[1]['selector']==='alt'){
-	    		$param[1]['result']=&$param[1]['result'][1];
-	    	}
 	    	if ($param[0]===null) {
 	    		$ret [] = $param[1]['result'];
 	    	} else {
@@ -115,10 +110,17 @@ class PHPCC {
     	return $s;
     }
     function &createMultiParser(&$params){
-    	if ($params['iterator']=='*'){
-    		$s =& new MultiParser($params['name']);
+    	if ($params['name']['selector']==='alt'){
+    		$sub =&$params['name']['result'][1];
     	} else {
-	    	$s =& new MultiOneParser($params['name']);
+    		$sub =&$params['name']['result'];
+    	}
+    	if ($params['iterator']=='*'){
+    		$s =& new MultiParser($sub);
+    	} else if($params['iterator']=='+') {
+	    	$s =& new MultiOneParser($sub);
+    	} else {
+    		$s =& $sub;
     	}
     	return $s;
     }

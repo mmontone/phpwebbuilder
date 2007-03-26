@@ -117,7 +117,7 @@ class PersistentObject extends DescriptedObject {
 	        foreach (array_keys($this->fields[$class]) as $index) {
 				$this->fields[$class][$index]->setID($nid);
 			}
-	        $rows = $db->getRowsAffected();
+	        $rows = $db->getRowsAffected($res);
         }
 		if (is_exception($res)) {
 			return $res;
@@ -150,12 +150,12 @@ class PersistentObject extends DescriptedObject {
 		$sql = $this->updateString($class);
 		$db =& DBSession::Instance();
 		$rows=0;
-		$res = $db->SQLExec($sql, FALSE, $this, $rows);
+		$res = $db->query($sql);
 		if (is_exception($res)) {
 			return $res;
 		}
 		else {
-			if ($rows == 0) {
+			if ($db->getRowsAffected($res) == 0) {
 				$db =& DBSession::Instance();
 				$md =& PersistentObjectMetaData::getMetaData($class);
 				$rec =& $db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class));
@@ -188,7 +188,7 @@ class PersistentObject extends DescriptedObject {
 		$md =& PersistentObjectMetaData::getMetaData($class);
 		$sql = 'DELETE FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class);
 		$db =& DBSession::Instance();
-		$res =& $db->SQLExec($sql, FALSE, $this, $rows=0);
+		$res =& $db->query($sql);
 		return $res;
 	}
 	/**

@@ -11,7 +11,7 @@ class TestsDB extends MySQLdb {
 	}
 
 	function LoginDB() {
-		$this->SQLExec('CREATE DATABASE IF NOT EXISTS `pwb_tests`');
+		$this->query('CREATE DATABASE IF NOT EXISTS `pwb_tests`');
 	}
 
 	function openDatabase() {

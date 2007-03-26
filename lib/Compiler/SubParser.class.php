@@ -7,6 +7,8 @@ class SubParser extends Parser {
 	}
 	function parse($tks) {
 		$p = & $this->get($this->subName);
+		$g =& $this->getGrammar();
+		if ($p===null) print_backtrace_and_exit($this->subName .' does not exist');
 		$p->setErrorHandler($this);
 		$res = $p->parse($tks);
 		$p->popErrorHandler();

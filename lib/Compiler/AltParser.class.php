@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * To find alternatives correctly, we should use a set of possible next symbols, and possible
+ * next subparsers (to DFS).
+ * If none of the symbols work, fail.
+ * If one of them works, and it's only one, that's our alternative. Complete the parse in that branch.
+ * If more than one work, ask for the following symbols on each alternative, and proceed again.
+ *
+ */
+
 
 class AltParser extends Parser {
 	function AltParser($children, $backtrack=false) {

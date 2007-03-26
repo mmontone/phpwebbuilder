@@ -11,13 +11,13 @@ class DBTest extends UnitTestCase {
 	}
 
 	function testQuery() {
-		$this->db->SQLExec('CREATE TABLE `numbers` (
+		$this->db->query('CREATE TABLE `numbers` (
 							`Num` INT) TYPE = innodb;');
-		$this->db->SQLExec('INSERT INTO numbers (Num) VALUES (5)');
-		$res =& $this->db->SQLExec('SELECT * FROM numbers');
+		$this->db->query('INSERT INTO numbers (Num) VALUES (5)');
+		$res =& $this->db->query('SELECT * FROM numbers');
 		$res = $this->db->fetchArray($res);
 		$this->assertEqual($res[0]['Num'], '5', 'Running a simple query');
-		$this->db->SQLExec('DROP TABLE `numbers`');
+		$this->db->query('DROP TABLE `numbers`');
 	}
 }
 

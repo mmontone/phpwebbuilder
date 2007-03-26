@@ -142,7 +142,7 @@ class TablesChecker {
 		/*If a table has not an object table, we have to delete it*/
 		$sql = "SHOW TABLES FROM `" . basename. '` LIKE \''.baseprefix.'%\'';
 		$db =& DBSession::Instance();
-		$res = $db->SQLexec($sql, FALSE, $n=null, $rows=0);
+		$res = $db->query($sql);
 		$tbs = $db->fetchArray($res);
 		$tables= array();
 		foreach($tbs as $t){

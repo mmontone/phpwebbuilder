@@ -235,8 +235,8 @@ class DBSession {
 	function getLastId(){
 		return $this->driver->getLastId();
 	}
-	function getRowsAffected(){
-		return $this->driver->getRowsAffected();
+	function getRowsAffected(&$result){
+		return $this->driver->getRowsAffected($result);
 	}
     function queryDB($query){
     	return $this->driver->queryDB($query);

@@ -12,12 +12,12 @@ class LoginTest extends UnitTestCase {
 		TestsDBSession:: setUp();
 		$this->db =& DBSession::Instance();
 
-		$this->db->SQLExec('CREATE TABLE `users` (
+		$this->db->query('CREATE TABLE `users` (
 							`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 							`PWBversion` INT,
 							`user` VARCHAR( 30 ) NOT NULL ,
 							`pass` VARCHAR( 30 ) NOT NULL
-							) TYPE = innodb;', false, $n=null, $rows=0);
+							) TYPE = innodb;');
 		$alex =& new User;
 		$alex->user->setValue('alex');
 		$alex->pass->setValue('alexpass');
@@ -36,7 +36,7 @@ class LoginTest extends UnitTestCase {
 
 	function tearDown() {
 		User::logout();
-		$this->db->SQLExec('DROP TABLE `users`',false, $n=null, $rows=0);
+		$this->db->query('DROP TABLE `users`');
 		TestsDBSession::release();
 	}
 

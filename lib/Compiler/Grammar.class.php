@@ -44,8 +44,7 @@ class Grammar {
 			$res1 =& $root->process($res[0]);
 			return $this->process($this->params['root'],$res1);
 		} else {
-			$n=null;
-			return $n;
+			return  $this->error;
 		}
 	}
 	function isError(){

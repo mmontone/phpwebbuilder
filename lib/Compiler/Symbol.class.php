@@ -13,18 +13,19 @@ class EregSymbol extends Parser {
 		if (preg_match($this->preg, $tks, $matches)) {
 			return array ($matches[1],substr($tks,strlen($matches[0])));
 		} else {
-			$this->setError('Unexpected "'.@$tks[0].'", expecting "'.$this->sym.'" with "'.substr($tks, 0, 10). '" remaining');
+			$this->setError('Unexpected "'.@$tks[0].'", expecting '.$this->sym.' with "'.substr($tks, 0, 10). '" remaining');
 			return array (FALSE,$tks);
 		}
 	}
 	function print_tree() {
-		return '"' . $this->sym . '"';
+		return $this->sym;
 	}
 }
 
 class Symbol extends EregSymbol {
 	function Symbol($ss) {
 		parent :: EregSymbol('/'.preg_quote($ss).'/');
+		$this->sym='"'.$ss.'"';
 	}
 }
 ?>
