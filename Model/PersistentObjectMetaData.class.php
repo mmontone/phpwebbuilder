@@ -76,7 +76,11 @@ class PersistentObjectMetaData {
 	 * Returns this level's field names (inheritance-wise)
 	 */
 	function allFieldNamesThisLevel() {
-		return array_keys($this->fields[$this->className]);
+		if (!$this->class){
+			return array_keys($this->fields[$this->className]);
+		} else {
+			return array_keys($this->class->fields[$this->className]);
+		}
 	}
     /**
 	 * Returns a SQL string for accesing the fields for the specified operation
