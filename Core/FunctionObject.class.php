@@ -117,6 +117,10 @@ class FunctionObject
     function printString() {
         return $this->primPrintString($this->target->printString() . '->' . $this->method_name);
     }
+
+    function debugPrintString() {
+    	return $this->primPrintString($this->target->debugPrintString() . '->' . $this->method_name);
+    }
 }
 
 function &callback(&$target, $selector) {

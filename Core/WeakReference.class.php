@@ -35,6 +35,17 @@ class WeakReference {
         }
         return $this->primPrintString('to ' . $s);
     }
+
+    function debugPrintString() {
+        if ($this->isNotNull()) {
+            $target =& $this->getTarget();
+            $s = $target->debugPrintString();
+        }
+        else {
+            $s = 'No target';
+        }
+        return $this->primPrintString('to ' . $s);
+    }
 }
 
 class WeakFunctionObject extends FunctionObject{

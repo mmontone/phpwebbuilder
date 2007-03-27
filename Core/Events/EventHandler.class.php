@@ -8,6 +8,7 @@ class EventHandler {
     var $function;
     var $event;
     var $backtrace_string;
+    var $triggerer;
 
     function EventHandler($params) {
         //$this->backtrace_string = print_r(debug_backtrace(),true);
@@ -16,9 +17,9 @@ class EventHandler {
     }
 
     function initialize($params) {
-    	//$this->function =& $params['function'];
-        $this->function =& WeakFunctionObject::fromFunctionObject($params['function']);
+    	$this->function =& WeakFunctionObject::fromFunctionObject($params['function']);
         $this->event = $params['event'];
+        $this->triggerer =& $params['triggerer'];
     }
 
     function &FromParams($params) {
@@ -63,7 +64,7 @@ class EventHandler {
     }
 
     function printString() {
-    	return '[' . getClass($this) . ' function: ' . $this->function->printString() . ' event: ' . $this->event . ']';
+    	return '[' . getClass($this) . ' event: ' . $this->triggerer->debugPrintString() . '>>' .  $this->event . ' function: ' . $this->function->debugPrintString() . ']';
     }
 
     function isNotNull() {

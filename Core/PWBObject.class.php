@@ -162,6 +162,7 @@ class PWBObject
         #@track_events2 echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . ' handle: ' . $handle . '<br/>';@#
         $params['function'] =& $function;
         $params['event'] = $event;
+        $params['triggerer'] =& $this;
         $event_handler =& EventHandler::FromParams($params);
         $this->event_listeners[$event][$handle] =& $event_handler;
         return $handle;
@@ -216,11 +217,8 @@ class PWBObject
     function doTriggerEvent($event_selector, &$params){
         $listeners =& $this->event_listeners[$event_selector];
 
-        #@track_events
-        global $triggeredEvents;
-        $triggeredEvents++;
-        echo 'Triggering event: ' . $event_selector . ' in '. $this->printString() . '<br/>';
-        //@#
+        #@track_events global $triggeredEvents; $triggeredEvents++;@#
+        #@track_events2 echo 'Triggering event: ' . $event_selector . ' in '. $this->printString() . '<br/>'; //@#
 
         if ($listeners == null) return;
 
@@ -230,7 +228,7 @@ class PWBObject
             if ($listener->isNotNull()) {
                 $listener->executeWithWith($this, $params);
         	} else {
-				#@track_events echo 'Unsetting listener ' . $listener->printString() . '<br/>';@#
+				#@track_events2 echo 'Unsetting listener ' . $listener->printString() . '<br/>';@#
                 unset($listeners[$l]);
         	}
         }

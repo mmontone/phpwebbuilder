@@ -1,11 +1,9 @@
 <?php
 
 class DeferredEventHandler extends EventHandler {
-    var $triggerer;
     var $params;
 
     function executeWithWith(&$triggerer, &$params) {
-        $this->triggerer =& $triggerer;
         $this->params =& $params;
         $this->enqueue();
     }
@@ -18,9 +16,7 @@ class DeferredEventHandler extends EventHandler {
     }
 
     function execute() {
-    	#@track_events
-        echo 'Executing ' . getClass($this) . ' on: ' . $this->printString() .'</br>';
-        //@#
+    	#@track_events echo 'Executing ' . $this->printString() .'</br>';@#
         return $this->function->executeWithWith($this->triggerer, $this->params);
     }
 }
