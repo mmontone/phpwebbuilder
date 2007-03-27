@@ -303,8 +303,14 @@ class Collection extends PWBObject {
 	function refresh() {
 	}
 
-    function printString() {
+    function debugPrintString() {
     	return $this->primPrintString('size: ' . $this->size());
     }
+
+    function printString() {
+    	return $this->debugPrintString();
+    }
+
+
 }
 ?>

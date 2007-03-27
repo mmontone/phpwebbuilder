@@ -9,7 +9,7 @@ class DeferredEventHandler extends EventHandler {
     }
 
     function enqueue() {
-        #@track_events 'Deferring event: ' . $this->printString() . '<br/>';@#
+        #@track_events echo 'Deferring event: ' . $this->printString() . '<br/>';@#
     	global $deferredEvents;
 
         $deferredEvents[] =& $this;

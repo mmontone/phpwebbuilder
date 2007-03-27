@@ -18,7 +18,7 @@ class SelectHTMLHandler extends WidgetHTMLHandler{
 	}
 	function setComponent(&$component){
 	   	parent::setComponent($component);
-	   	$component->options->addEventListener(array('changed'=>'updateFromCollection'), $this);
+	   	$component->options->addEventListener(array('changed'=>'updateFromCollection'), $this, array('execute once' => true));
 	}
 	function valueChanged(&$value_model, &$params) {
 		if ($this->view){
