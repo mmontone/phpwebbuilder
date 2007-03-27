@@ -8,7 +8,7 @@ class TextHTMLHandler extends WidgetHTMLHandler{
 	function prepareToRender(){
 		$text = $this->component->value_model->getValue();
         $this->view->removeChilds();
-		$this->view->appendChild(new XMLTextNode($text));
+		$this->view->appendChild(new XMLTextNode($text==''?'&nbsp;':$text));
 	}
 	function valueChanged(& $value_model, &$params) {
 		if ($this->view){
