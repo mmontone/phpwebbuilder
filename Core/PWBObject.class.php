@@ -150,7 +150,7 @@ class PWBObject
        	$target =& $function->getTarget();
        	$handle = $this->makeHandle($target);
         if (isset($this->event_listeners[$event][$handle])) {
-            if (!$params['force']) {
+            if (!isset($params['force'])) {
                 #@track_events2 echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
                 return;
             }

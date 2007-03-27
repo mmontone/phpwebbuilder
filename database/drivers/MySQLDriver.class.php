@@ -40,7 +40,7 @@ class MySQLDriver extends DBDriver {
     	return mysql_connect(constant('serverhost'), constant('baseuser'), constant('basepass'));
     }
     function selectDB(){
-    	mysql_select_db(constant('basename'));
+    	return mysql_select_db(constant('basename'));
     }
     function closeDatabase() {
       @mysql_close($this->conn);
