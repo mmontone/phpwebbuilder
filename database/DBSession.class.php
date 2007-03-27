@@ -44,9 +44,14 @@ class DBSession {
 
 	function registerObject(&$object){
 		#@persistence_echo echo 'Registering '.$object->printString() . '<br/>';@#
-		$set = isset($this->registeredObjects[$object->getInstanceId()]);
-		$this->registeredObjects[$object->getInstanceId()] =& $object;
-		$object->toPersist = true;
+		if ($this->transactionStarted()){
+			$this->save($object);
+			$set = false;
+		} else {
+			$set = isset($this->registeredObjects[$object->getInstanceId()]);
+			$this->registeredObjects[$object->getInstanceId()] =& $object;
+			$object->toPersist = true;
+		}
 		if (!$set && !$object->existsObject){
 			$object->registerCollaborators();
 		}
@@ -85,16 +90,18 @@ class DBSession {
     }
 
 	function beginTransaction() {
-		$this->nesting++;
+		$GLOBALS['transactionnesting']++;
 
-		if ($this->nesting == 1) {
+		if ($GLOBALS['transactionnesting'] == 1) {
 			$this->driver->beginTransaction();
 		}
 
 		#@sql_echo echo 'Beggining transaction ('. $this->nesting . ')';@#
         #@sql_echo2 print_backtrace();@#
 	}
-
+	function transactionStarted(){
+		return $GLOBALS['transactionnesting']>0;
+	}
 	function &commit() {
 		$db =& DBSession::Instance();
 		return $db->doCommit();
@@ -105,7 +112,7 @@ class DBSession {
 		  print_backtrace('Error: trying to commit a non existing transaction');
 		}//@#
 		#@persistence_echo echo 'commiting '.$this->nesting.'<br/>';@#
-        if ($this->nesting == 1) {
+        if ($GLOBALS['transactionnesting'] == 1) {
 			$this->saveRegisteredObjects();
 			if (!$this->rollback) {
 				#@sql_echo echo 'Commiting transaction ('. $this->nesting . ')<br/>';@#
@@ -121,16 +128,16 @@ class DBSession {
 		#@sql_echo
 		else {
 			if (!$this->rollback) {
-				echo ('Commiting transaction ('. $this->nesting . ')<br/>');
+				echo ('Commiting transaction ('. $GLOBALS['transactionnesting'] . ')<br/>');
                 #@sql_echo2 print_backtrace();@#
 			}
 			else {
-				echo ('Rolling back transaction ('. $this->nesting . ')<br/>');
+				echo ('Rolling back transaction ('. $GLOBALS['transactionnesting'] . ')<br/>');
                 #@sql_echo2 print_backtrace();@#
 			}
 		}//@#
 
-		$this->nesting--;
+		$GLOBALS['transactionnesting']--;
 		$n=null;
 		return $n;
 	}
@@ -193,7 +200,7 @@ class DBSession {
         #@sql_echo echo ( 'Rolling back transaction ('. $this->nesting . ')<br/>');@#
         #@sql_echo2 print_backtrace();@#
 
-        if ($this->nesting == 1) {
+        if ($GLOBALS['transactionnesting'] == 1) {
 			$this->rollbackTransaction();
 		}
 		else {
@@ -202,7 +209,7 @@ class DBSession {
 			$this->rollback=true;
 		}
 
-		$this->nesting--;
+		$GLOBALS['transactionnesting']--;
 	}
 
 	function &Instance(){
