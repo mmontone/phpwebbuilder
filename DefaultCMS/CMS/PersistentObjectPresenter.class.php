@@ -12,7 +12,7 @@ class PersistentObjectPresenter extends Component {
     		$this->fieldNames = $this->obj->metadata->allFieldNames();
 		} else {
 			$ks = array_keys($fields);
-			if (is_object($fields[$ks[0]]) && is_subclass_of($fields[$ks[0]],'DataField')){
+			if (is_object(@$fields[$ks[0]]) && is_subclass_of(@$fields[$ks[0]],'DataField')){
 				$this->fieldNames =& array_map(create_function('$field','return $field->varName;'),$fields);
 			} else {
 				$this->fieldNames =& $fields;

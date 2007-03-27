@@ -1,6 +1,6 @@
 <?
 
-class DataField extends ValueModel {
+class DataField extends PWBObject {#@use_mixin ValueModel@#
 	/**
 	 * The column name
 	 */
