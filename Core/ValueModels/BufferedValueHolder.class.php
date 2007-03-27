@@ -1,6 +1,6 @@
 <?php
 
-class BufferedValueHolder extends ValueModel {
+class BufferedValueHolder extends PWBObject {#@use_mixin ValueModel@#
 	var $value_model;
 	var $buffered_value;
 

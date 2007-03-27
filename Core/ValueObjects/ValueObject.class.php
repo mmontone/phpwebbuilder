@@ -1,6 +1,6 @@
 <?php
 
-class ValueObject extends ValueModel{
+class ValueObject extends PWBObject {#@use_mixin ValueModel@#
 	var $value;
 
     function ValueObject($value) {

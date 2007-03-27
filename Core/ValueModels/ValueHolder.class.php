@@ -1,14 +1,13 @@
 <?php
 
-class ValueHolder extends ValueModel
-{
+class ValueHolder extends PWBObject {#@use_mixin ValueModel@#
     // Private!!
     var $__value;
 
     function ValueHolder($value) {
     	if (func_num_args() == 0)
     		print_backtrace();
-    	parent::ValueModel();
+    	parent::PWBObject();
     	$this->primitiveSetValue($value);
     }
 

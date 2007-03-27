@@ -1,12 +1,11 @@
 <?php
 
-class PluggableAdaptor extends ValueModel
-{
+class PluggableAdaptor extends PWBObject {#@use_mixin ValueModel@#
 	var $get_function;
 	var $set_function;
 
     function PluggableAdaptor(&$get_function, &$set_function) {
-    	parent::ValueModel();
+    	parent::PWBObject();
 
     	$this->get_function =& $get_function;
     	$this->set_function =& $set_function;

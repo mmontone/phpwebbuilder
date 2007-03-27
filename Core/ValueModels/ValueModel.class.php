@@ -1,17 +1,18 @@
 <?php
-class ValueModel extends PWBObject {
+#@mixin ValueModel
+{
     /**
      * Gets the valuemodel's value
      */
-    function getValue() {
+/*    function getValue() {
 		$this->subclassResponsibility('getValue()');
-    }
+    }*/
 	/**
      * Sets the valuemodel's value
      */
-	function setValue($value) {
+/*	function setValue($value) {
 		$this->subclassResponsibility('setValue()');
-	}
-}
+	}*/
+}@#
 
 ?>

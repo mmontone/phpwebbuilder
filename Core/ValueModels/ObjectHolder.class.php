@@ -1,12 +1,11 @@
 <?php
 
-class ObjectHolder extends ValueModel
-{
+class ObjectHolder extends PWBObject {#@use_mixin ValueModel@#
 	var $modelSendsUpdates = false;
     var $__value;
 
     function ObjectHolder(&$value) {
-    	parent::ValueModel();
+    	parent::PWBObject();
     	$this->__value =& $value;
     }
 

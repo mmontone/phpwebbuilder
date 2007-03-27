@@ -2,7 +2,7 @@
 
 class PWBDateTime extends PWBObject{
     var $date;
-
+	#@use_mixin ValueModel@#
     function PWBDateTime($date='') {
     	$this->setValue($date);
     	parent::PWBObject();
