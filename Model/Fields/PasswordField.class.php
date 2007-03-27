@@ -16,13 +16,6 @@ class PasswordField extends TextField {
 		}
 		return true;
 	}
-	function SQLvalue() {
-		if ($this->getValue() == "") {
-			return "";
-		} else {
-			return "'" . $this->getValue() . "'" . ", ";
-		}
-	}
 	function fieldNamePrefixed($operation, $prefix) {
 		if ($operation == "SELECT") {
 			return "";
