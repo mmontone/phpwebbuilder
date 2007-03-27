@@ -5,6 +5,11 @@ class DateTimeField extends DataField {
    	  	parent::DataField($name, $isIndex);
    	  	$this->setValue(PWBDateTime::Now());
     }
+
+    function viewValue() {
+        $value =& $this->getValue();
+        return $value->printString();
+    }
     function createInstance($params){
     	parent::createInstance($params);
     	$this->setValue(new PWBDateTime(''));
