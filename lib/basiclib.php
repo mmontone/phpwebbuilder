@@ -828,5 +828,21 @@ function print_n($obj, $n=5){
 	}
 }
 
+function pwb_register_shutdown_function($key, &$function) {
+    if (!isset($_SESSION['shutdown_functions'])) {
+        $_SESSION['shutdown_functions'] = array();
+    }
+    $_SESSION['shutdown_functions'][$key] =& $function;
+}
+
+function pwb_shutdown() {
+    $fs = $_SESSION['shutdown_functions'];
+    if (!is_array($fs)) return;
+    foreach (array_keys($fs) as $i) {
+    	$f =& $fs[$i];
+        $f->call();
+    }
+}
+register_shutdown_function('pwb_shutdown');
 
 ?>

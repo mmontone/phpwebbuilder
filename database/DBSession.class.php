@@ -10,6 +10,19 @@ class DBSession {
 	var $nesting = 0;
 	var $commands = array();
 	var $registeredObjects = null;
+
+    function DBSession() {
+        pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
+    }
+
+    function shutdown() {
+    	if ($this->nesting !== 0) {
+            $this->rollbackTransaction();
+            $this->nesting = 0;
+            print_backtrace_and_exit('Error: nesting level > 0 (rolling back transaction)');
+        }
+    }
+
     function registerSave(&$object) {
     	if ($object->existsObject()) {
    			$this->addCommand(new UpdateObjectDBCommand($object));
@@ -56,7 +69,6 @@ class DBSession {
 			$object->registerCollaborators();
 		}
 	}
-
 
 	function &beginRegisteringAndTransaction(){
 		$db =& DBSession::beginRegistering();
