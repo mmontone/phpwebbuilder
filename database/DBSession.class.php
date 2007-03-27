@@ -92,6 +92,7 @@ class DBSession {
 		}
 
 		#@sql_echo echo 'Beggining transaction ('. $this->nesting . ')';@#
+        #@sql_echo2 print_backtrace();@#
 	}
 
 	function &commit() {
@@ -108,20 +109,24 @@ class DBSession {
 			$this->saveRegisteredObjects();
 			if (!$this->rollback) {
 				#@sql_echo echo 'Commiting transaction ('. $this->nesting . ')<br/>';@#
+                #@sql_echo2 print_backtrace();@#
 				$this->commitTransaction();
 			}
 			else {
-				#@sql_echo	print_backtrace('Rollback transaction ('. $this->nesting . ')<br/>');@#
+				#@sql_echo	echo ('Rollback transaction ('. $this->nesting . ')<br/>');@#
+                #@sql_echo2 print_backtrace();@#
 				$this->rollbackTransaction();
 			}
 		}
 		#@sql_echo
 		else {
 			if (!$this->rollback) {
-				print_backtrace( 'Commiting transaction ('. $this->nesting . ')<br/>');
+				echo ('Commiting transaction ('. $this->nesting . ')<br/>');
+                #@sql_echo2 print_backtrace();@#
 			}
 			else {
-				print_backtrace('Rolling back transaction ('. $this->nesting . ')<br/>');
+				echo ('Rolling back transaction ('. $this->nesting . ')<br/>');
+                #@sql_echo2 print_backtrace();@#
 			}
 		}//@#
 
@@ -185,13 +190,14 @@ class DBSession {
           print_backtrace('Error: trying to rollback a non existing transaction');
         }//@#
 
-        #@sql_echo print_backtrace( 'Rolling back transaction ('. $this->nesting . ')<br/>');@#
+        #@sql_echo echo ( 'Rolling back transaction ('. $this->nesting . ')<br/>');@#
+        #@sql_echo2 print_backtrace();@#
 
         if ($this->nesting == 1) {
 			$this->rollbackTransaction();
 		}
 		else {
-			#@sql_echo print_backtrace('Setting rollback in true <br/>');@#
+			#@sql_echo2 print_backtrace('Setting rollback in true <br/>');@#
 
 			$this->rollback=true;
 		}

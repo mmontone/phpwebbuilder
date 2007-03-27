@@ -132,6 +132,18 @@ function sql_echo($text) {
 	return optionalCompile('sql_echo', $text);
 }
 
+function sql_echo1($text) {
+	if (defined('sql_echo') and (constant('sql_echo') >= 1)) {
+		return $text;
+	}
+}
+
+function sql_echo2($text) {
+    if (defined('sql_echo') and (constant('sql_echo') >= 2)) {
+        return $text;
+    }
+}
+
 function persistence_echo($text) {
 	return optionalCompile('persistence_echo', $text);
 }
@@ -139,6 +151,24 @@ function persistence_echo($text) {
 
 function track_events($text) {
 	return optionalCompile('track_events', $text);
+}
+
+function track_events1($text) {
+    if (defined('track_events') and constant('track_events') >= 1) {
+    	return $text;
+    }
+}
+
+function track_events2($text) {
+    if (defined('track_events') and constant('track_events') >= 2) {
+        return $text;
+    }
+}
+
+function track_events3($text) {
+    if (defined('track_events') and constant('track_events') >= 3) {
+        return $text;
+    }
 }
 
 #@check $x>$y@#

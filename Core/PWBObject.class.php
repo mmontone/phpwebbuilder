@@ -4,7 +4,6 @@ $allObjectsInMem = array();
 
 class PWBObject
 {
-    //var $event_listeners = array();
     var $disabled_events = array();
     var $__instance_id = null;
     var $creationParams;
@@ -152,7 +151,7 @@ class PWBObject
        	$handle = $this->makeHandle($target);
         if (isset($this->event_listeners[$event][$handle])) {
             if (!$params['force']) {
-                #@track_events echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
+                #@track_events2 echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#
                 return;
             }
             else {
@@ -160,7 +159,7 @@ class PWBObject
             }
         }
 
-        #@track_events echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . ' handle: ' . $handle . '<br/>';@#
+        #@track_events2 echo 'Adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . ' handle: ' . $handle . '<br/>';@#
         $params['function'] =& $function;
         $params['event'] = $event;
         $event_handler =& EventHandler::FromParams($params);
@@ -169,7 +168,7 @@ class PWBObject
     }
     function retractInterestIn($event, &$listener){
 		$handle = $this->makeHandle($listener);
-        #@track_events
+        #@track_events2
         if (@isset($this->event_listeners[$event][$handle])) {
         	$s = $this->event_listeners[$event][$handle]->printString();
         }
@@ -207,18 +206,13 @@ class PWBObject
 
     function triggerEvent($event_selector, &$params) {
         if (!$this->isEnabledEvent($event_selector)) {
-            #@track_events //echo 'The event is disabled: ' . $event_selector  .' in: ' . $this->printString() . '<br/>';@#
+            #@track_events3 echo 'The event is disabled: ' . $event_selector  .' in: ' . $this->printString() . '<br/>';@#
             return;
         } else {
         	$this->doTriggerEvent($event_selector, $params);
         }
-        /*global $events_triggered;
-        if (!isset($events_triggered[$event_selector])){
-        	@$events_triggered[$event_selector][getClass($this)] = 1;
-        } else {
-        	@$events_triggered[$event_selector][getClass($this)]++;
-        }*/
     }
+
     function doTriggerEvent($event_selector, &$params){
         $listeners =& $this->event_listeners[$event_selector];
 
@@ -270,10 +264,7 @@ class PWBObject
 	 * Helper method for template methods
 	 */
     function subclassResponsibility($method_name) {
-        trigger_error('Subclass responsibility');
-        //debug_print_backtrace(); /* Install PHP_Compat for PHP4 */
-        print_backtrace('Subclass responsibility: ' . $method_name);
-        exit;
+        print_backtrace_and_exit('Subclass responsibility: ' . $method_name);
     }
 	/**
 	 * Overloading
