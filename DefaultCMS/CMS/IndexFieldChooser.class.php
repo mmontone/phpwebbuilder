@@ -25,13 +25,19 @@ class IndexFieldChooser extends Component {
 
 	function updateDisplay() {
 		if ($this->getTarget()) {
-			$target =& $this->field->getTarget();
-			$this->display->setValue($this->displayValue=$target->indexValues());
+			$target =& $this->getTarget();
+			$this->display->setValue($this->displayValue=$target->printString());
+            $this->addComponent(new CommandLink(array('text' => 'edit', 'proceedFunction' => new FunctionObject($this, 'editTarget'))), 'edit_target');
 		} else {
 			$this->display->setValue($this->displayValue = 'choose');
+            $this->deleteComponentAt('edit_target');
 		}
 		$this->addComponent(new CommandLink(array('proceedFunction'=>new FunctionObject($this, 'chooseTarget'),'text'=> &$this->displayValue), 'value'), 'setvalue');
 	}
+
+    function editTarget() {
+        $this->call(new PersistentObjectEditor($this->getTarget()));
+    }
 
 	function chooseTarget() {
 		$selection = & new CollectionElementChooser($this->field->collection);
