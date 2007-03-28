@@ -271,6 +271,7 @@ class Collection extends PWBObject {
 	 */
 
 	function removeAll($arr) {
+        if (is_null($this->elements)) return;
         $e = $this->disableEvent('changed');
         $ks = array_keys($arr);
         foreach (array_keys($arr) as $k) {
