@@ -98,6 +98,22 @@ class Condition extends Expression {
     }
 }
 
+class SQLCondition extends Condition {
+    var $sql;
+
+    function SQLCondition($sql) {
+    	$this->sql = $sql;
+    }
+
+    function evaluateIn(&$report) {
+
+    }
+
+    function printString() {
+    	return $this->sql;
+    }
+}
+
 class EqualCondition extends Condition {
 	function EqualCondition($params) {
 		$params['operation'] = '=';

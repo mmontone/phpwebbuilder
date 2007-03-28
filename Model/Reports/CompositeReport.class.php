@@ -63,16 +63,15 @@ class CompositeReport extends Report {
 	}
 
 	function & getSelectExp() {
-		$this->select_exp->evaluateIn($this);
-        $e = & new AndExp;
-		$e->addExpression($this->select_exp);
-		$this->report->evaluated=false;
-		$this->report->select_exp->evaluateIn($this);
-        $se =& $this->report->select_exp;
+        if (!$this->e) {
+    		$this->select_exp->evaluateIn($this);
+            $this->e = & new AndExp;
+      		$this->e->addExpression($this->select_exp);
+            $se =& $this->report->getSelectExp();
+      		$this->e->addExpression($se);
+        }
 
-		$e->addExpression($se);
-
-		return $e;
+       	return $this->e;
 	}
 
     function & getGroup() {
@@ -107,37 +106,8 @@ class CompositeReport extends Report {
 	}
 
 	function getDataType() {
-		if (is_strict_subclass($this->dataType,'PersistentObject')){
-			print_backtrace('composite datatype '.$this->dataType);
-			return $this->dataType;
-		} else {
-			return $this->report->getDataType();
-		}
-	}
+		return $this->report->getDataType();
+    }
 }
 
-function array_union_values() {
-	//echo func_num_args();  /* Get the total # of arguements (parameter) that was passed to this function... */
-	//print_r(func_get_arg());  /* Get the value that was passed in via arguement/parameter #... in int, double, etc... (I think)... */
-	//print_r(func_get_args());  /* Get the value that was passed in via arguement/parameter #... in arrays (I think)... */
-
-	$loop_count1 = func_num_args();
-	$junk_array1 = func_get_args();
-	$xyz = 0;
-
-	for ($x = 0; $x < $loop_count1; $x++) {
-		$array_count1 = count($junk_array1[$x]);
-
-		if ($array_count1 != 0) {
-			for ($y = 0; $y < $array_count1; $y++) {
-				$new_array1[$xyz] = $junk_array1[$x][$y];
-				$xyz++;
-			}
-		}
-	}
-
-	$new_array2 = array_unique($new_array1); /* Work a lot like DISTINCT() in SQL... */
-
-	return $new_array2;
-}
 ?>
