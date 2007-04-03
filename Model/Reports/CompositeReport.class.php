@@ -2,7 +2,7 @@
 class CompositeReport extends Report {
 	var $report;
     var $parent;
-
+	var $e;
 	function CompositeReport(& $report) {
 		#@typecheck $report:Report@#
 		parent :: Report();
