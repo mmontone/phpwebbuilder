@@ -11,6 +11,7 @@
 
 
 class AltParser extends Parser {
+	var $errorBuffer = array();
 	function AltParser($children, $backtrack=false) {
 		if (!is_array($children)) {
 			echo 'NOT ARRAY!';
@@ -28,25 +29,30 @@ class AltParser extends Parser {
 		}
 	}
 	function parse($tks) {
+		$return = array(ParseResult::fail(), $tks);
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$res = $c->parse($tks);
-			if ($res[0] !== FALSE
-				&& (!$this->backtrack || $res[0] !== null)
-				) {
-				//if ($res[0]==null) print_backtrace(getClass($c). ' '.htmlentities($this->print_tree()));
-				$res[0]= array($k,$res[0]);
-				return $res;
+			if (!$res[0]->failed() && !$res[0]->isLambda()) {
+				//if ($res[0]->isLambda()) print_backtrace(strtolower(get_class($c). ' '.htmlentities($this->print_tree()));
+				if ($res[1]->isBetterMatchThan($return[1])) {
+					$res[0]= ParseResult::match(array('selector'=>$k,'result'=>$res[0]->match));
+					$return =  $res;
+				}
 			}
 		}
-		parent::setError(implode('',$this->errorBuffer));
-		return array(FALSE, $tks);
+		if ($return[0]->failed()){
+			parent::setError($this->errorBuffer);
+		}
+		$this->errorBuffer=array();
+		return $return;
+
 	}
 	function print_tree() {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$t = $c->print_tree();
-			if (getClass($c)=='altparser'){
+			if (strtolower(get_class($c))=='altparser'){
 				$t = '('.$t.')';
 			}
 			if (is_numeric($k)){
@@ -58,13 +64,13 @@ class AltParser extends Parser {
 		 return implode('|',$ret);
 	}
 	function &process($result) {
-		if (!$this->children[$result[0]]) {echo 'wrong alternative:';var_dump($result);}
-		$rets =&$this->children[$result[0]]->process($result[1]);
-		 $arr = array('selector'=>$result[0],'result'=>$rets);
+		if (!$this->children[$result['selector']]) {echo 'wrong alternative:';var_dump($result);}
+		$rets =&$this->children[$result['selector']]->process($result['result']);
+		 $arr = array('selector'=>$result['selector'],'result'=>$rets);
 		return $arr;
 	}
 	function setError($err){
-		$this->errorBuffer[]=& $err;
+		$this->errorBuffer= array_merge($err,$this->errorBuffer);
 	}
 }
 

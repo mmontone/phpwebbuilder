@@ -28,24 +28,18 @@ class SeqParser extends Parser {
 		$ret = array();
 		foreach (array_keys($this->children) as $k) {
 			$res = $this->children[$k]->parse($res[1]);
-			if ($res[0] === FALSE) {
-				if (count($ret)==0 || (count($ret)==1 && $ret[0]==null)){
-					return array (FALSE,$tks);
-				} else {
-					//print_backtrace('giving null');
-					return array (null,$tks);
-				}
+			if ($res[0]->failed()) {
+				return array (ParseResult::fail(),$tks);
 			}
-			$ret[$k] = $res[0];
+			$ret[$k] = $res[0]->match;
 		}
-
-		return array ($ret,$res[1]);
+		return array (ParseResult::match($ret),$res[1]);
 	}
 	function print_tree() {
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$t = $c->print_tree();
-			if (getClass($c)=='altparser'){
+			if (strtolower(get_class($c))=='altparser'){
 				$t = '('.$t.')';
 			}
 			if (is_numeric($k)){

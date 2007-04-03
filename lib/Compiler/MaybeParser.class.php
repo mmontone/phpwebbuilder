@@ -11,9 +11,9 @@ class MaybeParser extends Parser {
 	}
 	function parse($tks) {
 		$res = $this->parser->parse($tks);
-		if ($res[0] === FALSE) {
+		if ($res[0]->failed()) {
 			return array (
-				null,
+				ParseResult::lambda(),
 				$tks
 			);
 		} else {
@@ -26,7 +26,7 @@ class MaybeParser extends Parser {
 		']';
 	}
 	function &process($result) {
-		if ($result!=null) return $this->parser->process($result); else {$n=null;return $n;}
+		if ($result!=null) return $this->parser->process($result); else {return $result;}
 	}
 	function setError($err){}
 }

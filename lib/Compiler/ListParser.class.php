@@ -1,6 +1,7 @@
 <?php
 
 class ListParser extends Parser {
+	var $errorBuffer = array();
 	function ListParser(& $parser, & $separator) {
 		parent :: Parser();
 		$this->sep = & $separator;
@@ -22,22 +23,24 @@ class ListParser extends Parser {
 		/* then, we parse again, in the tail of the list */
 		$res1 = $this->parser->parse($res[1]);
 		/* if the tail failed, the parse failed */
-		if ($res1[0] === FALSE || $res1[0] === null)
+		if ($res1[0]->failed() || $res1[0]->isLambda()) {
+			parent::setError($this->errorBuffer);
 			return array (
-				FALSE,
+				ParseResult::fail(),
 				$tks
 			);
+		}
 		/* we collect the last parsed token, in the first position of the subarray (as all the other ones) */
-		$res[0][] = array (
-			$res1[0]
+		$res[0]->match[] = array (
+			$res1[0]->match
 		);
 		return array (
-			$res[0],
+			ParseResult::match($res[0]->match),
 			$res1[1]
 		);
 	}
 	function setError($err){
-		$this->errorBuffer=& $err;
+		$this->errorBuffer= array_merge($err,$this->errorBuffer);
 	}
 	function print_tree() {
 		return '{'.

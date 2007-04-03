@@ -11,36 +11,43 @@ class MultiParser extends Parser {
 		$this->parser->setParent($this, $grammar);
 	}
 	function parse($tks) {
-		$res = array (1,$tks);
-		while ($res[0] !== FALSE && $res[0] !== null) {
+		$res = $this->parser->parse($tks);
+		$ret = array();
+		while ((!$res[0]->failed()) && !$res[0]->isLambda()) {
+			$ret[] = $res[0]->match;
 			$res = $this->parser->parse($res[1]);
-			$ret[] = $res[0];
 		}
-		array_pop($ret);
-		return array ($ret,	$res[1]);
+		if (empty($ret)){
+			return array (ParseResult::lambda(),$tks);
+		} else {
+			return array (ParseResult::match($ret),	$res[1]);
+		}
 	}
 	function print_tree() {
-		return $this->parser->print_tree(). '*';
+		return '('.$this->parser->print_tree(). ')*';
 	}
 	function &process($res) {
+		$ret = array();
 		foreach($res as $r){
 			$ret []=&$this->parser->process($r);
 		}
 		return $ret;
 	}
+	function setError($err){$this->buffer = $err;}
 }
 
 class MultiOneParser extends MultiParser{
 	function parse($tks) {
 		$res = parent::parse($tks);
 		if (count($res[0])==0){
-			return array(FALSE, $tks);
+			parent::setError($this->buffer);
+			return array(ParseResult::fail(), $tks);
 		} else {
 			return $res;
 		}
 	}
 	function print_tree() {
-		return $this->parser->print_tree(). '+';
+		return '('.$this->parser->print_tree(). ')+';
 	}
 }
 

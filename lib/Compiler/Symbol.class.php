@@ -6,15 +6,17 @@ class EregSymbol extends Parser {
 		$bars = explode('/',$sym);
 		$mods = array_pop($bars);
 		array_shift($bars);
-		$this->preg = '/^[\s\t\n]*('.implode('/',$bars).')[\s\t\n]*/'.$mods;
+		$spaces = '[\s\t\n]*';
+		$this->preg = '/^'.$spaces.'('.implode('/',$bars).')'.$spaces.'/'.$mods;
 		$this->sym = $sym;
 	}
 	function parse($tks) {
-		if (preg_match($this->preg, $tks, $matches)) {
-			return array ($matches[1],substr($tks,strlen($matches[0])));
+		$spaces = '[\s\t\n]*';
+		if (preg_match($this->preg, $tks->str, $matches)) {
+			return array (ParseResult::match($matches[1]),new ParseInput(substr($tks->str,strlen($matches[0]))));
 		} else {
-			$this->setError('Unexpected "'.@$tks[0].'", expecting '.$this->sym.' with "'.substr($tks, 0, 10). '" remaining');
-			return array (FALSE,$tks);
+			$this->setError(array((string)strlen(preg_replace('/^'.$spaces.'/','',$tks->str))=>$this->sym));
+			return array (ParseResult::fail(),$tks);
 		}
 	}
 	function print_tree() {

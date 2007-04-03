@@ -90,6 +90,7 @@ class PHPCC {
 	    return $alt;
     }
     function &createNTS(&$params){
+    	$ret = array();
     	foreach($params[3] as $param) {
     		$ret [$param[0]]=$param[2];
     	}

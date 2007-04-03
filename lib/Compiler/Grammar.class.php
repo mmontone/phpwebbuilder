@@ -2,7 +2,7 @@
 
 class Grammar {
 	var $pointcuts = array();
-	var $error;
+	var $errors = array();
 	function Grammar($params) {
 		$this->params = & $params;
 		foreach (array_keys($this->params['nt']) as $k) {
@@ -13,7 +13,7 @@ class Grammar {
 		return $this->params['nt'][$name];
 	}
 	function addPointCuts($ps){
-		$this->setPointcuts(array_merge($ps,$this->pointcuts));
+		$this->setPointcuts(array_merge($this->pointcuts,$ps));
 	}
 	function setPointCuts($ps){
 		$this->pointcuts=$ps;
@@ -25,7 +25,8 @@ class Grammar {
 		return $this->pointcuts[$name];
 	}
 	function &getRoot() {
-		$root = & $this->get($this->params['root']);
+		$root = & new SubParser($this->params['root']);
+		$root->setParent($this,$this);
 		return $root;
 	}
 	function &process($name, &$data){
@@ -37,24 +38,40 @@ class Grammar {
 		}
 	}
 	function &compile($str) {
-		$this->error = null;
+		$this->errors = array();
+		$this->input = $str;
 		$root =& $this->getRoot();
-		$res = $root->parse($str);
-		if (preg_match('/^[\s\t\n]*$/',$res[1])){
-			$res1 =& $root->process($res[0]);
-			return $this->process($this->params['root'],$res1);
+		$this->res = $root->parse(new ParseInput($str));
+		if (preg_match('/^[\s\t\n]*$/',$this->res[1]->str)){
+			return $root->process($this->res[0]->match);//$this->process($this->params['root'],$res1);
 		} else {
-			return  $this->error;
+			return $this->getError($str);
 		}
 	}
 	function isError(){
-		return $this->error !== null;
+		return empty($this->errors);
 	}
-	function getError(){
-		return $this->error;
+	function &getError(){
+		$str = $this->input;
+		$ret = '';
+		foreach ($this->errors as $remaining=> $symbol){
+			if ($remaining==0){
+				$rem = 'EOF';
+				$prev = $str;
+			} else {
+				$rem = '"'.substr($str, -$remaining, 1). '"';
+				$prev = substr($str,0, -$remaining);
+			}
+			$lines = explode("\n",$prev);
+			$nl = count($lines);
+			$ret .="\n".'Unexpected '.$rem.', expecting '.$symbol.
+			' on line '.$nl. ',character '.(strlen(array_pop($lines))+1);
+		}
+
+		return $ret;
 	}
 	function setError($err){
-		$this->error= $err;
+		$this->errors= $err;
 	}
 	function print_tree() {
 		$ret =  "<".$this->params['root']."(\n   ";
