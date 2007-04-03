@@ -599,23 +599,13 @@ class Report extends Collection{
 #@preprocessor
 //compile _once(dirname(__FILE__).'/OQLCompiler.class.php');
 Compiler::usesClass(__FILE__,'OQLCompiler');
-if (Compiler::compileOpt('recursive')){
-	return '
+return '
 		function select($query){
 	        $oc =& new OQLCompiler;
 			$res = $oc->fromQuery($query);
-			if ($oc->error!=null || $res==\'\') print_backtrace_and_exit($oc->error);
+			if ($oc->error!=null || $res==\'\') print_backtrace_and_exit($query .print_r($oc->res,TRUE). $oc->error);
 	        return $res;
 		}';
-} else {
-	return '
-		function select($query){
-	        $oc =& new OQLCompiler;
-			$res = $oc->fromQuery($query);
-			if ($oc->error!=null || $res==\'\') print_backtrace_and_exit($oc->error);
-	        return $res;
-		}';
-}
 //@#
 
 /*

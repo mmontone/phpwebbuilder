@@ -10,7 +10,7 @@ class OQLCompiler {
 					   identifier::=/[a-z_][a-z_0-9]*/i.
 					   phpvar::=/\$[a-z_][a-z_0-9]*/i.
 					   condition::=subexpression=>"(" <expression> ")"|comparison=><value> /=|\<\>|<=|>=|\>|\<|LIKE|IS/i <value>.
-					   valueorfunction::=<identifier> ["(" {<identifier>; ","} ")"].
+					   valueorfunction::=<identifier> ["(" {(<valueorfunction>|| <value>); ","} ")"].
 					   expression::=
 					   			not=>/NOT/i <expression>|
 								exists=>/EXISTS/i "(" <oql> ")"|
@@ -26,13 +26,15 @@ class OQLCompiler {
 					   variable::={<identifier> ; "."}.
 					   plainsql::=/\[[^\]]+\]/.
 					   number::=/[0-9]+/.
-					   value::=var=><variable>|
+					   value::=
 					   		value=>(
 								number=><number>|
 						   		str=>/\'[^\']+\'/|
 						   		phpvar=><phpvar>|
 						   		bool=>/TRUE|FALSE/i|
-								plainsql=><plainsql>).
+								plainsql=><plainsql>||
+								aggregate=>"("<oql>")")||
+							var=><variable>.
 					   )>'
 					);
 				}
@@ -47,9 +49,8 @@ class OQLCompiler {
 					//'value' => new FunctionObject($this, 'parseValue'),
 			));
 			$config =& $grammars['oqlGrammar']->compile($query);
-			if ($config==null) {
-				$this->error = $grammars['oqlGrammar']->error;
-			}
+			$this->error = $grammars['oqlGrammar']->getError();
+			$this->res = $grammars['oqlGrammar']->res;
 			return $config;
 		}
 		function toSQL($query){
@@ -94,7 +95,15 @@ class OQLCompiler {
 		}
 		function &parsevalueorfunction($arr){
 			if (($arr[1])!==null){
-				$val = $arr[0].$arr[1][0].implode('',$arr[1][1]).$arr[1][2];
+				$str = '';
+				foreach($arr[1][1] as $v){
+					if($v['selector']==0){
+						$str .= $v['result'];
+					} else {
+						$str .= $v['result']['result']['result'];
+					}
+				}
+				$val = $arr[0].'('.$str.')';
 			} else {
 				$val = $arr[0];
 			}
@@ -150,8 +159,13 @@ class OQLCompiler {
 		}
 		function &parseValue(&$cond){
 			if ($cond['selector']=='value'){
-				$ve =  'new ValueExpression("'.$cond['result']['result'].'")';
-				return $ve;
+					if ($cond['result']['selector']=='aggregate'){
+					$ve = 'new AggregateExpression('.$cond['result']['result'][1].')';
+					return $ve;
+				} else {
+					$ve = 'new ValueExpression("'.$cond['result']['result'].'")';
+					return $ve;
+				}
 			} else {
 				return $this->parseVariable($cond['result']);
 			}

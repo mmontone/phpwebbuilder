@@ -281,6 +281,23 @@ class ValueExpression extends Expression {
 	}
 }
 
+class AggregateExpression extends Expression{
+	function AggregateExpression(&$query){
+		$this->query =& $query;
+		parent::Expression();
+	}
+
+	function evaluateIn(&$report) {
+		$this->query->parent =& $report;
+		return $this->printString();
+	}
+
+	function printString() {
+		return ' (' . $this->query->selectSQL() . ')';
+	}
+
+}
+
 class ObjectExpression extends Expression {
 	var $object;
 
