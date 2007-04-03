@@ -4,8 +4,12 @@ class DateTimeField extends DataField {
     function DateTimeField($name, $isIndex=null) {
    	  	parent::DataField($name, $isIndex);
    	  	$this->setValue(PWBDateTime::Now());
+   	  	$this->primitiveCommitChanges();
     }
-
+	function primitiveCommitChanges() {
+		$this->value =& $this->buffered_value;
+		$this->setModified(false);
+	}
     function viewValue() {
         $value =& $this->getValue();
         return $value->printString();
