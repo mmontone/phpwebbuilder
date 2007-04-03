@@ -9,7 +9,7 @@ class DBSession {
 	var $rollback = false;
 	var $nesting = 0;
 	var $commands = array();
-	var $registeredObjects = null;
+	var $registeredObjects = array();
 
     function DBSession() {
         pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
@@ -51,7 +51,7 @@ class DBSession {
 		$this->rollback = false;
 		$this->commands = array();
 
-		$n = null;
+		$n = array();
         $this->registeredObjects =& $n;
     }
 
@@ -81,13 +81,13 @@ class DBSession {
 	}
 
 	function flushChanges(){
-		if (is_array($this->registeredObjects)) {
+			#@persistence_echo echo 'flushing changes';@#
             foreach(array_keys($this->registeredObjects) as $k){
     			$this->registeredObjects[$k]->flushChanges();
+				#@persistence_echo echo 'flushing changes of '.$this->registeredObjects[$k]->printString();@#
     		}
     		$n = array();
             $this->registeredObjects =& $n;
-        }
 	}
 
     function rollbackTransaction() {
@@ -158,7 +158,6 @@ class DBSession {
     function saveRegisteredObjects() {
     	//ActionDispatcher::ExecuteDeferredEvents();
 
-        if ($this->registeredObjects!==null){
             try {
                 $toRollback = array();
                 while(!empty($this->registeredObjects)){
@@ -173,14 +172,12 @@ class DBSession {
                 $this->registeredObjects = $toRollback;
                 $e->raise();
             }
-        }
     }//@#
 
     #@php4
     function saveRegisteredObjects() {
         //ActionDispatcher::ExecuteDeferredEvents();
 
-        if ($this->registeredObjects!==null) {
             $toRollback = array();
             while(!empty($this->registeredObjects)){
                 $ks = array_keys($this->registeredObjects);
@@ -195,7 +192,6 @@ class DBSession {
                 }
             }
 			PersistentObject::CollectCycles();
-        }
     }//@#
 
 	function rollback() {
