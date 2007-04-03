@@ -518,6 +518,15 @@ function get_subclasses_and_class($class){
 	return $arr;
 }
 
+
+function sp2nbsp($str){
+	return str_replace(' ','&nbsp;',$str);
+}
+function htmlshow($str){
+	echo(nl2br(sp2nbsp(htmlentities($str))));
+}
+
+
 function is_subclass($class_sub, $class_parent){
 	return in_array(strtolower($class_sub), get_subclasses_and_class($class_parent));
 }
