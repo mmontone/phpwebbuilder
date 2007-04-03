@@ -1,0 +1,60 @@
+
+Defining a Grammar:
+Some background http://en.wikipedia.org/wiki/Context-free_grammar
+
+grammar::="<" <root-name> "(" (<non terminal>) ")>".
+
+non terminal ::= <name> "::=" <production definition>.
+
+The production definitions can be:
+
+Symbols:
+"string"
+Example: "Hello"
+
+Perl Regular Expressions:
+/<expression definition>/<expression modifiers>
+Example:  /[0-9]+/
+
+Alternatives:
+<something> | <something else>
+Example: "Hello" | "Goodbye"
+
+Sequences:
+<something> <something else>
+Example: <number> "+" <number>
+
+Optional:
+[<something>]
+Example: "class" <className> ["extends" <className>]
+
+Lists:
+{<element>; <separator>}
+Example: <functionName> "(" {<parameter> ; "," } ")"
+
+Multiples:
+<element>*
+Example: (<sentence> ";")*
+
+Multiple (at least one):
+<element>+
+Example: "var" <varName>+ ";"
+
+Non-terminals:
+<non-terminal>
+Example: <variable-assignment> "=" <expression> ";"
+
+After we create the grammar, we must:
+- Compile the grammar,
+	$g =& PHPCC::createGrammar(...the whole grammar as a string...);
+
+- Add the pointcuts,
+	$g->addPointCuts(array('expression'=>new FunctionObject($n=null,'evalExpression'),
+					  'term'=>new FunctionObject($n=null,'evalExpression'),
+					  'value'=>new FunctionObject($n=null,'evalValue')));
+
+	A function object for each non-terminal you want converted
+
+- Parse the string
+	$g->compile($input);
+	This parses the input, and applies the pointcut functions whenever needed.
