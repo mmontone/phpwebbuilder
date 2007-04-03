@@ -33,7 +33,8 @@ class Component extends PWBObject
 		$this->stop();
 		foreach(array_keys($this->__children) as $c) {
 			$child =& $this->__children[$c]->component;
-			if ($child!=null)$child->stopAll();
+			if ($child!==null)
+				$child->stopAll();
 		}
 	}
 	function reloadView(){
@@ -232,7 +233,7 @@ class Component extends PWBObject
 		$n=null;
 		$callbackComponent->listener =& $n;
 		$callbackComponent->stopAndCall($this);
-        if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
+        if (($callback != null) and (isset($callbackComponent->registered_callbacks[$callback]))) {
 			$callbackComponent->registered_callbacks[$callback]->executeWith($params);
 		}
 	}
