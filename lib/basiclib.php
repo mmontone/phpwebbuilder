@@ -1,8 +1,8 @@
 <?php
 
-if (defined('md') && constant('md')!='none'){
-	require_once 'md.php';
-}
+//require_once 'md2.php';
+require_once 'md.php';
+
 //require_once 'query_lang.php';
 require_once 'Compiler.class.php';
 
@@ -19,6 +19,31 @@ function defmd($text) {
 			           '$param = $string {arg_name} ":" $string {arg_type}' .
 			           '$params = $param' .
 			           '$params = $param "," $params');
+}
+
+function getcached($text) {
+    preg_match('/(.*)[\s\t]*\{(.*)\}/s', $text, $matches);
+    $params = $matches[1];
+    $body = $matches[2];
+
+    $vars = array();
+    $ps = explode(',', $params);
+    foreach($ps as $p) {
+        $paramspec = trim($p);
+        $paramspec = explode('=>', $paramspec);
+        $vars[trim($paramspec[0])] = trim($paramspec[1]);
+    }
+
+    $var = $vars['var'];
+    $initialize = $vars['initialize'];
+    $result = $vars['result'];
+
+    $out = "if ($var !== null) {\n
+    	       $body\n
+               $var =& $initialize;\n
+           }\n
+           $result =& $var;";
+    return $out;
 }
 
 $gensym = 0;
@@ -266,7 +291,7 @@ function &getdyn($var) {
   }//@#
 */
 function dlet($text) {
-	preg_match('/(.)*[\s\t]*\{(.*)\}/s', $text, $matches);
+	preg_match('/(.*)[\s\t]*\{(.*)\}/s', $text, $matches);
 	$vars = $matches[1];
 	$body = $matches[2];
 
@@ -333,6 +358,7 @@ function includeAll() {
 		eval(getIncludes());
 	}
 	require_once pwbdir. 'Session/SessionStart.php';
+
 	if (isset($_REQUEST['recompile'])) {
 		$temp_file = ViewCreator::getTemplatesFilename();
 		@unlink($temp_file);
