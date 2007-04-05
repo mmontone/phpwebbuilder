@@ -258,13 +258,21 @@ class Report extends Collection{
 	}
 	function size() {
 		$db = & DBSession::Instance();
+		#@php4
 		$reg = $db->query($this->sizeSQL(),true);
-		if ($reg===false) {
+		if (is_exception($reg)) {
 			return false;
-		} else {
-			$data = $db->fetchrecord($reg);
-			return $data['collection_size'];
 		}
+		//@#
+		#php5
+		try{
+		$reg = $db->query($this->sizeSQL(),true);
+		} catch(Exception $e){
+			return false;
+		}
+		//@#
+		$data = $db->fetchrecord($reg);
+		return $data['collection_size'];
 	}
 	/**
 	 * Returns the field of the datatype, plus the extra fields requested
@@ -484,7 +492,9 @@ class Report extends Collection{
 			$db =& DBSession::Instance();
 			#@php4
 				$reg =& $db->query($sql,true);
-				if (is_exception($reg)) return $reg;
+				if (is_exception($reg)) {
+					return $reg;
+				}
 			//@#
 			#@php5
 				try{
