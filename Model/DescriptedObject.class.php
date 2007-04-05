@@ -83,22 +83,9 @@ class DescriptedObject extends PWBObject {
 	}
 
 	function setModified($b) {
-		//print_backtrace(get_class($this) . '(' . $this->__instance_id . ') set modified: ' . $b);
-		#@gencheck
-        if ($this->isDeleted()) {
-        	print_backtrace_and_exit('Error: modifying a deleted object ( ' . $this->printString() . ')');
-        }//@#
-        $this->modified = $b;
+		$this->modified = $b;
 		if ($b) $this->registerModifications();
 	}
-
-    function setDeleted($b) {
-    	$this->__deleted = true;
-    }
-
-    function isDeleted() {
-    	return $this->__deleted;
-    }
 
     function registerForPersistence() {
     	$this->toPersist = true;

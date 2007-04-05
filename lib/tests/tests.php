@@ -1,6 +1,6 @@
 <?php
-require_once 'MultipleDispatchTests.class.php';
-//require_once 'MultipleDispatch2Tests.class.php';
+//require_once 'MultipleDispatchTests.class.php';
+compile_once('MultipleDispatch2Tests.class.php');
 require_once 'QSortTests.class.php';
 
 class LibTests extends GroupTest {

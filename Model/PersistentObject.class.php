@@ -14,7 +14,7 @@ class PersistentObject extends DescriptedObject {
 	 * Sets the objec's ID, and notifies all the fields
 	 * (only the ones of this level)
 	 */
-     var $__deleted = false;
+
 
 	function setID($id) {
 		foreach ($this->metadata->allFieldNamesThisLevel() as $field) {

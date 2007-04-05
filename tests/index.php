@@ -18,8 +18,8 @@ if (!$defines) {
 foreach ($defines as $key => $value) {
 	define($key, $value);
 }
-
-require_once '../pwb.php';
+//require_once '../pwb.php';
+require_once constant('basedir') . '/Configuration/pwbapp.php';
 require_once 'pwbtests.php';
 require_once 'PWBHtmlTestsReporter.class.php';
 

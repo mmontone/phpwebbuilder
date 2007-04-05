@@ -1,7 +1,8 @@
 <?
 
 function qsort(& $a, $f) {
-	qsort_do(& $a, 0, Count($a) - 1, $f);
+	echo 'Trying to sort: ' . print_r($a,true) . '<br/>';
+    qsort_do(& $a, 0, Count($a) - 1, $f);
 }
 
 function qsort_do($a, $l, $r, $f) {
@@ -32,4 +33,3 @@ function qsort_partition($a, $l, $r, $lp, $rp, $f) {
 }
 
 ?>
-

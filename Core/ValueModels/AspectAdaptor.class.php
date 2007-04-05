@@ -27,5 +27,14 @@ class AspectAdaptor extends ObjectHolder
     	$get_selector = $this->get_selector;
     	return $this->__value->$get_selector();
     }
+
+    function printString() {
+        if (is_null($this->__value)) {
+            return $this->primPrintString('null getter: ' . $this->get_selector . ' setter: ' . $this->set_selector);
+        }
+        else {
+            return $this->primPrintString($this->__value->printString() . ' getter:' . $this->get_selector . ' setter: ' . $this->set_selector);
+        }
+    }
 }
 ?>
