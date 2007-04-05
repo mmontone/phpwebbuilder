@@ -26,7 +26,7 @@ class EregSymbol extends Parser {
 
 class Symbol extends EregSymbol {
 	function Symbol($ss) {
-		parent :: EregSymbol('/'.preg_quote($ss).'/');
+		parent :: EregSymbol('/'.preg_replace('/\/|\\//', '\/',preg_quote($ss)).'/');
 		$this->sym='"'.$ss.'"';
 	}
 }

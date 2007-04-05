@@ -28,7 +28,7 @@ class MultiParser extends Parser {
 	}
 	function &process($res) {
 		$ret = array();
-		foreach($res as $r){
+		foreach((array)$res as $r){
 			$ret []=&$this->parser->process($r);
 		}
 		return $ret;
