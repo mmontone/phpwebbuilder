@@ -21,6 +21,13 @@ function defmd($text) {
 			           '$params = $param "," $params');
 }
 
+
+$cache_var = 1;
+function get_cache_var() {
+	global $cache_var;
+    return '$this->cachevar_' . $cache_var++;
+}
+
 function getcached($text) {
     preg_match('/(.*)[\s\t]*\{(.*)\}/s', $text, $matches);
     $params = $matches[1];
@@ -34,11 +41,11 @@ function getcached($text) {
         $vars[trim($paramspec[0])] = trim($paramspec[1]);
     }
 
-    $var = $vars['var'];
+    $var = get_cache_var();
     $initialize = $vars['initialize'];
     $result = $vars['result'];
 
-    $out = "if ($var !== null) {\n
+    $out = "if (is_null($var)) {\n
     	       $body\n
                $var =& $initialize;\n
            }\n
