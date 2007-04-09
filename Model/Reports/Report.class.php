@@ -264,7 +264,7 @@ class Report extends Collection{
 			return false;
 		}
 		//@#
-		#php5
+		#@php5
 		try{
 		$reg = $db->query($this->sizeSQL(),true);
 		} catch(Exception $e){
@@ -613,7 +613,7 @@ return '
 		function select($query){
 	        $oc =& new OQLCompiler;
 			$res = $oc->fromQuery($query);
-			if ($oc->error!=null || $res==\'\') print_backtrace_and_exit($query .print_r($oc->res,TRUE). $oc->error);
+			if ($oc->res[1]==\'\') print_backtrace_and_exit($query .print_r($oc->res,TRUE). $oc->error);
 	        return $res;
 		}';
 //@#
