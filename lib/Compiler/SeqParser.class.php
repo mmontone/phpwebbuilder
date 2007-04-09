@@ -26,13 +26,39 @@ class SeqParser extends Parser {
 	function parse($tks) {
 		$res = array (FALSE,$tks);
 		$ret = array();
+		#@parse_echo
+		$mi_parse_id = @$GLOBALS['parse_id']++;
+		echo '<li>';
+		//echo '<a name="start_'.$mi_parse_id.'"/>';
+		//echo '<a href="#end_'.$mi_parse_id.'">go to end </a>';
+		echo '<a onclick="hideshowchild(event.target);">';
+		htmlshow('entering sequence: '.$this->print_tree());
+		echo '</a>';
+		echo '<ul style="visibility:hidden;width:0;height:0;">';
+		//@#
 		foreach (array_keys($this->children) as $k) {
 			$res = $this->children[$k]->parse($res[1]);
 			if ($res[0]->failed()) {
+				#@parse_echo
+				htmlshow($this->print_tree(). 'failed');
+				var_dump($ret);
+//				echo '<a name="end_'.$mi_parse_id.'"/>';
+//				echo '<a href="#start_'.$mi_parse_id.'">go to start </a>';
+				echo '</li>';
+				echo '</ul>';
+				//@#
 				return array (ParseResult::fail(),$tks);
 			}
 			$ret[$k] = $res[0]->match;
 		}
+		#@parse_echo
+		htmlshow($this->print_tree(). 'passed');
+		var_dump($ret);
+//		echo '<a name="end_'.$mi_parse_id.'"/>';
+//		echo '<a href="#start_'.$mi_parse_id.'">go to start </a>';
+		echo '</li>';
+		echo '</ul>';
+		//@#
 		return array (ParseResult::match($ret),$res[1]);
 	}
 	function print_tree() {

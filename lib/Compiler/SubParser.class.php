@@ -20,18 +20,29 @@ class SubParser extends Parser {
 			$tks->popNonTerminal($this->subName);
 			$next = $res;
 			$str = $tks->str;
-			$tks->str = '';
+			$tks->str = null;
 			$parts = $tks->partials;
 			$tks->partials = array();
-			while ($tks->shouldReDescend($this->subName) && !$next[0]->failed() && !$next[0]->isLambda()){
-				$tks->addPartial($this->subName, $res);
-				$res =$next;
+			while ($tks->shouldReDescend($this->subName) && !$next[0]->failed() && !$next[0]->isLambda() ){
+				if ($next[1]->isBetterMatchThan($res[1])){
+					$res =$next;
+				}
+				#@parse_echo
+					echo '<li>subparsing '.print_r($res[0]->match,TRUE).' for '.$this->subName.',most recent'.print_r($next[0]->match,TRUE).'</li>';
+				//@#
+				$tks->partials = array();
+				$tks->addPartial($this->subName, $next);
 				$next = $p->parse($tks);
 			}
 			$tks->str = $str;
 			$tks->partials = $parts ;
 			$tks->addPartial($this->subName, $res);
 			$p->popErrorHandler();
+		#@parse_echo
+			echo '<li>parsed "'.print_r($res[0]->match,TRUE).'" for '.$this->subName.'</li>';
+		} else {
+			echo '<li>using '.print_r($res[0]->match,TRUE).' for '.$this->subName.'</li>';
+		//@#
 		}
 		return $res;
 	}

@@ -6,16 +6,25 @@ class EregSymbol extends Parser {
 		$bars = explode('/',$sym);
 		$mods = array_pop($bars);
 		array_shift($bars);
-		$spaces = '[\s\t\n]*';
-		$this->preg = '/^'.$spaces.'('.implode('/',$bars).')'.$spaces.'/'.$mods;
+		$this->spaces = '([\s\t\n]|\/\/.*?\n|\#.*\n|\/\*(.|\n)*?\*\/)*';
+		$this->preg = '/^'.$this->spaces.'(?P<result>'.implode('/',$bars).')'.$this->spaces.'/'.$mods;
 		$this->sym = $sym;
 	}
 	function parse($tks) {
-		$spaces = '[\s\t\n]*';
 		if (preg_match($this->preg, $tks->str, $matches)) {
-			return array (ParseResult::match($matches[1]),new ParseInput(substr($tks->str,strlen($matches[0]))));
+			#@parse_echo
+			echo '<li>';
+			var_dump('parsed '.$matches['result']);
+			echo '</li>';
+			//@#
+			return array (ParseResult::match($matches['result']),new ParseInput(substr($tks->str,strlen($matches[0]))));
 		} else {
-			$this->setError(array((string)strlen(preg_replace('/^'.$spaces.'/','',$tks->str))=>$this->sym));
+			$this->setError(array(array('rem'=>(string)strlen(preg_replace('/^'.$this->spaces.'/','',$tks->str)),'sym'=>$this->sym)));
+			#@parse_echo
+			echo '<li>';
+			var_dump('failed '.$this->sym. ':'.substr($tks->str,0,5));
+			echo '</li>';
+			//@#
 			return array (ParseResult::fail(),$tks);
 		}
 	}

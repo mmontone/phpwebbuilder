@@ -2,6 +2,7 @@
 
 
 class MultiParser extends Parser {
+	var $buffer = array();
 	function MultiParser(& $parser) {
 		parent :: Parser();
 		$this->parser = & $parser;
@@ -18,6 +19,7 @@ class MultiParser extends Parser {
 			$res = $this->parser->parse($res[1]);
 		}
 		if (empty($ret)){
+			parent::setError($this->buffer);
 			return array (ParseResult::lambda(),$tks);
 		} else {
 			return array (ParseResult::match($ret),	$res[1]);

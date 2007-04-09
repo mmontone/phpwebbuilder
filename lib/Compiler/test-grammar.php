@@ -2,12 +2,35 @@
 
 require_once 'PHPCC.class.php';
 require_once dirname(dirname(dirname(__FILE__))).'/Core/FunctionObject.class.php';
+define('pwbdir',dirname(dirname(dirname(__FILE__))));
+define('basedir',dirname(dirname(dirname(__FILE__))));
+define('app_class','Test-grammar');
+$_SESSION=array('shutdown_functions'=>array());
+require_once dirname(dirname(dirname(__FILE__))).'/lib/basiclib.php';
+
+?>
+<script>
+function hideshowchild(elem){
+	if (elem.nextSibling.style.visibility=='hidden'){
+		elem.nextSibling.style.visibility = 'inherit';
+		elem.nextSibling.style.width = 'auto';
+		elem.nextSibling.style.height = 'auto';
+	} else {
+		elem.nextSibling.style.visibility = 'hidden';
+		elem.nextSibling.style.width = '0';
+		elem.nextSibling.style.height = '0';
+	}
+}
+
+</script>
+
+<?
 
 error_reporting(E_ALL);
 ini_set('memory_limit', '32M');
 htmlshow(PHPCC::ccGrammar()->print_tree());
 /* We first define the grammar*/
-
+ob_start();
 $g =& PHPCC::createGrammar(
 					'<expression(
 					   value::=	number=>/[0-9]+/ |
@@ -16,6 +39,8 @@ $g =& PHPCC::createGrammar(
 					   expression::= tree=>exp1-><expression> operator->("+"|"-") exp2-><expression>|value=><term>.
 					   term::= tree=>exp1-><term> operator->("*"|"\\") exp2-><term> | value=><value>.
 					)>');
+ob_end_clean();
+echo '<br/>';
 /* Then, the processing functions */
 
 function evalValue($params){
@@ -34,7 +59,7 @@ function evalExpression($params){
 /* Just re-printing the grammar, debugging */
 
 //echo(nl2br(sp2nbsp(htmlentities(print_r($g)))));
-echo(nl2br(sp2nbsp(htmlentities($g->print_tree()))));
+htmlshow($g->print_tree());
 
 /* Parsing a simple expression */
 

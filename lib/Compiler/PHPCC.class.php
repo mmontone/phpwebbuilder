@@ -30,12 +30,14 @@ class PHPCC {
     	$grammars['ccGrammar']=& new Grammar(array(
     		'root'=>'grammar',
     		'nt'=>array(
-    			'alternative'=>new ListParser(new SeqParser(array(new MaybeParser(
-    							new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('=>')))),new SubParser('sequence'))),new EregSymbol('/\|\||\|/')),
+    			'identifier'=>new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"),
+    			'alt-element'=>new SeqParser(array(new MaybeParser(
+    							new SeqParser(array(new SubParser('identifier'), new Symbol('=>')))),new SubParser('sequence'))),
+    			'alternative'=>new ListParser(new SubParser('alt-element'),new EregSymbol('/\|\||\|/')),
     			'maybe'=>new SeqParser(array(new Symbol('['),new SubParser('alternative'),new Symbol(']'))),
-    			'list'=>new SeqParser(array(new Symbol('{'),new SubParser('alternative'),new Symbol(';'),new SubParser('alternative'),new Symbol('}'))),
+    			'list'=>new SeqParser(array(new Symbol('{'),new SubParser('alternative'),new Symbol(';'),new SubParser('alternative'),new EregSymbol('/\}|\]/'))),
     			'sequence'=>new MultiParser(new SeqParser(array(new MaybeParser(
-    							new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('->')))),
+    							new SeqParser(array(new SubParser('identifier'), new Symbol('->')))),
     							new AltParser(array(
     								new SubParser('list'),
     								new SubParser('maybe'),
@@ -47,11 +49,11 @@ class PHPCC {
     					new AltParser(array('alt'=>new SeqParser(array(new Symbol('('),new SubParser('alternative'),new Symbol(')'))),
     					new SubParser('subparser'))),
 					'iterator'=>new MaybeParser(new EregSymbol('/\*|\+/')))),
-    			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"),new Symbol('>'),)),
+    			'subparser'=>new SeqParser(array(new Symbol('<'),'name'=>new SubParser('identifier'),new Symbol('>'),)),
     			'symbol'=>new EregSymbol('/"[^"]+"/'),
     			'ereg'=>new EregSymbol('/\/[^\/]+\/\w*/'),
-    			'non-terminal'=>new SeqParser(array(new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('::='), new SubParser('alternative'), new Symbol('.'))),
-    			'grammar'=>new SeqParser(array(new Symbol('<'),new EregSymbol("/[a-zA-Z_][a-zA-Z_0-9]*/"), new Symbol('('),new MultiParser(new SubParser('non-terminal')), new Symbol(')'),new Symbol('>')))
+    			'non-terminal'=>new SeqParser(array(new SubParser('identifier'), new Symbol('::='), new SubParser('alternative'), new Symbol('.'))),
+    			'grammar'=>new SeqParser(array(new Symbol('<'),new SubParser('identifier'), new Symbol('('),new MultiParser(new SubParser('non-terminal')), new Symbol(')'),new Symbol('>')))
     		)));
     	}
     	return $grammars['ccGrammar'];
@@ -98,7 +100,13 @@ class PHPCC {
     	return $g;
     }
     function &createList(&$elems){
-    	$lp =& new ListParser($elems[1],$elems[3]);
+    	if ($elems[4]=='}'){
+    		print_r($elems);echo 'list';
+    		$lp =& new ListParser($elems[1],$elems[3]);
+    	} else {
+    		print_r($elems);echo 'nulllist';
+    		$lp =& new NullableListParser($elems[1],$elems[3]);
+    	}
     	return $lp;
     }
     function &createSymbol(&$sym){

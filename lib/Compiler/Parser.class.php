@@ -22,7 +22,7 @@ class Parser {
 	}
 	function &process($result){return $result;}
 	function setError($err){
-		//echo "<br/>setting $err from ".get_class($this) . " to ".get_class($this->errorHandler[count($this->errorHandler)-1]);
+		/*echo "<br/>setting $err from ".get_class($this) . " to ".get_class($this->errorHandler[count($this->errorHandler)-1]);*/
 		$this->errorHandler[count($this->errorHandler)-1]->setError($err);
 	}
 }
@@ -53,17 +53,18 @@ class ParseInput{
 	}
 	function shouldReDescend($nt){
 		$b = isset($this->rdnts[$nt]);
-		//unset($this->rdnts[$nt]);
+		/*unset($this->rdnts[$nt]);*/
 		return $b;
 	}
 	function isBetterMatchThan($input){
-		return strlen($this->str) < strlen($input->str);
+		return $input->str===null || (strlen($this->str) < strlen($input->str));
 	}
 }
 
 class ParseResult{
+	var $match;
 	function fail(){
-		//return ParseResult::match(FALSE);
+		/*return ParseResult::match(FALSE);*/
 		$pr = new ParseResult();
 		$pr->failed=true;
 		return $pr;

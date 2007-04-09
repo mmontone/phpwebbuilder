@@ -30,6 +30,16 @@ class AltParser extends Parser {
 	}
 	function parse($tks) {
 		$return = array(ParseResult::fail(), $tks);
+		#@parse_echo
+		$mi_parse_id = @$GLOBALS['parse_id']++;
+		echo '<li>';
+		//echo '<a name="start_'.$mi_parse_id.'"/>';
+		//echo '<a href="#end_'.$mi_parse_id.'">go to end </a>';
+		echo '<a onclick="hideshowchild(event.target);">';
+		htmlshow('entering alternative: '.$this->print_tree());
+		echo '</a>';
+		echo '<ul style="visibility:hidden;width:0;height:0;">';
+		//@#
 		foreach (array_keys($this->children) as $k) {
 			$c = & $this->children[$k];
 			$res = $c->parse($tks);
@@ -42,9 +52,23 @@ class AltParser extends Parser {
 			}
 		}
 		if ($return[0]->failed()){
+			#@parse_echo
+			htmlshow($this->print_tree(). 'failed');
+			//@#
 			parent::setError($this->errorBuffer);
+		} else {
+			#@parse_echo
+			htmlshow($this->print_tree(). 'passed');
+			var_dump($return[0]->match);
+			//@#
 		}
 		$this->errorBuffer=array();
+		#@parse_echo
+//		echo '<a name="end_'.$mi_parse_id.'"/>';
+//		echo '<a href="#start_'.$mi_parse_id.'">go to start </a>';
+		echo '</li>';
+		echo '</ul>';
+		//@#
 		return $return;
 
 	}

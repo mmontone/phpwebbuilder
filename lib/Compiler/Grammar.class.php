@@ -49,29 +49,35 @@ class Grammar {
 		}
 	}
 	function isError(){
-		return empty($this->errors);
+		return !empty($this->errors);
 	}
 	function &getError(){
 		$str = $this->input;
 		$ret = '';
-		foreach ($this->errors as $remaining=> $symbol){
-			if ($remaining==0){
-				$rem = 'EOF';
-				$prev = $str;
-			} else {
-				$rem = '"'.substr($str, -$remaining, 1). '"';
-				$prev = substr($str,0, -$remaining);
+		$min = strlen($str);
+		foreach ($this->errors as $err){
+			$remaining=$err['rem']; $symbol=$err['sym'];
+			if ($remaining<=$min){
+				if ($remaining < $min) $ret='';
+				$min = $remaining;
+				if ($remaining==0){
+					$rem = 'EOF';
+					$prev = $str;
+				} else {
+					$rem = '"'.substr($str, -$remaining, 10). '"';
+					$prev = substr($str,0, -$remaining);
+				}
+				$lines = explode("\n",$prev);
+				$nl = count($lines);
+				$ret .="\n".'Unexpected '.$rem.', expecting '.$symbol.
+				' on line '.$nl. ',character '.(strlen(array_pop($lines))+1);
 			}
-			$lines = explode("\n",$prev);
-			$nl = count($lines);
-			$ret .="\n".'Unexpected '.$rem.', expecting '.$symbol.
-			' on line '.$nl. ',character '.(strlen(array_pop($lines))+1);
 		}
 
 		return $ret;
 	}
 	function setError($err){
-		$this->errors= $err;
+		$this->errors= array_merge($err,$this->errors);
 	}
 	function print_tree() {
 		$ret =  "<".$this->params['root']."(\n   ";

@@ -4,21 +4,26 @@ class PHPGrammar {
 	function &Grammar(){
 		return PHPCC::createGrammar(
 '<php_script(
-php_script ::= ("<?php"|"<?") (<class_def>|<function_def>|<statement>)* "\?>".
+php_script ::= ("<?php"|"<?") (<require>|<class_def>|<function_def>|<statement>)* "?>".
+
+require::= ("require"|"require_once") <expression> ";".
 
 class_def ::= "class" <identifier> ["extends" <identifier>] "{" <member>* "}" .
 
 member ::= <function_def> | <attribute> .
 
-function_def ::= <signature> "{" <statement>* "}" .
-signature ::= ["&"] <identifier> "(" {<formal_parameter>;","} ")".
+function_def ::= "function" <signature> "{" <statement>* "}" .
+signature ::= ["&"] <identifier> "(" {<formal_parameter>;","] ")".
 formal_parameter ::= ["&"] <variableName> ["=" <value>] .
 
-attribute ::= "var" <variableName> ["=" <value>]  ";".
+attribute ::= "var" <variableName> ["=" <literal>]  ";".
 
 statement ::=
      <if> | <while> | <do> | <for> | <foreach>
-   | <switch> | "break" ";" | "continue" ";" | <return> | <expression> ";" | "{" <statement>* "}".
+   | <switch> | "break" ";" | "continue" ";" | <return> | <expression> ";" | "{" <statement>* "}" |
+	<echo>.
+
+echo::="echo" {<expression> ; ","} ";".
 
 if ::= "if" "(" <expression> ")" <statement> ["else" <statement>].
 while ::= "while" "(" <expression> ")" <statement> .
@@ -30,33 +35,35 @@ switch ::= "switch" <expression> "{" ("case" <value> ":" <statement>)+ "}".
 
 return ::= "return" [<expression>] ";".
 
-expression2 ::=
+expression ::=
      <assignment> | <cast> | <unary_op> | <bin_op>
    | <conditional_expr> | <ignore_errors>
-   | <variableName> | <pre_op> | <post_op> | <array>
-   | <method_invocation> | <new>
-   | <literal> .
-'./*
-expression:
-*/'
-expression ::= <function_call>.
+   | <variableName> | <pre_op> | <post_op>
+   | <member_access> |<array_access> | <new>
+   | <literal> |<function_call> |"("<expression>")" | <identifier> | <class_method>.
 
-literal ::= /[0-9]+/ | /[0-9]+\.[0-9]+/ | /"[^"]"/ | /\'[^\']\'/ | /true|false/i  | /null/i .
-function_call ::= <identifier> "(" {<expression>; "," } ")".
-array ::= "array" "(" {<value>; "," } ")".
-assignment ::= <variableName> "=" ["&"] <expression> .
-array_access::= <element>"["<expression>"]".
-member_access::=<element>"->"(<variableName>|<identifier>|"{"<expression>"}").
+literal ::= /[0-9]+/ | /[0-9]+\.[0-9]+/ | /"(\\\\"|[^"])*"/ | /\'(\\\\\'|[^\'])*\'/ | /true|false/i  | /null/i |<array>.
+function_call ::= <identifier> "(" {<expression>; "," ] ")".
+array ::= "array" "(" {[<expression> "=>"]<expression>; "," ] ")".
+assignment ::= <expression> ("="|"=&"|"+=") <expression> .
+array_access::= <expression> "[" [<expression>] "]".
+member_access::=<expression> "->" (<variableName>|<identifier>|"{"<expression>"}"|<function_call>).
+new::= "new" ( <identifier> | <variableName> ) ["(" {<expression>; "," ] ")"].
+class_method ::= <identifier>"::"<function_call>.
 
 cast ::= "(" /string|int/i ")" <expression> .
-unary_op ::= "-" <expression> .
-bin_op ::= <variableName> ("+"|"-"|"*"|"/") <expression> .
+unary_op ::= ("-"|"!"|"not") <expression> .
+bin_op ::= <expression>
+				("+"|"-"|"*"|"/"|"."
+				|"=="|"==="|"!="|"!=="
+				|">"|"<"|"<="|">="
+				|"||"|"&&"|"or"|"and") <expression> .
 
 conditional_expr ::= <expression> "?"<expression>":"<expression>.
 ignore_errors ::= "@" <expression>.
 
-pre_op ::= ("++"|"--") <variableName>.
-post_op ::= <variableName> ("++"|"--").
+pre_op ::= ("++"|"--") <expression>.
+post_op ::= <expression> ("++"|"--").
 
 identifier::=/[a-z_][a-z_0-9]*/i.
 variableName::="$" <identifier>.

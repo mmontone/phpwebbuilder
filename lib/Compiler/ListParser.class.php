@@ -57,6 +57,23 @@ class ListParser extends Parser {
 		}
 		return $ret;
 	}
+}
 
+class NullableListParser extends ListParser{
+	function print_tree() {
+		return '{'.
+		$this->parser->print_tree().
+		';'.
+		$this->sep->print_tree().
+		']';
+	}
+	function parse($tks) {
+		$res = parent::parse($tks);
+		if ($res[0]->failed()){
+			return array(ParseResult::lambda(),$tks);
+		} else {
+			return $res;
+		}
+	}
 }
 ?>
