@@ -265,11 +265,7 @@ class Report extends Collection{
 		}
 		//@#
 		#@php5
-		try{
 		$reg = $db->query($this->sizeSQL(),true);
-		} catch(Exception $e){
-			return false;
-		}
 		//@#
 		$data = $db->fetchrecord($reg);
 		return $data['collection_size'];
@@ -497,11 +493,7 @@ class Report extends Collection{
 				}
 			//@#
 			#@php5
-				try{
-					$reg = $db->query($sql,true);
-				} catch(Exception $e){
-					return $reg;
-				}
+			$reg = $db->query($sql,true);
 			//@#
 			while ($data = $db->fetchrecord($reg)) {
 				$this->addElement($this->makeElement($data));
