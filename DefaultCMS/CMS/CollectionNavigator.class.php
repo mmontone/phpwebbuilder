@@ -74,19 +74,44 @@ class CollectionNavigator extends Component {
 		// The next line is only necessary if elements are not added or removed
 		// through the collection interface (the in-memory collection doesn't get notified)
 		$col->refresh();
-		$elements = & $col->elements();
-		if (!is_array($elements)) {
-			print_backtrace('No elements: ' . print_r($elements,true) . DBSession::lastError());
-			//$this->addComponent(new Label(DBSession::lastError()),'status');
-		} else {
-		$ks = array_keys($elements);
-		foreach ($ks as $k) {
-			$fc =& $this->addLine($elements[$k]);
-			$this->objs->addComponent($fc);
-		}
-		$this->redraw();
+
+        $elements =& $this->getElements();
+
+        if (is_array($elements)) {
+			$ks = array_keys($elements);
+    		foreach ($ks as $k) {
+    			$fc =& $this->addLine($elements[$k]);
+    			$this->objs->addComponent($fc);
+    		}
+    		$this->redraw();
 		}
 	}
+
+    #@php4
+    function &getElements() {
+        $elems =& $this->col->elements();
+        if (!is_array($elems)) {
+            $dialog =& ErrorDialog::Create(DBSession::lastError());
+            $dialog->onAccept(new FunctionObject($this, 'doNothing'));
+            $this->call($dialog);
+        }
+        return $elems;
+    }//@#
+
+    #@php5
+    function &getElements() {
+        try {
+        	$this->col->elements();
+        } catch (DBError $e) {
+        	$dialog =& ErrorDialog::Create($e->getMessage());
+            $dialog->onAccept(new FunctionObject($this, 'doNothing'));
+            $this->call($dialog);
+        }
+    }//@#
+
+    function doNothing() {
+
+    }
 
 	function getValue(){}
 
