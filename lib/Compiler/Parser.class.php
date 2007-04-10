@@ -88,13 +88,13 @@ class ParseResult{
 	}
 }
 
-require_once 'AltParser.class.php';
-require_once 'Grammar.class.php';
-require_once 'ListParser.class.php';
-require_once 'MaybeParser.class.php';
-require_once 'MultiParser.class.php';
-require_once 'SeqParser.class.php';
-require_once 'SubParser.class.php';
-require_once 'Symbol.class.php';
+compile_once(dirname(__FILE__).'/AltParser.class.php');
+compile_once(dirname(__FILE__).'/Grammar.class.php');
+compile_once(dirname(__FILE__).'/ListParser.class.php');
+compile_once(dirname(__FILE__).'/MaybeParser.class.php');
+compile_once(dirname(__FILE__).'/MultiParser.class.php');
+compile_once(dirname(__FILE__).'/SeqParser.class.php');
+compile_once(dirname(__FILE__).'/SubParser.class.php');
+compile_once(dirname(__FILE__).'/Symbol.class.php');
 
 ?>

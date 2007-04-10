@@ -29,8 +29,6 @@ class SeqParser extends Parser {
 		#@parse_echo
 		$mi_parse_id = @$GLOBALS['parse_id']++;
 		echo '<li>';
-		//echo '<a name="start_'.$mi_parse_id.'"/>';
-		//echo '<a href="#end_'.$mi_parse_id.'">go to end </a>';
 		echo '<a onclick="hideshowchild(event.target);">';
 		htmlshow('entering sequence: '.$this->print_tree());
 		echo '</a>';
@@ -42,8 +40,6 @@ class SeqParser extends Parser {
 				#@parse_echo
 				htmlshow($this->print_tree(). 'failed');
 				var_dump($ret);
-//				echo '<a name="end_'.$mi_parse_id.'"/>';
-//				echo '<a href="#start_'.$mi_parse_id.'">go to start </a>';
 				echo '</li>';
 				echo '</ul>';
 				//@#
@@ -54,8 +50,6 @@ class SeqParser extends Parser {
 		#@parse_echo
 		htmlshow($this->print_tree(). 'passed');
 		var_dump($ret);
-//		echo '<a name="end_'.$mi_parse_id.'"/>';
-//		echo '<a href="#start_'.$mi_parse_id.'">go to start </a>';
 		echo '</li>';
 		echo '</ul>';
 		//@#

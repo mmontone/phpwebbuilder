@@ -1,7 +1,11 @@
 <?php
 
-require_once 'Parser.class.php';
-require_once 'PHPGrammar.class.php';
+compile_once(dirname(__FILE__).'/Parser.class.php');
+compile_once(dirname(__FILE__).'/PHPGrammar.class.php');
+
+function parse_echo($str){
+	return optionalCompile('parse_echo', $str);
+}
 
 class PHPCC {
 
@@ -101,10 +105,8 @@ class PHPCC {
     }
     function &createList(&$elems){
     	if ($elems[4]=='}'){
-    		print_r($elems);echo 'list';
     		$lp =& new ListParser($elems[1],$elems[3]);
     	} else {
-    		print_r($elems);echo 'nulllist';
     		$lp =& new NullableListParser($elems[1],$elems[3]);
     	}
     	return $lp;

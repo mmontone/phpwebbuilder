@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__).'/Compiler/PHPCC.class.php');
-
 function processMacro($matches) {
 	$macro = $matches[1];
 	$body = $matches[2];
@@ -367,5 +365,8 @@ if (defined('compile')){
 		require_once($file);
 	}
 }
+
+compile_once(dirname(__FILE__).'/Compiler/PHPCC.class.php');
+
 
 ?>
