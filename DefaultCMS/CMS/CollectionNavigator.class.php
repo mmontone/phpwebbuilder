@@ -101,7 +101,7 @@ class CollectionNavigator extends Component {
     #@php5
     function &getElements() {
         try {
-        	$this->col->elements();
+        	return $this->col->elements();
         } catch (DBError $e) {
         	$dialog =& ErrorDialog::Create($e->getMessage());
             $dialog->onAccept(new FunctionObject($this, 'doNothing'));
