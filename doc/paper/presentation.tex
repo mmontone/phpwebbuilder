@@ -1,28 +1,23 @@
-\documentclass[a4paper,10pt]{book}
+\documentclass[a4paper,10pt,acm]{article}
 
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
-\usepackage{html,makeidx}
+\usepackage[left=2cm,top=3cm,right=2cm]{geometry}
 
-\title{PHPWebBuilder}
+\title{Perseus}
 \date{}
-\author{Eureka Consulting - \htmladdnormallink{www.eureka-consulting.com.ar}{http://www.eureka-consulting.com.ar} \\
+\author{Eureka Consulting - http://www.eureka-consulting.com.ar \\
 		Alejandro Siri asiri@eureka-consulting.com.ar\\
 		Mariano Montone mmontone@eureka-consulting.com.ar}
-%\author{}
 
 \begin{document}
 
+
+
 \maketitle
 
-\oddsidemargin -.60cm
-\evensidemargin -.60cm
-\headheight 50pt
-\topmargin -1.0cm
-\textheight 22cm
-
-\chapter{Abstract}
+\abstract{
 %El enfoque puede ser puramente tecnico, comentando los como, por que,
 %quienes, cuanto y cuando hicieron el proyecto. Desde la elección de
 %herramientas, problemas tecnicos encontrados, etc. o lo que consideren.
@@ -30,28 +25,46 @@
 %También, si lo tiene, se puede incluir algun condimento respecto de que
 %utilidad/visión (social/empresarial/politica) aporta el proyecto.
 
-PWB sirve para programar, por ejemplo, Vista 2.
+PHPWebBuilder es un Framework Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web (tanto de Internet como de una Intranet).
+Incluye características interesantes como Templates declarativos, desarrollo por componentes, persistencia por alcance, OORM, Distintos
+engines de rendereo, Compilación y Macros, Mixins y varias características más.
 
-\chapter{Tecnologías de soporte}: LAMP->PHP, Mysql
-\chapter{Origenes}: Web->Applications
-\chapter{Características (con ejemplo)}
-\chapter{Componentes}
-\section{Persistencia}
-\section{Macros}
-\section{Compilación}
-\section{Renderings}
+}
 
+\section{Nombre}
 
+En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework, decidimos
+rebautilzarlo. El nombre Perseus fue elegido por la mitología griega, ya que este era un heroe que, con ayuda de muchas herramientas, pudo acabar
+al monstruo Medusa, que convertía a sus contrincantes en piedra.
 
-\chapter{Ejemplo Completo}
-\chapter{Trabajos Hechos} En abstracto.
-\chapter{Comparaciones}
-Zope,
-http://www.symfony-project.com/,
-http://www.phpmvc.net/,
-http://www.cakephp.org/,
-http://seagull.phpkitchen.com/,
-http://www.struts4php.org/,
-http://www.mojavelinux.com/projects/studs/.
+Perseus, gracias a la integración de sus múltiples herramientas, sirve para atacar desde proyectos pequeños hasta los más grandes, que
+petrifican hasta a los mejores programadores.
+
+\section{Origenes}
+
+En un principio, Perseus fue diseñado para desarrollo de aplicaciones web. Las ventajas principales
+las presentaba en cuanto a lo que es persistencia, y mapeo Objeto-Relacional, además de contar con un
+CMS con permisos de acceso.
+
+Luego, se le implementó el framework de componentes, templates y de eventos, con lo que se pudo empezar con los primeros sistemas de intranet.
+
+En las últimas versiones, con el manejo de macros, oql, y compilación, los proyectos se simplifican cada vez más.
+
+\section{Tecnologías de soporte}
+
+La elección inicial de LAMP, para aplicaciones web, era evidente, por el amplio alcance de estas tecnologías en los servidores comerciales web.
+
+Ante la mayor cantidad de opciones para hacer software de escritorio e intranet, nos vimos inclinados por las tecnologías web, por la facilidad
+de distribución y la escalabilidad de la misma.
+
+Y elegimos PHP ante las demás opciones de lenguaje, que son Java, Smalltalk, Python, Perl, lo elegimos por la modificabilidad, por el soporte, y
+por la flexibilidad.
+
+\input{caracteristicas}
+
+\section{Ejemplo Completo}
+\section{Trabajos Hechos}
+Entre los trabajos que hicimos, se encuentran sitios web y sistemas de intranet.
+\input{comparaciones}
 
 \end{document}
