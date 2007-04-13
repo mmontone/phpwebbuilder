@@ -1,6 +1,6 @@
 \section{Características del Modelo}
 
-\subsection{Persistencia}
+\subsection{Persistencia y metadata}
 \label{sub-pers}
 La persistencia del modelo se hace mediante la subclasificación de una clase especial (PersistentObject).
 Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las
@@ -16,19 +16,20 @@ los objetos, que construye un reporte.
 
 El lenguaje está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope.
 Además, puede hacer consultas utilizando la identidad de los objetos.
+
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
-En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemos el los tipos de las variables
+En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemos los tipos de las variables
 de cada clase, y las relaciones de subclasificación.
 
-De este modelo, la información del esquema de persistencia para una base de datos relacional se puede deducir.
-Por esto, también podemos generar el esquema automáticamente, liberando de esta carga al programador.
+A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional.
+PWB genera el esquema automáticamente liberando de esta carga al programador.
 
 Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones
 necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita
-adaptar la base de datos a los nuevos cambios.
-\section{Características del Controller}
+adaptar la base de datos a los nuevos cambios. Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
+\section{Características del Controller}
 \subsection{Componentes}
 \label{sub-comp}
 
@@ -38,6 +39,7 @@ ya que pueden ser parametrizados, pueden levantar eventos, y pueden contener otr
 Un componente puede llamar a otro para realizar una tarea (por ejemplo, un componente Welcome, ante un click
 del usuario en un botón "Ingresar", puede llamar al componente Login), y esperar la respuesta de este
 componente para continuar su ejecución (cuando el componente devuelve el usuario validado).
+
 \subsection{Widgets}
 \label{sub-widget}
 
@@ -50,22 +52,15 @@ CheckBox, que presenta un checkbox).
 Otra característica llamativa, es el múltiple dispatching de funciones.
 Dado que muchas veces el método a utilizar depende de más de una clase, las funciones de múltiple dispatching nos ayudan a resolver este problema.
 
-Primero se define la función, con los parametros a utilizar tipados, y luego se hace el llamado, que utiliza los tipos de los parámetros para
-resolver el método a utilizar
+Primero se define la función, con los parametros a utilizar tipados, y luego se hace el llamado, que utiliza los tipos de los parámetros para resolver el método a utilizar
 
-Además, las funciones de múltiple dispatching pueden ser utilizadas pasando el contexto (la rama de componentes dentro de la que se hace el llamado)
-de aplicación, para de esta manera poder responder de manera diferente a un evento, dependiendo del contexto.
+Además, las funciones de múltiple dispatching pueden ser utilizadas pasando el contexto (la rama de componentes dentro de la que se hace el llamado) de aplicación, para de esta manera poder responder de manera diferente a un evento, dependiendo del contexto.
 
-Por ejemplo, podemos tener un componente TaskList que muestre las tareas realizada en un día. Para cada tarea muestra la descripción, la hora, y el
-nombre de quién la completo en un componente TaskList. Si luego quisieramos ver las tareas realizadas por uno de los usuarios, nos interesaría ver
-la hora, la descripción, pero no el nombre del usuario, porque ya se sabe por el contexto. Podríamos usar en ese caso un componente UserTaskShow.
+Por ejemplo, podemos tener un componente TaskList que muestre las tareas realizada en un día. Para cada tarea muestra la descripción, la hora, y el nombre de quién la completo en un componente TaskList. Si luego quisieramos ver las tareas realizadas por uno de los usuarios, nos interesaría ver la hora, la descripción, pero no el nombre del usuario, porque ya se sabe por el contexto. Podríamos usar en ese caso un componente UserTaskShow.
 
-Para implementar esa diferencia, una forma común sería tener 2 componentes, TaskList y UserTaskList. Esto duplica código, y además es difícil de
-implementar cuando el contexto de los componentes es de varios componentes (ya que tendríamos que hacer un nuevo componente para cada elemento en
-la rama de componentes hasta llegar al que realmente implementa la diferencia).
+Para implementar esa diferencia, una forma común sería tener 2 componentes, TaskList y UserTaskList. Esto duplica código, y además es difícil de implementar cuando el contexto de los componentes es de varios componentes (ya que tendríamos que hacer un nuevo componente para cada elemento en la rama de componentes hasta llegar al que realmente implementa la diferencia).
 
-Entonces, podemos utilizar el Context Dispatching para elegir un componente UserTaskShow, en lugar del otro, el TaskShow, independientemente del nivel de
-anidamiento del componente que hace el dispatch y el componente que provee el contexto.
+Entonces, podemos utilizar el Context Dispatching para elegir un componente UserTaskShow, en lugar del otro, el TaskShow, independientemente del nivel de anidamiento del componente que hace el dispatch y el componente que provee el contexto.
 
 
 \section{Características de la Vista}
@@ -78,8 +73,7 @@ Por comodidad, agregamos las siguientes características:
 - Los templates se "heredan", así que un Componente subclase de otro que tiene template, hereda de este el
 template (siempre y cuando no tenga uno más específico). También son heredables por Mixins.
 
-- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen engines como el Smarty).
-De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los
+- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen engines como el Smarty). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los
 templates generen un XML bien formado.
 
 - Los templates están basados en XML, con un par de tags extras (<template> y <container>), así que se puede
@@ -90,20 +84,13 @@ funcionando.
 
 \subsubsection{Adaptación de Diseños existentes}
 \label{sub-templates-adapt}
-Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags <template> y <container> donde
-se quiera, y de esta manera conseguir un template a muy bajo costo.
-Además, como los templates se heredan, utilizando clases bien acomodadas, una aplicación queda con un diseño completo en
-solo 3 o 4 templates.
-
+Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags <template> y <container> donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando clases bien acomodadas, una aplicación queda con un diseño completo en solo 3 o 4 templates.
 
 \subsection{Renderings}
 \label{sub-render}
-El rendereo de la aplicación se hace 100\% mediante PWB, y además todo lo generado es XML bien formado, de
-modo que de manera transparente podemos renderear en AJAX.
+El rendereo de la aplicación se hace 100\% mediante PWB, y además todo lo generado es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
 
-La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde
-dice page\_renderer=StandardPageRenderer por page\_renderer=AjaxPageRenderer, o incluso por page\_renderer=CometPageRenderer
-o page\_renderer=XULPageRenderer
+La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde dice page\_renderer=StandardPageRenderer por page\_renderer=AjaxPageRenderer, o incluso por page\_renderer=CometPageRenderer o page\_renderer=XULPageRenderer
 
 \subsubsection{Comet}
 
@@ -136,11 +123,11 @@ tal fin, y también reiniciar la aplicación para continuar utilizándola.
 
 \subsection{Eventos}
 \label{sub-events}
-PWB implementa un mecanismo simple de eventos. Todo objeto PWBObject implementa los mensajes addInterestIn, que permite a otro objeto escuchar un evento,
-y triggerEvent, que acciona un evento.
+PWB implementa un mecanismo simple de eventos. Todo objeto PWBObject implementa los mensajes addInterestIn, que permite a otro objeto escuchar un evento, y triggerEvent, que acciona un evento.
+
+Este mecanismo está basado en una implementación de Weak References [\ref{sub-weak}] para evitar lagunas de memoria.
 
 Los widgets además accionan eventos en cada acción del usuario, y los objetos del modelo cuando son modificados.
-
 
 \subsection{Weak References}
 \label{sub-weak}
@@ -179,12 +166,12 @@ configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y
 
 \subsection{Mixins}
 \label{sub-mixins}
-Otra funcionalidad interesante, es la de los mixins. Muchos lenguages la ya incluyen, y nosotros se la
-implementamos (utilizando macros).
+Otra funcionalidad interesante es una implementación limitada de mixins (mediante macros).
 
 Un mixin es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos, sin que estas
 clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple
 herencia.
+
 \begin{verbatim}
 #@mixin ValueHolder {
   var $value;
@@ -205,18 +192,11 @@ class Contador{
 \end{verbatim}
 \subsection{Múltiples Configuraciones}
 
-Para el desarrollo colaborativo, es útil mantener múltiples configuraciones. O para trabajar en distintos
-clientes. O para hacer testing y deployment.
+Para el desarrollo colaborativo, es útil mantener múltiples configuraciones. O para trabajar en distintos clientes. O para hacer testing y deployment.
 
 Por todo esto, PWB mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad
 específica.
 
 \subsection{Compilación}
 
-El uso de macros, y la inclusión de los muchos archivos de PWB, hacen que la carga en cada request pueda ser
-muy lenta. Por eso desarrollamos un método de compilar los archivos PHP (para que las macros ya estén procesadas),
-y además, habilitamos varias formas de compilación del código (todo a un sólo archivo PHP, sólo las clases
-utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de
-configuración.
-
-
+El uso de macros, y la inclusión de los muchos archivos de PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso desarrollamos un método de compilar los archivos PHP (para que las macros ya estén procesadas), y además, habilitamos varias formas de compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.

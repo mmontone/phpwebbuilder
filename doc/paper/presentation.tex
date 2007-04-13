@@ -25,44 +25,34 @@
 %También, si lo tiene, se puede incluir algun condimento respecto de que
 %utilidad/visión (social/empresarial/politica) aporta el proyecto.
 
-PHPWebBuilder es un Framework Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web (tanto de Internet como de una Intranet).
-Incluye características interesantes como Templates declarativos, desarrollo por componentes, persistencia por alcance, OORM, Distintos
-engines de rendereo, Compilación y Macros, Mixins y varias características más.
-
+PHPWebBuilder es un Framework Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet.
+Incluye varias características interesantes como templates declarativos, desarrollo por componentes, OORM bajo persistencia por alcance, distintos engines de rendereo, compilación, macros y mixins, entre otras cosas.
 }
+
 \section{Introducción}
 
-A grandes rasgos, una aplicación se compone de 4 partes:
+PWB está diseñado bajo una arquitectura MVC (Model-view-controller).
+Esto quiere decir que una aplicación se compone de 3 capas:
 \begin{itemize}
-\item El ``Modelo'', o sea los datos que describen y componen la aplicación,
-\item El ``Controlador'', o sea los botones, pantallas y demás elementos con los que el usuario interactúa, y
-\item La ``Vista'', o sea la presentación de los datos y botones que el usuario ve.
-\item La ``Programación en lo pequeño'', que sirve para unir estos elementos y realmente ``programar''.
+\item El ``Modelo''. Es la representación de la información de dominio específico de la aplicación,
+\item El ``Controlador''. Los botones, pantallas y demás elementos con los que el usuario interactúa, y
+\item La ``Vista'', que es la presentación de los datos y botones que el usuario ve.
 \end{itemize}
 
-Los frameworks actuales presentan algunas simplificaciones para las primeras 3 partes, y por lo general se
-depende del lenguaje plataforma para la 4ta.
+Existe una parte mas al momento de evaluar un framework. Esto es la ``Programación en lo pequeño'', que sirve para unir estos elementos y realmente ``programar''.
 
-PWB se apoya en PHP para parte de la tarea, y además presenta al programador (o grupo de programadores) con
-herramientas para solucionar o simplificar las tareas en las otras areas:
+Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la PITS generalmente es dependiente del lenguaje/plataforma. PWB se apoya en PHP para parte de la tarea y además provee al desarrollador de herramientas para solucionar o simplificar las tareas en las otras areas:
 
 \begin{itemize}
-\item Para el modelo, presenta un mapeo automático de base de datos [\ref{sub-pers}], autogeneración del esquema de base de datos [\ref{sub-adapt}],
-y un lenguaje de consultas complejas [\ref{sub-oql}] teniendo en cuenta la herencia del modelo de clases, dejando al programador
-con la preocupación básica y específica del modelo solamente (diseñarlo, e implementar los métodos necesarios).
+\item Para el modelo, presenta un mapeo automático de base de datos [\ref{sub-pers}], autogeneración del esquema de base de datos [\ref{sub-adapt}], y un lenguaje de consultas complejas [\ref{sub-oql}] que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
 
-\item Para el controlador, utiliza un sistema de componentes [\ref{sub-comp}], que permiten un alto reuso entre
-diferentes proyectos, y widgets [\ref{sub-widget}], que simplifican y encapsulan la interacción con el usuario.
-Además, el sistema de múltiple dispatching [\ref{sub-dispatch}] y context dispatching permiten una programación
-incremental del sistema manteniendo la estructura inicial.
+\item Para el controlador, utiliza un sistema de componentes [\ref{sub-comp}], que permiten reusar "pedazos de aplicación", ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets [\ref{sub-widget}] que simplifican y encapsulan la interacción con el usuario.
 
 \item Para la vista, el sistema de templates [\ref{sub-templates}] basados en XML permiten una adaptación directa del
-trabajo de un diseñador gráfico [\ref{sub-templates-adapt}]. El sistema se encarga automáticamente luego de presentar la información
-utilizando AJAX de manera transparente, u otra forma de rendereo [\ref{sub-render}] (configurable).
+trabajo de un diseñador gráfico [\ref{sub-templates-adapt}]. El sistema se encarga automáticamente luego de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo [\ref{sub-render}] (configurable).
 
 \item Por último, para PITS, PWB presenta una serie de características importadas de otros lenguajes que facilitan
-la programación, como ser Eventos [\ref{sub-events}], Weak References [\ref{sub-weak}], creación de DSLs [\ref{sub-phpcc}],
-Macros [\ref{sub-macros}], Mixins[\ref{sub-mixins}].
+la programación, como ser Eventos [\ref{sub-events}] (especialmente útiles para mantener la vista actualizada), Weak References [\ref{sub-weak}], creación de DSLs [\ref{sub-phpcc}], Macros [\ref{sub-macros}] y Mixins[\ref{sub-mixins}].
 \end{itemize}
 
 \section{Blog}
@@ -71,18 +61,13 @@ Para ejemplificar, veremos la creación de un blog
 
 \section{Nombre}
 
-En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework, decidimos
-rebautilzarlo. El nombre Perseus fue elegido por la mitología griega, ya que este era un heroe que, con ayuda de muchas herramientas, pudo acabar
-al monstruo Medusa, que convertía a sus contrincantes en piedra.
+En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework decidimos rebautilzarlo. El nombre Perseus fue elegido por la mitología griega, ya que este era un heroe que, con ayuda de muchas herramientas, pudo acabar al monstruo Medusa, que convertía a sus contrincantes en piedra.
 
-Perseus, gracias a la integración de sus múltiples herramientas, sirve para atacar desde proyectos pequeños hasta los más grandes, que
-petrifican hasta a los mejores programadores.
+Perseus, gracias a la integración de sus múltiples herramientas, sirve para atacar desde proyectos pequeños hasta los más grandes, que petrifican hasta a los mejores programadores.
 
 \section{Origenes}
 
-En un principio, Perseus fue diseñado para desarrollo de aplicaciones web. Las ventajas principales
-las presentaba en cuanto a lo que es persistencia, y mapeo Objeto-Relacional, además de contar con un
-CMS con permisos de acceso.
+En un principio, Perseus fue diseñado para desarrollo de sitios web. Las ventajas principales las presentaba en cuanto a lo que es persistencia y mapeo Objeto-Relacional bajo PHP, además de contar con un CMS con permisos de acceso.
 
 Luego, se le implementó el framework de componentes, templates y de eventos, con lo que se pudo empezar con los primeros sistemas de intranet.
 
@@ -92,11 +77,9 @@ En las últimas versiones, con el manejo de macros, oql, y compilación, los pro
 
 La elección inicial de LAMP, para aplicaciones web, era evidente, por el amplio alcance de estas tecnologías en los servidores comerciales web.
 
-Ante la mayor cantidad de opciones para hacer software de escritorio e intranet, nos vimos inclinados por las tecnologías web, por la facilidad
-de distribución y la escalabilidad de la misma.
+Ante la mayor cantidad de opciones para hacer software de escritorio e intranet, nos vimos inclinados por las tecnologías web, por la facilidad de distribución y la escalabilidad de la misma.
 
-Y elegimos PHP ante las demás opciones de lenguaje, que son Java, Smalltalk, Python, Perl, lo elegimos por la modificabilidad, por el soporte, y
-por la flexibilidad.
+Al haber elegido LAMP nos vimos forzados a desarrollar en PHP. Si bien tiene limitaciones, PHP resultó tener buen soporte, además de ser un lenguaje flexible, lo que permite hacer diseños fácilmente modificables.
 
 \input{caracteristicas}
 
