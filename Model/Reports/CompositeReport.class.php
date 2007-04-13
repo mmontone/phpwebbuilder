@@ -1,15 +1,14 @@
 <?php
 class CompositeReport extends Report {
 	var $report;
-    var $parent;
-	var $e;
+  	var $e;
+
 	function CompositeReport(& $report) {
 		#@typecheck $report:Report@#
 		parent :: Report();
-
         $this->report = & $report;
-        $this->parent =& $report;
-		$this->setEventsBubbling();
+        $this->report->parent =& $this;
+        $this->setEventsBubbling();
 	}
 
     function &getTargetVar() {
@@ -27,7 +26,11 @@ class CompositeReport extends Report {
     	$v =& parent::getVar($id);
 
     	if ($v==null) {
-    		return $this->report->getVar($id);
+    		$n = null;
+            $this->report->parent =& $n;
+            $v =&  $this->report->getVar($id);
+            $this->report->parent =& $this;
+            return $v;
     	} else {
     		return $v;
     	}

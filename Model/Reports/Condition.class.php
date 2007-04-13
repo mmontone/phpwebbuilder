@@ -442,7 +442,6 @@ class ObjectPathExpression extends PathExpression {
 	}
 }
 
-
 /** Finds a collection, and defines $var to access it*/
 class CollectionPathExpression extends PathExpression {
     var $collection_field;
@@ -456,35 +455,68 @@ class CollectionPathExpression extends PathExpression {
     }
 
     function evaluateIn(&$report) {
-        $o =& $this->registerPath($report);
+        $metadata_and_prefix = $this->registerPath($report);
+        $metadata =& $metadata_and_prefix[0];
+        $prefix =& $metadata_and_prefix[1];
 
-        $field = $this->collection_field;
-        $col_field =& $o->$field;
+        $colfield =& $metadata->getFieldNamed($this->collection_field);
 
-        $type = $col_field->collection->getDataType();
-
-        if ($col_field->direct) {
-            $this->defineVar($this->var, $type);
+        if ($colfield->isDirect()) {
+        	return $this->evaluateDirectCollectionIn($colfield, $report, $metadata, $prefix);
         }
         else {
-            $link_obj =& new $type;
-            $table = $link_obj->getTable();
-            $target_field = $link_obj->target;
-
-            $target_obj =& new $target_field->datatype;
-            $and =& new AndExp;
-
-            $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field,'target_'),
-                                                         'exp2' => new ValueExpression("`" . $target_obj->getTable() . '`.`id`'))));
-
-            $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->path . '.' . $this->collection_field, 'owner'),
-                                                         'exp2' => new ValueExpression("`". $o->getTable() . '`.`id`'))));
-            $this->exp =& $and;
-
-            $report->defineVar($this->var, $target_field->datatype);
-
-            $this->exp->evaluateIn($report);
+        	return $this->evaluateIndirectCollectionIn($colfield, $report, $metadata, $prefix);
         }
+    }
+
+    function evaluateDirectCollectionIn(&$colfield, &$report, &$metadata, $prefix) {
+        $type = $colfield->getDataType();
+        $report->defineVar($this->var, $type);
+
+        $and =& new AndExp;
+
+        $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($this->var, $colfield->getReverseField()),
+                                                     'exp2' => new ValueExpression('`' . $metadata->getTablePrefixed($prefix) . '`.`id`'))));
+
+        $this->exp =& $and;
+
+        $this->exp->evaluateIn($report);
+    }
+
+    function evaluateIndirectCollectionIn(&$colfield, &$report, &$metadata, $prefix) {
+        $joinVar = $prefix . $colfield->getName();
+        $report->defineVar($this->var, $colfield->getDataType());
+        $report->defineVar($joinVar, $colfield->getJoinDataType());
+
+        $joinType = $colfield->getJoinType();
+
+        $join_metadata =& PersistentObjectMetaData::forClass($joinType);
+
+        $join_table = $join_metadata->getTablePrefixed($prefix);
+
+        $target_field =& $join_metadata->getField($colfield->getTargetField());
+
+
+        $and =& new AndExp;
+
+        $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($joinVar, $colfield->getReverseField()),
+                                                     'exp2' => new ValueExpression('`' . $metadata->getTablePrefixed($prefix) . '`.`id`'))));
+
+        $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($joinVar, $colfield->getTargetField()),
+                                                     'exp2' => new ObjectExpression($this->var))));
+        $this->exp =& $and;
+
+        $this->exp->evaluateIn($report);
+    }
+
+    function setTargetVar(&$report) {
+        $metadata_and_prefix = $this->registerPath($report);
+        $metadata =& $metadata_and_prefix[0];
+        $prefix =& $metadata_and_prefix[1];
+
+        $colfield =& $metadata->getFieldNamed($this->collection_field);
+
+        $report->setTargetVar($this->var, $colfield->getDataType());
     }
 
     function printString() {

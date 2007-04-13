@@ -48,6 +48,7 @@ class Report extends Collection{
       var $evaluated=false;
       var $parent = null;
       var $target_var=null;
+      var $collection=null;
 
 
 	function Report($params=array()) {
@@ -58,6 +59,10 @@ class Report extends Collection{
 
     function &getTargetVar() {
     	//print_backtrace('Returning target var: ' . print_r($this->target_var,true) . ' in ' . $this->printString());
+        if (!isset($this->target_var) and isset($this->collection)) {
+            $this->collection->setTargetVar($this);
+            $this->setPathCondition($this->collection);
+        }
         return $this->target_var;
     }
 	function evaluateAll(){
@@ -65,9 +70,9 @@ class Report extends Collection{
 		$this->selectsql();
 	}
     function &getVar($id) {
-        //print_backtrace('Looking for variable: ' . $id . ' in ' . $this->printString());
+        //echo ('Looking for variable: ' . $id . ' in ' . $this->printString() . '<br/>');
         if (isset($this->vars[$id])) {
-        	//print_backtrace('Found: ' . $id . ' in ' . $this->printString());
+        	//echo ('Found: ' . $id . ' in ' . $this->printString() . '<br/>');
             return $this->vars[$id];
         }
         else {
@@ -75,7 +80,7 @@ class Report extends Collection{
         		return $this->parent->getVar($id);
         	}
             else {
-                //print_backtrace('Variable: ' . $id  . ' not found in ' . $this->printString());
+                //echo ('Variable: ' . $id  . ' not found in ' . $this->printString() . '<br/>');
 				$n=null;
             	return $n;
             }
@@ -83,7 +88,8 @@ class Report extends Collection{
     }
 
     function setTargetVar($var, $type) {
-    	//print_backtrace('Setting target var: ' . $var . ' in ' . $this->printString());
+    	//echo ('Setting target var: ' . $var . ' in ' . $this->printString() .'<br/>');
+
         $v =& $this->primDefineVar($var, $type);
         $this->target_var =& $v;
         $this->dataType = $type;
@@ -94,11 +100,15 @@ class Report extends Collection{
             $this->setTargetVar($params['target'], $params['class']);
         } else {
             if (isset($params['class'])){
-    			$this->setDataType($params['class']);
-    		}
+                $this->setDataType($params['class']);
+            }
+            else {
+                if (isset($params['collection'])) {
+                    $this->collection =& $params['collection'];
+                }
+            }
         }
-
-		if (isset($params['fields'])){
+        if (isset($params['fields'])){
 			$this->fields =$params['fields'];
 		}
 		if (isset($params['sqls'])){
@@ -249,8 +259,8 @@ class Report extends Collection{
 	}
 	function inSQL(){
 		if (!isset($this->sqls['in_fields'])){
-			$meta =& $this->getMetaData();
 			$var =& $this->getTargetVar();
+            $meta =& $this->getMetaData();
 			$this->sqls['in_fields'] = $meta->fieldNamePrefixed('id','SELECT', $var->prefix);
 		}
 		$sql = 'SELECT '.  $this->sqls['in_fields'].' FROM ' . $this->restrictions().$this->group(). $this->order() . $this->limit();

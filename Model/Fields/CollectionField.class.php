@@ -1,170 +1,296 @@
 <?php
 class CollectionField extends DataField {
-    var $collection;
-    var $fieldname;
-    var $direct = false;
+	var $collection;
+	var $fieldname;
+	var $type;
 
-    function CollectionField($name, $dataType = array ()) {
-        if (is_array($name)) {
-            parent :: DataField($name);
-        } else
-            if (is_array($dataType)) {
-                $dataType['reverseField'] = $name;
-                parent :: DataField($dataType);
-            } else {
-                parent :: DataField(array (
-                    'reverseField' => $name,
-                    'type' => $dataType
-                ));
-            }
+	function CollectionField($name, $dataType = array ()) {
+	    if (is_array($name)) {
+			parent :: DataField($name);
+		} else {
+			if (is_array($dataType)) {
+				$dataType['reverseField'] = $name;
+				parent :: DataField($dataType);
+			} else {
+				parent :: DataField(array (
+					'reverseField' => $name,
+					'type' => $dataType
+				));
+			}
+        }
+	}
+
+    function getReverseField() {
+    	return $this->creationParams['reverseField'];
     }
 
-    function getDataType() {
-        return $this->collection->getDataType();
+    function &getCollection() {
+    	return $this->collection;
     }
-	function registerCollaborators(){
+
+	function getDataType() {
+		return $this->collection->getDataType();
+	}
+
+    function getJoinDataType() {
+        return $this->type->getJoinDataType();
+    }
+
+	function registerCollaborators() {
 		$this->collection->collect('registerPersistence()');
 	}
-    function createInstance($params) {
-        parent :: createInstance($params);
+	function createInstance($params) {
+		parent :: createInstance($params);
 
-        if (!isset($params['indirect'])) {
-            $this->direct = true;
-
-            if (!isset($params['reverseField'])) {
-                $this->collection = & new JoinedPersistentCollection($params['type'], $params['joinTable'], $params['joinField']);
-                $this->creationParams['reverseField'] = $params['joinTable'].'.'.$params['joinFieldOwn'];
-            } else {
-                $this->collection = & new PersistentCollection($params['type']);
-            }
-
-            $this->collection->setCondition($this->creationParams['reverseField'], '=', '-1');
+        if (!isset($params['direct']) or ($params['direct'] == 'yes')) {
+        	$this->type =& new DirectCollectionFieldType($this);
         }
         else {
-            #@gencheck
-
-            $link_object =& new $params['type'];
-
-            if (!is_a($link_object->target, 'IndexField')) {// or ($link_objec->owner->datatype !== $this->dataType)) {
-                print_backtrace('Link object doesnt declare a correct target field');
-            }
-
-            if (!is_a($link_object->owner, 'IndexField')) {// or ($link_objec->owner->datatype !== $this->dataType)) {
-                print_backtrace('Link object doesnt declare a correct owner field');
-            }
-            @#
-
-            $this->target_field = $params['target_field'];
-
-            $this->collection = & new PersistentCollection($params['type']);
-            $this->collection->setCondition('owner', '=',   '-1');
-
+        	$this->type =& new IndirectCollectionFieldType($this);
         }
-    }
 
-	function add(&$elem){
-		$elem->{$this->creationParams['reverseField']}->setTarget($this->owner);
-        if ($this->owner->isPersisted()){
-			$elem->registerPersistence();
-		}
-		$this->collection->add($elem);
-		$elem->incrementRefCount();
-        $this->collection->changed();
+        return $this->type->createInstance($params);
 	}
-	function remove(&$elem){
-		$elem->{$this->creationParams['reverseField']}->removeTarget();
-        $elem->decrementRefCount();
-        $this->collection->changed();
+
+	function add(& $elem) {
+	   return $this->type->add($elem);
 	}
-	function removedAsTarget(&$elem, $field){
-		if ($this->creationParams['reverseField']==$field && $elem->hasType($this->creationParams['type'])){
+
+	function remove(& $elem) {
+		return $this->type->remove($elem);
+	}
+
+	function removedAsTarget(& $elem, $field) {
+		if ($this->creationParams['reverseField'] == $field && $elem->hasType($this->creationParams['type'])) {
 			$elem->decrementRefCount();
 		}
 	}
-	function addedAsTarget(&$elem, $field){
-		if ($this->creationParams['reverseField']==$field&& $elem->hasType($this->creationParams['type'])){
+	function addedAsTarget(& $elem, $field) {
+		if ($this->creationParams['reverseField'] == $field && $elem->hasType($this->creationParams['type'])) {
 			$elem->incrementRefCount();
 		}
 	}
-	/*
-    function add(&$elem){
-        $m =& $this->createElement();
-        $f1 = $this->creationParams['joinField'];
-        $m->$f1->setTarget($elem);
-        return $m->save();
+
+	function defaultValues($params) {
+		$v = array ('fieldName' => $params['type'] . $params['reverseField']);
+
+		return array_merge($v, parent :: defaultValues(array_merge($params, $v)));
+	}
+
+	function fieldNamePrefixed($prefix) {
+
+	}
+
+	function & visit(& $obj) {
+		return $obj->visitedCollectionField($this);
+	}
+
+	function setID($id) {
+		$this->setValue($id);
+
+		$this->type->setID($id);
+
+	}
+	function SQLvalue() {
+	}
+	function updateString() {
+	}
+	function loadFrom(& $reg) {
+		/*
+        $this->collection->refresh();*/
+		return true;
+	}
+	function & elements() {
+		return $this->collection->elements();
+	}
+
+	function setValue($value) {
+		// Don't register modification
+		$this->buffered_value = $value;
+	}
+
+	function canDelete() {
+		// Note: we should be using CollectionIterator instead of Collections
+		// If we modify this collection with setCondition, then this will not work
+		// This field collection should be inmutable
+		return $this->collection->isEmpty();
+	}
+	//GARBAGE COLLECTION
+	function mapChild($function) {
+		$this->collection->for_each($function);
+	}
+
+    function isDirect() {
+    	return $this->type->isDirect();
     }
-    */
 
-    /*
-    function remove(&$elem){
-        $m =& $this->createElement();
-        $params = $this->creationParams;
-        $sql = 'DELETE FROM '.$params['joinTable']. ' WHERE '. $params['joinField'].'=' .$elem->getIdOfClass($params['joinField']).' AND ' .$params['joinFieldOwn'] .'='.$this->owner->getId();
-        $db =& DBSession::instance();
-        return $db->query($sql);
-    }*/
-
-    function &createElement(){
-        $m =& new PersistentObject();
-        $params = $this->creationParams;
-        $f1 = $params['joinFieldOwn'];
-        $f2 = $params['joinField'];
-        $m->addField(new IndexField(array('fieldName'=>$f1,'type'=>getClass($this->owner))));
-        $m->addField(new IndexField(array('fieldName'=>$f2,'type'=>$params['type'])));
-        $m->table = $params['joinTable'];
-        $m->$f1->setTarget($this->owner);
-        return $m;
+    function initialize() {
+    	$this->type->initialize();
     }
 
-    function defaultValues($params) {
-        $v = array (
-            'fieldName' => $params['type'] . $params['reverseField'],
-            'joinTable' => $params['type'],
-            'joinFieldOwn' => strtolower(getClass($this->owner)),
-            'joinField' => strtolower($params['type']));
-
-        return array_merge($v,parent :: defaultValues(array_merge($params,$v)));
+    function printString() {
+        return $this->primPrintString($this->colName . ' type:' . $this->getDataType());
     }
-    function fieldNamePrefixed($prefix) {
+}
 
+class CollectionFieldType {
+    var $collection_field;
+
+    function CollectionFieldType(&$collection_field) {
+    	$this->collection_field =& $collection_field;
     }
+}
 
-    function & visit(& $obj) {
-        return $obj->visitedCollectionField($this);
+class DirectCollectionFieldType extends CollectionFieldType {
+    var $target_type;
+    var $reverseField;
+
+    function createInstance($params) {
+    	#@gencheck
+        if (!isset($params['type'])) {
+            print_backtrace_and_exit('Specify type for ' . $this->collection_field->printString());
+        }
+
+        if (!isset ($params['reverseField'])) {
+            print_backtrace_and_error('No reverse field');
+        }//@#
     }
 
     function setID($id) {
-        $this->setValue($id);
-
-        $this->collection->setCondition($this->creationParams['reverseField'], '=', $id);
-
-    }
-    function SQLvalue() {
-    }
-    function updateString() {
-    }
-    function loadFrom(& $reg) {
-        $this->collection->refresh();
-        return true;
-    }
-    function & elements() {
-        return $this->collection->elements();
+    	$this->collection_field->collection->setCondition($this->collection_field->creationParams['reverseField'], '=', $id);
     }
 
-    function setValue($value) {
-        // Don't register modification
-        $this->buffered_value = $value;
+    function initialize() {
+    	$this->collection_field->collection = & new PersistentCollection($this->collection_field->creationParams['type']);
+        $this->collection_field->collection->setCondition($this->collection_field->creationParams['reverseField'], '=', '-1');
     }
 
-    function canDelete() {
-        // Note: we should be using CollectionIterator instead of Collections
-        // If we modify this collection with setCondition, then this will not work
-        // This field collection should be inmutable
-        return $this->collection->isEmpty();
+    function add(&$elem) {
+    	$elem-> {
+            $this->collection_field->getReverseField()}
+        ->setTarget($this->collection_field->getOwner());
+        if ($this->collection_field->owner->isPersisted()) {
+            $elem->registerPersistence();
+        }
+        $this->collection_field->collection->add($elem);
+        $elem->incrementRefCount();
     }
-	//GARBAGE COLLECTION
-    function mapChild($function){
-		$this->collection->for_each($function);
-	}
+
+    function remove($elem) {
+    	$elem-> {
+            $this->collection_field->creationParams['reverseField'] }
+        ->removeTarget();
+        $elem->decrementRefCount();
+        $this->collection_field->collection->remove($elem);
+    }
+
+    function isDirect() {
+    	return true;
+    }
+}
+
+class IndirectCollectionFieldType extends CollectionFieldType {
+    function getJoinDataType() {
+        return $this->collection_field->creationParams['joinType'];
+    }
+
+    function getReverseField() {
+    	return $this->collection_field->creationParams['reverseField'];
+    }
+
+    function getTargetField() {
+    	return $this->collection_field->creationParams['targetField'];
+    }
+
+    function createInstance($params) {
+        #@gencheck
+        if (!isset($params['targetField'])) {
+        	$this->targetField = 'target';
+        }
+        else {
+            $this->targetField = $params['targetField'];
+        }
+
+        if (!isset($params['reverseField'])) {
+        	$this->reverseField = 'owner';
+        }
+        else {
+            $this->reverseField = $params['reverseField'];
+        }
+
+        if (!isset($params['joinType'])) {
+        	print_backtrace_and_exit('Specify join type for ' . $this->collection_field->printString());
+        }//@#
+    }
+
+    function initialize() {
+        $this->collection_field->collection = & $this->buildReport();
+    }
+
+    function &buildReport() {
+    	$join_metadata =& PersistentObjectMetaData::getMetaData($this->getJoinDataType());
+        $target_field =& $join_metadata->getFieldNamed($this->getTargetField());
+
+        $owner =& $this->collection_field->getOwner();
+
+        $r =& new Report(array('class' => $target_field->getDataType()));
+
+        $r->defineVar('_joinVar', $this->getJoinDataType());
+        $r->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('_joinVar', $this->getTargetField()),
+                                                      'exp2' => new ObjectPathExpression('target'))));
+
+        $r->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('_joinVar', $this->getReverseField()),
+                                                      'exp2' => new ObjectExpression($owner))));
+        return $r;
+    }
+
+    function setID($id) {
+        // TODO: estaria bueno usar ValueHolders para las partes variantes de un report. Cada vez
+        // que un valor cambia, el report se evalua nuevamente.
+        // Por el momento, genero de vuelta el report.
+        $this->collection_field->collection = & $this->buildReport();
+    }
+
+    function add(&$elem) {
+        // Esto no anda
+        $joinObject =& new $this->getJoinDataType();
+        $joinObject->{$this->getReverseField()}->setTarget($this->collection_field->getOwner());
+        $joinObject->{$this->getTargetField()}->setTarget($elem);
+        if ($this->collection_field->owner->isPersisted()) {
+            $joinObject->registerPersistence();
+        }
+        $this->collection_field->collection->add($elem);
+    }
+
+    function remove(&$elem) {
+        $owner =& $this->collection_field->getOwner();
+
+        $r =& new Report(array('class' => $this->getJoinDataType()));
+        $r->defineVar('_joinTarget', $this->collection_field->getDataType());
+
+        $r->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('target', $this->getTargetField()),
+                                                      'exp2' => new ObjectPathExpression('_joinTarget'))));
+
+        $r->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('target', $this->getReverseField()),
+                                                      'exp2' => new ObjectExpression($owner))));
+
+        if ($r->isEmpty()) {
+        	$ex =& new PWBException(array('message' => 'Error removing object: ' . $elem->printString() . ' does not belong to ' . $this->collection_field->printString()));
+            return $ex->raise();
+        }
+        else {
+            $joinObject =& $r->first();
+            $n = null;
+            $joinObject->{$this->getReverseField()}->removeTarget();
+            $joinObject->{$this->getTargetField()}->removeTarget();
+            $joinObject->decrementRefCount();
+
+            return false;
+        }
+    }
+
+    function isDirect() {
+    	return false;
+    }
 }
 ?>

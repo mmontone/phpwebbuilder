@@ -244,8 +244,9 @@ class DescriptedObject extends PWBObject {
 			$this->indexFields[$name] = $name;
 			$this->indexFieldsLevel[$this->actClass][$name]=$name;
 		}
-		$field->owner = & $this;
-	}
+        $field->owner = & $this;
+        $field->initialize();
+    }
 	/**
 	 * Registers that the field was changed
 	 */

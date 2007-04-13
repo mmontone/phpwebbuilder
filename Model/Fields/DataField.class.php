@@ -48,6 +48,14 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 		}
 		parent::PWBObject($ps);
 	}
+
+    function &getOwner() {
+    	return $this->owner;
+    }
+
+    function getName() {
+    	return $this->varName;
+    }
 	/**
 	 * Returns if the field is an index field
 	 */
@@ -252,6 +260,11 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	function mapChild($method){}
 	function removedAsTarget(&$elem, $field){}
 	function addedAsTarget(&$elem, $field){}
+
+    // Initialization ocurrs after the field has been added to an object
+    function initialize() {
+
+    }
 }
 
 ?>

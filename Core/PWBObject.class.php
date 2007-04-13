@@ -286,5 +286,9 @@ class PWBObject
     function debugPrintString() {
     	return $this->primPrintString();
     }
+
+    function getType() {
+    	return getClass($this);
+    }
 }
 ?>

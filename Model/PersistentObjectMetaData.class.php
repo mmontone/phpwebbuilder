@@ -3,6 +3,7 @@
 class PersistentObjectMetaData {
 	var $className;
 	var $fields = array();
+    var $class;
 
 	function PersistentObjectMetaData($class){
 		$this->className = $class;
@@ -11,12 +12,22 @@ class PersistentObjectMetaData {
 	function createObject($create=true){
 		$class = $this->className;
 		$meta =& new $class(array(), false, true);
-		$this->class =& $meta;
-    	$meta->metadata =& $this;
+        $this->class =& $meta;
+        $meta->metadata =& $this;
 		if ($create) $this->class->basicInitialize();
 	}
+
+    function &getFieldNamed($name) {
+    	foreach (array_keys($this->fields) as $class) {
+            if (isset($this->fields[$class][$name])) {
+                return $this->fields[$class][$name];
+            }
+        }
+
+        print_backtrace_and_exit('Field not found: ' . $name . ' in ' . $this->printString());
+    }
+
 	function disposeObject(){
-		//unset($this->fields);
 		unset($this->class);
 	}
 	function initialize(){
