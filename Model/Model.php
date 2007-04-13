@@ -24,7 +24,6 @@ compile_once (dirname(__FILE__).'/Reports/OQLCompiler.class.php');
 compile_once (dirname(__FILE__).'/Reports/Condition.class.php');
 compile_once (dirname(__FILE__).'/Reports/CompositeReport.class.php');
 compile_once (dirname(__FILE__).'/Reports/PersistentCollection.class.php');
-compile_once (dirname(__FILE__).'/Reports/JoinedPersistentCollection.class.php');
 compile_once (dirname(__FILE__).'/PersistentObject.class.php');
 compile_once (dirname(__FILE__).'/PersistentObjectMetaData.class.php');
 compile_once (dirname(__FILE__).'/Validation/Validation.class.php');
