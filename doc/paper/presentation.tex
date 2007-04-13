@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt,acm]{article}
+\documentclass[a4paper,10pt]{article}
 
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
@@ -30,6 +30,44 @@ Incluye características interesantes como Templates declarativos, desarrollo po
 engines de rendereo, Compilación y Macros, Mixins y varias características más.
 
 }
+\section{Introducción}
+
+A grandes rasgos, una aplicación se compone de 4 partes:
+\begin{itemize}
+\item El ``Modelo'', o sea los datos que describen y componen la aplicación,
+\item El ``Controlador'', o sea los botones, pantallas y demás elementos con los que el usuario interactúa, y
+\item La ``Vista'', o sea la presentación de los datos y botones que el usuario ve.
+\item La ``Programación en lo pequeño'', que sirve para unir estos elementos y realmente ``programar''.
+\end{itemize}
+
+Los frameworks actuales presentan algunas simplificaciones para las primeras 3 partes, y por lo general se
+depende del lenguaje plataforma para la 4ta.
+
+PWB se apoya en PHP para parte de la tarea, y además presenta al programador (o grupo de programadores) con
+herramientas para solucionar o simplificar las tareas en las otras areas:
+
+\begin{itemize}
+\item Para el modelo, presenta un mapeo automático de base de datos [\ref{sub-pers}], autogeneración del esquema de base de datos [\ref{sub-adapt}],
+y un lenguaje de consultas complejas [\ref{sub-oql}] teniendo en cuenta la herencia del modelo de clases, dejando al programador
+con la preocupación básica y específica del modelo solamente (diseñarlo, e implementar los métodos necesarios).
+
+\item Para el controlador, utiliza un sistema de componentes [\ref{sub-comp}], que permiten un alto reuso entre
+diferentes proyectos, y widgets [\ref{sub-widget}], que simplifican y encapsulan la interacción con el usuario.
+Además, el sistema de múltiple dispatching [\ref{sub-dispatch}] y context dispatching permiten una programación
+incremental del sistema manteniendo la estructura inicial.
+
+\item Para la vista, el sistema de templates [\ref{sub-templates}] basados en XML permiten una adaptación directa del
+trabajo de un diseñador gráfico [\ref{sub-templates-adapt}]. El sistema se encarga automáticamente luego de presentar la información
+utilizando AJAX de manera transparente, u otra forma de rendereo [\ref{sub-render}] (configurable).
+
+\item Por último, para PITS, PWB presenta una serie de características importadas de otros lenguajes que facilitan
+la programación, como ser Eventos [\ref{sub-events}], Weak References [\ref{sub-weak}], creación de DSLs [\ref{sub-phpcc}],
+Macros [\ref{sub-macros}], Mixins[\ref{sub-mixins}].
+\end{itemize}
+
+\section{Blog}
+Para ejemplificar, veremos la creación de un blog
+
 
 \section{Nombre}
 
