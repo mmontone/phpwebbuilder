@@ -8,6 +8,8 @@ compile_once (dirname(__FILE__).'/SessionHandler.class.php');
 compile_once (dirname(__FILE__).'/Session.class.php');
 compile_once (dirname(__FILE__).'/DBSessionHandler.class.php');
 compile_once (dirname(__FILE__).'/MMSessionHandler.class.php');
+compile_once (dirname(__FILE__).'/APCSessionHandler.class.php');
+compile_once (dirname(__FILE__).'/EAcceleratorSessionHandler.class.php');
 //compile_//once (dirname(__FILE__).'/SessionStart.php');
 
 ?>
