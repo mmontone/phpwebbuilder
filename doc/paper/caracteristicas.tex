@@ -2,32 +2,42 @@
 
 \subsection{Persistencia y metadata}
 \label{sub-pers}
+
+Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User}.
+
+\sourcecode{src/Post.class.php}
+
 La persistencia del modelo se hace mediante la subclasificación de una clase especial (PersistentObject).
-Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las
-operaciones de guardado y borrado.
+Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
 Luego, para la recuperacion de objetos, existe la clase Report, que permite obtener los objetos de una
-coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los
-objetos, y utilizan herencia para las variables de instancia.
+coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
 \subsection{OQL}
 \label{sub-oql}
-Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje OQL para consulta de
-los objetos, que construye un reporte.
+Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje OQL para consulta de los objetos, que construye un reporte.
 
-El lenguaje está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope.
-Además, puede hacer consultas utilizando la identidad de los objetos.
+Agregamos en la clase Post:
+
+\begin{verbatim}
+
+class Post extends Component {
+  ...
+  function ConTag($tag){
+    return #@select p:Post where exists (p.tags as tag where tag.nombre=$tag)@#;
+  }
+}
+
+\end{verbatim}
+
+El lenguaje está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Además, puede hacer consultas utilizando la identidad de los objetos.
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
-En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemos los tipos de las variables
-de cada clase, y las relaciones de subclasificación.
+En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemos los tipos de las variables de cada clase, y las relaciones de subclasificación.
 
-A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional.
-PWB genera el esquema automáticamente liberando de esta carga al programador.
+A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador.
 
-Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones
-necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita
-adaptar la base de datos a los nuevos cambios. Esta funcionalidad es provista por una herramienta que veremos más adelante.
+Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita adaptar la base de datos a los nuevos cambios. Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
 \section{Características del Controller}
 \subsection{Componentes}
@@ -36,31 +46,74 @@ adaptar la base de datos a los nuevos cambios. Esta funcionalidad es provista po
 Las aplicaciones se construyen mediante ensamblado de componentes. Estos componentes son reutilizables,
 ya que pueden ser parametrizados, pueden levantar eventos, y pueden contener otros componentes.
 
-Un componente puede llamar a otro para realizar una tarea (por ejemplo, un componente Welcome, ante un click
-del usuario en un botón "Ingresar", puede llamar al componente Login), y esperar la respuesta de este
-componente para continuar su ejecución (cuando el componente devuelve el usuario validado).
+\begin{verbatim}
+
+class BlogComponent extends Component{
+  function initialize(){
+      $this->addComponent(new PostList(#@select Post@#));
+  }
+}
+\end{verbatim}
+Un componente, dentro de su método initialize, agrega sus sub-componentes.
+
+\begin{verbatim}
+class PostList extends CollectionNavigator{
+  function addLine($post){
+    return new PostItem($post);
+  }
+  function showTag($params){
+    $this->call(new PostList(Post::ConTag(params['tag']));
+  }
+}
+
+\end{verbatim}
+
+El componente PostList hereda de la clase CollectionNavigator, el cual es un Component que presenta links a la navegación de los elementos (mostrandolos paginados), y tiene un método addLine, para mostrar cada elemento.
+
+En el método showTag del PostList, el componente llama (call) a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
 
 \subsection{Widgets}
 \label{sub-widget}
 
-Existen unos componentes especiales, llamados Widgets, que permiten interactuar con el usuario (por ejemplo
-con el componente Input, que permite recibir un string del usuario, el Text, que le presenta un texto, o el
-CheckBox, que presenta un checkbox).
+Existen unos componentes especiales, llamados Widgets, que permiten interactuar con el usuario (por ejemplo con el componente Input, que permite recibir un string del usuario, el Text, que le presenta un texto, o el CheckBox, que presenta un checkbox).
 
-\subsection{Multiple Dispatching y Context Dispatching}
-\label{sub-dispatch}
-Otra característica llamativa, es el múltiple dispatching de funciones.
-Dado que muchas veces el método a utilizar depende de más de una clase, las funciones de múltiple dispatching nos ayudan a resolver este problema.
+\begin{verbatim}
 
-Primero se define la función, con los parametros a utilizar tipados, y luego se hace el llamado, que utiliza los tipos de los parámetros para resolver el método a utilizar
+class PostItem extends Component{
+  function PostItem($post){
+    $this->post=&$post;
+    parent::Component();
+  }
+  function initialize(){
+    $this->addComponent(new Text($this->post->titulo), 'titulo');
+    $this->addComponent(new Text($this->post->texto), 'texto');
+    $this->addComponent(new Component, 'tags');
+    foreach($this->post->tags->collection->elements() as $tag){
+      $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
+        'prodeedFunction'=>new FunctionObject($this->getParent(), 'showTag', array('tag'=>$tag))));
+    }
+  }
+}
 
-Además, las funciones de múltiple dispatching pueden ser utilizadas pasando el contexto (la rama de componentes dentro de la que se hace el llamado) de aplicación, para de esta manera poder responder de manera diferente a un evento, dependiendo del contexto.
+\end{verbatim}
 
-Por ejemplo, podemos tener un componente TaskList que muestre las tareas realizada en un día. Para cada tarea muestra la descripción, la hora, y el nombre de quién la completo en un componente TaskList. Si luego quisieramos ver las tareas realizadas por uno de los usuarios, nos interesaría ver la hora, la descripción, pero no el nombre del usuario, porque ya se sabe por el contexto. Podríamos usar en ese caso un componente UserTaskShow.
+Un \emph{Widget} especial, es el CommandLink, que permite al usuario ejecutar una acción en la aplicación (en este caso, ejecutar 'showTag' en el padre del PostItem (o sea, el PostList)).
 
-Para implementar esa diferencia, una forma común sería tener 2 componentes, TaskList y UserTaskList. Esto duplica código, y además es difícil de implementar cuando el contexto de los componentes es de varios componentes (ya que tendríamos que hacer un nuevo componente para cada elemento en la rama de componentes hasta llegar al que realmente implementa la diferencia).
-
-Entonces, podemos utilizar el Context Dispatching para elegir un componente UserTaskShow, en lugar del otro, el TaskShow, independientemente del nivel de anidamiento del componente que hace el dispatch y el componente que provee el contexto.
+%
+% \subsection{Multiple Dispatching y Context Dispatching}
+% \label{sub-dispatch}
+% Otra característica llamativa, es el múltiple dispatching de funciones.
+% Dado que muchas veces el método a utilizar depende de más de una clase, las funciones de múltiple dispatching nos ayudan a resolver este problema.
+%
+% Primero se define la función, con los parametros a utilizar tipados, y luego se hace el llamado, que utiliza los tipos de los parámetros para resolver el método a utilizar
+%
+% Además, las funciones de múltiple dispatching pueden ser utilizadas pasando el contexto (la rama de componentes dentro de la que se hace el llamado) de aplicación, para de esta manera poder responder de manera diferente a un evento, dependiendo del contexto.
+%
+% Por ejemplo, podemos tener un componente TaskList que muestre las tareas realizada en un día. Para cada tarea muestra la descripción, la hora, y el nombre de quién la completo en un componente TaskList. Si luego quisieramos ver las tareas realizadas por uno de los usuarios, nos interesaría ver la hora, la descripción, pero no el nombre del usuario, porque ya se sabe por el contexto. Podríamos usar en ese caso un componente UserTaskShow.
+%
+% Para implementar esa diferencia, una forma común sería tener 2 componentes, TaskList y UserTaskList. Esto duplica código, y además es difícil de implementar cuando el contexto de los componentes es de varios componentes (ya que tendríamos que hacer un nuevo componente para cada elemento en la rama de componentes hasta llegar al que realmente implementa la diferencia).
+%
+% Entonces, podemos utilizar el Context Dispatching para elegir un componente UserTaskShow, en lugar del otro, el TaskShow, independientemente del nivel de anidamiento del componente que hace el dispatch y el componente que provee el contexto.
 
 
 \section{Características de la Vista}
@@ -68,19 +121,29 @@ Entonces, podemos utilizar el Context Dispatching para elegir un componente User
 \subsection{Templates}
 \label{sub-templates}
 Para la generación de interfaz, utilizamos la técnica conocida de los templates.
+
+\begin{verbatim}
+
+<templates>
+  <template class="PostItem">
+    <h1><container id="titulo"/></h1>
+    <p><container id="texto"/></p>
+    Tags: <div id="tags"><container class="CommandLink"/> </div>
+    <hr/>
+  </template>
+</templates>
+
+\end{verbatim}
+
 Por comodidad, agregamos las siguientes características:
 
-- Los templates se "heredan", así que un Componente subclase de otro que tiene template, hereda de este el
-template (siempre y cuando no tenga uno más específico). También son heredables por Mixins.
+- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por Mixins.
 
-- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen engines como el Smarty). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los
-templates generen un XML bien formado.
+- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen engines como el Smarty). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
 
-- Los templates están basados en XML, con un par de tags extras (<template> y <container>), así que se puede
-generar cualquier XML (como XHTML) para mostrar los componentes.
+- Los templates están basados en XML, con un par de tags extras (<template> y <container>), así que se puede generar cualquier XML (como XHTML) para mostrar los componentes.
 
-Además, cada componente tiene un template default, por lo que no se necesita crearle uno para tener la aplicación
-funcionando.
+Además, cada componente tiene un template default, por lo que no se necesita crearle uno para tener la aplicación funcionando (en nuestro caso, no lo hicimos para el \verb"BlogComponent" ni el \verb"PostList").
 
 \subsubsection{Adaptación de Diseños existentes}
 \label{sub-templates-adapt}
@@ -88,55 +151,72 @@ Debido a que los templates son XML, se puede tomar una página en HTML y agregar
 
 \subsection{Renderings}
 \label{sub-render}
-El rendereo de la aplicación se hace 100\% mediante PWB, y además todo lo generado es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
+El rendereo de la aplicación se hace 100\% mediante \PWB, y además todo lo generado es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
 
 La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde dice page\_renderer=StandardPageRenderer por page\_renderer=AjaxPageRenderer, o incluso por page\_renderer=CometPageRenderer o page\_renderer=XULPageRenderer
 
 \subsubsection{Comet}
 
-Comet es una tecnología similar a AJAX, que se caracteriza por mantener una conexión abierta con el servidor
-en todo momento. PWB aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la
-carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
+Comet es una tecnología similar a AJAX, que se caracteriza por mantener una conexión abierta con el servidor en todo momento. \PWB \ aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
 
-Mediante pasaje de mensajes de otro script, que envía los datos a la aplicación PWB ejecutándose, podemos
-mantener la sesión en memoria, mejorando los tiempos de respuesta, e incluso modificando la aplicación del
-usuario no solamente cuando éste genera un evento (un click del mouse), sino también cuando, por ejemplo, la base
-de datos es modificada.
+Mediante pasaje de mensajes de otro script, que envía los datos a la aplicación \PWB \ ejecutándose, podemos mantener la sesión en memoria, mejorando los tiempos de respuesta, e incluso modificando la aplicación del usuario no solamente cuando éste genera un evento (un click del mouse), sino también cuando, por ejemplo, la base de datos es modificada.
 
 \subsubsection{XUL}
 
-El proyecto Mozilla incluye un subproyecto llamado XUL. XUL es un lenguaje de definición de interfaces desktop
-en XML. Dado que la salida de la aplicación debe ser un XML bien formado, y que la interacción usuario-interfaz
-se hace mediante javascript, PWB soporta un XUL Page Renderer, que renderea aplicaciones en XUL. La
-diferencia para el usuario, es en los tags de los templates, ya que debe utilizar elementos XUL en lugar de
-HTML. Dado que los templates de HTML llevan extensión .xml, y los de xul .xul, la misma aplicación, con tener
-templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
+El proyecto Mozilla incluye un subproyecto llamado XUL. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado, y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer, que renderea aplicaciones en XUL. La diferencia para el usuario, es en los tags de los templates, ya que debe utilizar elementos XUL en lugar de HTML. Dado que los templates de HTML llevan extensión .xml, y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
 
-\section{Características del PITS}
+\section{Características de \PITS}
 
 \subsection{BugNotifier}
 
-PWB incluye un BugNotifier, que automatiza el manejo de errores "no manejados", permitiendo al usuario que
-encuentra una condición de error dentro de la aplicación, enviar el reporte de error a un mail configurado a
-tal fin, y también reiniciar la aplicación para continuar utilizándola.
-%PITS
+\PWB \ incluye un BugNotifier, que automatiza el manejo de errores "no manejados", permitiendo al usuario que encuentra una condición de error dentro de la aplicación, enviar el reporte de error a un mail configurado a tal fin, y también reiniciar la aplicación para continuar utilizándola.
+
+En caso de que en la aplicación de Blog se encuentre un error, en lugar de presentarle al error, se le presentará con esta imagen.
 
 \subsection{Eventos}
 \label{sub-events}
-PWB implementa un mecanismo simple de eventos. Todo objeto PWBObject implementa los mensajes addInterestIn, que permite a otro objeto escuchar un evento, y triggerEvent, que acciona un evento.
+\PWB \ implementa un mecanismo simple de eventos. Todo objeto PWBObject implementa los mensajes addInterestIn, que permite a otro objeto escuchar un evento, y triggerEvent, que acciona un evento.
 
-Este mecanismo está basado en una implementación de Weak References [\ref{sub-weak}] para evitar lagunas de memoria.
+En nuestra implementación, el PostItem tiene un commandlink que le envía a su componente padre el mensaje 'showTag'. Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda ese mensaje.
+
+Utilizando eventos, podríamos implementar:
+
+\begin{verbatim}
+class PostList extends CollectionNavigator{
+  function addLine($post){
+    $pi = new PostItem($post);
+    $pi->addInterestIn('tagSelected', new FunctionObject($this, 'showTag'));
+    return $pi;
+  }
+  ...
+}
+
+class PostItem extends Component{
+  function initialize(){
+    ...
+    foreach($this->post->tags->collection->elements() as $tag){
+      $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
+        'prodeedFunction'=>new FunctionObject($this, 'showTag', array('tag'=>$tag))));
+    }
+  }
+  function showTag($params){
+    $this->triggerEvent('tagSelected', $params);
+  }
+}
+
+\end{verbatim}
 
 Los widgets además accionan eventos en cada acción del usuario, y los objetos del modelo cuando son modificados.
 
+%Por ejemplo, podríamos mostrar y ocultar el texto del post cuando se hace click en el título.
+
 \subsection{Weak References}
 \label{sub-weak}
-Cuando un objeto \$x queda escuchando un evento de un PWBObject \$y, este último necesita guardar una referencia al primero. En caso de que, por el flujo de la
-aplicación, \$x deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \$y lo conserva referenciado, aunque no lo
-necesite realmente.
+Cuando un objeto \verb"$x" queda escuchando un evento de un PWBObject \verb"$y", este último necesita guardar una referencia al primero. En caso de que, por el flujo de la aplicación, \verb'$x' deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \verb'$y' lo conserva referenciado, aunque no lo necesite realmente.
 
-Por esto implementamos un mecanismo de Weak References, en donde \$y se queda con una referencia de \$x, pero de la cual el garbage collector no se entera,
-permitiendo borrar a \$x en caso de que sea necesario.
+Por esto implementamos un mecanismo de Weak References, en donde \verb"$y" se queda con una referencia de \verb"$x", pero de la cual el garbage collector no se entera, permitiendo borrar a \verb"$x" en caso de que sea necesario.
+ %$
+
 
 
 \subsection{PHPCC}
@@ -146,31 +226,26 @@ De esta manera ahora también se puede extender el framework con múltiples DSLs
 
 \subsection{Macros}
 \label{sub-macros}
-Otra funcionalidad interesante, es la utilización de macros. Como se ve en lenguajes como C, las macros pueden \
-llegar a tener un rol muy importante en un proyecto, ya que son otra forma de modularización.
+Otra funcionalidad interesante, es la utilización de macros. Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto, ya que son otra forma de modularización.
 
-Dentro de PWB mismo, tenemos varios tipos de macros:
+Dentro de \PWB \ mismo, tenemos varios tipos de macros:
 
 Las macros, lam, y select, que permiten hacer un pre-procesamiento del código, generando código PHP con
 mayor funcionalidad:
-\verb"#@ select u:User where u.name='pepito'@#"
+\verb"#@select p:Post where exists (p.tags as tag where tag.nombre=$tag)@#"%$
 genera un objeto reporte completo, con todos los usuarios llamados pepito, en código PHP.
 
-Y por otro lado, las macros para validación de código, que hacen tests, útiles para el momento del desarrollo
-pero consumidoras de tiempo valioso en tiempo de deployment.
+Y por otro lado, las macros para validación de código, que hacen tests, útiles para el momento del desarrollo pero consumidoras de tiempo valioso en tiempo de deployment.
 
 Estas son typecheck, y check:
 \verb"#@typecheck $c: Component, $u: User@#"
-que chequea que las variables \verb"$c" y \verb"$u" sean un Component y un User, respectivamente. En las opciones de
-configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
+que chequea que las variables \verb"$c" y \verb"$u" sean un Component y un User, respectivamente. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
 
 \subsection{Mixins}
 \label{sub-mixins}
 Otra funcionalidad interesante es una implementación limitada de mixins (mediante macros).
 
-Un mixin es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos, sin que estas
-clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple
-herencia.
+Un mixin es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos, sin que estas clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple herencia.
 
 \begin{verbatim}
 #@mixin ValueHolder {
@@ -194,9 +269,8 @@ class Contador{
 
 Para el desarrollo colaborativo, es útil mantener múltiples configuraciones. O para trabajar en distintos clientes. O para hacer testing y deployment.
 
-Por todo esto, PWB mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad
-específica.
+Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad específica.
 
 \subsection{Compilación}
 
-El uso de macros, y la inclusión de los muchos archivos de PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso desarrollamos un método de compilar los archivos PHP (para que las macros ya estén procesadas), y además, habilitamos varias formas de compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.
+El uso de macros, y la inclusión de los muchos archivos de \PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso desarrollamos un método de compilar los archivos PHP (para que las macros ya estén procesadas), y además, habilitamos varias formas de compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.
