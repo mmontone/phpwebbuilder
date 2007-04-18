@@ -5,18 +5,34 @@
 
 Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User}.
 
-\sourcecode{src/Post.class.php}
+\begin{verbatim}
+class Post extends PersistentObject {
+  function initialize(){
+    $this->addField(new TextField(array('fieldName'=>'titulo')));
+    $this->addField(new TextArea(array('fieldName'=>'texto')));
+    $this->addField(new CollectionField(
+      array(
+        'fieldName'=>'tags',
+        'direct'=>false,
+        'JoinType'=>PostTag,
+        'targetField'=>'tag',
+        'reverseField'=>'post')
+       )
+    );
+    $this->addField(new IndexField(array('fieldName'=>'author', 'type'=>User)));
+  }
+}
+\end{verbatim}
 
-La persistencia del modelo se hace mediante la subclasificación de una clase especial (PersistentObject).
+La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject".
 Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
-Luego, para la recuperacion de objetos, existe la clase Report, que permite obtener los objetos de una
-coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
+Luego, para la recuperacion de objetos, existe la clase \verb"Report", que permite obtener los objetos de una coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
 \subsection{OQL}
 \label{sub-oql}
 Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje OQL para consulta de los objetos, que construye un reporte.
 
-Agregamos en la clase Post:
+Agregamos en la clase \verb"Post":
 
 \begin{verbatim}
 
@@ -37,7 +53,8 @@ En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemo
 
 A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador.
 
-Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita adaptar la base de datos a los nuevos cambios. Esta funcionalidad es provista por una herramienta que veremos más adelante.
+Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita adaptar la base de datos a los nuevos cambios.
+%Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
 \section{Características del Controller}
 \subsection{Componentes}
@@ -68,14 +85,14 @@ class PostList extends CollectionNavigator{
 
 \end{verbatim}
 
-El componente PostList hereda de la clase CollectionNavigator, el cual es un Component que presenta links a la navegación de los elementos (mostrandolos paginados), y tiene un método addLine, para mostrar cada elemento.
+El componente \verb"PostList" hereda de la clase \verb"CollectionNavigator", el cual es un \verb"Component" que presenta links a la navegación de los elementos (mostrandolos paginados), y tiene un método \verb"addLine", para mostrar cada elemento.
 
-En el método showTag del PostList, el componente llama (call) a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
+En el método \verb"showTag" del \verb"PostList", el componente llama (\verb"call") a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
 
 \subsection{Widgets}
 \label{sub-widget}
 
-Existen unos componentes especiales, llamados Widgets, que permiten interactuar con el usuario (por ejemplo con el componente Input, que permite recibir un string del usuario, el Text, que le presenta un texto, o el CheckBox, que presenta un checkbox).
+Existen unos componentes especiales, llamados \verb"Widgets", que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox).
 
 \begin{verbatim}
 
@@ -90,14 +107,19 @@ class PostItem extends Component{
     $this->addComponent(new Component, 'tags');
     foreach($this->post->tags->collection->elements() as $tag){
       $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
-        'prodeedFunction'=>new FunctionObject($this->getParent(), 'showTag', array('tag'=>$tag))));
+        'prodeedFunction'=>
+          new FunctionObject(
+            $this->getParent(), 'showTag', array('tag'=>$tag)
+          )
+        )
+      );
     }
   }
 }
 
 \end{verbatim}
 
-Un \emph{Widget} especial, es el CommandLink, que permite al usuario ejecutar una acción en la aplicación (en este caso, ejecutar 'showTag' en el padre del PostItem (o sea, el PostList)).
+Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejecutar una acción en la aplicación (en este caso, ejecutar \verb"showTag" en el padre del \verb"PostItem" (o sea, el \verb"PostList")).
 
 %
 % \subsection{Multiple Dispatching y Context Dispatching}
@@ -137,25 +159,27 @@ Para la generación de interfaz, utilizamos la técnica conocida de los template
 
 Por comodidad, agregamos las siguientes características:
 
-- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por Mixins.
+- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins".
 
 - Los templates son declarativos: No incluyen comandos ni iteradores (como tienen engines como el Smarty). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
 
-- Los templates están basados en XML, con un par de tags extras (<template> y <container>), así que se puede generar cualquier XML (como XHTML) para mostrar los componentes.
+- Los templates están basados en XML, con un par de tags extras (\verb"<template>" y \verb"<container>"), así que se puede generar cualquier XML (como XHTML) para mostrar los componentes.
 
 Además, cada componente tiene un template default, por lo que no se necesita crearle uno para tener la aplicación funcionando (en nuestro caso, no lo hicimos para el \verb"BlogComponent" ni el \verb"PostList").
 
 \subsubsection{Adaptación de Diseños existentes}
 \label{sub-templates-adapt}
-Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags <template> y <container> donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando clases bien acomodadas, una aplicación queda con un diseño completo en solo 3 o 4 templates.
+Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando clases bien acomodadas, una aplicación queda con un diseño completo en solo 3 o 4 templates.
 
 \subsection{Renderings}
 \label{sub-render}
-El rendereo de la aplicación se hace 100\% mediante \PWB, y además todo lo generado es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
+El rendereo de la aplicación se hace 100\% mediante \PWB, de modo que no necesita nigún trabajo especial por el programador.
 
-La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde dice page\_renderer=StandardPageRenderer por page\_renderer=AjaxPageRenderer, o incluso por page\_renderer=CometPageRenderer o page\_renderer=XULPageRenderer
+La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde dice \verb"page_renderer=StandardPageRenderer" por \verb"page_renderer=AjaxPageRenderer", o incluso por \verb"page_renderer=CometPageRenderer" o \verb"page_renderer=XULPageRenderer".
 
-\subsubsection{Comet}
+\subsubsection{AJAX y Comet}
+
+Todo lo generado es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
 
 Comet es una tecnología similar a AJAX, que se caracteriza por mantener una conexión abierta con el servidor en todo momento. \PWB \ aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
 
@@ -169,15 +193,15 @@ El proyecto Mozilla incluye un subproyecto llamado XUL. XUL es un lenguaje de de
 
 \subsection{BugNotifier}
 
-\PWB \ incluye un BugNotifier, que automatiza el manejo de errores "no manejados", permitiendo al usuario que encuentra una condición de error dentro de la aplicación, enviar el reporte de error a un mail configurado a tal fin, y también reiniciar la aplicación para continuar utilizándola.
+\PWB \ incluye un \verb"BugNotifier", que automatiza el manejo de errores ``no manejados'' , permitiendo al usuario que encuentra una condición de error dentro de la aplicación, enviar el reporte de error a un mail configurado a tal fin, y también reiniciar la aplicación para continuar utilizándola.
 
-En caso de que en la aplicación de Blog se encuentre un error, en lugar de presentarle al error, se le presentará con esta imagen.
+%En caso de que en la aplicación de Blog se encuentre un error, en lugar de presentarle al error, se le presentará con esta imagen.
 
 \subsection{Eventos}
 \label{sub-events}
-\PWB \ implementa un mecanismo simple de eventos. Todo objeto PWBObject implementa los mensajes addInterestIn, que permite a otro objeto escuchar un evento, y triggerEvent, que acciona un evento.
+\PWB \ implementa un mecanismo simple de eventos. Todo objeto \verb"PWBObject" implementa los mensajes \verb"addInterestIn", que permite a otro objeto escuchar un evento, y \verb"triggerEvent", que acciona un evento.
 
-En nuestra implementación, el PostItem tiene un commandlink que le envía a su componente padre el mensaje 'showTag'. Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda ese mensaje.
+En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag". Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda ese mensaje.
 
 Utilizando eventos, podríamos implementar:
 
@@ -206,23 +230,24 @@ class PostItem extends Component{
 
 \end{verbatim}
 
-Los widgets además accionan eventos en cada acción del usuario, y los objetos del modelo cuando son modificados.
-
+Existen objetos que accionan algunos eventos por default:
+\begin{itemize}
+\item Los \verb"Widgets", en cada acción del usuario (cuando hace click, cuando se modifica un elemento).
+\item Los objetos del modelo (\verb"PersistentObject"), cuando son modificados.
+\end{itemize}
 %Por ejemplo, podríamos mostrar y ocultar el texto del post cuando se hace click en el título.
 
 \subsection{Weak References}
 \label{sub-weak}
-Cuando un objeto \verb"$x" queda escuchando un evento de un PWBObject \verb"$y", este último necesita guardar una referencia al primero. En caso de que, por el flujo de la aplicación, \verb'$x' deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \verb'$y' lo conserva referenciado, aunque no lo necesite realmente.
+Cuando un objeto \verb"$x" queda escuchando un evento de un \verb"PWBObject" \verb"$y", este último necesita guardar una referencia al primero. En caso de que, por el flujo de la aplicación, \verb'$x' deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \verb'$y' lo conserva referenciado, aunque no lo necesite realmente.
 
 Por esto implementamos un mecanismo de Weak References, en donde \verb"$y" se queda con una referencia de \verb"$x", pero de la cual el garbage collector no se entera, permitiendo borrar a \verb"$x" en caso de que sea necesario.
  %$
 
-
-
 \subsection{PHPCC}
 \label{sub-phpcc}
 Para crear el lenguaje OQL, debimos crear un Compiler Compiler para PHP (otros conocidos son Bison, yacc).
-De esta manera ahora también se puede extender el framework con múltiples DSLs.
+De esta manera ahora también se puede extender el framework con múltiples DSLs (Domain-Specific Languages - Lenguages específicos de Dominio).
 
 \subsection{Macros}
 \label{sub-macros}
@@ -230,16 +255,33 @@ Otra funcionalidad interesante, es la utilización de macros. Como se ve en leng
 
 Dentro de \PWB \ mismo, tenemos varios tipos de macros:
 
-Las macros, lam, y select, que permiten hacer un pre-procesamiento del código, generando código PHP con
-mayor funcionalidad:
-\verb"#@select p:Post where exists (p.tags as tag where tag.nombre=$tag)@#"%$
-genera un objeto reporte completo, con todos los usuarios llamados pepito, en código PHP.
+Las macros \verb"lam", y \verb"select", que permiten hacer un pre-procesamiento del código, generando código PHP con mayor funcionalidad:
+
+\verb"#@select p:Post where exists (p.tags as tag where tag.nombre='Software Libre')@#"%$
+
+genera un objeto reporte completo, con todos los posts con nombre \verb"'Software Libre'", en código PHP.
 
 Y por otro lado, las macros para validación de código, que hacen tests, útiles para el momento del desarrollo pero consumidoras de tiempo valioso en tiempo de deployment.
 
 Estas son typecheck, y check:
-\verb"#@typecheck $c: Component, $u: User@#"
-que chequea que las variables \verb"$c" y \verb"$u" sean un Component y un User, respectivamente. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
+\verb"#@typecheck $p: Post@#" %$
+que chequea que la variable \verb"$c" y %$
+ sea un Post. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
+\begin{verbatim}
+
+class PostItem extends Component{
+  function PostItem($post){
+	"#@typecheck $post: Post@#"
+    $this->post=&$post;
+    parent::Component();
+  }
+  ...
+}
+\end{verbatim}
+
+Esto detecta problemas durante el desarrollo, al intentar inicializar erróneamente un \verb"PostItem". Cuando la aplicación se instala en el cliente, se elimina el chequeo para evitar el overhead.
+
+Además, un programador puede agregar sus propias macros, declarando una función \verb"mi_macro", y luego llamandola con \verb"#@mi_macro los parametros que se requieran@#".
 
 \subsection{Mixins}
 \label{sub-mixins}
@@ -264,12 +306,25 @@ class Contador{
     $this->setValue($this->getValue()+1);
   }
 }
+
+class Direccion extends PersistentObject{
+  #@use_mixin ValueHolder@#
+  function initialize(){
+    $this->addField(new TextField(array('fieldName'=>'value')));
+  }
+}
+
 \end{verbatim}
+
+De esta manera, podemos implementar una sola vez el comportamiento de \verb'ValueHolder', y utilizarlo en 2 clases distintas (\verb"Direccion" y \verb"Contador"), sin necesidad de relacionarlos por herencia.
+
+Además, agregamos a los mixins en el chequeo de tipos. Si tenemos un \\ chequeo \verb"#@typecheck $v: ValueHolder@#", tanto un objeto de clase \verb"Direccion" como uno de clase \verb"Contador" cumplen con la condición.
+
 \subsection{Múltiples Configuraciones}
 
 Para el desarrollo colaborativo, es útil mantener múltiples configuraciones. O para trabajar en distintos clientes. O para hacer testing y deployment.
 
-Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad específica.
+Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad específica. En un archivo de configuración global (config.php) se guardan las variables específicas de cada configuración, además de las variables comunes a todas. Luego, en otro archivo (serverconfig) se pone la configuración que se va a utilizar.
 
 \subsection{Compilación}
 
