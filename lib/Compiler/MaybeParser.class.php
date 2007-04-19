@@ -1,6 +1,7 @@
 <?php
 
 class MaybeParser extends Parser {
+	var $errorBuffer;
 	function MaybeParser(& $parser) {
 		parent :: Parser();
 		$this->parser = & $parser;
@@ -12,7 +13,7 @@ class MaybeParser extends Parser {
 	function parse($tks) {
 		$res = $this->parser->parse($tks);
 		if ($res[0]->failed()) {
-			parent::setError($this->buffer);
+			parent::setError($this->errorBuffer);
 			return array (
 				ParseResult::lambda(),
 				$tks
@@ -29,6 +30,6 @@ class MaybeParser extends Parser {
 	function &process($result) {
 		if ($result!=null) return $this->parser->process($result); else {return $result;}
 	}
-	function setError($err){$this->buffer = $err;}
+	function setError($err){$this->errorBuffer = $err;}
 }
 ?>

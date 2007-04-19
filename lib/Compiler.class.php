@@ -59,7 +59,9 @@ class Compiler {
 					);
 				if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
 					if (!$this->compilingClasses) {
-						if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('optimal'))$this->getInvolvedClasses($f,$file);
+						if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('optimal')) {
+							$this->getInvolvedClasses($f,$file);
+						}
 						$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
 						eval(str_replace('compile_once','',$f));
 					}
@@ -225,6 +227,7 @@ class Compiler {
 				$this->compiling = false;
 				fwrite($cfo, serialize($this));
 				$this->compiling = true;
+
 				fclose($cfo);
 				fwrite($fo, $f);
 				fclose($fo);
@@ -367,6 +370,9 @@ if (defined('compile')){
 }
 
 compile_once(dirname(__FILE__).'/Compiler/PHPCC.class.php');
+$comp =& Compiler::instance();
+$comp->compilingClasses = false;
+
 
 
 ?>
