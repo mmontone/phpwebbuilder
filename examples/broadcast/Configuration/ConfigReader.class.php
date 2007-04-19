@@ -5,8 +5,14 @@
  * Reads an ini file, and defines each constant.
  */
 
+if(isset($_REQUEST["app"])) define('app_class',$_REQUEST["app"]);
+
 class ConfigReader
 {
+	function &Instance() {
+		global $config_reader;
+		return $config_reader;
+	}
     function read($file_name, $section="") {
     	$configuration = $this->readAll($file_name);
     	if ($section==""){
@@ -25,28 +31,31 @@ class ConfigReader
     function readAct($file_name){
     	return array_merge($this->read($file_name,"global"),$this->read($file_name));
     }
+    function loadDir($value,$file_name){
+    	if ((substr($value,0,1)=='/') or ereg('^[[:alpha:]]:', $value)){
+		} else {
+			$value= dirname($file_name).'/'.$value;
+		}
+		if (substr($value,-1)!=="/") $value.='/';
+		return $value;
+    }
     function load($file_name){
     	$conf = $this->readAct($file_name);
         foreach ($conf as $key => $value) {
         	switch (substr($key,-3)){
         		case 'dir':
-	        		if (substr($value,0,1)=='/'){
-	        			$v = $value;
-	        		} else {
-	        			$v = dirname($_SERVER['SCRIPT_FILENAME']).'/'.$value;
-	        		}
+	        		$v = $this->loadDir($value,$file_name);
 	        		break;
-	        	case 'url':
-					if (substr($value,0,7)=='http://'){
-	        			$v = $value;
-	        		} else {
-	        			$v = dirname('http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']).'/'.$value;
-	        		}break;
         		default:
         			$v = $value;
         	}
-        	define($key, $v);
+        	if (!defined($key)) define($key, $v);
         }
+        $this->actualConf = $conf;
+        return $conf;
+    }
+    function getAttribute($name){
+    	return $this->actualConf[$name];
     }
     function write($file_name, $configuration) {
     	$str = "<?/*\n";
@@ -101,4 +110,7 @@ class ConfigReader
 		}
     }
 }
+
+$config_reader =& new ConfigReader();
+
 ?>

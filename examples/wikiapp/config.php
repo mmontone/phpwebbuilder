@@ -3,8 +3,8 @@
 sitename=Wiki Application
 page_renderer=AjaxPageRenderer
 translator=EnglishTranslator
-debugview=false
-templates=enabled
+compile=yes
+
 [server]
 serverhost=localhost
 basename=

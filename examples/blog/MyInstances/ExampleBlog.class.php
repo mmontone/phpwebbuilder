@@ -1,45 +1,37 @@
 <?php
  class ExampleBlog extends Component {
     function initialize(){
-      $this->addPostForm();
-   /*Needs database access*/
-      /*$blogposts =& new PersistentCollection('Post');
+      //print_r(DBSession::Instance()->batchExec(array("SELECT tbl_name FROM sqlite_master")));
+      //DBSession::Instance()->batchExec(explode(';',TablesChecker::checkTables(false)));
+      $this->addComponent(new AddPost(), 'addPost');
+      $blogposts =& new PersistentCollection('Post');
+      $self =& $this;
       $blogposts->map(
          lambda('&$p',
-            '$this->addPost($p);',
+            '$self->addPost($p);',
             get_defined_vars()
          )
-      );*/
+      );
    }
-   /*Needs database access*/
-   /*function checkProcessPostFormPermissions(){
-   	   $u =& User::logged();
-   	   return $u->hasPermission('Poster');
-   }*/
    function addPost(&$post){
        $title =& new Label($post->title->getValue());
        $this->addComponent($title);
        $this->addComponent(new Label($post->body->getValue()));
    }
-   function addPostForm(){
-      $cf =& new Component();
-      $this->addComponent($cf, 'addPost');
-      $cf->addComponent(new Input(new ValueHolder($title="")), 'title');
-      $cf->addComponent(new TextAreaComponent(new ValueHolder($title="")), 'body');
-      $cf->addComponent(new ActionLink($this, 'processPostForm', 'Submit', $n=null), 'post');
-   }
-   function processPostForm(){
-      $p =& new Post;
-      $p->title->setValue($this->addPost->title->getValue());
-      $p->body->setValue($this->addPost->body->getValue());
-      /*Needs database access*/
-      //$p->save();
-      $this->addPost($p);
-      $this->addPostForm();
-   }
-
  }
 
-
+class AddPost extends Component{
+	function initialize(){
+	  $this->post =& new Post;
+      $this->addComponent(new Input($this->post->title), 'title');
+      $this->addComponent(new TextAreaComponent($this->post->body), 'body');
+      $this->addComponent(new ActionLink($this, 'processPostForm', 'Submit', $n=null), 'post');
+	}
+   function processPostForm(){
+      $this->post->save();
+      $this->getParent()->addPost($this->post);
+      $this->stopAndCall(new AddPost);
+   }
+}
 
 ?>

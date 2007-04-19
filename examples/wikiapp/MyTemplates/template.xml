@@ -1,14 +1,12 @@
 <templates>
 	<template class="WikiMain">
-		<h3>Here you write something:</h3>
+		<h3>Here you can write something:</h3>
 		<textarea cols="80" rows="10" id="input"/>
 		<h3>Here's what you wrote:</h3>
-		<container id="text"/><br/>
+		<p style="width:500px"><container id="text"/></p>
 		<h3>Here's what the wiki rendering shows</h3>
 		<container id="wiki"/>
 		<h3>And here's the code!:</h3>
-		<pre>
-		<container id="code"/>
-		</pre>
+		<pre id="code"/>
 	</template>
 </templates>

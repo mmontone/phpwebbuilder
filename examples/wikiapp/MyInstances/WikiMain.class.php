@@ -1,22 +1,35 @@
 <?php
 
 class WikiMain extends Component{
-
+	/**
+	 * We initialize the Component
+	 */
     function initialize() {
-    	$this->addComponent(new TextAreaComponent(
-    		new ValueHolder(
-    				$v = 'This is a [link|niceparam=5 bookmark link],' .
+		$input=	new ValueHolder(
+    				'This is a [home|niceparam=5 bookmark link],' .
     						' a [http://phpwebbuilder.sourceforge.net normal link],' .
     						' and a [mailto:no@body.com mail link]. [Nothing else matters].'
-    			)
-    		), 'input');
-    	$this->input->addEventListener(array('change'=>'update'),$this);
+    			);
+		/**
+		 * We use the same ValueHolder for both components, so no programming to keep them
+		 * both updated is needed
+		 */
+    	$this->addComponent(new TextAreaComponent($input), 'input');
+    	$this->addComponent(new Text($input), 'text');
+    	$this->input->addInterestIn('changed',new FunctionObject($this,'update'));
     	$this->update();
     	$this->addComponent(new Label(file_get_contents(__FILE__)), 'code');
     }
     function update(){
     	$this->addComponent(new WikiComponent($this->input->getValue()), 'wiki');
-    	$this->addComponent(new Label($this->input->getValue()), 'text');
     }
 }
+
+/**
+ * The wiki component expects the bookmark to be there. Else, it will break (the "home" bookmark
+ * already exists).
+ */
+
+class NothingBookmark extends Bookmark{}
+
 ?>

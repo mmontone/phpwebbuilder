@@ -1,11 +1,18 @@
 <templates>
 <template class="MultiCounter">
 <center>
+	<h1>MultiCounter </h1>
+	<p>This is the MultiCounter Example.</p>
+	<p>There are three counters. When incrementing any of the counters, after passing the question
+	dialog and the notification dialog, the counter is incremented. It then also broadcasts the value
+	to all counters (if broadcast was selected).</p>
+
 	<template class="Counter">
 		<h3><container id="count"/></h3>
 		<input type="button" value="Increment" id="inc"/>
 		<input type="button" value="Decrement" id="dec"/>
 	</template>
+	<input type="checkbox" id="broadcast"/>Broadcast
 </center>
 </template>
 <template class="NotificationDialog">

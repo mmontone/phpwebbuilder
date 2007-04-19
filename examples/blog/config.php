@@ -2,13 +2,14 @@
 [global]
 sitename=Blog Application
 page_renderer=AjaxPageRenderer
+page_renderer=StandardPageRenderer
 translator=EnglishTranslator
 app_class=ExampleBlogApplication
-debugview=false
+compile=
 templates=enabled
 [server]
 serverhost=localhost
-basename=
+basename=database.sql
 baseuser=
 basepass=
 basedir=
@@ -16,7 +17,7 @@ appdir=MyInstances
 pwbdir=../../
 site_url=
 pwb_url=../../
-db_driver=MySQLdb
+db_driver=SQLiteDriver
 baseprefix=
 peardir=
 */?>
