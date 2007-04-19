@@ -3,7 +3,14 @@
 class Filename extends Input {
 	var $file;
 	var $fileuploaded = false;
-	function setEvents() {}
+    var $file_holder;
+
+    function Filename(&$text_holder, &$file_holder) {
+        parent::Input($text_holder);
+        $this->file_holder =& $file_holder;
+    }
+
+    function setEvents() {}
 
 	function loadFile($file_data) {
 		$file =& new File;
@@ -17,7 +24,6 @@ class Filename extends Input {
 		$file->filename->setValue($file_data['name']);
 		$file->filesize->setValue($file_data['size']);
 		$file->filetype->setValue($file_data['type']);
-		$this->file =& $file;
 		$ex =& $file->save();
 		$file->bin_data->setValue(null);
 		$file->commitChanges();
@@ -26,7 +32,9 @@ class Filename extends Input {
 		if (is_exception($ex)) {
 			return $ex;
 		}
-		$this->fileuploaded=true;
+		$this->file =& $file;
+        $this->file_holder->setValue($file);
+        $this->fileuploaded=true;
 		$this->triggerEvent('changed',$n=null);
 		$this->viewHandler->initializeDefaultView($this->view);
 		return true;

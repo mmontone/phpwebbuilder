@@ -1,5 +1,4 @@
 <?php
-
 compile_once (dirname(__FILE__).'/ComponentHolder.class.php');
 compile_once (dirname(__FILE__).'/ActionDispatcher.class.php');
 compile_once (dirname(__FILE__).'/UrlManager.class.php');
@@ -29,6 +28,7 @@ compile_once (dirname(__FILE__).'/components/Widgets/CompositeSelect.class.php')
 compile_once (dirname(__FILE__).'/components/Widgets/NavigationLink.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/GoBackLink.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/Link.class.php');
+compile_once (dirname(__FILE__).'/components/Widgets/FileLink.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/Password.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/Filename.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/Label.class.php');

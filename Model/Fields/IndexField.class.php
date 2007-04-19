@@ -161,6 +161,10 @@ class IndexField extends NumField {
 		return $this->getTarget() == null;
 	}
 
+    function isNull() {
+    	return $this->isEmpty();
+    }
+
 	function &asValueModel() {
 		return new AspectAdaptor($this, 'Target');
 	}

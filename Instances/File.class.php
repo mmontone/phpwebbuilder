@@ -20,6 +20,10 @@ class File extends PersistentObject {
        function downloadLink(){
        		return site_url."Action.php?app=ReadFile&fileid=".$this->id->getValue();
 	   }
+
+       function displayLink(){
+            return site_url."Action.php?app=DisplayFile&fileid=".$this->id->getValue();
+       }
 }
 
 ?>

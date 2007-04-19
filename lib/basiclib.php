@@ -43,9 +43,21 @@ function getcached($text) {
         $vars[trim($paramspec[0])] = trim($paramspec[1]);
     }
 
-    $var = get_cache_var();
+
+    if (isset($vars['var'])) {
+    	$var = $vars['var'];
+    } else {
+    	$var = get_cache_var();
+    }
+
     $initialize = $vars['initialize'];
-    $result = $vars['result'];
+
+    if (isset($vars['result'])) {
+        $result = $vars['result'];
+    }
+    else {
+    	$result = $initialize;
+    }
 
     $out = "if (is_null($var)) {\n
     	       $body\n

@@ -37,6 +37,7 @@ compile_once (dirname(__FILE__).'/Handler/HTMLHandler/SelectHTMLHandler.class.ph
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/SelectMultipleHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/FilenameHTMLHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/HTMLHandler/PasswordHTMLHandler.class.php');
+compile_once (dirname(__FILE__).'/Handler/HTMLHandler/ImageDisplayHTMLHandler.class.php');
 
 compile_once (dirname(__FILE__).'/Handler/XULHandler/XULHandler.class.php');
 compile_once (dirname(__FILE__).'/Handler/XULHandler/WidgetXULHandler.class.php');

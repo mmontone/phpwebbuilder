@@ -11,7 +11,7 @@ class Application {
 
 
 	function Application() {
-		Session::setAttribute(getClass($this),$this);
+        Session::setAttribute(getClass($this),$this);
 		$this->commands =& new Collection();
 		$this->createView();
 		$c =& new Component;
@@ -58,7 +58,8 @@ class Application {
 	function & getInstanceOf($c) {
 		$class = strtolower($c);
 		if (!Session::isSetAttribute($class)) {
-			$app =& new $class;
+            $app =& new $class;
+            Session::setAttribute($class, $app);
 		}
 		return Session::getAttribute($class);
 	}
@@ -176,7 +177,7 @@ class Application {
 		return Translator::TranslateWith(translator,$msg);
 	}
 	function launch() {
-		$window =& ActionDispatcher::dispatch();
+        $window =& ActionDispatcher::dispatch();
 		$window->render();
 	}
 	function &getWidgets(){
@@ -190,7 +191,7 @@ class Application {
 
 	function &getRootComponent() {
 		return $this->getComponent();
-	} 
+	}
 	function triggerEvent($ev){
 		$this->$ev();
 	}

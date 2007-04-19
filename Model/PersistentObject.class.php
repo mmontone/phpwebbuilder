@@ -340,8 +340,7 @@ class PersistentObject extends DescriptedObject {
 	            if (is_exception($res))  {return $res;}
 			}
 			$this->existsObject=FALSE;
-	    	$this->setDeleted(true);
-	        return $res;
+	    	return $res;
 		}
 		return $ex;
 	}
