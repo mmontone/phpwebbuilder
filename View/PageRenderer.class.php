@@ -40,6 +40,7 @@ class PageRenderer // extends PWBObject
 		$view->setAttribute('action', site_url . 'Action.php?'.SID);
 		$view->setAttribute('method', 'post');
 		$view->setAttribute('enctype', 'multipart/form-data');
+		$view->setAttribute('onkeyup', 'dataChanged(event)');
 		$this->addVariable($view,'app_class', getClass($win->parent));
 		$this->addVariable($view,'bookmark', $win->urlManager->actUrl);
 		$this->addVariable($view,'basedir', basedir);
