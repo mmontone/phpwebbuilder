@@ -13,7 +13,13 @@ class SQLiteDriver extends DBDriver {
 	}
 
 	function basicQuery(&$conn,$sql){
-		return sqlite_query ($conn,$sql,SQLITE_ASSOC);
+		$sql = str_replace('`','',$sql);
+		echo 'querying '.$sql;
+		$res = sqlite_query ($conn,$sql,SQLITE_ASSOC, $err);
+		echo $err;
+		return $res;
+
+
 	}
 	function basicBeginTransaction(&$conn){
 		sqlite_query ($conn,"START TRANSACTION;",SQLITE_ASSOC);
@@ -33,7 +39,7 @@ class SQLiteDriver extends DBDriver {
     function basicConnect(){
     	return sqlite_open(constant('basename'));
     }
-    function selectDB(){    }
+    function selectDB(){ return true;   }
     function closeDatabase() {
       @sqlite_close($this->conn);
       @sqlite_close($this->pconn);
@@ -52,12 +58,26 @@ class SQLiteDriver extends DBDriver {
     // SQL
 
 	function showColumnsFromTableSQL($table) {
-		return "SHOW COLUMNS FROM `" . $table."`";
+		return "SELECT * FROM sqlite_master WHERE type = \"column\"";
 	}
 
 	function dropColumnSQL($column) {
 		 return "DROP COLUMN `$column`";
 	}
+	function getTableSQL($table){
+		return "SELECT name FROM sqlite_master WHERE type = \"table\" and name LIKE '" . $table ."'";
+	}
+	function getTablesSQL(){
+		return "SELECT name FROM sqlite_master WHERE type = \"table\"";
+    }
+    function tablePropertiesSQL() {}
+    function idFieldType(){
+    	return "INTEGER PRIMARY KEY AUTOINCREMENT";
+    }
+    function referenceType(){
+		return "INTEGER";
+    }
+
 }
 
 ?>

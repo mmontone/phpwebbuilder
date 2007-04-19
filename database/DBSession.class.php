@@ -375,6 +375,18 @@ class DBSession {
 	function rollbackOnError($b = true) {
 		$this->rollback_on_error = $b;
 	}
+	function tableExists($table){
+		return $this->driver->tableExists($table);
+	}
+	function getTables(){
+		return $this->driver->getTables();
+	}
+	function idFieldType(){
+		return $this->driver->idFieldType();
+	}
+	function referenceType(){
+		return $this->driver->referenceType();
+	}
 }
 
 

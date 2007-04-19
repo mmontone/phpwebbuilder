@@ -102,6 +102,18 @@ class MySQLDriver extends DBDriver {
 		$version['sub'] = (integer) $matches[2];
 		$version['subsub'] = (integer) $matches[3];
 	}
+	function getTablesSQL(){
+		return "SHOW TABLES FROM `" . basename . 'LIKE \''.baseprefix.'%\'';
+    }
+	function getTableSQL($table){
+		return "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
+    }
+    function idFieldType(){
+    	return "int(11) unsigned NOT NULL AUTO_INCREMENT";
+    }
+    function referenceType(){
+    	return "int(11) unsigned";
+    }
 }
 
 ?>

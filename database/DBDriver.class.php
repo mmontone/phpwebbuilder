@@ -119,6 +119,12 @@ class DBDriver {
     	}
     	if ($persistent){ return $this->pconn;} else { return $this->conn;}
     }
+    function tableExists($table){
+		return $this->getRowsAffected($this->query($this->getTableSQL($table)));
+	}
+    function getTables(){
+		return $this->fetchArray($this->query($this->getTablesSQL()));
+    }
 }
 
 ?>
