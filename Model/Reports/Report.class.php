@@ -609,15 +609,14 @@ class Report extends Collection{
     }*/
 }
 #@preprocessor
-//compile _once(dirname(__FILE__).'/OQLCompiler.class.php');
+//compile_once(dirname(__FILE__).'/OQLCompiler.class.php');
 Compiler::usesClass(__FILE__,'OQLCompiler');
-return '
-		function select($query){
-	        $oc =& new OQLCompiler;
-			$res = $oc->fromQuery($query);
-			if ($oc->res[1]==\'\') print_backtrace_and_exit($query .print_r($oc->res,TRUE). $oc->error);
-	        return $res;
-		}';
+return 'function select($query){
+    $oc =& new OQLCompiler;
+	$res = $oc->fromQuery($query);
+	if ($oc->res[1]->str!=\'\') print_backtrace_and_exit($query .print_r($oc->res,TRUE). $oc->error);
+    return $res;
+}';
 //@#
 
 /*
