@@ -53,8 +53,10 @@ class Select extends Widget {
 
     function viewUpdated($new_value) {
 		$value = $this->getValueIndex();
-		if ($new_value != $value)
+		if ($new_value != $value) {
+			$this->viewHandler->pauseRegistering();
 			$this->setValueIndex($new_value);
+		}
 	}
 	function setSize($size) {
 		$this->size = $size;

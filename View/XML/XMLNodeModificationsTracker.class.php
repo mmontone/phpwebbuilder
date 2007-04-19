@@ -1,7 +1,6 @@
 <?php
 
 class XMLNodeModificationsTracker extends XMLNode {
-	var $modifications;
 	var $toFlush = null;
 	var $registering = false;
 	function XMLNodeModificationsTracker($tag_name = null, $attributes = array ()) {
@@ -31,7 +30,6 @@ class XMLNodeModificationsTracker extends XMLNode {
 	function flushModifications() {
 		$n = null;
 		$a = array();
-		$this->modifications =& $a;
 		$this->toFlush->setTarget(new NullXMLNodeModification($this));
 		/*
 		$cn =& $this->childNodes;
@@ -109,7 +107,9 @@ class XMLNodeModificationsTracker extends XMLNode {
 
 
 	function redraw() {
-		if($this->parentNode)	$this->parentNode->replaceChild($this, clone($this));
+		if ($this->registering){
+			if ($this->parentNode)$this->parentNode->replaceChild($this, clone($this));
+		}
 	}
 
 	function setAttribute($attribute, $value) {

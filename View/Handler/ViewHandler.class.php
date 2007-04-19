@@ -3,6 +3,7 @@
 class ViewHandler extends PWBFactory{
 	var $component;
 	var $view;
+	var $registering = true;
 	function &createInstanceFor(&$component){
 		$this->setComponent($component);
 		return $this;
@@ -29,6 +30,11 @@ class ViewHandler extends PWBFactory{
 	function redraw(){
 		if ($this->view){
 			$this->view->redraw();
+		}
+	}
+	function pauseRegistering(){
+		if ($this->view){
+			$this->registering = false;
 		}
 	}
 	function setView(&$view){

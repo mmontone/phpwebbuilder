@@ -83,6 +83,7 @@ class Widget extends Component {
 		$value = $this->getValue();
 
 		if ($new_value != $value) {
+			$this->viewHandler->pauseRegistering();
 			$this->setValue($new_value);
 		}
 	}
@@ -128,12 +129,8 @@ class Widget extends Component {
 	function onEnterFocus(&$comp) {
 		#@typecheck $comp:Component@#
 		$this->events->atPut('onkeypress', $a = array('onkeypress', "if(event.which==13||event.keyCode==13) {".
-			    "var fireOnThis = document.getElementById('" . $this->getId() ."');".
-			    "var evObj = document.createEvent('HTMLEvents');".
-				"evObj.initEvent('change', true, true );".
-				"fireOnThis.dispatchEvent(evObj);".
-				"fireOnThis = document.getElementById('" . $comp->getId() ."');".
-				"fireOnThis.focus();}"));
+			    "triggerEventIn('change',document.getElementById('" . $this->getId() ."');".
+				"document.getElementById('" . $comp->getId() ."').focus();}"));
 	}
 
 	function addInterestIn($event, & $event_callback) {

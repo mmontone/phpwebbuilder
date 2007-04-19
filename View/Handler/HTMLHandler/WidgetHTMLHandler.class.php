@@ -14,8 +14,17 @@ class WidgetHTMLHandler extends HTMLHandler{
 		$comp->invalid->onChangeSend('updateInvalid',$this);
 		$comp->events->onChangeSend('updateEvent',$this);
 		$comp->disabled->onChangeSend('updateDisabled',$this);
-		$comp->value_model->onChangeSend('valueChanged',$this);
+		$comp->value_model->onChangeSend('doValueChanged',$this);
 		$comp->clickable->onChangeSend('updateClickable',$this);
+	}
+	function doValueChanged(& $value_model, &$params){
+		$reg = $this->view->registering;
+		if (!$this->registering) {
+			$this->view->registering=false;
+			$this->registering = true;
+		}
+		$this->valueChanged($value_model, $params);
+		$this->view->registering = $reg;
 	}
 	function valueChanged(& $value_model, &$params) {
 		if ($this->view){

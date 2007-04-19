@@ -3,6 +3,7 @@
 class SelectMultiple extends Select {
 	function initializeOptions(){}
 	function viewUpdated($new_value) {
+		$this->viewHandler->pauseRegistering();
 		if ($new_value == '') {
 			$this->setValue(new Collection);
 		}
