@@ -120,7 +120,7 @@ class Widget extends Component {
 		$class = getClass($this);
 		$onkeypress = "if(event.which==13||event.keyCode==13) {".
 				"enqueueChange(getEventTarget(event),{$class}GetValue);".
-				"componentClicked(document.getElementById('" . $comp->getId() . "'));}";
+				"componentClicked(document.getElementById('" . $comp->getId() . "'));return false;}";
 
 		$this->events->atPut('onkeypress', $a = array('onkeypress',$onkeypress));
 	}
