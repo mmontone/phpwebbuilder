@@ -12,8 +12,8 @@
 		Mariano Montone mmontone@eureka-consulting.com.ar}
 
 \newcommand{\comment}[1]{}
-\newcommand{\PITS}{\emph{Programming in the Small}}
-\newcommand{\PWB}{\emph{Neurus}}
+\newcommand{\PITS}{\emph{Programming in the Small}} %en.wikipedia.org/wiki/Programming_in_the_small
+\newcommand{\PWB}{\emph{Oaks}}
 
 \newcommand{\sourcecode}[1]{
 #1
@@ -73,7 +73,7 @@ Esto quiere decir que una aplicación se compone de 3 capas:
 
 Existe una parte mas al momento de evaluar un framework. Esto es la ``Programación en lo pequeño'', que sirve para unir estos elementos y realmente ``programar''.
 
-Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la \PITS generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de la tarea y además provee al desarrollador de herramientas para solucionar o simplificar las tareas en las otras areas:
+Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de la tarea y además provee al desarrollador de herramientas para solucionar o simplificar las tareas en las otras areas:
 
 \begin{itemize}
 \item Para el modelo, presenta un mapeo automático de base de datos [\ref{sub-pers}], autogeneración del esquema de base de datos [\ref{sub-adapt}], y un lenguaje de consultas complejas [\ref{sub-oql}] que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
@@ -100,5 +100,17 @@ Tenemos que hacer las siguientes tareas:
 %Entre los trabajos que hicimos, se encuentran sitios web y sistemas de intranet.
 
 \input{comparaciones}
+
+\section{Conclusiones}
+
+\PWB \ no presenta en sí conceptos novedosos, sino que los integra dentro del mismo framework, y utiliza dentro de contextos que no son los habituales (es decir, PHP y aplicaciones Web).
+
+Trabajo a futuro: Mejoras en el manejo de collections en el modelo, documentación, DSLs composicionales, Integración y counicación de múltiples aplicaciones, templates dependientes de contexto y paramétricos.
+
+\section{Acknowledgements}
+
+A Jero, Chiara, JPG, Esteban,
+
+\bibliography{references}
 
 \end{document}
