@@ -3,6 +3,9 @@
 \subsection{Persistencia y metadata}
 \label{sub-pers}
 
+La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject".
+Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
+
 Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User}.
 
 \begin{verbatim}
@@ -24,15 +27,15 @@ class Post extends PersistentObject {
 }
 \end{verbatim}
 
-La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject".
-Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
-Luego, para la recuperacion de objetos, existe la clase \verb"Report", que permite obtener los objetos de una coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
+Acabamos de definir un objeto persistente Post. Para esto definimos un método initialize. En él definimos los atributos que tiene un Post. En este caso son un título, un texto, una colección de etiquetas y el usuario creador. La definición de un atributo se hace invocando el método addField de PersistentObject con el tipo de campo que queremos crear.
+
+
+\subsection{Recuperación de objetos}
+La recuperacion de objetos se hace mediante la clase \verb"Report", que permite obtener los objetos de una coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
 \subsection{OQL}
 \label{sub-oql}
-Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje OQL para consulta de los objetos, que construye un reporte.
-
-Agregamos en la clase \verb"Post":
+Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje OQL para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso. Mejor veamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los Posts cuyo tag sea uno dado, agregamos en la clase \verb"Post":
 
 \begin{verbatim}
 
@@ -44,8 +47,9 @@ class Post extends Component {
 }
 
 \end{verbatim}
+La sintaxis extraña (los tokens \#@ @\# que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en \ref{sub-mab-macros}.
 
-El lenguaje está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Además, puede hacer consultas utilizando la identidad de los objetos.
+Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Esta forma de implementación de lenguajes de dominio específico se denomina embebida.
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
@@ -60,8 +64,11 @@ Además, podemos verificar que el esquema de base de datos sea el correcto, y mo
 \subsection{Componentes}
 \label{sub-comp}
 
-Las aplicaciones se construyen mediante ensamblado de componentes. Estos componentes son reutilizables,
+Las aplicaciones se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables,
 ya que pueden ser parametrizados, pueden levantar eventos, y pueden contener otros componentes.
+
+Creemos el componente principal de la aplicación del blog. Este consiste simplemente de una lista de posts.
+Llamemos a este componente "BlogComponent".
 
 \begin{verbatim}
 
@@ -71,12 +78,80 @@ class BlogComponent extends Component{
   }
 }
 \end{verbatim}
-Un componente, dentro de su método initialize, agrega sus sub-componentes.
+
+Como se ve en el ejemplo, un componente agrega sus sub-componentes definiendo un método initialize e invocando a addComponent. Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados. Además, cada componente posee su propio flujo de aplicación. Esto significa que podemos componer libremente sin preocuparnos por urls. Por último, cada componente maneja su propia entrada de datos y actualización de vistas. 
+
+Ahora definamos la lista de Posts. Sólo basta subclasificar de CollectionNavigator, un componente general para navegación y mostrado de listado de objetos:
 
 \begin{verbatim}
-class PostList extends CollectionNavigator{
+class PostList extends CollectionNavigator {
   function addLine($post){
     return new PostItem($post);
+  }
+}
+
+class PostItem extends Component {
+  function PostItem($post){
+    $this->post=&$post;
+    parent::Component();
+  }
+  function initialize(){
+    $this->addComponent(new Text($this->post->titulo), 'titulo');
+    $this->addComponent(new Text($this->post->texto), 'texto');
+    // Mostramos las etiquetas del post
+    $this->addComponent(new Component, 'tags');
+    foreach($this->post->tags->collection->elements() as $tag){
+      $this->tags->addComponent(new Text($tag->nombre);
+    }
+  }
+}
+
+\end{verbatim}
+
+Un componente CollectionNavigator presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine".
+
+\subsection{Control de flujo modal}
+
+Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes, cada componente posee su propio flujo de aplicación lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona en la aplicación que estamos desarrollando.
+
+Queremos ahora poder ver la lista de posts con una determinada etiqueta al hacer click sobre ésta. Entonces revemos nuestras clases PostItem y PostList para establecer la interacción necesaria. 
+
+Modificamos primero la clase PostItem para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase CommandLink en lugar de los de clase Text anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto indicamos que el componente contenedor sea notificado mediante la invocación del método tagSelected a través de la creación de un FunctionObject. Cuando una etiqueta es seleccionada, el PostItem avisa haciendo trigger de un evento 'tag\_selected'.
+
+\begin{verbatim}
+
+class PostItem extends Component {
+  function PostItem($post){
+    $this->post=&$post;
+    parent::Component();
+  }
+  function initialize(){
+    $this->addComponent(new Text($this->post->titulo), 'titulo');
+    $this->addComponent(new Text($this->post->texto), 'texto');
+    // Mostramos las etiquetas del post
+    $this->addComponent(new Component, 'tags');
+    foreach($this->post->tags->collection->elements() as $tag){
+      $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
+        'prodeedFunction'=> new FunctionObject($this, 'tagSelected', array('tag'=>$tag)))));
+    }
+  }
+
+  function tagSelected($params) {
+    $this->triggerEvent('tag_selected', $params);
+  }
+}
+
+\end{verbatim}
+
+Ahora falta que lista de posts se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modifiquemos la clase PostList para que delegue su comportamiento a otra lista cuyos posts son sólo aquellos que poseen la etiqueta seleccionada. Registramos interés en el evento para que cuando sea triggereado la lista principal delegue el control a la nueva lista filtrada como aparece en la implementación de showTag. La delegación de control se logra mediante la invocación del método call. Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
+
+\begin{verbatim}
+
+class PostList extends CollectionNavigator {
+  function addLine($post){
+     $post_item = new PostItem($post);
+     $post_item->addIterestIn('tag_selected', new FunctionObject($this, 'showTag'));
+     return $post_item;
   }
   function showTag($params){
     $this->call(new PostList(Post::ConTag(params['tag']));
@@ -85,39 +160,18 @@ class PostList extends CollectionNavigator{
 
 \end{verbatim}
 
-El componente \verb"PostList" hereda de la clase \verb"CollectionNavigator", el cual es un \verb"Component" que presenta links a la navegación de los elementos (mostrandolos paginados), y tiene un método \verb"addLine", para mostrar cada elemento.
 
-En el método \verb"showTag" del \verb"PostList", el componente llama (\verb"call") a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
+%Falta explicar la forma que tiene un componente de decir que terminó con su tarea. Hacemos esto invocando al método callback sobre el componente que terminó su ejecución.
+
+%En el caso del PostList, una vez que se haya seleccionado una de sus etiquetas, su ejecución acaba y por lo tanto indica esto haciendo callback y pasando la etiqueta seleccionada al llamador.
+
+
+%En el método \verb"showTag" del \verb"PostList", el componente llama (\verb"call") a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
 
 \subsection{Widgets}
 \label{sub-widget}
 
 Existen unos componentes especiales, llamados \verb"Widgets", que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox).
-
-\begin{verbatim}
-
-class PostItem extends Component{
-  function PostItem($post){
-    $this->post=&$post;
-    parent::Component();
-  }
-  function initialize(){
-    $this->addComponent(new Text($this->post->titulo), 'titulo');
-    $this->addComponent(new Text($this->post->texto), 'texto');
-    $this->addComponent(new Component, 'tags');
-    foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
-        'prodeedFunction'=>
-          new FunctionObject(
-            $this->getParent(), 'showTag', array('tag'=>$tag)
-          )
-        )
-      );
-    }
-  }
-}
-
-\end{verbatim}
 
 Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejecutar una acción en la aplicación (en este caso, ejecutar \verb"showTag" en el padre del \verb"PostItem" (o sea, el \verb"PostList")).
 
@@ -271,7 +325,7 @@ que chequea que la variable \verb"$c" y %$
 
 class PostItem extends Component{
   function PostItem($post){
-	"#@typecheck $post: Post@#"
+    #@typecheck $post: Post@#
     $this->post=&$post;
     parent::Component();
   }
@@ -281,7 +335,7 @@ class PostItem extends Component{
 
 Esto detecta problemas durante el desarrollo, al intentar inicializar erróneamente un \verb"PostItem". Cuando la aplicación se instala en el cliente, se elimina el chequeo para evitar el overhead.
 
-Además, un programador puede agregar sus propias macros, declarando una función \verb"mi_macro", y luego llamandola con \verb"#@mi_macro los parametros que se requieran@#".
+Además, un programador puede agregar sus propias macros, declarando una función \verb"mi_macro", y luego llamandola con \verb"#@mi_macro <parámetros>@#".
 
 \subsection{Mixins}
 \label{sub-mixins}
