@@ -40,7 +40,6 @@ class PageRenderer // extends PWBObject
 		$view->setAttribute('action', site_url . 'Action.php?'.SID);
 		$view->setAttribute('method', 'post');
 		$view->setAttribute('enctype', 'multipart/form-data');
-		$view->setAttribute('onkeyup', 'dataChanged(event)');
 		$this->addVariable($view,'app_class', getClass($win->parent));
 		$this->addVariable($view,'bookmark', $win->urlManager->actUrl);
 		$this->addVariable($view,'basedir', basedir);
@@ -231,6 +230,7 @@ class StandardPageRenderer extends HTMLPageRenderer {
 								'Debug View ' .
 								'<input type="checkbox" checked="checked" onchange="document.getElementsByTagName(\'link\')[1].disabled = !document.getElementsByTagName(\'link\').item(1).disabled;"/>' .
 								'<input type="submit" value="Reload Templates"/>' .
+								'<input type="button" value="View Source" onclick="reconstructTemplates()"/>' .
 								'<a href="Action.php?restart=yes'.(isset($_REQUEST['app'])?'&app='.getClass($this->app):'').'">Restart application</a>' .
 							'</form>'.
 							'</div>';
@@ -270,6 +270,7 @@ class AjaxPageRenderer extends PageRenderer {
 	function initPage(&$win){
 		parent::initPage($win);
 		$win->wholeView->setAttribute('onsubmit','refresh();');
+		$win->wholeView->setAttribute('onkeyup', 'dataChanged(event)');
 	}
 	function  rendersAjax(){
 		return true;
