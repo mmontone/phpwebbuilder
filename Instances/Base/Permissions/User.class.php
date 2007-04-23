@@ -49,7 +49,8 @@ class User extends PersistentObject {
 		if ($usr) {
 			$uid=$usr->getUserId();
 			Session::setAttribute("id",$uid);
-			Session::setAttribute("Username",$usr->user->getValue());
+			$un = $usr->user->getValue();
+			Session::setAttribute("Username",$un);
 			Session::setAttribute("User", $usr);
 		}
 

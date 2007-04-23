@@ -91,6 +91,7 @@ class ViewCreator {
 					{$vid->addCSSClass('containerWithId');
 					$this->addTemplateName($vid, 'Element:'.getClass($component).'('.$id.')');}//@#
 				$component->viewHandler->prepareToRender();
+				$vid->redraw();
 				return $vid;
 			} else {
 				$pos =& $vid;
