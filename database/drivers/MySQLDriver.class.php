@@ -103,7 +103,7 @@ class MySQLDriver extends DBDriver {
 		$version['subsub'] = (integer) $matches[3];
 	}
 	function getTablesSQL(){
-		return "SHOW TABLES FROM `" . basename . 'LIKE \''.baseprefix.'%\'';
+		return "SHOW TABLES FROM `" . basename . '` LIKE \''.baseprefix.'%\'';
     }
 	function getTableSQL($table){
 		return "SHOW TABLES FROM `" . basename . "` LIKE '" . $table ."'";
