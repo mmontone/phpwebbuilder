@@ -62,11 +62,42 @@
   journal =	 "http://homepages.cwi.nl/~arie/papers/dslbib",
         title="DSLs"}
 
-@Article{seaside,
+@inproceedings{Duca04e,
+	abstract = {Developing web applications is difficult since (1) the
+  client-server relationship is asymmetric: the server cannot update clients but
+  only responds to client requests and (2) the navigation facilities of web
+  browsers lead to a situation where servers cannot control the state of the
+  clients. Page-centric web application frameworks fail to offer adequate
+  solutions to model control flow at a high-level of abstraction. Developers
+  have to work manually around the shortcomings of the HTTP protocol. Some
+  approaches offer better abstractions by composing an application out of
+  components, however they still fail to offer modeling control flow at a high
+  level. Continuation-based approaches solve this problem by providing the
+  facilities to model a control flow over several pages with one piece of code.
+  However combining multiple flows inside the same page is difficult. This
+  article presents Seaside. Seaside is a framework which combines an
+  objectoriented approach with a continuation-based one. A Seaside application
+  is built out of components (i.e., objects) and the logic of the application
+  benefits from the continuation-based program flow infrastructure. Seaside
+  offers a unique way to have multiple control flows on a page, one for each
+  component. This enables the developer to write components that are highly
+  reusable and that can be used to compose complex web applications with higher
+  quality in less time.},
+	author = {St\'ephane Ducasse and Adrian Lienhard and Lukas Renggli},
+	booktitle = {Proceedings of ESUG Research Track 2004},
+	cvs = {seaside},
+	misc = {Also Technical Report IAM-04-008},
+	month = {sep},
+	pages = {231-257},
+	title = {Seaside --- a Multiple Control Flow Web Application Framework},
+	url = {http://www.iam.unibe.ch/~scg/Archive/Papers/Duca04eSeaside.pdf
+  http://www.iam.unibe.ch/publikationen/techreports/2004/iam-04-008},
+	year = {2004}}
 
+@Article{seaside,
   author = 	 "",
   journal =	 "http://seaside.st/",
-        title="Seaside"}
+        title="Seaside - A framework for developing sophisticated web applications in Smalltalk"}
 
 @Article{hibernate,
   author = 	 "",

@@ -65,7 +65,7 @@ Dada la complejidad de construir un reporte completo a mano, desarrollamos un le
 
 class Post extends Component {
   ...
-  function WithTag($tag){
+  function Tagged($tag){
     return #@select p:Post where exists (p.tags as tag where tag.name=$tag)@#;
   }
 }
@@ -78,6 +78,27 @@ Una buena propiedad del lenguaje es que está íntimamente relacionado con el c�
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
+\begin{figure}
+	\centering 
+	\includegraphics[scale=0.8]{admin2.eps} 
+ 	\caption{Adaptación de base de datos} 
+ 	\label{fig-admin1} 
+\end{figure}
+
+\begin{figure}
+	\centering 
+	\includegraphics{abm1.eps} 
+ 	\caption{ABM Autogenerado de un Post} 
+ 	\label{fig-abm1} 
+\end{figure}
+
+\begin{figure}
+	\centering 
+	\includegraphics{abm2.eps} 
+ 	\caption{Aplicación de administración de Posts generada} 
+ 	\label{fig-abm2} 
+\end{figure}
+
 Los datos necesarios para la persistencia del modelo se infieren de la definición de los objetos. Establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
 
 A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo.
@@ -126,7 +147,7 @@ class PostItem extends Component {
     // Mostramos las etiquetas del post
     $this->addComponent(new Component, 'tags');
     foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new Text($tag->name);
+      $this->tags->addComponent(new Text($tag->name));
     }
   }
 }
@@ -177,7 +198,7 @@ class PostList extends CollectionNavigator {
     return new PostItem($post);
   }
   function showTag($params){
-    $this->call(new PostList(Post::ConTag(params['tag']));
+    $this->call(new PostList(Post::Tagged($params['tag']));
   }
 }
 
