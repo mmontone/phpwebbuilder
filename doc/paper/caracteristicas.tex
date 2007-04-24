@@ -18,6 +18,8 @@ Esta clase provee los métodos necesarios para describir la metadata en su inici
 
 Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User}.
 
+\includegraphics*[scale=0.60,viewport=420 350 700 600]{diagrama.png}
+
 \begin{verbatim}
 class Post extends PersistentObject {
   function initialize() {
@@ -70,7 +72,7 @@ class Post extends Component {
 
 \end{verbatim}
 
-La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en [\ref{sub-macros}].
+La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en (sección \ref{sub-macros}).
 
 Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Esta forma de implementación de lenguajes de dominio específico se denomina embebida.
 
@@ -233,7 +235,7 @@ Para la generación de interfaz, utilizamos la técnica conocida de los template
 
 Por comodidad, agregamos las siguientes características:
 
-- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins" [\ref{sub-mixins}].
+- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins" (sección \ref{sub-mixins}).
 
 - Los templates son declarativos: No incluyen comandos ni iteradores (como tienen otros engines de templates). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
 
@@ -243,7 +245,7 @@ Además, cada componente tiene un template default, por lo que no se necesita cr
 
 \subsubsection{Adaptación de Diseños existentes}
 \label{sub-templates-adapt}
-Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando \verb"Mixins" [\ref{sub-mixins}] y subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templates.
+Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando \verb"Mixins" (sección \ref{sub-mixins}) y subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templates.
 
 \subsection{Renderings}
 \label{sub-render}

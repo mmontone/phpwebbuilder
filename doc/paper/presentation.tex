@@ -78,13 +78,13 @@ Esto quiere decir que una aplicación se compone de 3 capas:
 Existe una parte más que integra el framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas. Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de esta tarea, y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras areas:
 
 \begin{itemize}
-\item Para el modelo, presenta un mapeo automático de base de datos [\ref{sub-pers}], autogeneración del esquema de base de datos [\ref{sub-adapt}], y un lenguaje de consultas complejas [\ref{sub-oql}] que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
+\item Para el modelo, presenta un mapeo automático de base de datos (sección \ref{sub-pers}), autogeneración del esquema de base de datos (sección \ref{sub-adapt}), y un lenguaje de consultas complejas (sección \ref{sub-oql}) que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
 
-\item Para el controlador, utiliza un sistema de componentes [\ref{sub-comp}], que permiten reusar ``pedazos de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets [\ref{sub-widget}] simplifican y encapsulan la interacción con el usuario.
+\item Para el controlador, utiliza un sistema de componentes (sección \ref{sub-comp}), que permiten reusar ``pedazos de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets (sección \ref{sub-widget}) simplifican y encapsulan la interacción con el usuario.
 
-\item Para la vista, el sistema de templates [\ref{sub-templates}] basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico [\ref{sub-templates-adapt}]. El sistema se encarga de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo [\ref{sub-render}] (esto es fácilmente configurable).
+\item Para la vista, el sistema de templates (sección \ref{sub-templates}) basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico (sección \ref{sub-templates-adapt}). El sistema se encarga de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo (sección \ref{sub-render}) (esto es fácilmente configurable).
 
-\item Por último, para \PITS, \PWB \ presenta una serie de características displonibles en otros lenguajes y plataforma pero no existentes en PHP. Estas son una implementación de Eventos [\ref{sub-events}] (especialmente útiles para mantener la vista actualizada), Weak References [\ref{sub-weak}], creación de DSLs [\ref{sub-phpcc}], Macros [\ref{sub-macros}] y Mixins[\ref{sub-mixins}].
+\item Por último, para \PITS, \PWB \ presenta una serie de características displonibles en otros lenguajes y plataforma pero no existentes en PHP. Estas son una implementación de Eventos (sección \ref{sub-events}) (especialmente útiles para mantener la vista actualizada), Weak References (sección \ref{sub-weak}), creación de DSLs (sección \ref{sub-phpcc}), Macros (sección \ref{sub-macros}) y Mixins(sección \ref{sub-mixins}).
 
 \end{itemize}
 
