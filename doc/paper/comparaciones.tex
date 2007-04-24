@@ -1,5 +1,36 @@
-\section{Related Work}
+\section{Trabajos Relacionados}
 
-Gran parte de nuestra inspiración del ``Controller'' vino de SeaSide \cite{seaside}, un Framework de AppsWeb en Smalltalk.
+\begin{itemize}
+\item Muchos frameworks toman el enfoque de programar el controller mediante ``páginas'', como CakePHP. \PWB \ tuvo en un principio esta forma, pero finalmente elegimos los componentes de SeaSide \cite{seaside}, dado que consideramos que incrementa la composicionalidad.
 
-Dejamos de lado el Smalltalk, usando PHP, y el ``HTML Programático'', en lugar de los cuales utlizamos nuestros ``Templates Declarativos''.
+%Utilizamos además, el concepto de Widgets \cite{WDGTS}, muy conocido entre las aplicaciones de interacción con los usuarios.
+
+Para la generación de las vistas, encontramos 2 enfoques:
+\begin{itemize}
+\item \emph{HTML Programático}: Los componentes tienen un método que los renderea, todo utilizando objetos.
+\item \emph{Templates Programáticos}: Son templates, que se aplican a componentes, pero tienen una ejecución para generar la vista.
+\end{itemize}
+En lugar de los métodos anteriores, decidimos utlizar ``Templates Declarativos'': Templates que definen lo que se va a mostrar, pero no se ejecutan. Esto permite, por ejemplo, que una colección de elementos (a los que en un template programativo se hubiera dibujado con un \verb"foreach") sea modificada durante la ejecución, y de esta manera solamente renderear la parte modificada (cuando de la otra forma deberíamos haber redibujado todo, por la necesidad de volver a ejecutar el \verb"foreach").
+
+Dado que no se utiliza programación para la vista, \PWB \ no utiliza Helpers para el AJAX de las páginas, porque lo ofrece de manera transparente.
+
+\item Para el modelo, utilizamos el mecanismo del pattern ActiveRecord, usado también por Hibernate \cite{hibernate}, Rails, GLORP y CakePHP. Dentro de lo que es este pattern, elegimos
+\begin{itemize}
+\item mapeo Class-Table \cite{classtable}, donde existe una tabla en la Base de Datos por cada clase en el modelo, y
+\item adaptación de la Base de Datos a partir de Clases, en lugar de adaptación de Clases a partir de la Base de Datos (como utilizan Rails y CakePHP), porque creemos que simplifica la tarea del programador poder editar su modelo de clases en un lenguaje que tenga integrado el concepto de herencia, y porque no tiene el costo de pasar de un lenguaje a otro para hacer el esquema de datos, y el manejo de los mismos.
+\end{itemize}
+
+Para la recuperación de objetos, existe el enfoque de utilizar SQL directamente, utilizar objetos que definen una consulta a realizar, o tener un lenguage para hacer las consultas. Rails y CakePHP utilizan los primeros 2 enfoques. Nosotros tenemos un lenguaje de consulta (OQL) que traduce a Objetos que definen la consulta. Este enfoque nos parece mejor dado que abstrae al usuario del mapeo a SQL (los objetos hacen ese trabajo) y el OQL abstrae de la creación de estos objetos. Hibernate posee un lenguage HQL para la creación de consultas. Nombramos al nuestro OQL por el lenguaje OQL (Object Query Language) \cite{OQL} de la ODMG.
+
+
+%\item  Para \PITS, Smalltalk también fue una fuente de recursos, con los Eventos, las Weak References,
+
+%Las Macros \cite{macros} son similares a las del preprocessor de C.
+
+%La técnica de Compilación cacheada es del Transparent AOP \cite{aop}.
+
+%Los Compiler Compiler más conocidos son YACC \cite{YACC} y Bison \cite{BISON}, pero más similar al nuestro es el Parsec \cite{PARSEC}, por ser LALL.
+
+%Los DSL \cite{DSLs}.
+
+\end{itemize}

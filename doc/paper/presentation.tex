@@ -13,7 +13,7 @@
 
 \newcommand{\comment}[1]{}
 \newcommand{\PITS}{\emph{Programming in the Small}} %en.wikipedia.org/wiki/Programming_in_the_small
-\newcommand{\PWB}{\emph{Oaks}}
+\newcommand{\PWB}{\emph{PHPWebBuilder}}
 
 \newcommand{\sourcecode}[1]{
 #1
@@ -28,7 +28,7 @@
 %
 %También, si lo tiene, se puede incluir algun condimento respecto de que utilidad/visión (social/empresarial/politica) aporta el proyecto.
 
-\PWB es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet. Incluye varias características interesantes como templates declarativos, desarrollo por componentes, OORM bajo persistencia por alcance, distintos engines de rendereo, compilación, macros y mixins, entre otras cosas}
+\PWB \ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet. Incluye muchas características producto de la experiencia en el desarrollo de este tipo de aplicaciones. Algunas características interesantes son templates declarativos, desarrollo por componentes, OORM bajo persistencia por alcance, distintos engines de rendereo, compilación, macros y mixins.}
 
 % \section{Nombre}
 % En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework, decidimos
@@ -59,22 +59,29 @@
 
 \section{Introducción}
 
-\PWB \ está diseñado bajo una arquitectura MVC (Model-view-controller).
+El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. La interacción con el usuario, la presentacion de la información, y el almacenamiento y recuperación de la misma son algunos de los más frecuentes, y que más tiempo consumen.
+Por esto mismo, son foco de mucha invesigación y trabajo, habiendo conseguido a lo largo de los años diferentes y múltiples soluciones. Seleccionar e integrar estas soluciones queda a cargo del programador o grupo de trabajo de un proyecto específico.
+
+\PWB \ es un framework de desarrollo que integra, para cada uno de los problemas, múltiples soluciones elegidas por nosotros, las cuales en nuestra experiencia permiten una solución general, mejorando el tiempo de desarrollo y la calidad del producto de software, sin sacrificar flexibilidad en el diseño.
+
+\section{\PWB}
+
+\PWB \ está diseñado bajo una arquitectura MVC \cite{mvc} (Model-view-controller).
 Esto quiere decir que una aplicación se compone de 3 capas:
 \begin{itemize}
-\item El ``Modelo''. Es la representación de la información de dominio específico de la aplicación,
-\item El ``Controlador''. Los botones, pantallas y demás elementos con los que el usuario interactúa, y
-\item La ``Vista'', que es la presentación de los datos y botones que el usuario ve.
+\item El \emph{Modelo}. Es la representación de la información de dominio específico de la aplicación,
+\item El \emph{Controlador}. Los botones, pantallas y demás elementos con los que el usuario interactúa, y
+\item La \emph{Vista}, que es la presentación de los datos y botones que el usuario ve.
 \end{itemize}
 
-Existe una parte más al momento de evaluar un framework. Esto es la ``Programación en lo pequeño'', que sirve para unir estos elementos y realmente ``programar''.
+Existe una parte más al momento de evaluar un framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas.
 
-Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de la tarea y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras areas:
+Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de esta tarea, y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras areas:
 
 \begin{itemize}
 \item Para el modelo, presenta un mapeo automático de base de datos [\ref{sub-pers}], autogeneración del esquema de base de datos [\ref{sub-adapt}], y un lenguaje de consultas complejas [\ref{sub-oql}] que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
 
-\item Para el controlador, utiliza un sistema de componentes [\ref{sub-comp}], que permiten reusar "pedazos de aplicación", ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets [\ref{sub-widget}] que simplifican y encapsulan la interacción con el usuario.
+\item Para el controlador, utiliza un sistema de componentes [\ref{sub-comp}], que permiten reusar ``pedazos de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets [\ref{sub-widget}] simplifican y encapsulan la interacción con el usuario.
 
 \item Para la vista, el sistema de templates [\ref{sub-templates}] basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico [\ref{sub-templates-adapt}]. El sistema se encarga de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo [\ref{sub-render}] (esto es fácilmente configurable).
 
@@ -100,9 +107,17 @@ Tenemos que hacer las siguientes tareas:
 
 \section{Conclusiones}
 
-\PWB \ no presenta en sí conceptos novedosos, sino que los integra dentro del mismo framework, y utiliza dentro de contextos que no son los habituales (es decir, PHP y aplicaciones Web). 
+\PWB \ no presenta en sí conceptos novedosos, sino que reúne las opciones que consideramos mejores, y los integra e interrelaciona dentro del mismo framework.
 
-Aún quedan cosas por hacer. Algunas de ellas son implementar mejoras en el manejo de collections en el modelo, documentar, agregar soporte DSLs composicionales, mejorar la integración y comunicación de múltiples aplicaciones y diseñar e implementar templates paramétricos y dependientes del contexto.
+Aún quedan cosas por hacer. Algunas de ellas son implementar mejoras en el manejo de collections en el modelo, documentar, agregar soporte DSLs composicionales, mejorar la integración y comunicación de múltiples aplicaciones y diseñar e implementar templates paramétricos y dependientes del contexto
+y persistencia por alcance de JDO \cite{jpox}.
+
+
+\section{Agradecimientos}
+
+Gracias a la vidaaaa que me ha dado tanto, Gracias, gracias Marcelo, y Gracias de la Nueva Luna.
+Agradezco a Stephen Oaks Moon, que nos cagó cuando menos le convenía :).
+
 
 \bibliography{references}
 \bibliographystyle{plain}

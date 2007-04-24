@@ -27,15 +27,15 @@ class Post extends PersistentObject {
 }
 \end{verbatim}
 
-Acabamos de definir un objeto persistente Post. Para esto definimos un método initialize. En él definimos los atributos que tiene un Post. En este caso son un título, un texto, una colección de etiquetas y el usuario creador. La definición de un atributo se hace invocando el método addField de PersistentObject con el tipo de campo que queremos crear.
+Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en él que definimos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"tags" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
 
 
 \subsection{Recuperación de objetos}
 La recuperacion de objetos se hace mediante la clase \verb"Report", que permite obtener los objetos de una coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
-\subsection{OQL}
+\subsection{OQL (Object Query Language)}
 \label{sub-oql}
-Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje OQL para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso. Mejor veamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los Posts cuyo tag sea uno dado, agregamos en la clase \verb"Post":
+Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuyo tag sea uno dado, agregamos en la clase \verb"Post":
 
 \begin{verbatim}
 
@@ -47,7 +47,7 @@ class Post extends Component {
 }
 
 \end{verbatim}
-La sintaxis extraña (los tokens \#@ @\# que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en \ref{sub-mab-macros}.
+La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en [\ref{sub-macros}].
 
 Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Esta forma de implementación de lenguajes de dominio específico se denomina embebida.
 
@@ -55,7 +55,7 @@ Una buena propiedad del lenguaje es que está íntimamente relacionado con el c�
 \label{sub-adapt}
 En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemos los tipos de las variables de cada clase, y las relaciones de subclasificación.
 
-A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador.
+A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo.
 
 Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita adaptar la base de datos a los nuevos cambios.
 %Esta funcionalidad es provista por una herramienta que veremos más adelante.
@@ -64,11 +64,9 @@ Además, podemos verificar que el esquema de base de datos sea el correcto, y mo
 \subsection{Componentes}
 \label{sub-comp}
 
-Las aplicaciones se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables,
-ya que pueden ser parametrizados, pueden levantar eventos, y pueden contener otros componentes.
+Las aplicaciones se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables, ya que pueden ser parametrizados, pueden disparar eventos, y pueden contener otros componentes.
 
-Creemos el componente principal de la aplicación del blog. Este consiste simplemente de una lista de posts.
-Llamemos a este componente "BlogComponent".
+Creemos el componente principal de la aplicación del blog. Este consiste simplemente de una lista de posts. Llamemos a este componente \verb"BlogComponent".
 
 \begin{verbatim}
 
@@ -79,9 +77,9 @@ class BlogComponent extends Component{
 }
 \end{verbatim}
 
-Como se ve en el ejemplo, un componente agrega sus sub-componentes definiendo un método initialize e invocando a addComponent. Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados. Además, cada componente posee su propio flujo de aplicación. Esto significa que podemos componer libremente sin preocuparnos por urls. Por último, cada componente maneja su propia entrada de datos y actualización de vistas. 
+Como se ve en el ejemplo, un componente agrega sus sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent". Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados. Además, cada componente posee su propio flujo de aplicación. Esto significa que podemos componer libremente sin preocuparnos por urls. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
 
-Ahora definamos la lista de Posts. Sólo basta subclasificar de CollectionNavigator, un componente general para navegación y mostrado de listado de objetos:
+Ahora definamos la lista de \verb"Posts". Sólo basta subclasificar de \verb"CollectionNavigator", un componente general para navegación y mostrado de listado de objetos:
 
 \begin{verbatim}
 class PostList extends CollectionNavigator {
@@ -92,7 +90,7 @@ class PostList extends CollectionNavigator {
 
 class PostItem extends Component {
   function PostItem($post){
-    $this->post=&$post;
+    $this->post = $post;
     parent::Component();
   }
   function initialize(){
@@ -108,21 +106,21 @@ class PostItem extends Component {
 
 \end{verbatim}
 
-Un componente CollectionNavigator presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine".
+Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine".
 
 \subsection{Control de flujo modal}
 
 Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes, cada componente posee su propio flujo de aplicación lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona en la aplicación que estamos desarrollando.
 
-Queremos ahora poder ver la lista de posts con una determinada etiqueta al hacer click sobre ésta. Entonces revemos nuestras clases PostItem y PostList para establecer la interacción necesaria. 
+Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen una determinada etiqueta, al hacer click sobre ésta. Reveamos entonces nuestras clases \verb"PostItem" y \verb"PostList" para establecer la interacción necesaria.
 
-Modificamos primero la clase PostItem para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase CommandLink en lugar de los de clase Text anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto indicamos que el componente contenedor sea notificado mediante la invocación del método tagSelected a través de la creación de un FunctionObject. Cuando una etiqueta es seleccionada, el PostItem avisa haciendo trigger de un evento 'tag\_selected'.
+Modificamos primero la clase \verb"PostItem" para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase \verb"CommandLink" en lugar de los de clase \verb"Text" anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto indicamos que el componente contenedor sea notificado mediante la invocación del método \verb"tagSelected" a través de la creación de un \verb"FunctionObject". Cuando una etiqueta es seleccionada, el \verb"PostItem" avisa disparando  un evento \verb"tag_selected".
 
 \begin{verbatim}
 
 class PostItem extends Component {
   function PostItem($post){
-    $this->post=&$post;
+    $this->post = $post;
     parent::Component();
   }
   function initialize(){
@@ -137,21 +135,19 @@ class PostItem extends Component {
   }
 
   function tagSelected($params) {
-    $this->triggerEvent('tag_selected', $params);
+    $this->getParent()->showTag($params);
   }
 }
 
 \end{verbatim}
 
-Ahora falta que lista de posts se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modifiquemos la clase PostList para que delegue su comportamiento a otra lista cuyos posts son sólo aquellos que poseen la etiqueta seleccionada. Registramos interés en el evento para que cuando sea triggereado la lista principal delegue el control a la nueva lista filtrada como aparece en la implementación de showTag. La delegación de control se logra mediante la invocación del método call. Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
+Ahora falta que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modifiquemos la clase \verb"PostList" para que delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. Registramos interés en el evento para que cuando sea disparado la lista principal delegue el control a la nueva lista filtrada como aparece en la implementación de \verb"showTag". La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
 
 \begin{verbatim}
 
 class PostList extends CollectionNavigator {
   function addLine($post){
-     $post_item = new PostItem($post);
-     $post_item->addIterestIn('tag_selected', new FunctionObject($this, 'showTag'));
-     return $post_item;
+    return new PostItem($post);
   }
   function showTag($params){
     $this->call(new PostList(Post::ConTag(params['tag']));
@@ -171,7 +167,7 @@ class PostList extends CollectionNavigator {
 \subsection{Widgets}
 \label{sub-widget}
 
-Existen unos componentes especiales, llamados \verb"Widgets", que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox).
+Existen unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox).
 
 Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejecutar una acción en la aplicación (en este caso, ejecutar \verb"showTag" en el padre del \verb"PostItem" (o sea, el \verb"PostList")).
 
@@ -213,9 +209,9 @@ Para la generación de interfaz, utilizamos la técnica conocida de los template
 
 Por comodidad, agregamos las siguientes características:
 
-- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins".
+- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins" [\ref{sub-mixins}].
 
-- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen engines como el Smarty). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
+- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen otros engines de templates). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
 
 - Los templates están basados en XML, con un par de tags extras (\verb"<template>" y \verb"<container>"), así que se puede generar cualquier XML (como XHTML) para mostrar los componentes.
 
@@ -223,25 +219,25 @@ Además, cada componente tiene un template default, por lo que no se necesita cr
 
 \subsubsection{Adaptación de Diseños existentes}
 \label{sub-templates-adapt}
-Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando clases bien acomodadas, una aplicación queda con un diseño completo en solo 3 o 4 templates.
+Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando \verb"Mixins" [\ref{sub-mixins}] y subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templates.
 
 \subsection{Renderings}
 \label{sub-render}
-El rendereo de la aplicación se hace 100\% mediante \PWB, de modo que no necesita nigún trabajo especial por el programador.
+El rendereo (generación de la interfaz) de la aplicación se hace 100\% mediante \PWB, de modo que no necesita nigún trabajo especial por el programador.
 
 La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde dice \verb"page_renderer=StandardPageRenderer" por \verb"page_renderer=AjaxPageRenderer", o incluso por \verb"page_renderer=CometPageRenderer" o \verb"page_renderer=XULPageRenderer".
 
 \subsubsection{AJAX y Comet}
 
-Todo lo generado es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
+Todo lo generado por \PWB \ es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
 
-Comet es una tecnología similar a AJAX, que se caracteriza por mantener una conexión abierta con el servidor en todo momento. \PWB \ aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
+Comet es una tecnología similar a AJAX, que se caracteriza por mantener una conexión abierta entre el browser y el servidor en todo momento. \PWB \ aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
 
-Mediante pasaje de mensajes de otro script, que envía los datos a la aplicación \PWB \ ejecutándose, podemos mantener la sesión en memoria, mejorando los tiempos de respuesta, e incluso modificando la aplicación del usuario no solamente cuando éste genera un evento (un click del mouse), sino también cuando, por ejemplo, la base de datos es modificada.
+Mediante pasaje de mensajes de otro script, que envía los datos a la aplicación \PWB \ ejecutándose, podemos mantener la sesión en memoria, mejorando los tiempos de respuesta, e incluso modificando la aplicación del usuario no solamente cuando éste genera un evento (ej: un click del mouse), sino también cuando, por ejemplo, la base de datos es modificada.
 
 \subsubsection{XUL}
 
-El proyecto Mozilla incluye un subproyecto llamado XUL. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado, y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer, que renderea aplicaciones en XUL. La diferencia para el usuario, es en los tags de los templates, ya que debe utilizar elementos XUL en lugar de HTML. Dado que los templates de HTML llevan extensión .xml, y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
+El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado, y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer, que renderea aplicaciones en XUL. La diferencia para el programador, es en los tags de los templates, ya que debe utilizar elementos XUL en lugar de HTML. Dado que los templates de HTML llevan extensión .xml, y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
 
 \section{Características de \PITS}
 
@@ -253,9 +249,12 @@ El proyecto Mozilla incluye un subproyecto llamado XUL. XUL es un lenguaje de de
 
 \subsection{Eventos}
 \label{sub-events}
-\PWB \ implementa un mecanismo simple de eventos. Todo objeto \verb"PWBObject" implementa los mensajes \verb"addInterestIn", que permite a otro objeto escuchar un evento, y \verb"triggerEvent", que acciona un evento.
+\PWB \ implementa un mecanismo simple de eventos. Todo objeto \verb"PWBObject" implementa los mensajes \verb"addInterestIn", que permite a otro objeto escuchar un evento, y \verb"triggerEvent", que dispara un evento.
 
 En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag". Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda ese mensaje.
+
+% Hacer un diagrama representando esto.
+
 
 Utilizando eventos, podríamos implementar:
 
@@ -300,7 +299,7 @@ Por esto implementamos un mecanismo de Weak References, en donde \verb"$y" se qu
 
 \subsection{PHPCC}
 \label{sub-phpcc}
-Para crear el lenguaje OQL, debimos crear un Compiler Compiler para PHP (otros conocidos son Bison, yacc).
+Para crear el lenguaje OQL, debimos crear un Compiler Compiler para PHP (otros conocidos son Bison\cite{BISON}, yacc\cite{YACC}).
 De esta manera ahora también se puede extender el framework con múltiples DSLs (Domain-Specific Languages - Lenguages específicos de Dominio).
 
 \subsection{Macros}
@@ -335,13 +334,13 @@ class PostItem extends Component{
 
 Esto detecta problemas durante el desarrollo, al intentar inicializar erróneamente un \verb"PostItem". Cuando la aplicación se instala en el cliente, se elimina el chequeo para evitar el overhead.
 
-Además, un programador puede agregar sus propias macros, declarando una función \verb"mi_macro", y luego llamandola con \verb"#@mi_macro <parámetros>@#".
+Un programador puede agregar sus propias macros, declarando una función \verb"mi_macro", y luego llamandola con \verb"#@mi_macro" {\it parámetros} \verb"@#".
 
 \subsection{Mixins}
 \label{sub-mixins}
-Otra funcionalidad interesante es una implementación limitada de mixins (mediante macros).
+Otra funcionalidad interesante es una implementación limitada de \verb"Mixins" (mediante \verb"Macros").
 
-Un mixin es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos, sin que estas clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple herencia.
+Un \verb"Mixin" es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos, sin que estas clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple herencia.
 
 \begin{verbatim}
 #@mixin ValueHolder {
@@ -382,4 +381,4 @@ Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples, para ad
 
 \subsection{Compilación}
 
-El uso de macros, y la inclusión de los muchos archivos de \PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso desarrollamos un método de compilar los archivos PHP (para que las macros ya estén procesadas), y además, habilitamos varias formas de compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.
+El uso de macros, y la inclusión de los muchos archivos de \PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso implementamos una mini-compilación de los archivos PHP (para que las macros ya estén procesadas), y además, habilitamos varios outputs de esta compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.
