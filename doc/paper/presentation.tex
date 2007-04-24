@@ -28,7 +28,8 @@
 %
 %También, si lo tiene, se puede incluir algun condimento respecto de que utilidad/visión (social/empresarial/politica) aporta el proyecto.
 
-\PWB \ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet. Incluye muchas características producto de la experiencia en el desarrollo de este tipo de aplicaciones. Algunas características interesantes son templates declarativos, desarrollo por componentes, OORM bajo persistencia por alcance, distintos engines de rendereo, compilación, macros y mixins.}
+\PWB \ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet. Incluye muchas características producto de la experiencia en el desarrollo de este tipo de aplicaciones. Algunas de ellas son: templates declarativos, desarrollo por componentes, OORM bajo persistencia por alcance, distintos engines de rendereo, compilación, macros y mixins, entre otras.
+}
 
 % \section{Nombre}
 % En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework, decidimos
@@ -60,18 +61,18 @@
 \section{Introducción}
 
 El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. La interacción con el usuario, la presentacion de la información, y el almacenamiento y recuperación de la misma son algunos de los más frecuentes, y que más tiempo consumen.
-Por esto mismo, son foco de mucha invesigación y trabajo, habiendo conseguido a lo largo de los años diferentes y múltiples soluciones. Seleccionar e integrar estas soluciones queda a cargo del programador o grupo de trabajo de un proyecto específico.
+Por esto mismo, son foco de mucha invesigación y trabajo, habiendo conseguido a lo largo de los años múltiples soluciones. Seleccionar e integrar éstas queda a cargo del programador o grupo de trabajo de un proyecto específico.
 
 \PWB \ es un framework de desarrollo que integra, para cada uno de los problemas, múltiples soluciones elegidas por nosotros, las cuales en nuestra experiencia permiten una solución general, mejorando el tiempo de desarrollo y la calidad del producto de software, sin sacrificar flexibilidad en el diseño.
 
 \section{\PWB}
 
-\PWB \ está diseñado bajo una arquitectura MVC \cite{mvc} (Model-view-controller).
+\PWB \ está diseñado bajo una arquitectura MVC (Model-view-controller)\cite{mvc}.
 Esto quiere decir que una aplicación se compone de 3 capas:
 \begin{itemize}
-\item El \emph{Modelo}. Es la representación de la información de dominio específico de la aplicación,
-\item El \emph{Controlador}. Los botones, pantallas y demás elementos con los que el usuario interactúa, y
-\item La \emph{Vista}, que es la presentación de los datos y botones que el usuario ve.
+\item El \emph{Modelo}. Es la representación de la información de dominio específico de la aplicación.
+\item El \emph{Controlador}. Está basada en la programación de componentes. Responden a la acción del usuario y definen los aspectos navigacionales de la aplicación (más sobre ésto en la sección \ref{sec-controller}).
+\item La \emph{Vista}. La forma en la que se presentan los datos y botones que el usuario ve se define a través de templates declarativos, HTML y CSS. Desarrollamos los aspectos de presentación en la sección \ref{sec-view}.
 \end{itemize}
 
 Existe una parte más al momento de evaluar un framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas.
@@ -92,10 +93,10 @@ Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte 
 \section{Ejemplo: Creación de un Blog}
 Para ejemplificar, veremos la creación de un blog.
 
-Tenemos que hacer las siguientes tareas:
+Las tareas a realizar son:
 \begin{itemize}
-\item Crear el modelo de los datos,
-\item Decidir cuales son las formas de interacción de los usuarios con el sistema,
+\item Crear el modelo de los datos.
+\item Decidir cuales son las formas de interacción de los usuarios con el sistema.
 \item Presentar esas formas de interacción de una manera atractiva y entendible para el usuario.
 \end{itemize}
 \input{caracteristicas}

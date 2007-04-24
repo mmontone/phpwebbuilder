@@ -10,9 +10,9 @@ Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{Us
 
 \begin{verbatim}
 class Post extends PersistentObject {
-  function initialize(){
-    $this->addField(new TextField(array('fieldName'=>'titulo')));
-    $this->addField(new TextArea(array('fieldName'=>'texto')));
+  function initialize() {
+    $this->addField(new TextField(array('fieldName'=>'title')));
+    $this->addField(new TextArea(array('fieldName'=>'text')));
     $this->addField(new CollectionField(
       array(
         'fieldName'=>'tags',
@@ -22,45 +22,59 @@ class Post extends PersistentObject {
         'reverseField'=>'post')
        )
     );
-    $this->addField(new IndexField(array('fieldName'=>'author', 'type'=>User)));
+    $this->addField(new IndexField(array('fieldName' => 'author', 'type' => 'User')));
+  }
+}
+
+class PostTag extends PersistentObject {
+  function initialize() {
+    $this->addField(new IndexField(array('fieldName'=>'post', 'type' => 'Post')));
+    $this->addField(new IndexField(array('fieldName'=>'tag', 'type' => 'Tag')));
+  }
+}
+
+class Tag extends PersistentObject {
+  function initialize() {
+    $this->addField(new TextField(array('fieldName'=>'name')));
   }
 }
 \end{verbatim}
 
-Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en él que definimos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"tags" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
-
+Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en el que definimos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
 
 \subsection{Recuperación de objetos}
-La recuperacion de objetos se hace mediante la clase \verb"Report", que permite obtener los objetos de una coleccion, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
+La recuperacion de objetos se hace mediante la clase \verb"Report", que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
 \subsection{OQL (Object Query Language)}
 \label{sub-oql}
-Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuyo tag sea uno dado, agregamos en la clase \verb"Post":
+Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, agregamos en la clase \verb"Post":
 
 \begin{verbatim}
 
 class Post extends Component {
   ...
-  function ConTag($tag){
-    return #@select p:Post where exists (p.tags as tag where tag.nombre=$tag)@#;
+  function WithTag($tag){
+    return #@select p:Post where exists (p.tags as tag where tag.name=$tag)@#;
   }
 }
 
 \end{verbatim}
+
 La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en [\ref{sub-macros}].
 
 Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Esta forma de implementación de lenguajes de dominio específico se denomina embebida.
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
-En el desarrollo del modelo, incluímos todo lo que es persistencia. Establecemos los tipos de las variables de cada clase, y las relaciones de subclasificación.
+Los datos necesarios para la persistencia del modelo se infieren de la definición de los objetos. Establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
 
 A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo.
 
-Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación, y se necesita adaptar la base de datos a los nuevos cambios.
+Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación y se necesita adaptar la base de datos a los nuevos cambios.
 %Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
 \section{Características del Controller}
+\label{sec-controller}
 \subsection{Componentes}
 \label{sub-comp}
 
@@ -70,16 +84,16 @@ Creemos el componente principal de la aplicación del blog. Este consiste simple
 
 \begin{verbatim}
 
-class BlogComponent extends Component{
+class BlogComponent extends Component {
   function initialize(){
       $this->addComponent(new PostList(#@select Post@#));
   }
 }
 \end{verbatim}
 
-Como se ve en el ejemplo, un componente agrega sus sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent". Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados. Además, cada componente posee su propio flujo de aplicación. Esto significa que podemos componer libremente sin preocuparnos por urls. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
+Como se ve en el ejemplo, un componente agrega sus sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent". Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados. Además, cada componente posee su propio flujo de control. Esto significa que podemos componer libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en cualquier otro framework. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
 
-Ahora definamos la lista de \verb"Posts". Sólo basta subclasificar de \verb"CollectionNavigator", un componente general para navegación y mostrado de listado de objetos:
+Ahora definamos la lista de \verb"Posts". Sólo basta subclasificar de \verb"CollectionNavigator", un componente general para navegación y mostrado de listados de objetos:
 
 \begin{verbatim}
 class PostList extends CollectionNavigator {
@@ -93,13 +107,14 @@ class PostItem extends Component {
     $this->post = $post;
     parent::Component();
   }
+
   function initialize(){
-    $this->addComponent(new Text($this->post->titulo), 'titulo');
-    $this->addComponent(new Text($this->post->texto), 'texto');
+    $this->addComponent(new Text($this->post->title), 'title');
+    $this->addComponent(new Text($this->post->text), 'text');
     // Mostramos las etiquetas del post
     $this->addComponent(new Component, 'tags');
     foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new Text($tag->nombre);
+      $this->tags->addComponent(new Text($tag->name);
     }
   }
 }
@@ -109,10 +124,10 @@ class PostItem extends Component {
 Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine".
 
 \subsection{Control de flujo modal}
+\label{sub-modal-flow}
+Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes, cada componente posee su propio flujo de control lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
 
-Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes, cada componente posee su propio flujo de aplicación lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona en la aplicación que estamos desarrollando.
-
-Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen una determinada etiqueta, al hacer click sobre ésta. Reveamos entonces nuestras clases \verb"PostItem" y \verb"PostList" para establecer la interacción necesaria.
+Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen una determinada etiqueta al hacer click sobre ésta. Reveamos entonces nuestras clases \verb"PostItem" y \verb"PostList" para establecer la interacción necesaria.
 
 Modificamos primero la clase \verb"PostItem" para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase \verb"CommandLink" en lugar de los de clase \verb"Text" anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto indicamos que el componente contenedor sea notificado mediante la invocación del método \verb"tagSelected" a través de la creación de un \verb"FunctionObject". Cuando una etiqueta es seleccionada, el \verb"PostItem" avisa disparando  un evento \verb"tag_selected".
 
@@ -124,12 +139,12 @@ class PostItem extends Component {
     parent::Component();
   }
   function initialize(){
-    $this->addComponent(new Text($this->post->titulo), 'titulo');
-    $this->addComponent(new Text($this->post->texto), 'texto');
+    $this->addComponent(new Text($this->post->titulo), 'title');
+    $this->addComponent(new Text($this->post->texto), 'text');
     // Mostramos las etiquetas del post
     $this->addComponent(new Component, 'tags');
     foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
+      $this->tags->addComponent(new CommandLink(array('text'=>$tag->name,
         'prodeedFunction'=> new FunctionObject($this, 'tagSelected', array('tag'=>$tag)))));
     }
   }
@@ -169,9 +184,8 @@ class PostList extends CollectionNavigator {
 
 Existen unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox).
 
-Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejecutar una acción en la aplicación (en este caso, ejecutar \verb"showTag" en el padre del \verb"PostItem" (o sea, el \verb"PostList")).
+Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejecutar una acción en la aplicación como vimos en la sección \ref{sub-modal-flow}
 
-%
 % \subsection{Multiple Dispatching y Context Dispatching}
 % \label{sub-dispatch}
 % Otra característica llamativa, es el múltiple dispatching de funciones.
@@ -189,7 +203,7 @@ Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejec
 
 
 \section{Características de la Vista}
-
+\label{sec-view}
 \subsection{Templates}
 \label{sub-templates}
 Para la generación de interfaz, utilizamos la técnica conocida de los templates.
