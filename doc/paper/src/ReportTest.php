@@ -1,4 +1,4 @@
-
+<?php
 new Report(array(
   'class' => 'Post',
   'target' => 'p',
@@ -13,3 +13,4 @@ new Report(array(
       ))
     )
   ));
+?>

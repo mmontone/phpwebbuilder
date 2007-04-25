@@ -209,11 +209,11 @@ Un componente \verb"CollectionNavigator" presenta links para la navegación de l
 
 \subsection{Control de flujo modal}
 \label{sub-modal-flow}
-Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes (sección \ref{sub-comp}), cada componente posee su propio flujo de control lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
+Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes (sección \ref{sub-comp}), cada componente posee su propio flujo de control, lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
 
 Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen una determinada etiqueta al hacer click sobre ésta. Reveamos entonces nuestras clases \verb"PostItem" y \verb"PostList" para establecer la interacción necesaria.
 
-Modificamos primero la clase \verb"PostItem" para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase \verb"CommandLink" en lugar de los de clase \verb"Text" anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto indicamos que el componente contenedor sea notificado mediante la invocación del método \verb"tagSelected" a través de la creación de un \verb"FunctionObject". Cuando una etiqueta es seleccionada, el \verb"PostItem" avisa disparando  un evento \verb"tag_selected".
+Modificamos primero la clase \verb"PostItem" para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase \verb"CommandLink" en lugar de los de clase \verb"Text" anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto enviamos al padre del \verb'PostItem' que invoque el método \verb'showTag'.
 
 \begin{verbatim}
 
@@ -229,18 +229,14 @@ class PostItem extends Component {
     $this->addComponent(new Component, 'tags');
     foreach($this->post->tags->collection->elements() as $tag){
       $this->tags->addComponent(new CommandLink(array('text'=>$tag->name,
-        'prodeedFunction'=> new FunctionObject($this, 'tagSelected', array('tag'=>$tag)))));
+        'prodeedFunction'=> new FunctionObject($this->getParent(), 'showTag', array('tag'=>$tag)))));
     }
-  }
-
-  function tagSelected($params) {
-    $this->getParent()->showTag($params);
   }
 }
 
 \end{verbatim}
 
-Ahora falta que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modifiquemos la clase \verb"PostList" para que delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. Registramos interés en el evento para que cuando sea disparado la lista principal delegue el control a la nueva lista filtrada como aparece en la implementación de \verb"showTag". La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
+Ahora falta que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modifiquemos la clase \verb"PostList" para que delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
 
 \begin{verbatim}
 
