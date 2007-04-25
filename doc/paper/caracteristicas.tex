@@ -16,10 +16,20 @@ Las tareas a realizar son:
 La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject".
 Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
 
-Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User}.
+Para el blog, tendremos las siguientes clases: \emph{Post} (figura \ref{fig-model1}), \emph{Tag}, \emph{User} .
 
-\includegraphics*[scale=0.60,viewport=420 350 700 600]{diagrama.png}
+\begin{figure}
+	\centering
+	\includegraphics*[scale=0.60,viewport=420 350 700 600]{images/diagrama.png}
+ 	\caption{Modelo de objetos del Blog}
+ 	\label{fig-model1}
+\end{figure}
 
+\begin{lgrind}
+\input{src/Post.class.php.tex}
+\end{lgrind}
+
+\comment{
 \begin{verbatim}
 class Post extends PersistentObject {
   function initialize() {
@@ -37,7 +47,9 @@ class Post extends PersistentObject {
     $this->addField(new IndexField(array('fieldName' => 'author', 'type' => 'User')));
   }
 }
+\end{verbatim}
 
+\begin{verbatim}
 class PostTag extends PersistentObject {
   function initialize() {
     $this->addField(new IndexField(array('fieldName'=>'post', 'type' => 'Post')));
@@ -51,15 +63,51 @@ class Tag extends PersistentObject {
   }
 }
 \end{verbatim}
+}
 
 Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en el que definimos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
 
 \subsection{Recuperación de objetos}
 La recuperacion de objetos se hace mediante la clase \verb"Report", que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
+Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos el siguiente objeto Report:
+
+\begin{lgrind}
+\input{src/ReportTest.php.tex}
+\end{lgrind}
+
+Esta consulta, genera el siguiente SQL:
+
+\begin{verbatim}
+SELECT
+    `p_post`.`id` AS `post_id`,
+    `p_post`.`title` AS `post_title`,
+    `p_post`.`text` AS `post_text`,
+    `p_post`.`PWBversion` AS `post_PWBversion`
+  FROM `post` AS `p_post`
+  WHERE EXISTS
+    (SELECT
+        `tag_posttag`.`id` AS `posttag_id`
+       FROM `posttag` AS ` tag_posttag`, `tag` AS ` tagtag_tag`
+       WHERE `tag_posttag`.`post` = `p_post`.`id`
+          AND `tag_posttag`.`tag` = `tagtag_tag`.`id`
+          AND `tagtag_tag`.`name` = $tag
+    )
+\end{verbatim}
+
+Como se puede ver, no se acorta la cantidad de código escrito, pero se simplifica (ya que uno no tiene que preocuparse por seleccionar correctamente los campos del objeto), se hacen los joins de tablas automáticamente (incluso los de herencia, que en este ejemplo no se notan por su simplicidad). Además, al ser la consulta generada, un cambio en las clases del modelo no necesita modificar las consultas a mano (por ejemplo, si agregasemos un campo `fecha de publicación' en el Post)
+
 \subsection{OQL (Object Query Language)}
 \label{sub-oql}
-Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, agregamos en la clase \verb"Post":
+Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos esta consulta:
+
+\begin{verbatim}
+#@select p:Post where exists (p.tags as tag where tag.name=$tag)@#;
+\end{verbatim}
+
+Vemos que la complejidad de crear el reporte se disminuye en una alta proporción.
+
+Agregamos entonces en la clase \verb"Post":
 
 \begin{verbatim}
 
@@ -72,31 +120,34 @@ class Post extends Component {
 
 \end{verbatim}
 
-La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en (sección \ref{sub-macros}).
+La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en la sección \ref{sub-macros}.
 
 Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Esta forma de implementación de lenguajes de dominio específico se denomina embebida.
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
 \begin{figure}
-	\centering 
-	\includegraphics[scale=0.8]{admin2.eps} 
- 	\caption{Adaptación de base de datos} 
- 	\label{fig-admin1} 
+	\centering
+	%\includegraphics[scale=0.8]{images/admin2.eps}
+	\includegraphics[scale=0.5]{images/admin2.pdf}
+ 	\caption{Adaptación de base de datos}
+ 	\label{fig-admin1}
 \end{figure}
 
 \begin{figure}
-	\centering 
-	\includegraphics{abm1.eps} 
- 	\caption{ABM Autogenerado de un Post} 
- 	\label{fig-abm1} 
+	\centering
+	%\includegraphics{images/abm1.eps}
+	\includegraphics[scale=0.5]{images/abm1.pdf}
+ 	\caption{ABM Autogenerado de un Post}
+ 	\label{fig-abm1}
 \end{figure}
 
 \begin{figure}
-	\centering 
-	\includegraphics{abm2.eps} 
- 	\caption{Aplicación de administración de Posts generada} 
- 	\label{fig-abm2} 
+	\centering
+	%\includegraphics{images/abm2.eps}
+	\includegraphics[scale=0.5]{images/abm2.pdf}
+ 	\caption{Aplicación de administración de Posts generada}
+ 	\label{fig-abm2}
 \end{figure}
 
 Los datos necesarios para la persistencia del modelo se infieren de la definición de los objetos. Establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
@@ -158,7 +209,7 @@ Un componente \verb"CollectionNavigator" presenta links para la navegación de l
 
 \subsection{Control de flujo modal}
 \label{sub-modal-flow}
-Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes, cada componente posee su propio flujo de control lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
+Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes (sección \ref{sub-comp}), cada componente posee su propio flujo de control lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
 
 Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen una determinada etiqueta al hacer click sobre ésta. Reveamos entonces nuestras clases \verb"PostItem" y \verb"PostList" para establecer la interacción necesaria.
 
@@ -288,9 +339,9 @@ El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un leng
 
 \section{Características de \PITS}
 
-\subsection{BugNotifier}
+%\subsection{BugNotifier}
 
-\PWB \ incluye un \verb"BugNotifier", que automatiza el manejo de errores ``no manejados'' , permitiendo al usuario que encuentra una condición de error dentro de la aplicación, enviar el reporte de error a un mail configurado a tal fin, y también reiniciar la aplicación para continuar utilizándola.
+%\PWB \ incluye un \verb"BugNotifier", que automatiza el manejo de errores ``no manejados'' , permitiendo al usuario que encuentra una condición de error dentro de la aplicación, enviar el reporte de error a un mail configurado a tal fin, y también reiniciar la aplicación para continuar utilizándola.
 
 %En caso de que en la aplicación de Blog se encuentre un error, en lugar de presentarle al error, se le presentará con esta imagen.
 
@@ -299,8 +350,12 @@ El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un leng
 \PWB \ implementa un mecanismo simple de eventos. Todo objeto \verb"PWBObject" implementa los mensajes \verb"addInterestIn", que permite a otro objeto escuchar un evento, y \verb"triggerEvent", que dispara un evento.
 
 En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag". Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda ese mensaje.
-
-% Hacer un diagrama representando esto.
+\begin{figure}
+	\centering
+	\includegraphics*[scale=0.20]{images/componentes.png}
+ 	\caption{Componentes que no utilizan Eventos}
+ 	\label{fig-comp1}
+\end{figure}
 
 
 Utilizando eventos, podríamos implementar:
@@ -337,17 +392,16 @@ Existen objetos que accionan algunos eventos por default:
 \end{itemize}
 %Por ejemplo, podríamos mostrar y ocultar el texto del post cuando se hace click en el título.
 
-\subsection{Weak References}
-\label{sub-weak}
-Cuando un objeto \verb"$x" queda escuchando un evento de un \verb"PWBObject" \verb"$y", este último necesita guardar una referencia al primero. En caso de que, por el flujo de la aplicación, \verb'$x' deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \verb'$y' lo conserva referenciado, aunque no lo necesite realmente.
+%\subsection{Weak References} \label{sub-weak}
+%Cuando un objeto \verb"$x" queda escuchando un evento de un \verb"PWBObject" \verb"$y", este último necesita guardar una referencia al primero. En caso de que, por el flujo de la aplicación, \verb'$x' deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \verb'$y' lo conserva referenciado, aunque no lo necesite realmente.
 
-Por esto implementamos un mecanismo de Weak References, en donde \verb"$y" se queda con una referencia de \verb"$x", pero de la cual el garbage collector no se entera, permitiendo borrar a \verb"$x" en caso de que sea necesario.
+%Por esto implementamos un mecanismo de Weak References, en donde \verb"$y" se queda con una referencia de \verb"$x", pero de la cual el garbage collector no se entera, permitiendo borrar a \verb"$x" en caso de que sea necesario.
  %$
 
-\subsection{PHPCC}
-\label{sub-phpcc}
-Para crear el lenguaje OQL, debimos crear un Compiler Compiler para PHP (otros conocidos son Bison\cite{BISON}, yacc\cite{YACC}).
-De esta manera ahora también se puede extender el framework con múltiples DSLs (Domain-Specific Languages - Lenguages específicos de Dominio).
+%\subsection{PHPCC}
+%\label{sub-phpcc}
+%Para crear el lenguaje OQL, debimos crear un Compiler Compiler para PHP (otros conocidos son Bison\cite{BISON}, yacc\cite{YACC}).
+%De esta manera ahora también se puede extender el framework con múltiples DSLs (Domain-Specific Languages - Lenguages específicos de Dominio).
 
 \subsection{Macros}
 \label{sub-macros}

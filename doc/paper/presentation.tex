@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage[left=2cm,top=3cm,right=2cm]{geometry}
+\usepackage{lgrind}
 
 \title{\PWB}
 \date{}
@@ -84,7 +85,10 @@ Existe una parte más que integra el framework. Esto es la ``Programación en lo
 
 \item Para la vista, el sistema de templates (sección \ref{sub-templates}) basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico (sección \ref{sub-templates-adapt}). El sistema se encarga de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo (sección \ref{sub-render}) (esto es fácilmente configurable).
 
-\item Por último, para \PITS, \PWB \ presenta una serie de características displonibles en otros lenguajes y plataforma pero no existentes en PHP. Estas son una implementación de Eventos (sección \ref{sub-events}) (especialmente útiles para mantener la vista actualizada), Weak References (sección \ref{sub-weak}), creación de DSLs (sección \ref{sub-phpcc}), Macros (sección \ref{sub-macros}) y Mixins(sección \ref{sub-mixins}).
+\item Por último, para \PITS, \PWB \ presenta una serie de características displonibles en otros lenguajes y plataformas pero no existentes en PHP. Estas son una implementación de Eventos (sección \ref{sub-events}) (especialmente útiles para mantener la vista actualizada),
+%Weak References (sección \ref{sub-weak}),
+%creación de DSLs (sección \ref{sub-phpcc}),
+Macros (sección \ref{sub-macros}) y Mixins (sección \ref{sub-mixins}).
 
 \end{itemize}
 
@@ -99,8 +103,7 @@ Existe una parte más que integra el framework. Esto es la ``Programación en lo
 
 \PWB \ no presenta en sí conceptos novedosos, sino que reúne las opciones que consideramos mejores, y los integra e interrelaciona dentro del mismo framework.
 
-Aún quedan cosas por hacer. Algunas de ellas son implementar mejoras en el manejo de collections en el modelo, documentar, agregar soporte DSLs composicionales, mejorar la integración y comunicación de múltiples aplicaciones y diseñar e implementar templates paramétricos y dependientes del contexto
-y persistencia por alcance de JDO \cite{jpox}.
+Aún quedan cosas por hacer. Algunas de ellas son implementar mejoras en el manejo de collections en el modelo, documentar, agregar soporte DSLs composicionales, mejorar la integración y comunicación de múltiples aplicaciones y diseñar e implementar templates paramétricos y dependientes del contexto y persistencia por alcance de JDO \cite{jpox}.
 
 
 \section{Agradecimientos}

@@ -1,9 +1,9 @@
 <?php
 
 class Post extends PersistentObject {
-  function initialize(){
-    $this->addField(new TextField(array('fieldName'=>'titulo')));
-    $this->addField(new TextArea(array('fieldName'=>'texto')));
+  function initialize() {
+    $this->addField(new TextField(array('fieldName'=>'title')));
+    $this->addField(new TextArea(array('fieldName'=>'text')));
     $this->addField(new CollectionField(
       array(
         'fieldName'=>'tags',
@@ -13,7 +13,7 @@ class Post extends PersistentObject {
         'reverseField'=>'post')
        )
     );
-    $this->addField(new IndexField(array('fieldName'=>'author', 'type'=>User)));
+    $this->addField(new IndexField(array('fieldName' => 'author', 'type' => 'User')));
   }
 }
 ?>
