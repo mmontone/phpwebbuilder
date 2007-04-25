@@ -10,13 +10,7 @@ Las tareas a realizar son:
 
 \section{Características del Modelo}
 
-\subsection{Persistencia y metadata}
-\label{sub-pers}
-
-La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject".
-Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
-
-Para el blog, tendremos las siguientes clases: \emph{Post} (figura \ref{fig-model1}), \emph{Tag}, \emph{User} .
+El Modelo de la aplicación, es la representación de la información de dominio específico de la aplicación. Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User} (figura \ref{fig-model1}).
 
 \begin{figure}
 	\centering
@@ -25,50 +19,40 @@ Para el blog, tendremos las siguientes clases: \emph{Post} (figura \ref{fig-mode
  	\label{fig-model1}
 \end{figure}
 
+\subsection{Persistencia y metadata}
+\label{sub-pers}
+
+Los datos del modelo en general, necesitan ser persistidos, es decir, guardados para que en otra ejecución de la aplicación, simultánea o posterior, por este u otro usuario, puedan ser accedidos.
+
+\PWB \ posee un mecanismo para la persistencia, que permite, mediante unas anotaciones especiales en los datos del modelo, el guardado y recuperación automática de los datos en la base de datos.
+
+La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject". Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
+
+De esta manera declaramos la clase \verb"Post":
+
 \begin{lgrind}
 \input{src/Post.class.php.tex}
 \end{lgrind}
 
-\comment{
-\begin{verbatim}
-class Post extends PersistentObject {
-  function initialize() {
-    $this->addField(new TextField(array('fieldName'=>'title')));
-    $this->addField(new TextArea(array('fieldName'=>'text')));
-    $this->addField(new CollectionField(
-      array(
-        'fieldName'=>'tags',
-        'direct'=>false,
-        'JoinType'=>PostTag,
-        'targetField'=>'tag',
-        'reverseField'=>'post')
-       )
-    );
-    $this->addField(new IndexField(array('fieldName' => 'author', 'type' => 'User')));
-  }
-}
-\end{verbatim}
+Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en el que declaramos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
+
+La clase \verb'PersistentObject' posee los métodos \verb'save' y \verb'delete', que permiten insertar, actualizar y borrar objetos de la base de datos.
+
+Para crear y guardar un \verb'Post' de título 'Model persistency' hacemos:
 
 \begin{verbatim}
-class PostTag extends PersistentObject {
-  function initialize() {
-    $this->addField(new IndexField(array('fieldName'=>'post', 'type' => 'Post')));
-    $this->addField(new IndexField(array('fieldName'=>'tag', 'type' => 'Tag')));
-  }
-}
-
-class Tag extends PersistentObject {
-  function initialize() {
-    $this->addField(new TextField(array('fieldName'=>'name')));
-  }
-}
+$p = new Post;
+$p->title->setValue('Model persistency');
+$p->save();
 \end{verbatim}
-}
 
-Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en el que definimos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
+Esto deja el \verb'Post' persistido en la base de datos.
 
 \subsection{Recuperación de objetos}
-La recuperacion de objetos se hace mediante la clase \verb"Report", que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
+
+Una operación habitual en el desarrollo de una aplicación, es la recuperación de datos, y de información calculada en base a estos.
+
+La recuperacion de objetos en \PWB \ se hace mediante la clase \verb"Report", que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
 
 Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos el siguiente objeto Report:
 
@@ -78,6 +62,8 @@ Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos el sigui
 
 Esta consulta, genera el siguiente SQL:
 
+%#SQL
+%(
 \begin{verbatim}
 SELECT
     `p_post`.`id` AS `post_id`,
@@ -87,15 +73,21 @@ SELECT
   FROM `post` AS `p_post`
   WHERE EXISTS
     (SELECT
-        `tag_posttag`.`id` AS `posttag_id`
-       FROM `posttag` AS ` tag_posttag`, `tag` AS ` tagtag_tag`
+        `tag_posttag_tag`.`id` AS `tag_id`
+       FROM `posttag` AS ` tag_posttag`, `tag` AS `tag_posttag_tag`
        WHERE `tag_posttag`.`post` = `p_post`.`id`
-          AND `tag_posttag`.`tag` = `tagtag_tag`.`id`
-          AND `tagtag_tag`.`name` = $tag
+          AND `tag_posttag`.`tag` = `tag_posttag_tag`.`id`
+          AND `tag_posttag_tag`.`name` = $tag
     )
 \end{verbatim}
+%)
+ %$
 
-Como se puede ver, no se acorta la cantidad de código escrito, pero se simplifica (ya que uno no tiene que preocuparse por seleccionar correctamente los campos del objeto), se hacen los joins de tablas automáticamente (incluso los de herencia, que en este ejemplo no se notan por su simplicidad). Además, al ser la consulta generada, un cambio en las clases del modelo no necesita modificar las consultas a mano (por ejemplo, si agregasemos un campo `fecha de publicación' en el Post)
+
+Como se puede ver, no se acorta la cantidad de código escrito, pero se simplifica dado que uno solamente define la clase sobre la que hace la consulta (\verb"Post"), y explicita que solamente quiere los que en su colección de tags posean el tag \verb'$tag' %$
+.
+
+El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto, se hacen los joins de tablas automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad). Además, al ser la consulta generada, un cambio en las clases del modelo no necesita modificar las consultas a mano (por ejemplo, si agregásemos un campo `fecha de publicación' en el \verb"Post").
 
 \subsection{OQL (Object Query Language)}
 \label{sub-oql}
@@ -106,8 +98,12 @@ Dada la complejidad de construir un reporte completo a mano, desarrollamos un le
 \end{verbatim}
 
 Vemos que la complejidad de crear el reporte se disminuye en una alta proporción.
+La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en la sección \ref{sub-macros}.
 
-Agregamos entonces en la clase \verb"Post":
+Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope (es decir, el OQL está embebido en el PHP).
+
+Para buscar los post que tengan el tag  \verb"$tag", %$
+agregamos en la clase \verb"Post" el siguiente mensaje de clase:
 
 \begin{verbatim}
 
@@ -119,10 +115,6 @@ class Post extends Component {
 }
 
 \end{verbatim}
-
-La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en la sección \ref{sub-macros}.
-
-Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope. Esta forma de implementación de lenguajes de dominio específico se denomina embebida.
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
@@ -150,21 +142,26 @@ Una buena propiedad del lenguaje es que está íntimamente relacionado con el c�
  	\label{fig-abm2}
 \end{figure}
 
-Los datos necesarios para la persistencia del modelo se infieren de la definición de los objetos. Establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
+Para poder persistir los datos del modelo, se necesita un repositiorio. \PWB\ utiliza una base de datos relacional para ello, y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
 
-A partir de este modelo se puede deducir la información del esquema de persistencia para una base de datos relacional. \PWB \ genera el esquema automáticamente liberando de esta carga al programador, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo.
+La estructura necesaria para la persistencia del modelo se puede inferir de la definición de los objetos, donde establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
+
+\PWB \ genera el esquema automáticamente librando al programador de esta carga, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo.
 
 Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación y se necesita adaptar la base de datos a los nuevos cambios.
 %Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
 \section{Características del Controller}
+
+Teniendo ya el modelo programado, y persistido, es posible implementar la interacción con el usuario. Veremos cómo listar los Posts del blog, y cómo permitirle al usuario ver solamente los posts que tengan un tag.
+
 \label{sec-controller}
 \subsection{Componentes}
 \label{sub-comp}
 
-Las aplicaciones se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables, ya que pueden ser parametrizados, pueden disparar eventos, y pueden contener otros componentes.
+Las aplicaciones en \PWB\ se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables, ya que pueden ser parametrizados, pueden disparar eventos, y pueden contener otros componentes.
 
-Creemos el componente principal de la aplicación del blog. Este consiste simplemente de una lista de posts. Llamemos a este componente \verb"BlogComponent".
+El componente principal de la aplicación del blog consiste simplemente de una lista de posts. Llamemos a este componente \verb"BlogComponent".
 
 \begin{verbatim}
 
@@ -175,7 +172,9 @@ class BlogComponent extends Component {
 }
 \end{verbatim}
 
-Como se ve en el ejemplo, un componente agrega sus sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent". Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados. Además, cada componente posee su propio flujo de control. Esto significa que podemos componer libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en cualquier otro framework. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
+Un componente agrega sus sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent". Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados.
+
+%Además, cada componente posee su propio flujo de control. Esto significa que podemos componer libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en cualquier otro framework. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
 
 Ahora definamos la lista de \verb"Posts". Sólo basta subclasificar de \verb"CollectionNavigator", un componente general para navegación y mostrado de listados de objetos:
 
@@ -186,12 +185,24 @@ class PostList extends CollectionNavigator {
   }
 }
 
+\end{verbatim}
+
+Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine", en este caso un \verb'PostItem'.
+
+
+\subsection{Widgets}
+\label{sub-widget}
+
+Necesitamos crear ahora el componente \verb'PostItem', que muestra cada \verb'Post'. Este debe mostrar el título, el texto, y los tags.
+
+\PWB\ posee unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox). Mostraremos con estos el \verb'Post':
+
+\begin{verbatim}
 class PostItem extends Component {
   function PostItem($post){
     $this->post = $post;
     parent::Component();
   }
-
   function initialize(){
     $this->addComponent(new Text($this->post->title), 'title');
     $this->addComponent(new Text($this->post->text), 'text');
@@ -202,16 +213,13 @@ class PostItem extends Component {
     }
   }
 }
-
 \end{verbatim}
-
-Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine".
 
 \subsection{Control de flujo modal}
 \label{sub-modal-flow}
-Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes (sección \ref{sub-comp}), cada componente posee su propio flujo de control, lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
-
 Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen una determinada etiqueta al hacer click sobre ésta. Reveamos entonces nuestras clases \verb"PostItem" y \verb"PostList" para establecer la interacción necesaria.
+
+%Veamos ahora otra característica del control de flujo de los componentes. Como vimos antes (sección \ref{sub-comp}), cada componente posee su propio flujo de control, lo que nos permitía ensamblar componentes más complejos libremente. Además de esto, la navegación a través de la aplicación se define mediante una interacción modal entre los componentes. Será mejor ver como funciona ésto en la aplicación que estamos desarrollando.
 
 Modificamos primero la clase \verb"PostItem" para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase \verb"CommandLink" en lugar de los de clase \verb"Text" anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto enviamos al padre del \verb'PostItem' que invoque el método \verb'showTag'.
 
@@ -236,7 +244,9 @@ class PostItem extends Component {
 
 \end{verbatim}
 
-Ahora falta que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modifiquemos la clase \verb"PostList" para que delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
+El \verb"CommandLink" es un \verb"Widget" especial que permite al usuario ejecutar una acción en la aplicación.
+
+Ahora falta que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modificamos la clase \verb"PostList" para que, al recibir el mensaje \verb'showTag' que le manda el \verb'PostItem', delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
 
 \begin{verbatim}
 
@@ -259,13 +269,6 @@ class PostList extends CollectionNavigator {
 
 %En el método \verb"showTag" del \verb"PostList", el componente llama (\verb"call") a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
 
-\subsection{Widgets}
-\label{sub-widget}
-
-Existen unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox).
-
-Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejecutar una acción en la aplicación como vimos en la sección \ref{sub-modal-flow}
-
 % \subsection{Multiple Dispatching y Context Dispatching}
 % \label{sub-dispatch}
 % Otra característica llamativa, es el múltiple dispatching de funciones.
@@ -281,19 +284,24 @@ Un \verb"Widget" especial, es el \verb"CommandLink", que permite al usuario ejec
 %
 % Entonces, podemos utilizar el Context Dispatching para elegir un componente UserTaskShow, en lugar del otro, el TaskShow, independientemente del nivel de anidamiento del componente que hace el dispatch y el componente que provee el contexto.
 
-
 \section{Características de la Vista}
+
+Con la interacción de la aplicación ya implementada, falta presentar la información al usuario de manera entendible.
+
 \label{sec-view}
 \subsection{Templates}
 \label{sub-templates}
-Para la generación de interfaz, utilizamos la técnica conocida de los templates.
+
+Necesitamos darle formato a los datos a presentarle al usuario. Para esto utilizaremos templates, que se adaptan a cada uno de los componentes.
+
+Para el \verb'PostItem', mostramos de manera resaltada el título, y el cuerpo, y más abajo los tags:
 
 \begin{verbatim}
 
 <templates>
   <template class="PostItem">
-    <h1><container id="titulo"/></h1>
-    <p><container id="texto"/></p>
+    <h1 id="titulo" />
+    <p id="texto" />
     Tags: <div id="tags"><container class="CommandLink"/> </div>
     <hr/>
   </template>
@@ -301,15 +309,18 @@ Para la generación de interfaz, utilizamos la técnica conocida de los template
 
 \end{verbatim}
 
-Por comodidad, agregamos las siguientes características:
+Hacemos un template para los componentes de clase \verb'PostItem', asociamos al subcomponente de id \emph{titulo} al elemento \verb'h1' del html, el de id \emph{texto} al \verb'p'. Por último, hacemos un \verb'div' para el componente de id \emph{tags}, y decimos que posicione a los \verb'CommandLink' hijos de \emph{tags} con su template default.
 
-- Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins" (sección \ref{sub-mixins}).
+Los templates tienen las siguientes características:
+\begin{itemize}
+\item Los templates se ``heredan'', así que un Componente subclase de otro que tiene template, hereda de este el template (siempre y cuando no tenga uno más específico). También son heredables por \verb"Mixins" (sección \ref{sub-mixins}).
 
-- Los templates son declarativos: No incluyen comandos ni iteradores (como tienen otros engines de templates). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
+\item Los templates son declarativos: No incluyen comandos ni iteradores (como tienen otros engines de templates). De esta manera, el control de la aplicación está 100\% en los componentes, y además nos aseguramos que los templates generen un XML bien formado.
 
-- Los templates están basados en XML, con un par de tags extras (\verb"<template>" y \verb"<container>"), así que se puede generar cualquier XML (como XHTML) para mostrar los componentes.
+\item Los templates están basados en XML, con un par de tags extras (\verb"<template>" y \verb"<container>"), así que se puede generar cualquier XML (como XHTML) para mostrar los componentes.
+\end{itemize}
 
-Además, cada componente tiene un template default, por lo que no se necesita crearle uno para tener la aplicación funcionando (en nuestro caso, no lo hicimos para el \verb"BlogComponent" ni el \verb"PostList").
+Además, cada componente tiene un template default, por lo que no se necesita crearle uno para tener la aplicación funcionando (en nuestro caso, no lo hicimos para el \verb'CommandLink', el \verb"BlogComponent" ni el \verb"PostList").
 
 \subsubsection{Adaptación de Diseños existentes}
 \label{sub-templates-adapt}
@@ -317,7 +328,10 @@ Debido a que los templates son XML, se puede tomar una página en HTML y agregar
 
 \subsection{Renderings}
 \label{sub-render}
-El rendereo (generación de la interfaz) de la aplicación se hace 100\% mediante \PWB, de modo que no necesita nigún trabajo especial por el programador.
+
+Una técnica muy utilizada en las aplicaciones web 2.0, es el rendereo de cambios mediante AJAX, que permite al usuario ejecutar varias tareas en simultáneo en la aplicación, y refrescar la pantalla sin recargar todo.
+
+El rendereo (generación de la interfaz) de la aplicación se hace 100\% mediante \PWB, de modo que no hay intervención por el programador.
 
 La manera de cambiar el engine de rendereo es tan simple como cambiar en el archivo de configuración, donde dice \verb"page_renderer=StandardPageRenderer" por \verb"page_renderer=AjaxPageRenderer", o incluso por \verb"page_renderer=CometPageRenderer" o \verb"page_renderer=XULPageRenderer".
 
@@ -334,6 +348,8 @@ Mediante pasaje de mensajes de otro script, que envía los datos a la aplicació
 El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado, y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer, que renderea aplicaciones en XUL. La diferencia para el programador, es en los tags de los templates, ya que debe utilizar elementos XUL en lugar de HTML. Dado que los templates de HTML llevan extensión .xml, y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
 
 \section{Características de \PITS}
+
+
 
 %\subsection{BugNotifier}
 
