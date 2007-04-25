@@ -115,6 +115,11 @@ class CollectionField extends DataField {
 		// This field collection should be inmutable
 		return $this->collection->isEmpty();
 	}
+
+    function getTargetField() {
+    	return $this->type->getTargetField();
+    }
+
 	//GARBAGE COLLECTION
 	function mapChild($function) {
 		$this->collection->for_each($function);

@@ -485,17 +485,17 @@ class CollectionPathExpression extends PathExpression {
 
     function evaluateIndirectCollectionIn(&$colfield, &$report, &$metadata, $prefix) {
         $joinVar = $prefix . $colfield->getName();
-        $report->defineVar($this->var, $colfield->getDataType());
+
         $report->defineVar($joinVar, $colfield->getJoinDataType());
+        $report->defineVar($this->var, $colfield->getDataType());
 
-        $joinType = $colfield->getJoinType();
+        $joinType = $colfield->getJoinDataType();
 
-        $join_metadata =& PersistentObjectMetaData::forClass($joinType);
+        $join_metadata =& PersistentObjectMetaData::getMetaData($joinType);
 
         $join_table = $join_metadata->getTablePrefixed($prefix);
 
-        $target_field =& $join_metadata->getField($colfield->getTargetField());
-
+        $target_field =& $join_metadata->getFieldNamed($colfield->getTargetField());
 
         $and =& new AndExp;
 
@@ -503,7 +503,7 @@ class CollectionPathExpression extends PathExpression {
                                                      'exp2' => new ValueExpression('`' . $metadata->getTablePrefixed($prefix) . '`.`id`'))));
 
         $and->addExpression(new EqualCondition(array('exp1' => new AttrPathExpression($joinVar, $colfield->getTargetField()),
-                                                     'exp2' => new ObjectExpression($this->var))));
+                                                     'exp2' => new ObjectPathExpression($this->var))));
         $this->exp =& $and;
 
         $this->exp->evaluateIn($report);
