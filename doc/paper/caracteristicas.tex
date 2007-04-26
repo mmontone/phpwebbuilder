@@ -349,7 +349,7 @@ El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un leng
 
 \section{Características de \PITS}
 
-
+La complejidad de una aplicación por lo general es mayor que en el ejemplo anterior. \PWB\ posee otras herramientas que ayudan en la generación de los componentes y del modelo.
 
 %\subsection{BugNotifier}
 
@@ -359,9 +359,9 @@ El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un leng
 
 \subsection{Eventos}
 \label{sub-events}
-\PWB \ implementa un mecanismo simple de eventos. Todo objeto \verb"PWBObject" implementa los mensajes \verb"addInterestIn", que permite a otro objeto escuchar un evento, y \verb"triggerEvent", que dispara un evento.
 
-En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag". Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda ese mensaje.
+En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag" cuando un tag es seleccionado. Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda el mensaje \verb"showTag"  (figura \ref{fig-comp1}).
+
 \begin{figure}
 	\centering
 	\includegraphics*[scale=0.20]{images/componentes.png}
@@ -369,40 +369,48 @@ En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que l
  	\label{fig-comp1}
 \end{figure}
 
+Para realmente mantener la composicionalidad, necesitamos que el \verb"PostItem" no envíe un mensaje al componente padre, pero al mismo tiempo, desde el \verb'PostList' necesitamos saber que se hizo click en el tag. Para esto, utilizamos eventos. El componente \verb'PostItem' dispara un evento cuando se hace click en un tag, y el \verb'PostList', que escucha cuando este evento se dispara, actualiza la lista de contactos.
 
-Utilizando eventos, podríamos implementar:
+\PWB\ implementa un mecanismo simple de eventos. Todo objeto \verb"PWBObject" implementa los mensajes \verb"addInterestIn", que permite a otro objeto escuchar un evento, y \verb"triggerEvent", que dispara un evento.
+
+Utilizando eventos, implementamos:
 
 \begin{verbatim}
 class PostList extends CollectionNavigator{
   function addLine($post){
     $pi = new PostItem($post);
-    $pi->addInterestIn('tagSelected', new FunctionObject($this, 'showTag'));
+    $pi->addInterestIn('tag_selected', new FunctionObject($this, 'showTag'));
     return $pi;
   }
   ...
 }
+\end{verbatim}
 
+Al crear el \verb'PostItem', el \verb'PostList' se queda escuchando el evento \verb'tag_selected' de él, y que cuando ocurra, se le envíe el mensaje \verb'showTag'.
+
+\begin{verbatim}
 class PostItem extends Component{
   function initialize(){
     ...
     foreach($this->post->tags->collection->elements() as $tag){
       $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
-        'prodeedFunction'=>new FunctionObject($this, 'showTag', array('tag'=>$tag))));
+        'prodeedFunction'=>new FunctionObject($this, 'tagSelected', array('tag'=>$tag))));
     }
   }
-  function showTag($params){
-    $this->triggerEvent('tagSelected', $params);
+  function tagSelected($params){
+    $this->triggerEvent('tag_selected', $params);
   }
 }
 
 \end{verbatim}
 
-Existen objetos que accionan algunos eventos por default:
+El \verb'PostItem', en lugar de mandar un mensaje a su padre, se envía a sí mismo el mensaje \verb'tagSelected', que dispara un evento \verb'tag_selected', sin preocuparse de quién esté escuchando.
+
+Existen objetos que disparan algunos eventos por default:
 \begin{itemize}
 \item Los \verb"Widgets", en cada acción del usuario (cuando hace click, cuando se modifica un elemento).
 \item Los objetos del modelo (\verb"PersistentObject"), cuando son modificados.
 \end{itemize}
-%Por ejemplo, podríamos mostrar y ocultar el texto del post cuando se hace click en el título.
 
 %\subsection{Weak References} \label{sub-weak}
 %Cuando un objeto \verb"$x" queda escuchando un evento de un \verb"PWBObject" \verb"$y", este último necesita guardar una referencia al primero. En caso de que, por el flujo de la aplicación, \verb'$x' deje de ser necesario, el mecanismo de garbage collection de PHP no puede descartarlo, porque \verb'$y' lo conserva referenciado, aunque no lo necesite realmente.
@@ -417,24 +425,17 @@ Existen objetos que accionan algunos eventos por default:
 
 \subsection{Macros}
 \label{sub-macros}
-Otra funcionalidad interesante, es la utilización de macros. Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto, ya que son otra forma de modularización.
 
-Dentro de \PWB \ mismo, tenemos varios tipos de macros:
+Un tiempo grande del desarrollo, se destina a la corrección de errores. Una modificación de una parte del código, puede afectar a otras distantes (en el código, o en el tiempo de desarrollo). Además, la fuente del error y el síntoma pueden tener ser también distantes. Una forma de detectar estos errores, es mediante el chequeo de tipos, y las aserciones.
 
-Las macros \verb"lam", y \verb"select", que permiten hacer un pre-procesamiento del código, generando código PHP con mayor funcionalidad:
+El estas validaciones durante la ejecución del programa, si bien son útiles para el desarrollo, consumen un tiempo innecesario cuando el programa es instalado en producción. Una forma de recortar estos tiempos, es eliminar del código final todos los chequeos, pero muchos pueden pasar indetectados, y pueden llegar a ser útiles ante una modificación posterior del sistema.
 
-\verb"#@select p:Post where exists (p.tags as tag where tag.nombre='Software Libre')@#"%$
+Por esto mismo, en \PWB\ utilizamos \verb'#@typecheck@#' y \verb'#@check@#', para insertar validaciones desactivables en el código.
 
-genera un objeto reporte completo, con todos los posts con nombre \verb"'Software Libre'", en código PHP.
+Por ejemplo, escribiendo \verb"#@typecheck $post: Post@#" se chequea que la variable \verb"$post"
+sea un \verb'Post'. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
 
-Y por otro lado, las macros para validación de código, que hacen tests, útiles para el momento del desarrollo pero consumidoras de tiempo valioso en tiempo de deployment.
-
-Estas son typecheck, y check:
-\verb"#@typecheck $p: Post@#" %$
-que chequea que la variable \verb"$c" y %$
- sea un Post. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
 \begin{verbatim}
-
 class PostItem extends Component{
   function PostItem($post){
     #@typecheck $post: Post@#
@@ -445,9 +446,13 @@ class PostItem extends Component{
 }
 \end{verbatim}
 
-Esto detecta problemas durante el desarrollo, al intentar inicializar erróneamente un \verb"PostItem". Cuando la aplicación se instala en el cliente, se elimina el chequeo para evitar el overhead.
+Esto avisará al programador por problemas durante el desarrollo, al intentar inicializar erróneamente un \verb"PostItem" con algo que no sea un \verb'Post'.
 
-Un programador puede agregar sus propias macros, declarando una función \verb"mi_macro", y luego llamandola con \verb"#@mi_macro" {\it parámetros} \verb"@#".
+Habilitando o deshabilitando en el config.php (sección \ref{sub-config}) \verb'compile=typecheck', podemos utilizar estos chequeos.
+
+Tanto el OQL (sección \ref{sub-oql}), como \verb'check' y \verb'typecheck' son macros: porciones de código que se ejecutan una sola vez, en tiempo de compilación, y reemplazan su texto en el código de la aplicación final.
+
+Un programador puede agregar sus propias macros, declarando una función simple de PHP \verb"mi_macro", y luego llamandola con \verb"#@mi_macro" {\it parámetros} \verb"@#". Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto, ya que son otra forma de modularización.
 
 \subsection{Mixins}
 \label{sub-mixins}
@@ -487,7 +492,7 @@ De esta manera, podemos implementar una sola vez el comportamiento de \verb'Valu
 Además, agregamos a los mixins en el chequeo de tipos. Si tenemos un \\ chequeo \verb"#@typecheck $v: ValueHolder@#", tanto un objeto de clase \verb"Direccion" como uno de clase \verb"Contador" cumplen con la condición.
 
 \subsection{Múltiples Configuraciones}
-
+\label{sub-config}
 Para el desarrollo colaborativo, es útil mantener múltiples configuraciones. O para trabajar en distintos clientes. O para hacer testing y deployment.
 
 Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad específica. En un archivo de configuración global (config.php) se guardan las variables específicas de cada configuración, además de las variables comunes a todas. Luego, en otro archivo (serverconfig) se pone la configuración que se va a utilizar.
