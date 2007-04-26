@@ -32,7 +32,7 @@ class CollectionNavigator extends Component {
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->addComponent(new Text($this->size), 'realSize');
-		$this->pageSize =& new ValueHolder($pz = 10);
+		$this->pageSize =& new ValueHolder($pz = 5);
         $this->pageSize->addInterestIn('changed', new FunctionObject($this, 'refresh'), array('execute once' => true));
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		foreach ($this->fields as $n=>$f) {
@@ -45,6 +45,8 @@ class CollectionNavigator extends Component {
 				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->varName));
 			}
 		}
+
+        $this->showElements();
 	}
 
 	function addNavigationButtons() {
@@ -75,17 +77,21 @@ class CollectionNavigator extends Component {
 		// through the collection interface (the in-memory collection doesn't get notified)
 		$col->refresh();
 
-        $elements =& $this->getElements();
+        $this->showElements();
+	}
+
+    function showElements() {
+    	$elements =& $this->getElements();
 
         if (is_array($elements)) {
-			$ks = array_keys($elements);
-    		foreach ($ks as $k) {
-    			$fc =& $this->addLine($elements[$k]);
-    			$this->objs->addComponent($fc);
-    		}
-    		$this->redraw();
-		}
-	}
+            $ks = array_keys($elements);
+            foreach ($ks as $k) {
+                $fc =& $this->addLine($elements[$k]);
+                $this->objs->addComponent($fc);
+            }
+            $this->redraw();
+        }
+    }
 
     #@php4
     function &getElements() {

@@ -22,7 +22,7 @@ El Modelo de la aplicación, es la representación de la información de dominio
 \subsection{Persistencia y metadata}
 \label{sub-pers}
 
-Los datos del modelo en general, necesitan ser persistidos, es decir, guardados para que en otra ejecución de la aplicación, simultánea o posterior, por este u otro usuario, puedan ser accedidos.
+Los datos del modelo necesitan en general ser persistidos para que éstos puedan ser accedidos en otra ejecución de la aplicación, ya sea simultánea o posterior.
 
 \PWB \ posee un mecanismo para la persistencia, que permite, mediante unas anotaciones especiales en los datos del modelo, el guardado y recuperación automática de los datos en la base de datos.
 
@@ -152,10 +152,10 @@ Además, podemos verificar que el esquema de base de datos sea el correcto, y mo
 %Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
 \section{Características del Controller}
+\label{sec-controller}
 
 Teniendo ya el modelo programado, y persistido, es posible implementar la interacción con el usuario. Veremos cómo listar los Posts del blog, y cómo permitirle al usuario ver solamente los posts que tengan un tag.
 
-\label{sec-controller}
 \subsection{Componentes}
 \label{sub-comp}
 
@@ -189,13 +189,14 @@ class PostList extends CollectionNavigator {
 
 Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine", en este caso un \verb'PostItem'.
 
+Una de las ventajas que tiene esta implementación del controller es que podemos ensamblar componentes libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en casi cualquier otro framework.
 
 \subsection{Widgets}
 \label{sub-widget}
 
-Necesitamos crear ahora el componente \verb'PostItem', que muestra cada \verb'Post'. Este debe mostrar el título, el texto, y los tags.
+Necesitamos crear ahora el componente \verb'PostItem', que muestra cada \verb'Post'. Este debe mostrar el título, el texto y las etiquetas.
 
-\PWB\ posee unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox). Mostraremos con estos el \verb'Post':
+\PWB\ posee unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox). Mostraremos con éstos el \verb'Post':
 
 \begin{verbatim}
 class PostItem extends Component {
@@ -261,13 +262,43 @@ class PostList extends CollectionNavigator {
 
 \end{verbatim}
 
+Falta explicar la forma que tiene un componente de decir que terminó con su tarea. 
 
-%Falta explicar la forma que tiene un componente de decir que terminó con su tarea. Hacemos esto invocando al método callback sobre el componente que terminó su ejecución.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{images/blog1.png}
+ 	\caption{Nuestro blog}
+ 	\label{fig-blog1}
+\end{figure}
 
-%En el caso del PostList, una vez que se haya seleccionado una de sus etiquetas, su ejecución acaba y por lo tanto indica esto haciendo callback y pasando la etiqueta seleccionada al llamador.
+\begin{figure}
+	\centering
+	\includegraphics{images/blog2.png}
+ 	\caption{Posts con etiqueta 'miscellaneous' y el botón para volver}
+ 	\label{fig-blog2}
+\end{figure}
 
+Queremos ahora que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (ver figura \ref{fig-blog2}). Para esto utilizamos un botón volver cuyo comportamiento será hacer callback sobre la nueva lista como mostramos a continuación:
 
-%En el método \verb"showTag" del \verb"PostList", el componente llama (\verb"call") a otro componente, para realizar una tarea complementaria (en este caso, mostrar una lista distinta de posts, sólo aquellos que tienen el tag correspondiente).
+\begin{verbatim}
+
+class PostList extends CollectionNavigator {
+  ...
+  function addBackButton() {
+    $this->addComponent(new CommandLink(array('text' => 'back', 'proceedFunction' => new FunctionObject($this, 'callback'))));
+  }
+
+  function showTag($params){
+    $list = new PostList(Post::Tagged($params['tag']);
+    $this->call($list);
+    $list->addBackButton();
+  }
+  ...
+}
+
+\end{verbatim}
+
+La interacción es modal ya que el componente que llama a otro mediante un llamado a \verb"call" pierde el control. Este pasa al componente llamado hasta que haga callback. Una vez hecho el callback el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
 
 % \subsection{Multiple Dispatching y Context Dispatching}
 % \label{sub-dispatch}
