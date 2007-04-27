@@ -172,7 +172,7 @@ class BlogComponent extends Component {
 }
 \end{verbatim}
 
-Un componente agrega sus sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent". Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados.
+Un componente agrega sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent", dejándolo como \emph{hijo} suyo en el árbol de componentes de la aplicación. Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados.
 
 %Además, cada componente posee su propio flujo de control. Esto significa que podemos componer libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en cualquier otro framework. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
 
@@ -238,7 +238,14 @@ class PostItem extends Component {
     $this->addComponent(new Component, 'tags');
     foreach($this->post->tags->collection->elements() as $tag){
       $this->tags->addComponent(new CommandLink(array('text'=>$tag->name,
-        'prodeedFunction'=> new FunctionObject($this->getParent(), 'showTag', array('tag'=>$tag)))));
+        'prodeedFunction'=>
+          new FunctionObject(
+            $this->getParent(),
+            'showTag',
+            array('tag'=>$tag)
+          )
+        ))
+      );
     }
   }
 }
@@ -247,7 +254,7 @@ class PostItem extends Component {
 
 El \verb"CommandLink" es un \verb"Widget" especial que permite al usuario ejecutar una acción en la aplicación.
 
-Ahora falta que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modificamos la clase \verb"PostList" para que, al recibir el mensaje \verb'showTag' que le manda el \verb'PostItem', delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
+Necesitamos que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modificamos la clase \verb"PostList" para que, al recibir el mensaje \verb'showTag' que le manda el \verb'PostItem', delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
 
 \begin{verbatim}
 
@@ -262,7 +269,7 @@ class PostList extends CollectionNavigator {
 
 \end{verbatim}
 
-Falta explicar la forma que tiene un componente de decir que terminó con su tarea. 
+%Falta explicar la forma que tiene un componente de decir que terminó con su tarea.
 
 \begin{figure}
 	\centering
@@ -285,7 +292,11 @@ Queremos ahora que una vez mostrada la lista de posts con una determinada etique
 class PostList extends CollectionNavigator {
   ...
   function addBackButton() {
-    $this->addComponent(new CommandLink(array('text' => 'back', 'proceedFunction' => new FunctionObject($this, 'callback'))));
+    $this->addComponent(new CommandLink(
+        array('text' => 'back',
+              'proceedFunction' => new FunctionObject($this, 'callback')
+        )
+    ));
   }
 
   function showTag($params){
@@ -298,7 +309,7 @@ class PostList extends CollectionNavigator {
 
 \end{verbatim}
 
-La interacción es modal ya que el componente que llama a otro mediante un llamado a \verb"call" pierde el control. Este pasa al componente llamado hasta que haga callback. Una vez hecho el callback el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
+La interacción es modal ya que el componente que llama a otro mediante un llamado a \verb"call" le cede el control, que pasa al componente llamado hasta que haga \verb'callback'. Una vez hecho el \verb'callback' el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
 
 % \subsection{Multiple Dispatching y Context Dispatching}
 % \label{sub-dispatch}
