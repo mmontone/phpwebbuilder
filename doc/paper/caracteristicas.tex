@@ -31,9 +31,9 @@ El Modelo de la aplicación, es la representación de la información de dominio
 
 Los datos del modelo necesitan en general ser persistidos para que éstos puedan ser accedidos en otra ejecución de la aplicación, ya sea simultánea o posterior.
 
-\PWB \ posee un mecanismo para la persistencia, que permite, mediante unas anotaciones especiales en los datos del modelo, el guardado y recuperación automática de los datos en la base de datos.
+\PWB \ posee un mecanismo para la persistencia que permite, mediante anotaciones especiales en los datos del modelo, el guardado y recuperación automática de los datos en la base de datos.
 
-La persistencia del modelo se hace mediante la subclasificación de la clase especial \verb"PersistentObject". Esta clase provee los métodos necesarios para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
+La persistencia del modelo se consigue mediante la subclasificación de la clase especial \verb"PersistentObject". Esta clase provee la funcionalidad necesaria para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
 
 De esta manera declaramos la clase \verb"Post":
 
@@ -41,7 +41,7 @@ De esta manera declaramos la clase \verb"Post":
 \input{src/Post.class.php.tex}
 \end{lgrind}
 
-Esto define una clase persistente \verb"Post". En ella definimos un método initialize, en el que declaramos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
+Esto define una clase persistente \verb"Post". En ella definimos un método initialize en el que declaramos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
 
 La clase \verb'PersistentObject' posee los métodos \verb'save' y \verb'delete', que permiten insertar, actualizar y borrar objetos de la base de datos.
 
@@ -57,11 +57,11 @@ Esto deja el \verb'Post' persistido en la base de datos.
 
 \subsection{Recuperación de objetos}
 
-Una operación habitual en el desarrollo de una aplicación, es la recuperación de datos, y de información calculada en base a estos.
+Una operación habitual en el desarrollo de una aplicación es la recuperación de datos y de información calculada en base a estos.
 
-La recuperacion de objetos en \PWB \ se hace mediante la clase \verb"Report", que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos, y utilizan herencia para las variables de instancia.
+La recuperacion de objetos en \PWB \ se hace mediante la clase \verb"Report" que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos y utilizan herencia para las variables de instancia.
 
-Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos el siguiente objeto Report:
+Para obtener todos los \verb"Posts" cuya etiqueta sea una dada creamos el siguiente objeto Report:
 
 \begin{lgrind}
 \input{src/ReportTest.php.tex}
@@ -91,20 +91,22 @@ SELECT
  %$
 
 
-Como se puede ver, no se acorta la cantidad de código escrito, pero se simplifica dado que uno solamente define la clase sobre la que hace la consulta (\verb"Post"), y explicita que solamente quiere los que en su colección de tags posean el tag \verb'$tag' %$
+Como podemos ver, no se acorta la cantidad de código escrito pero se simplifica. Alcanza con determinar la clase sobre la que hace la consulta (\verb"Post") e indicar las restricciones (en este caso, que solamente queremos aquellos Post que posean a \verb'$tag' entre los elementos de su colección) %$
 
-El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto, se hacen los joins de tablas automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad). Además, al ser la consulta generada, un cambio en las clases del modelo no necesita modificar las consultas a mano (por ejemplo, si agregásemos un campo `fecha de publicación' en el \verb"Post").
+El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto. Los joins de tablas se hacen automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad). 
+
+La principal ventaja de generar las consultas es que un cambio en las clases del modelo no implica necesariamente modificar las consultas a mano (por ejemplo, si agregásemos un campo `fecha de publicación' en el \verb"Post"). Esto mejora notablemente la productividad.
 
 \subsection{OQL (Object Query Language)}
 \label{sub-oql}
-Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos, que construye un reporte. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos esta consulta:
+Dada la complejidad de construir un reporte completo a mano, desarrollamos un lenguaje \emph{OQL} para consulta de los objetos. Desarrollar aquí la sintaxis y semántica del lenguaje sería muy largo y tedioso, por lo que presentamos un ejemplo de su utilización en el ámbito del blog que estamos desarrollando. Para obtener todos los \verb"Posts" cuya etiqueta sea una dada, creamos esta consulta:
 
 \begin{verbatim}
 #@select p:Post where exists (p.tags as tag where tag.name=$tag)@#;
 \end{verbatim}
 
 Vemos que la complejidad de crear el reporte se disminuye en una alta proporción.
-La sintaxis extraña (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en la sección \ref{sub-macros}.
+La extraña sintaxis (los tokens \verb"#@" \verb"@#" que encierran la expresión de consulta) corresponde a la utilización de macros, que veremos en la sección \ref{sub-macros}.
 
 Una buena propiedad del lenguaje es que está íntimamente relacionado con el código PHP, ya que puede utilizar las variables en el scope (es decir, el OQL está embebido en el PHP).
 
@@ -165,12 +167,12 @@ Por último, \PWB \ incluye una aplicación para la administración de los objet
 \section{Características del Controller}
 \label{sec-controller}
 
-Teniendo ya el modelo programado, y persistido, es posible implementar la interacción con el usuario. Veremos cómo listar los Posts del blog, y cómo permitirle al usuario ver solamente los posts que tengan un tag.
+Teniendo ya el modelo programado y persistido, es posible implementar la interacción con el usuario. Veremos cómo listar los Posts del blog y cómo permitirle al usuario ver solamente los posts que tengan un tag.
 
 \subsection{Componentes}
 \label{sub-comp}
 
-Las aplicaciones en \PWB\ se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables, ya que pueden ser parametrizados, pueden disparar eventos, y pueden contener otros componentes.
+Las aplicaciones en \PWB\ se construyen mediante el ensamblado de componentes. Estos componentes son reutilizables ya que pueden ser parametrizados, pueden disparar eventos y pueden contener otros componentes.
 
 El componente principal de la aplicación del blog consiste simplemente de una lista de posts. Llamemos a este componente \verb"BlogComponent".
 
@@ -207,7 +209,7 @@ Una de las ventajas que tiene esta implementación del controller es que podemos
 
 Necesitamos crear ahora el componente \verb'PostItem', que muestra cada \verb'Post'. Este debe mostrar el título, el texto y las etiquetas.
 
-\PWB\ posee unos componentes especiales, llamados \verb"Widgets"\cite{WDGTS}, que permiten interactuar con el usuario (por ejemplo con el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto, o el \verb"CheckBox", que presenta un checkbox). Mostraremos con éstos el \verb'Post':
+La interacción del usuario con la aplicación se logra por medio de \verb"Widgets"\cite{WDGTS}. Estos son componentes especiales entre los que se encuentran el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto y el \verb"CheckBox", que presenta un checkbox. Utilizaremos estos componentes para mostrar y lograr la interacción del usuario con un \verb'Post':
 
 \begin{verbatim}
 class PostItem extends Component {
@@ -282,7 +284,7 @@ class PostList extends CollectionNavigator {
 
 %Falta explicar la forma que tiene un componente de decir que terminó con su tarea.
 
-Sería bueno que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (figura \ref{fig-blog2}). Para esto utilizamos un botón volver cuyo comportamiento será hacer callback sobre la nueva lista como mostramos a continuación:
+Sería bueno que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (figura \ref{fig-blog2}). Para esto utilizamos un botón \verb"volver" cuyo comportamiento será hacer \verb"callback" sobre la nueva lista como mostramos a continuación:
 
 \begin{verbatim}
 
@@ -314,7 +316,7 @@ class PostList extends CollectionNavigator {
  	\label{fig-blog2}
 \end{figure}
 
-La interacción es modal ya que el componente que llama a otro mediante un llamado a \verb"call" le cede el control, que pasa al componente llamado hasta que haga \verb'callback'. Una vez hecho el \verb'callback' el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
+La interacción es modal ya que el componente que llama a otro mediante \verb"call", le cede el control, que pasa al componente llamado hasta que haga \verb'callback'. Una vez hecho el \verb'callback' el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
 
 % \subsection{Multiple Dispatching y Context Dispatching}
 % \label{sub-dispatch}
@@ -379,7 +381,7 @@ subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templat
 \subsection{Renderings}
 \label{sub-render}
 
-Una técnica muy utilizada en las aplicaciones web 2.0, es el rendereo de cambios mediante AJAX, que permite al usuario ejecutar varias tareas en simultáneo en la aplicación, y refrescar la pantalla sin recargar todo.
+Una técnica muy utilizada en las aplicaciones web 2.0, es el rendereo de cambios mediante AJAX, que permite al usuario ejecutar varias tareas en simultáneo en la aplicación y refrescar la pantalla sin recargar todo.
 
 El rendereo (generación de la interfaz) de la aplicación se hace 100\% mediante \PWB, de modo que no hay intervención por el programador.
 
@@ -389,17 +391,20 @@ La manera de cambiar el engine de rendereo es tan simple como cambiar en el arch
 
 Todo lo generado por \PWB \ es XML bien formado, de modo que de manera transparente podemos renderear en AJAX.
 
-Comet es una tecnología similar a AJAX, que se caracteriza por mantener una conexión abierta entre el browser y el servidor en todo momento. \PWB \ aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
+Comet es una tecnología similar a AJAX que se caracteriza por mantener una conexión abierta entre el browser y el servidor en todo momento. \PWB \ aprovecha esto, ya que un importante tiempo de procesamiento de los scripts PHP es la carga del script y los datos de la sesión de usuario, que en este caso quedan vivos en la memoria del servidor.
 
-Mediante pasaje de mensajes de otro script, que envía los datos a la aplicación \PWB \ ejecutándose, podemos mantener la sesión en memoria, mejorando los tiempos de respuesta, e incluso modificando la aplicación del usuario no solamente cuando éste genera un evento (ej: un click del mouse), sino también cuando, por ejemplo, la base de datos es modificada.
+Mediante pasaje de mensajes de otro script que envía los datos a la aplicación \PWB \ ejecutándose, podemos mantener la sesión en memoria, mejorando los tiempos de respuesta e incluso modificando la aplicación del usuario. Esta modificación puede surgir a partir de la generación de un evento por parte del usuario (por ejemplo, un click del mouse) o por sucesos ajenos a ésto, como puede ser la modificación de base de datos.
 
 \subsubsection{XUL}
 
-El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado, y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer, que renderea aplicaciones en XUL. La diferencia para el programador, es en los tags de los templates, ya que debe utilizar elementos XUL en lugar de HTML. Dado que los templates de HTML llevan extensión .xml, y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
+El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer que renderea aplicaciones en XUL. La diferencia para el programador se encuentra en el trato de las etiquetas de los templates ya que debe utilizar elementos XUL en lugar de HTML. 
+
+%Dado que los templates de HTML llevan extensión .xml y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
 
 \section{Características de \PITS}
 
-La complejidad de una aplicación por lo general es mayor que en el ejemplo anterior. \PWB\ posee otras herramientas que ayudan en la generación de los componentes y del modelo.
+% Si queremos poner lo siguiente, nombrar las herramientas:
+%La complejidad de una aplicación por lo general es mayor que en el ejemplo anterior. \PWB\ posee otras herramientas que ayudan en la generación de los componentes y del modelo.
 
 %\subsection{BugNotifier}
 
@@ -476,14 +481,14 @@ Existen objetos que disparan algunos eventos por default:
 \subsection{Macros}
 \label{sub-macros}
 
-Un tiempo grande del desarrollo, se destina a la corrección de errores. Una modificación de una parte del código, puede afectar a otras distantes (en el código, o en el tiempo de desarrollo). Además, la fuente del error y el síntoma pueden tener ser también distantes. Una forma de detectar estos errores, es mediante el chequeo de tipos, y las aserciones.
+Un tiempo grande del desarrollo se destina a la corrección de errores. Una modificación de una parte del código puede afectar a otras distantes (en el código o en el tiempo de desarrollo). Además, la fuente del error y el síntoma pueden tener ser también distantes. Una forma de detectar estos errores es mediante el chequeo de tipos y las aserciones.
 
-El estas validaciones durante la ejecución del programa, si bien son útiles para el desarrollo, consumen un tiempo innecesario cuando el programa es instalado en producción. Una forma de recortar estos tiempos, es eliminar del código final todos los chequeos, pero muchos pueden pasar indetectados, y pueden llegar a ser útiles ante una modificación posterior del sistema.
+La ejecución de estas validaciones, si bien son útiles para el desarrollo, consumen un tiempo innecesario cuando el programa es instalado en producción. Una forma de recortar estos tiempos es eliminar del código final todos los chequeos, pero muchos pueden pasar indetectados y pueden llegar a ser útiles ante una modificación posterior del sistema.
 
-Por esto mismo, en \PWB\ utilizamos \verb'#@typecheck@#' y \verb'#@check@#', para insertar validaciones desactivables en el código.
+Por esto mismo, en \PWB\ utilizamos \verb'#@typecheck@#' y \verb'#@check@#' para insertar validaciones desactivables en el código.
 
 Por ejemplo, escribiendo \verb"#@typecheck $post: Post@#" se chequea que la variable \verb"$post"
-sea un \verb'Post'. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking, y el chequeo no se incluye.
+sea un \verb'Post'. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking y el chequeo no se incluye.
 
 \begin{verbatim}
 class PostItem extends Component{
@@ -496,13 +501,13 @@ class PostItem extends Component{
 }
 \end{verbatim}
 
-Esto avisará al programador por problemas durante el desarrollo, al intentar inicializar erróneamente un \verb"PostItem" con algo que no sea un \verb'Post'.
+Esto avisará al programador por problemas durante el desarrollo al intentar inicializar erróneamente un \verb"PostItem" con algo que no sea un \verb'Post'.
 
 Habilitando o deshabilitando en el config.php (sección \ref{sub-config}) \verb'compile=typecheck', podemos utilizar estos chequeos.
 
-Tanto el OQL (sección \ref{sub-oql}), como \verb'check' y \verb'typecheck' son macros: porciones de código que se ejecutan una sola vez, en tiempo de compilación, y reemplazan su texto en el código de la aplicación final.
+Tanto el OQL (sección \ref{sub-oql}) como \verb'check' y \verb'typecheck' son macros: porciones de código que se ejecutan una sola vez, en tiempo de compilación, y reemplazan su texto en el código de la aplicación final.
 
-Un programador puede agregar sus propias macros, declarando una función simple de PHP \verb"mi_macro", y luego llamandola con \verb"#@mi_macro" {\it parámetros} \verb"@#". Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto, ya que son otra forma de modularización.
+Un programador puede agregar sus propias macros declarando una función simple de PHP \verb"mi_macro" y luego llamandola con \verb"#@mi_macro" {\it parámetros} \verb"@#". Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto ya que son otra forma de modularización.
 \comment{
 \subsection{Mixins}
 \label{sub-mixins}
@@ -512,7 +517,7 @@ Un programador puede agregar sus propias macros, declarando una función simple 
 
 Otra funcionalidad interesante es una implementación limitada de \verb"Mixins" (mediante \verb"Macros").
 
-Un \verb"Mixin" es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos, sin que estas clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple herencia.
+Un \verb"Mixin" es una forma de agrupar funcionalidad y agregársela a múltiples clases de objetos sin que estas clases estén conectadas por subclasificación. Es lo que vemos como el mejor trade-off entre simple y múltiple herencia.
 
 \begin{verbatim}
 #@mixin ValueHolder {
@@ -541,7 +546,7 @@ class Direccion extends PersistentObject{
 
 \end{verbatim}
 
-De esta manera, podemos implementar una sola vez el comportamiento de \verb'ValueHolder', y utilizarlo en 2 clases distintas (\verb"Direccion" y \verb"Contador"), sin necesidad de relacionarlos por herencia.
+De esta manera podemos implementar una sola vez el comportamiento de \verb'ValueHolder' y utilizarlo en 2 clases distintas (\verb"Direccion" y \verb"Contador"), sin necesidad de relacionarlos por herencia.
 
 Además, agregamos a los mixins en el chequeo de tipos. Si tenemos un \\ chequeo \verb"#@typecheck $v: ValueHolder@#", tanto un objeto de clase \verb"Direccion" como uno de clase \verb"Contador" cumplen con la condición.
 }
@@ -549,8 +554,8 @@ Además, agregamos a los mixins en el chequeo de tipos. Si tenemos un \\ chequeo
 \label{sub-config}
 Para el desarrollo colaborativo, es útil mantener múltiples configuraciones. O para trabajar en distintos clientes. O para hacer testing y deployment.
 
-Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples, para adaptar cada una a una necesidad específica. En un archivo de configuración global (config.php) se guardan las variables específicas de cada configuración, además de las variables comunes a todas. Luego, en otro archivo (serverconfig) se pone la configuración que se va a utilizar.
+Por todo esto, \PWB \ mantiene un archivo de configuraciones múltiples para adaptar cada una a una necesidad específica. En un archivo de configuración global (config.php) se guardan las variables específicas de cada configuración, además de las variables comunes a todas. Luego, en otro archivo (serverconfig) se pone la configuración que se va a utilizar.
 
 \subsection{Compilación}
 
-El uso de macros, y la inclusión de los muchos archivos de \PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso implementamos una mini-compilación de los archivos PHP (para que las macros ya estén procesadas), y además, habilitamos varios outputs de esta compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.
+El uso de macros y la inclusión de los muchos archivos de \PWB, hacen que la carga en cada request pueda ser muy lenta. Por eso implementamos una mini-compilación de los archivos PHP (para que las macros ya estén procesadas) y además habilitamos varios outputs de esta compilación del código (todo a un sólo archivo PHP, sólo las clases utilizadas a un archivo PHP, en archivos separados). Esta configuración es seteable desde los archivos de configuración.
