@@ -7,20 +7,11 @@
 \usepackage{lgrind}
 \usepackage{wrapfig}
 
-\title{\PWB \\ Framework Multipropósito de Aplicaciones Web sobre PHP}
-
+\title{\PWB}
 \date{}
-\author{
-\begin{tabular}[t]
-{c@{\extracolsep{5em}}c}
-Alejandro Siri & Mariano Montone \\
-Eureka Consulting & Eureka Consulting \\
-Calle 11 Nro 684 & Calle 11 Nro 684 \\
-La Plata, 1900, Argentina & La Plata, 1900, Argentina \\
-+54 221 489 5591 & +54 221 489 5591 \\
-asiri@eureka-consulting.com.ar & mmontone@eureka-consulting.com.ar
-\end{tabular}
-}
+\author{Eureka Consulting - http://www.eureka-consulting.com.ar \\
+		Alejandro Siri asiri@eureka-consulting.com.ar\\
+		Mariano Montone mmontone@eureka-consulting.com.ar}
 
 \newcommand{\comment}[1]{}
 \newcommand{\PITS}{\emph{Programming in the Small}} %en.wikipedia.org/wiki/Programming_in_the_small
@@ -39,9 +30,7 @@ asiri@eureka-consulting.com.ar & mmontone@eureka-consulting.com.ar
 %
 %También, si lo tiene, se puede incluir algun condimento respecto de que utilidad/visión (social/empresarial/politica) aporta el proyecto.
 
-El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. Existen múltiples soluciones para cada una de ellas, cargando sobre el programador la responsabilidad de seleccionarlas e integrarlas. \PWB\ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet, que integra soluciones a cada uno de estos problemas, producto de la experiencia en el desarrollo de este tipo de aplicaciones.
-
-{\bf Keywords}: Templates declarativos, desarrollo por componentes, mapeo objeto-relacional bajo persistencia por alcance, distintos engines de rendereo, compilación y macros.
+\PWB \ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet. Incluye muchas características producto de la experiencia en el desarrollo de este tipo de aplicaciones. Algunas de ellas son: templates declarativos, desarrollo por componentes, mapeo objeto-relacional bajo persistencia por alcance, distintos engines de rendereo, compilación, macros y mixins, entre otras.
 }
 
 % \section{Nombre}
@@ -76,11 +65,11 @@ El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea m
 El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. La interacción con el usuario, la presentacion de la información, y el almacenamiento y recuperación de la misma son algunos de los más frecuentes, y que más tiempo consumen.
 Por esto mismo, son foco de mucha invesigación y trabajo, habiendo conseguido a lo largo de los años múltiples soluciones. Seleccionar e integrar éstas queda a cargo del programador o grupo de trabajo de un proyecto específico.
 
-\PWB \ es un framework de desarrollo que integra, para cada uno de los problemas, múltiples soluciones elegidas por nosotros, las cuales en nuestra experiencia permiten una solución general, mejorando el tiempo de desarrollo y la calidad del producto de software sin sacrificar flexibilidad en el diseño.
+\PWB \ es un framework de desarrollo que integra múltiples soluciones que en nuestra experiencia mejoran el tiempo de desarrollo y la calidad del producto de software sin sacrificar flexibilidad en el diseño.
 
 %\section{\PWB}
 
-\PWB \ está diseñado bajo una arquitectura MVC (Model-view-controller)\cite{mvc}.
+El framework está diseñado bajo una arquitectura MVC (Model-view-controller)\cite{mvc}.
 Esto quiere decir que una aplicación se compone de 3 capas:
 \begin{itemize}
 \item El \emph{Modelo}. Es la representación de la información de dominio específico de la aplicación.
@@ -97,7 +86,7 @@ Existe una parte más que integra el framework. Esto es la ``Programación en lo
 
 \item Para la vista, el sistema de templates (sección \ref{sub-templates}) basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico (sección \ref{sub-templates-adapt}). El sistema se encarga de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo (sección \ref{sub-render}) (esto es fácilmente configurable).
 
-\item Por último, para \PITS, \PWB \ presenta una serie de características displonibles en otros lenguajes y plataformas pero no existentes en PHP. Estas son una implementación de Eventos (sección \ref{sub-events}) (especialmente útiles para mantener la vista actualizada),
+\item Por último, para \PITS, \PWB \ presenta una serie de características disponibles en otros lenguajes y plataformas pero no existentes en PHP. Estas son una implementación de Eventos (sección \ref{sub-events}),
 %Weak References (sección \ref{sub-weak}),
 %creación de DSLs (sección \ref{sub-phpcc}),
 %Mixins (sección \ref{sub-mixins}).
@@ -116,7 +105,7 @@ y Macros (sección \ref{sub-macros}).
 
 \PWB\ no presenta en sí conceptos novedosos, sino que reúne las opciones que consideramos mejores, y los integra e interrelaciona dentro del mismo framework. Esto libera a los desarrolladores de muchas decisiones reiterativas, y les permite enfocarse en los problemas específicos de la aplicación a desarrollar.
 
-Los próximos pasos a realizar son: implementar mejoras en el manejo de colecciones en el modelo, e implementar persistencia por alcance similar a JDO \cite{jpox}.
+Los próximos pasos a realizar son: implementar mejoras en el manejo de colecciones en el modelo, e implementar persistencia por alcance \cite{jpox} \cite{jdo}.
 
 %Aún quedan cosas por hacer. Algunas de ellas son implementar mejoras en el manejo de colecciones en el modelo, documentar, agregar soporte DSLs composicionales, mejorar la integración y comunicación de múltiples aplicaciones y diseñar e implementar templates paramétricos y dependientes del contexto y implementar persistencia por alcance similar a JDO \cite{jpox}.
 

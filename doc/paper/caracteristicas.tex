@@ -1,5 +1,5 @@
 \section{Ejemplo: Creación de un Blog}
-Para ejemplificar, veremos la creación de un blog (ver figura \ref{fig-blog1}).
+Para ejemplificar, veremos la creación de un blog (figura \ref{fig-blog1}).
 
 \begin{figure}[h]
 	\centering
@@ -118,6 +118,7 @@ class Post extends Component {
   function Tagged($tag){
     return #@select p:Post where exists (p.tags as tag where tag.name=$tag)@#;
   }
+  ...
 }
 
 \end{verbatim}
@@ -129,7 +130,7 @@ Para poder persistir los datos del modelo, se necesita un repositiorio. \PWB\ ut
 
 La estructura necesaria para la persistencia del modelo se puede inferir de la definición de los objetos, donde establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
 
-\PWB \ genera el esquema automáticamente librando al programador de esta carga, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo (ver figura \ref{fig-admin1}).
+\PWB \ genera el esquema automáticamente librando al programador de esta carga, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo (figura \ref{fig-admin1}).
 
 \begin{figure}[h]
 	\centering
@@ -146,7 +147,7 @@ Por último, \PWB \ incluye una aplicación para la administración de los objet
 \begin{figure}[h]
 	\centering
 	%\includegraphics{images/abm1.eps}
-	\includegraphics[scale=0.5]{images/abm1.pdf}
+	\includegraphics[scale=0.7]{images/abm1.pdf}
  	\caption{ABM Autogenerado de un Post}
  	\label{fig-abm1}
 \end{figure}
@@ -154,7 +155,7 @@ Por último, \PWB \ incluye una aplicación para la administración de los objet
 \begin{figure}[h]
 	\centering
 	%\includegraphics{images/abm2.eps}
-	\includegraphics[scale=0.5]{images/abm2.pdf}
+	\includegraphics[scale=0.7]{images/abm2.pdf}
  	\caption{Aplicación de administración de Posts generada}
  	\label{fig-abm2}
 \end{figure}
@@ -281,7 +282,7 @@ class PostList extends CollectionNavigator {
 
 %Falta explicar la forma que tiene un componente de decir que terminó con su tarea.
 
-Queremos ahora que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (ver figura \ref{fig-blog2}). Para esto utilizamos un botón volver cuyo comportamiento será hacer callback sobre la nueva lista como mostramos a continuación:
+Sería bueno que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (figura \ref{fig-blog2}). Para esto utilizamos un botón volver cuyo comportamiento será hacer callback sobre la nueva lista como mostramos a continuación:
 
 \begin{verbatim}
 
@@ -373,7 +374,7 @@ Además, cada componente tiene un template default, por lo que no se necesita cr
 \label{sub-templates-adapt}
 Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando
 %\verb"Mixins" (sección \ref{sub-mixins}) y
-subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templates. El diseño de la aplicación del blog lo hicimos de esta manera, editando un diseño existente.
+subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templates.
 
 \subsection{Renderings}
 \label{sub-render}
@@ -413,7 +414,7 @@ En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que l
 
 \begin{figure}[h]
 	\centering
-	\includegraphics*[scale=0.20]{images/componentes.png}
+	\includegraphics*[scale=0.30]{images/componentes.png}
  	\caption{Componentes que no utilizan Eventos}
  	\label{fig-comp1}
 \end{figure}
