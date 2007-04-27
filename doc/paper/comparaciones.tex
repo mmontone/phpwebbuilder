@@ -1,7 +1,7 @@
 \section{Trabajos Relacionados}
 
 \begin{itemize}
-\item Muchos frameworks toman el enfoque de programar el controller mediante ``páginas'', como CakePHP. \PWB\ tuvo en un principio esta forma, pero finalmente elegimos los componentes de SeaSide \cite{seaside,Duca04e}, dado que consideramos que incrementa la composicionalidad.
+\item Muchos frameworks toman el enfoque de programar el controller mediante ``páginas''\cite{cake, RoR}. \PWB\ tuvo en un principio esta forma, pero finalmente elegimos componentes \cite{seaside,Duca04e}, dado que consideramos que incrementa la composicionalidad.
 
 %Utilizamos además, el concepto de Widgets \cite{WDGTS}, muy conocido entre las aplicaciones de interacción con los usuarios.
 
@@ -14,13 +14,13 @@ En lugar de los métodos anteriores, decidimos utlizar ``Templates Declarativos'
 
 %Dado que no se utiliza programación para la vista, \PWB \ no utiliza Helpers para el AJAX de las páginas, porque lo ofrece de manera transparente.
 
-\item Para el modelo, utilizamos el mecanismo del pattern ActiveRecord, usado también por Hibernate \cite{hibernate}, Rails, GLORP y CakePHP. Dentro de lo que es este pattern, elegimos
+\item Para el modelo, utilizamos el mecanismo del pattern ActiveRecord \cite{activerecord}, usado también por varios sistemas de persistencia \cite{hibernate, RoR, glorp, cake}. Dentro de lo que es este pattern, elegimos
 \begin{itemize}
 \item mapeo Class-Table \cite{classtable}, donde existe una tabla en la Base de Datos por cada clase en el modelo, y
-\item adaptación de la Base de Datos a partir de Clases, en lugar de adaptación de Clases a partir de la Base de Datos (como utilizan Rails y CakePHP), porque creemos que simplifica la tarea del programador poder editar su modelo de clases en un lenguaje que tenga integrado el concepto de herencia, y porque no tiene el costo de pasar de un lenguaje a otro para hacer el esquema de datos, y el manejo de los mismos.
+\item adaptación de la Base de Datos a partir de Clases, en lugar de adaptación de Clases a partir de la Base de Datos \cite{RoR, cake}, porque creemos que simplifica la tarea del programador poder editar su modelo de clases en un lenguaje que tenga integrado el concepto de herencia, y porque no tiene el costo de pasar de un lenguaje a otro para hacer el esquema de datos, y el manejo de los mismos.
 \end{itemize}
 
-Para la recuperación de objetos, existe el enfoque de utilizar SQL directamente, utilizar objetos que definen una consulta a realizar, o tener un lenguage para hacer las consultas. Rails y CakePHP utilizan los primeros 2 enfoques. Nosotros tenemos un lenguaje de consulta (OQL) que traduce a Objetos que definen la consulta. Este enfoque nos parece mejor dado que abstrae al usuario del mapeo a SQL (los objetos hacen ese trabajo) y el OQL abstrae de la creación de estos objetos. Hibernate posee un lenguage HQL para la creación de consultas. Nombramos al nuestro OQL por el lenguaje OQL (Object Query Language) \cite{OQL} de la ODMG.
+Para la recuperación de objetos, existe el enfoque de utilizar SQL directamente, utilizar objetos que definen una consulta a realizar \cite{cake, RoR}, o tener un lenguage para hacer las consultas \cite{hibernate}.  Nosotros tenemos un lenguaje de consulta (OQL) que traduce a Objetos que definen la consulta. Este enfoque nos parece mejor dado que abstrae al usuario del mapeo a SQL (los objetos hacen ese trabajo) y el OQL abstrae de la creación de estos objetos. Nombramos al nuestro OQL por el lenguaje OQL (Object Query Language) \cite{OQL} de la ODMG.
 
 
 %\item  Para \PITS, Smalltalk también fue una fuente de recursos, con los Eventos, las Weak References,
