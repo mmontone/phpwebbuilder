@@ -1,5 +1,12 @@
 \section{Ejemplo: Creación de un Blog}
-Para ejemplificar, veremos la creación de un blog.
+Para ejemplificar, veremos la creación de un blog (ver figura \ref{fig-blog1}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{images/blog1.png}
+ 	\caption{Nuestro blog}
+ 	\label{fig-blog1}
+\end{figure}
 
 Las tareas a realizar son:
 \begin{itemize}
@@ -12,7 +19,7 @@ Las tareas a realizar son:
 
 El Modelo de la aplicación, es la representación de la información de dominio específico de la aplicación. Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User} (figura \ref{fig-model1}).
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics*[scale=0.60,viewport=420 350 700 600]{images/diagrama.png}
  	\caption{Modelo de objetos del Blog}
@@ -85,7 +92,6 @@ SELECT
 
 
 Como se puede ver, no se acorta la cantidad de código escrito, pero se simplifica dado que uno solamente define la clase sobre la que hace la consulta (\verb"Post"), y explicita que solamente quiere los que en su colección de tags posean el tag \verb'$tag' %$
-.
 
 El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto, se hacen los joins de tablas automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad). Además, al ser la consulta generada, un cambio en las clases del modelo no necesita modificar las consultas a mano (por ejemplo, si agregásemos un campo `fecha de publicación' en el \verb"Post").
 
@@ -118,7 +124,14 @@ class Post extends Component {
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
-\begin{figure}
+
+Para poder persistir los datos del modelo, se necesita un repositiorio. \PWB\ utiliza una base de datos relacional para ello, y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
+
+La estructura necesaria para la persistencia del modelo se puede inferir de la definición de los objetos, donde establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
+
+\PWB \ genera el esquema automáticamente librando al programador de esta carga, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo (ver figura \ref{fig-admin1}).
+
+\begin{figure}[h]
 	\centering
 	%\includegraphics[scale=0.8]{images/admin2.eps}
 	\includegraphics[scale=0.5]{images/admin2.pdf}
@@ -126,7 +139,11 @@ class Post extends Component {
  	\label{fig-admin1}
 \end{figure}
 
-\begin{figure}
+Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación y se necesita adaptar la base de datos a los nuevos cambios.
+
+Por último, \PWB \ incluye una aplicación para la administración de los objetos del modelo como se ve en las figuras \ref{fig-abm1} y \ref{fig-abm2}.
+
+\begin{figure}[h]
 	\centering
 	%\includegraphics{images/abm1.eps}
 	\includegraphics[scale=0.5]{images/abm1.pdf}
@@ -134,7 +151,7 @@ class Post extends Component {
  	\label{fig-abm1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	%\includegraphics{images/abm2.eps}
 	\includegraphics[scale=0.5]{images/abm2.pdf}
@@ -142,13 +159,6 @@ class Post extends Component {
  	\label{fig-abm2}
 \end{figure}
 
-Para poder persistir los datos del modelo, se necesita un repositiorio. \PWB\ utiliza una base de datos relacional para ello, y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
-
-La estructura necesaria para la persistencia del modelo se puede inferir de la definición de los objetos, donde establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
-
-\PWB \ genera el esquema automáticamente librando al programador de esta carga, que es generalmente hasta más larga (y muchísimo más tediosa) que la programación del modelo.
-
-Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación y se necesita adaptar la base de datos a los nuevos cambios.
 %Esta funcionalidad es provista por una herramienta que veremos más adelante.
 
 \section{Características del Controller}
@@ -271,20 +281,6 @@ class PostList extends CollectionNavigator {
 
 %Falta explicar la forma que tiene un componente de decir que terminó con su tarea.
 
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{images/blog1.png}
- 	\caption{Nuestro blog}
- 	\label{fig-blog1}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics{images/blog2.png}
- 	\caption{Posts con etiqueta 'miscellaneous' y el botón para volver}
- 	\label{fig-blog2}
-\end{figure}
-
 Queremos ahora que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (ver figura \ref{fig-blog2}). Para esto utilizamos un botón volver cuyo comportamiento será hacer callback sobre la nueva lista como mostramos a continuación:
 
 \begin{verbatim}
@@ -308,6 +304,14 @@ class PostList extends CollectionNavigator {
 }
 
 \end{verbatim}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{images/blog2.png}
+ 	\caption{Posts con etiqueta 'miscellaneous' y el botón para volver}
+ 	\label{fig-blog2}
+\end{figure}
 
 La interacción es modal ya que el componente que llama a otro mediante un llamado a \verb"call" le cede el control, que pasa al componente llamado hasta que haga \verb'callback'. Una vez hecho el \verb'callback' el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
 
@@ -405,9 +409,9 @@ La complejidad de una aplicación por lo general es mayor que en el ejemplo ante
 \subsection{Eventos}
 \label{sub-events}
 
-En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag" cuando un tag es seleccionado. Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda el mensaje \verb"showTag"  (figura \ref{fig-comp1}).
+En nuestra implementación, el \verb"PostItem" tiene un \verb"CommandLink" que le envía a su componente padre el mensaje \verb"showTag" cuando un tag es seleccionado. Esto trae problemas de composicionalidad, ya que no podríamos usarlo como hijo de un componente que no entienda el mensaje \verb"showTag" (ver figura \ref{fig-comp1}).
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics*[scale=0.20]{images/componentes.png}
  	\caption{Componentes que no utilizan Eventos}
