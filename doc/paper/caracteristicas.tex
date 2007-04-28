@@ -1,30 +1,32 @@
-\section{Ejemplo: Creación de un Blog}
+\section{Características del Modelo}
+
 Para ejemplificar, veremos la creación de un blog (figura \ref{fig-blog1}).
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.7]{images/blog1.png}
+	\includegraphics[scale=0.6]{images/blog1.png}
  	\caption{Nuestro blog}
  	\label{fig-blog1}
 \end{figure}
 
 Las tareas a realizar son:
-\begin{itemize}
+\begin{enumerate}
 \item Crear el modelo de clases.
 \item Decidir cuales son las formas de interacción de los usuarios con el sistema.
 \item Presentar esas formas de interacción de una manera atractiva y entendible para el usuario.
-\end{itemize}
+\end{enumerate}
 
-\section{Características del Modelo}
+\subsection{Diseño de la aplicación}
 
 El Modelo de la aplicación, es la representación de la información de dominio específico de la aplicación. Para el blog, tendremos las siguientes clases: \emph{Post}, \emph{Tag}, \emph{User} (figura \ref{fig-model1}).
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
-	\includegraphics*[scale=0.60,viewport=420 350 700 600]{images/diagrama.png}
+	\includegraphics*[scale=0.50,viewport=420 350 700 600]{images/diagrama.png}
  	\caption{Modelo de objetos del Blog}
  	\label{fig-model1}
 \end{figure}
+
 
 \subsection{Persistencia y metadata}
 \label{sub-pers}
@@ -59,7 +61,7 @@ Esto deja el \verb'Post' persistido en la base de datos.
 
 Una operación habitual en el desarrollo de una aplicación es la recuperación de datos y de información calculada en base a estos.
 
-La recuperacion de objetos en \PWB \ se hace mediante la clase \verb"Report" que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos y utilizan herencia para las variables de instancia.
+%La recuperacion de objetos en \PWB \ se hace mediante la clase \verb"Report" que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos y utilizan herencia para las variables de instancia.
 
 Para obtener todos los \verb"Posts" cuya etiqueta sea una dada creamos el siguiente objeto Report:
 
@@ -93,7 +95,7 @@ SELECT
 
 Como podemos ver, no se acorta la cantidad de código escrito pero se simplifica. Alcanza con determinar la clase sobre la que hace la consulta (\verb"Post") e indicar las restricciones (en este caso, que solamente queremos aquellos Post que posean a \verb'$tag' entre los elementos de su colección) %$
 
-El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto. Los joins de tablas se hacen automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad). 
+El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto. Los joins de tablas se hacen automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad).
 
 La principal ventaja de generar las consultas es que un cambio en las clases del modelo no implica necesariamente modificar las consultas a mano (por ejemplo, si agregásemos un campo `fecha de publicación' en el \verb"Post"). Esto mejora notablemente la productividad.
 
@@ -397,7 +399,7 @@ Mediante pasaje de mensajes de otro script que envía los datos a la aplicación
 
 \subsubsection{XUL}
 
-El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer que renderea aplicaciones en XUL. La diferencia para el programador se encuentra en el trato de las etiquetas de los templates ya que debe utilizar elementos XUL en lugar de HTML. 
+El proyecto Mozilla incluye un subproyecto llamado XUL\cite{XUL}. XUL es un lenguaje de definición de interfaces desktop en XML. Dado que la salida de la aplicación debe ser un XML bien formado y que la interacción usuario-interfaz se hace mediante javascript, \PWB \ soporta un XUL Page Renderer que renderea aplicaciones en XUL. La diferencia para el programador se encuentra en el trato de las etiquetas de los templates ya que debe utilizar elementos XUL en lugar de HTML.
 
 %Dado que los templates de HTML llevan extensión .xml y los de xul .xul, la misma aplicación, con tener templates de los 2 tipos para cada componente, puede ser rendereada de las 2 maneras.
 
