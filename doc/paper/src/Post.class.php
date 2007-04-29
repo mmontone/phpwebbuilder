@@ -13,7 +13,13 @@ class Post extends PersistentObject {
         'reverseField'=>'post')
        )
     );
-    $this->addField(new IndexField(array('fieldName' => 'author', 'type' => 'User')));
+    $this->addField(new IndexField(
+        array('fieldName' => 'author',
+               'type' => 'User')
+		)
+	);
   }
 }
+
+
 ?>
