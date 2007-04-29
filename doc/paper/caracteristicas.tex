@@ -12,7 +12,7 @@ Para ejemplificar, veremos la creación de un blog (figura \ref{fig-blog1}).
 Las tareas a realizar son:
 \begin{enumerate}
 \item Crear el modelo de clases.
-\item Decidir cuales son las formas de interacción de los usuarios con el sistema.
+\item Decidir cuáles son las formas de interacción de los usuarios con el sistema.
 \item Presentar esas formas de interacción de una manera atractiva y entendible para el usuario.
 \end{enumerate}
 
@@ -39,21 +39,15 @@ La persistencia del modelo se consigue mediante la subclasificación de la clase
 
 De esta manera declaramos la clase \verb"Post":
 
-\begin{lgrind}
-\input{src/Post.class.php.tex}
-\end{lgrind}
+\sourcecode{src/Post.class.php.tex}
 
-Esto define una clase persistente \verb"Post". En ella definimos un método initialize en el que declaramos los atributos que tiene un \verb"Post". En este caso son un \verb"título", un \verb"texto", una colección de \verb"etiquetas" y el usuario \verb"autor". La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
+Esto define una clase persistente \verb"Post". En ella definimos un método initialize en el que declaramos los atributos que tiene un \verb"Post". En este caso son un \emph{título} (\verb"title"), un \emph{texto} (\verb"text"), una colección de \emph{etiquetas} (\verb"tags") y el usuario \emph{autor} (\verb"author"). La definición de un atributo se hace invocando el método \verb"addField" de \verb"PersistentObject" con el tipo de campo que queremos crear.
 
 La clase \verb'PersistentObject' posee los métodos \verb'save' y \verb'delete', que permiten insertar, actualizar y borrar objetos de la base de datos.
 
 Para crear y guardar un \verb'Post' de título 'Model persistency' hacemos:
 
-\begin{verbatim}
-$p = new Post;
-$p->title->setValue('Model persistency');
-$p->save();
-\end{verbatim}
+\sourcecode{src/CreatePost.php.tex}
 
 Esto deja el \verb'Post' persistido en la base de datos.
 
@@ -61,37 +55,15 @@ Esto deja el \verb'Post' persistido en la base de datos.
 
 Una operación habitual en el desarrollo de una aplicación es la recuperación de datos y de información calculada en base a estos.
 
-%La recuperacion de objetos en \PWB \ se hace mediante la clase \verb"Report" que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos y utilizan herencia para las variables de instancia.
+La recuperación de objetos en \PWB \ se hace mediante la clase \verb"Report" que permite obtener los objetos de una colección, filtrada por varios criterios y ordenada. Estos reportes tienen en cuenta las subclases de los objetos y utilizan herencia para las variables de instancia.
 
 Para obtener todos los \verb"Posts" cuya etiqueta sea una dada creamos el siguiente objeto Report:
 
-\begin{lgrind}
-\input{src/ReportTest.php.tex}
-\end{lgrind}
+\sourcecode{src/ReportTest.php.tex}
 
 Esta consulta, genera el siguiente SQL:
 
-%#SQL
-%(
-\begin{verbatim}
-SELECT
-    `p_post`.`id` AS `post_id`,
-    `p_post`.`title` AS `post_title`,
-    `p_post`.`text` AS `post_text`,
-    `p_post`.`PWBversion` AS `post_PWBversion`
-  FROM `post` AS `p_post`
-  WHERE EXISTS
-    (SELECT
-        `tag_posttag_tag`.`id` AS `tag_id`
-       FROM `posttag` AS ` tag_posttag`, `tag` AS `tag_posttag_tag`
-       WHERE `tag_posttag`.`post` = `p_post`.`id`
-          AND `tag_posttag`.`tag` = `tag_posttag_tag`.`id`
-          AND `tag_posttag_tag`.`name` = $tag
-    )
-\end{verbatim}
-%)
- %$
-
+\sourcecode{src/consulta.sql.tex}
 
 Como podemos ver, no se acorta la cantidad de código escrito pero se simplifica. Alcanza con determinar la clase sobre la que hace la consulta (\verb"Post") e indicar las restricciones (en este caso, que solamente queremos aquellos Post que posean a \verb'$tag' entre los elementos de su colección) %$
 
@@ -115,22 +87,12 @@ Una buena propiedad del lenguaje es que está íntimamente relacionado con el c�
 Para buscar los post que tengan el tag  \verb"$tag", %$
 agregamos en la clase \verb"Post" el siguiente mensaje de clase:
 
-\begin{verbatim}
-
-class Post extends Component {
-  ...
-  function Tagged($tag){
-    return #@select p:Post where exists (p.tags as tag where tag.name=$tag)@#;
-  }
-  ...
-}
-
-\end{verbatim}
+\sourcecode{src/PostwOQL.class.php.tex}
 
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
 
-Para poder persistir los datos del modelo, se necesita un repositiorio. \PWB\ utiliza una base de datos relacional para ello, y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
+Para poder persistir los datos del modelo, se necesita un repositorio. \PWB\ utiliza una base de datos relacional para ello, y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
 
 La estructura necesaria para la persistencia del modelo se puede inferir de la definición de los objetos, donde establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
 
@@ -144,7 +106,7 @@ La estructura necesaria para la persistencia del modelo se puede inferir de la d
  	\label{fig-admin1}
 \end{figure}
 
-Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificacion en el modelo de una aplicación y se necesita adaptar la base de datos a los nuevos cambios.
+Además, podemos verificar que el esquema de base de datos sea el correcto, y mostrar y ejecutar las correcciones necesarias. Esto también es muy útil cuando se hace una modificación en el modelo de una aplicación y se necesita adaptar la base de datos a los nuevos cambios.
 
 Por último, \PWB \ incluye una aplicación para la administración de los objetos del modelo como se ve en las figuras \ref{fig-abm1} y \ref{fig-abm2}.
 
@@ -178,14 +140,7 @@ Las aplicaciones en \PWB\ se construyen mediante el ensamblado de componentes. E
 
 El componente principal de la aplicación del blog consiste simplemente de una lista de posts. Llamemos a este componente \verb"BlogComponent".
 
-\begin{verbatim}
-
-class BlogComponent extends Component {
-  function initialize(){
-      $this->addComponent(new PostList(#@select Post@#));
-  }
-}
-\end{verbatim}
+\sourcecode{src/BlogComponent.class.php.tex}
 
 Un componente agrega sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent", dejándolo como \emph{hijo} suyo en el árbol de componentes de la aplicación. Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados.
 
@@ -193,16 +148,9 @@ Un componente agrega sub-componentes definiendo un método \verb"initialize" e i
 
 Ahora definamos la lista de \verb"Posts". Sólo basta subclasificar de \verb"CollectionNavigator", un componente general para navegación y mostrado de listados de objetos:
 
-\begin{verbatim}
-class PostList extends CollectionNavigator {
-  function addLine($post){
-    return new PostItem($post);
-  }
-}
+\sourcecode{src/PostList1.class.php.tex}
 
-\end{verbatim}
-
-Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrandolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine", en este caso un \verb'PostItem'.
+Un componente \verb"CollectionNavigator" presenta links para la navegación de los elementos (mostrándolos paginados). Para determinar cómo se van a manejar cada uno de los elementos se retorna un componente en el método \verb"addLine", en este caso un \verb'PostItem'.
 
 Una de las ventajas que tiene esta implementación del controller es que podemos ensamblar componentes libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en casi cualquier otro framework.
 
@@ -213,23 +161,7 @@ Necesitamos crear ahora el componente \verb'PostItem', que muestra cada \verb'Po
 
 La interacción del usuario con la aplicación se logra por medio de \verb"Widgets"\cite{WDGTS}. Estos son componentes especiales entre los que se encuentran el componente \verb"Input", que permite recibir un string del usuario, el \verb"Text", que le presenta un texto y el \verb"CheckBox", que presenta un checkbox. Utilizaremos estos componentes para mostrar y lograr la interacción del usuario con un \verb'Post':
 
-\begin{verbatim}
-class PostItem extends Component {
-  function PostItem($post){
-    $this->post = $post;
-    parent::Component();
-  }
-  function initialize(){
-    $this->addComponent(new Text($this->post->title), 'title');
-    $this->addComponent(new Text($this->post->text), 'text');
-    // Mostramos las etiquetas del post
-    $this->addComponent(new Component, 'tags');
-    foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new Text($tag->name));
-    }
-  }
-}
-\end{verbatim}
+\sourcecode{src/PostItem1.class.php.tex}
 
 \subsection{Control de flujo modal}
 \label{sub-modal-flow}
@@ -239,77 +171,17 @@ Queremos ahora poder ver la lista de \verb"Posts" filtrada por los que tienen un
 
 Modificamos primero la clase \verb"PostItem" para convertir las etiquetas mostradas a links. Para esto agregamos widgets de clase \verb"CommandLink" en lugar de los de clase \verb"Text" anteriores. Queremos actuar cuando una etiqueta es seleccionada, por lo tanto enviamos al padre del \verb'PostItem' que invoque el método \verb'showTag'.
 
-\begin{verbatim}
-
-class PostItem extends Component {
-  function PostItem($post){
-    $this->post = $post;
-    parent::Component();
-  }
-  function initialize(){
-    $this->addComponent(new Text($this->post->titulo), 'title');
-    $this->addComponent(new Text($this->post->texto), 'text');
-    // Mostramos las etiquetas del post
-    $this->addComponent(new Component, 'tags');
-    foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new CommandLink(array('text'=>$tag->name,
-        'prodeedFunction'=>
-          new FunctionObject(
-            $this->getParent(),
-            'showTag',
-            array('tag'=>$tag)
-          )
-        ))
-      );
-    }
-  }
-}
-
-\end{verbatim}
+\sourcecode{src/PostItem2.class.php.tex}
 
 El \verb"CommandLink" es un \verb"Widget" especial que permite al usuario ejecutar una acción en la aplicación.
 
-Necesitamos que lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modificamos la clase \verb"PostList" para que, al recibir el mensaje \verb'showTag' que le manda el \verb'PostItem', delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
+Necesitamos que la lista de \verb"Posts" se entere de que una etiqueta fue seleccionada y actuar en consecuencia. Modificamos la clase \verb"PostList" para que, al recibir el mensaje \verb'showTag' que le manda el \verb'PostItem', delegue su comportamiento a otra lista cuyos \verb"Posts" son sólo aquellos que poseen la etiqueta seleccionada. La delegación de control se logra mediante la invocación del método \verb"call". Desde el punto de vista de la vista, la delegación de control implica que el componente llamante reemplazará su vista por la del componente llamado.
 
-\begin{verbatim}
-
-class PostList extends CollectionNavigator {
-  function addLine($post){
-    return new PostItem($post);
-  }
-  function showTag($params){
-    $this->call(new PostList(Post::Tagged($params['tag']));
-  }
-}
-
-\end{verbatim}
-
-%Falta explicar la forma que tiene un componente de decir que terminó con su tarea.
+\sourcecode{src/PostList2.class.php.tex}
 
 Sería bueno que una vez mostrada la lista de posts con una determinada etiqueta podamos volver a la lista de posts de la que partimos (figura \ref{fig-blog2}). Para esto utilizamos un botón \verb"volver" cuyo comportamiento será hacer \verb"callback" sobre la nueva lista como mostramos a continuación:
 
-\begin{verbatim}
-
-class PostList extends CollectionNavigator {
-  ...
-  function addBackButton() {
-    $this->addComponent(new CommandLink(
-        array('text' => 'back',
-              'proceedFunction' => new FunctionObject($this, 'callback')
-        )
-    ));
-  }
-
-  function showTag($params){
-    $list = new PostList(Post::Tagged($params['tag']);
-    $this->call($list);
-    $list->addBackButton();
-  }
-  ...
-}
-
-\end{verbatim}
-
+\sourcecode{src/PostList3.class.php.tex}
 
 \begin{figure}[h]
 	\centering
@@ -318,7 +190,7 @@ class PostList extends CollectionNavigator {
  	\label{fig-blog2}
 \end{figure}
 
-La interacción es modal ya que el componente que llama a otro mediante \verb"call", le cede el control, que pasa al componente llamado hasta que haga \verb'callback'. Una vez hecho el \verb'callback' el control vuelve al componente llamante para que continue con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de dialogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
+La interacción es modal ya que el componente que llama a otro mediante \verb"call", le cede el control, que pasa al componente llamado hasta que haga \verb'callback'. Una vez hecho el \verb'callback' el control vuelve al componente llamante para que continúe con su ejecución. A nivel de vista, la vista del componente llamante es reemplazada por la del componente llamado. Esta forma de interacción es similar al uso de diálogos en aplicaciones de tipo desktop. En éstas, abrir un diálogo de forma modal bloquea el acceso a toda la aplicación. Nuestra forma de interacción modal sólo bloquea al componente llamante y por lo tanto sólo a una parte específica de la aplicación. Esa es la principal diferencia con respecto a la utilización de diálogos modales en aplicaciones de tipo desktop tradicionales.
 
 % \subsection{Multiple Dispatching y Context Dispatching}
 % \label{sub-dispatch}
@@ -432,34 +304,11 @@ Para realmente mantener la composicionalidad, necesitamos que el \verb"PostItem"
 
 Utilizando eventos, implementamos:
 
-\begin{verbatim}
-class PostList extends CollectionNavigator{
-  function addLine($post){
-    $pi = new PostItem($post);
-    $pi->addInterestIn('tag_selected', new FunctionObject($this, 'showTag'));
-    return $pi;
-  }
-  ...
-}
-\end{verbatim}
+\sourcecode{src/PostListEvents.class.php.tex}
 
 Al crear el \verb'PostItem', el \verb'PostList' se queda escuchando el evento \verb'tag_selected' de él, y que cuando ocurra, se le envíe el mensaje \verb'showTag'.
 
-\begin{verbatim}
-class PostItem extends Component{
-  function initialize(){
-    ...
-    foreach($this->post->tags->collection->elements() as $tag){
-      $this->tags->addComponent(new CommandLink(array('text'=>$tag->nombre,
-        'prodeedFunction'=>new FunctionObject($this, 'tagSelected', array('tag'=>$tag))));
-    }
-  }
-  function tagSelected($params){
-    $this->triggerEvent('tag_selected', $params);
-  }
-}
-
-\end{verbatim}
+\sourcecode{src/PostItemEvents.class.php.tex}
 
 El \verb'PostItem', en lugar de mandar un mensaje a su padre, se envía a sí mismo el mensaje \verb'tagSelected', que dispara un evento \verb'tag_selected', sin preocuparse de quién esté escuchando.
 
@@ -483,25 +332,16 @@ Existen objetos que disparan algunos eventos por default:
 \subsection{Macros}
 \label{sub-macros}
 
-Un tiempo grande del desarrollo se destina a la corrección de errores. Una modificación de una parte del código puede afectar a otras distantes (en el código o en el tiempo de desarrollo). Además, la fuente del error y el síntoma pueden tener ser también distantes. Una forma de detectar estos errores es mediante el chequeo de tipos y las aserciones.
+Un tiempo grande del desarrollo se destina a la corrección de errores. Una modificación de un módulo de programa puede afectar a otros módulos que lo utilicen, provocando un error difícil de detectar, y por ende costoso de solucionar. Una forma de detectar estos errores es mediante el chequeo de tipos y las aserciones, que permiten un control más estricto sobre los datos que se comunican entre módulos.
 
-La ejecución de estas validaciones, si bien son útiles para el desarrollo, consumen un tiempo innecesario cuando el programa es instalado en producción. Una forma de recortar estos tiempos es eliminar del código final todos los chequeos, pero muchos pueden pasar indetectados y pueden llegar a ser útiles ante una modificación posterior del sistema.
+La ejecución de estas validaciones, si bien son útiles para el desarrollo, consumen un tiempo innecesario cuando el programa es instalado en producción. Una forma de recortar estos tiempos es eliminar del código final todos los chequeos, pero muchos pueden pasar sin ser detectados y pueden llegar a ser útiles ante una modificación posterior del sistema.
 
 Por esto mismo, en \PWB\ utilizamos \verb'#@typecheck@#' y \verb'#@check@#' para insertar validaciones desactivables en el código.
 
 Por ejemplo, escribiendo \verb"#@typecheck $post: Post@#" se chequea que la variable \verb"$post"
 sea un \verb'Post'. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking y el chequeo no se incluye.
 
-\begin{verbatim}
-class PostItem extends Component{
-  function PostItem($post){
-    #@typecheck $post: Post@#
-    $this->post=&$post;
-    parent::Component();
-  }
-  ...
-}
-\end{verbatim}
+\sourcecode{src/PostItemCheck.class.php.tex}
 
 Esto avisará al programador por problemas durante el desarrollo al intentar inicializar erróneamente un \verb"PostItem" con algo que no sea un \verb'Post'.
 
@@ -509,7 +349,7 @@ Habilitando o deshabilitando en el config.php (sección \ref{sub-config}) \verb'
 
 Tanto el OQL (sección \ref{sub-oql}) como \verb'check' y \verb'typecheck' son macros: porciones de código que se ejecutan una sola vez, en tiempo de compilación, y reemplazan su texto en el código de la aplicación final.
 
-Un programador puede agregar sus propias macros declarando una función simple de PHP \verb"mi_macro" y luego llamandola con \verb"#@mi_macro" {\it parámetros} \verb"@#". Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto ya que son otra forma de modularización.
+Un programador puede agregar sus propias macros declarando una función simple de PHP \verb"mi_macro" y luego llamándola con \verb"#@mi_macro" {\it parámetros} \verb"@#". Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto ya que son otra forma de modularización.
 \comment{
 \subsection{Mixins}
 \label{sub-mixins}

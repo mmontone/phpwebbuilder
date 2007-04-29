@@ -1,10 +1,11 @@
 \documentclass[a4paper,10pt]{article}
+%\documentclass[a4paper,10pt,draft]{article}
 
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage[left=2cm,top=3cm,right=2cm]{geometry}
-\usepackage{lgrind}
+\usepackage[nolineno]{lgrind}
 
 \title{\PWB \\ Framework Multipropósito de Aplicaciones Web sobre PHP}
 
@@ -26,7 +27,11 @@ asiri@eureka-consulting.com.ar & mmontone@eureka-consulting.com.ar
 \newcommand{\PWB}{\emph{PHPWebBuilder}}
 
 \newcommand{\sourcecode}[1]{
-#1
+\begin{minipage}{12cm}
+\begin{lgrind}
+\input{#1}
+\end{lgrind}
+\end{minipage}
 }
 
 \begin{document}
@@ -37,7 +42,7 @@ asiri@eureka-consulting.com.ar & mmontone@eureka-consulting.com.ar
 %El enfoque puede ser puramente tecnico, comentando los como, por que, quienes, cuanto y cuando hicieron el proyecto. Desde la elección de herramientas, problemas tecnicos encontrados, etc. o lo que consideren.
 %
 %También, si lo tiene, se puede incluir algun condimento respecto de que utilidad/visión (social/empresarial/politica) aporta el proyecto.
-El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. Existen múltiples soluciones para cada una de ellas, cargando sobre el programador la responsabilidad de seleccionarlas e integrarlas. \PWB\ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de una Intranet, que integra soluciones a cada uno de estos problemas, elegidas en base a nuestra experiencia en el desarrollo de este tipo de aplicaciones.
+El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. Existen múltiples soluciones para cada una de ellas, cargando sobre el programador la responsabilidad de seleccionarlas e integrarlas. \PWB\ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de Intranet, que integra soluciones a cada uno de estos problemas, elegidas en base a la experiencia de la empresa en el desarrollo de este tipo de aplicaciones.
 
 {\bf Keywords}: Templates declarativos, desarrollo por componentes, mapeo objeto-relacional bajo persistencia por alcance, distintos engines de rendereo, compilación y macros.
 
@@ -72,31 +77,31 @@ El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea m
 
 \section{Introducción}
 
-El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. La interacción con el usuario, la presentacion de la información y el almacenamiento y recuperación de la misma son algunos de los más frecuentes y que más tiempo consumen.
-Por esto mismo son foco de mucha invesigación y trabajo, habiendo conseguido a lo largo de los años múltiples soluciones. Seleccionar e integrar éstas queda a cargo del programador o grupo de trabajo de un proyecto específico.
+El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. La interacción con el usuario, la presentación de la información, el almacenamiento y la recuperación de la misma son algunos de los problemas más frecuentes y que más tiempo consumen.
+Por esto mismo han recibido mucha atención, habiéndose conseguido a lo largo de los años múltiples soluciones. Seleccionar e integrar éstas queda a cargo del programador o grupo de trabajo de un proyecto específico.
 
-\PWB \ es un framework de desarrollo que integra múltiples soluciones que en nuestra experiencia mejoran el tiempo de desarrollo y la calidad del producto de software sin sacrificar flexibilidad en el diseño.
+\PWB \ es un framework de desarrollo que integra múltiples soluciones que, basados en la experiencia de la empresa, mejoran el tiempo de desarrollo y la calidad del producto de software sin sacrificar flexibilidad en el diseño.
 
 %\section{\PWB}
 
-El framework está diseñado bajo una arquitectura MVC (Model-view-controller)\cite{mvc}.
+El framework está diseñado bajo una arquitectura MVC (Model-View-Controller)\cite{mvc}.
 Esto quiere decir que una aplicación se compone de 3 capas:
 \begin{itemize}
 \item El \emph{Modelo}. Es la representación de la información de dominio específico de la aplicación.
-\item El \emph{Controlador}. Está basada en la programación de componentes. Responden a la acción del usuario y definen los aspectos navigacionales de la aplicación (más sobre ésto en la sección \ref{sec-controller}).
-\item La \emph{Vista}. La forma en la que se presentan los datos y botones que el usuario ve se define a través de templates declarativos, HTML y CSS. Desarrollamos los aspectos de presentación en la sección \ref{sec-view}.
+\item El \emph{Controlador}. Está basada en la programación de componentes. Responden a la acción del usuario y definen los aspectos navegacionales de la aplicación (más sobre ésto en la sección \ref{sec-controller}).
+\item La \emph{Vista}. La forma en la que se presentan los datos y botones que el usuario ve, se define a través de templates declarativos, HTML y CSS. Desarrollamos los aspectos de presentación en la sección \ref{sec-view}.
 \end{itemize}
 
-Existe una parte más que integra el framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas. Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para la \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de esta tarea, y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras areas:
+Existe además otra parte que integra al framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas. Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de esta tarea, y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras áreas:
 
 \begin{itemize}
 \item Para el modelo, presenta un mapeo automático de base de datos (sección \ref{sub-pers}), autogeneración del esquema de base de datos (sección \ref{sub-adapt}), y un lenguaje de consultas complejas (sección \ref{sub-oql}) que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
 
-\item Para el controlador, utiliza un sistema de componentes (sección \ref{sub-comp}), que permiten reusar ``pedazos de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets (sección \ref{sub-widget}) simplifican y encapsulan la interacción con el usuario.
+\item Para el controlador, utiliza un sistema de componentes (sección \ref{sub-comp}), que permiten reutilizar ``partes de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets (sección \ref{sub-widget}) simplifican y encapsulan la interacción con el usuario.
 
 \item Para la vista, el sistema de templates (sección \ref{sub-templates}) basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico (sección \ref{sub-templates-adapt}). El sistema se encarga de presentar la información utilizando AJAX de manera transparente, u otra forma de rendereo (sección \ref{sub-render}) (esto es fácilmente configurable).
 
-\item Por último, para \PITS, \PWB \ presenta una serie de características disponibles en otros lenguajes y plataformas pero no existentes en PHP. Estas son una implementación de Eventos (sección \ref{sub-events}),
+\item Por último, para \PITS, \PWB \ presenta características disponibles en otros lenguajes y plataformas pero no existentes en PHP. Estas son la implementación de Eventos (sección \ref{sub-events}),
 %Weak References (sección \ref{sub-weak}),
 %creación de DSLs (sección \ref{sub-phpcc}),
 %Mixins (sección \ref{sub-mixins}).
@@ -105,6 +110,7 @@ y Macros (sección \ref{sub-macros}).
 \end{itemize}
 
 \input{caracteristicas}
+%\input{caracteristicas.lgrind.tex}
 
 %\section{Trabajos Hechos}
 %Entre los trabajos que hicimos, se encuentran sitios web y sistemas de intranet.
@@ -122,21 +128,24 @@ Los próximos pasos a realizar son: implementar mejoras en el manejo de coleccio
 
 %\section{Agradecimientos}
 
-\newpage
 \bibliography{references}
 \bibliographystyle{plain}
 
+\comment{
 \setcounter{section}{0}
 \newpage
 \section*{Apéndices}
 \section{Código completo}
 
-\begin{lgrind}
-\input{src/Post.class.php.tex}
-\end{lgrind}
+Modelo:
 
-\begin{lgrind}
-\input{src/Tag.class.php.tex}
-\end{lgrind}
+\sourcecode{src/Post.class.php.tex}
+\sourcecode{src/Tag.class.php.tex}
 
+Controller:
+
+\sourcecode{src/PostItem.class.php.tex}
+\sourcecode{src/PostList.class.php.tex}
+\sourcecode{src/BlogComponent.class.php.tex}
+}
 \end{document}
