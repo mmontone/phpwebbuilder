@@ -65,7 +65,7 @@ Esta consulta, genera el siguiente SQL:
 
 \sourcecode{src/consulta.sql.tex}
 
-Como podemos ver, no se acorta la cantidad de código escrito pero se simplifica. Alcanza con determinar la clase sobre la que hace la consulta (\verb"Post") e indicar las restricciones (en este caso, que solamente queremos aquellos Post que posean a \verb'$tag' entre los elementos de su colección) %$
+Como podemos ver, no se acorta la cantidad de código escrito pero se simplifica. Alcanza con determinar la clase sobre la que hace la consulta (\verb"Post") e indicar las restricciones (en este caso, que solamente queremos aquellos Post que posean a \verb'$tag' entre los elementos de su colección). %$
 
 El programador no tiene que preocuparse por seleccionar correctamente los campos del objeto. Los joins de tablas se hacen automáticamente (incluso los de herencia, en este ejemplo no se nota por su simplicidad).
 
@@ -250,7 +250,7 @@ Además, cada componente tiene un template default, por lo que no se necesita cr
 \label{sub-templates-adapt}
 Debido a que los templates son XML, se puede tomar una página en HTML y agregarle los tags \verb"<template>" y \verb"<container>" donde se quiera, y de esta manera conseguir un template a muy bajo costo. Además, como los templates se heredan, utilizando
 %\verb"Mixins" (sección \ref{sub-mixins}) y
-subclases, una aplicación puede tener un diseño completo en solo 3 o 4 templates.
+subclases, una aplicación puede tener un diseño completo en sólo 3 o 4 templates.
 
 \subsection{Renderings}
 \label{sub-render}
@@ -339,7 +339,7 @@ La ejecución de estas validaciones, si bien son útiles para el desarrollo, con
 Por esto mismo, en \PWB\ utilizamos \verb'#@typecheck@#' y \verb'#@check@#' para insertar validaciones desactivables en el código.
 
 Por ejemplo, escribiendo \verb"#@typecheck $post: Post@#" se chequea que la variable \verb"$post"
-sea un \verb'Post'. En las opciones de configuración de la aplicación, habilitamos o dehabilitamos el typechecking y el chequeo no se incluye.
+sea un \verb'Post'. En las opciones de configuración de la aplicación, habilitamos o deshabilitamos el typechecking y el chequeo no se incluye.
 
 \sourcecode{src/PostItemCheck.class.php.tex}
 
@@ -347,7 +347,7 @@ Esto avisará al programador por problemas durante el desarrollo al intentar ini
 
 Habilitando o deshabilitando en el config.php (sección \ref{sub-config}) \verb'compile=typecheck', podemos utilizar estos chequeos.
 
-Tanto el OQL (sección \ref{sub-oql}) como \verb'check' y \verb'typecheck' son macros: porciones de código que se ejecutan una sola vez, en tiempo de compilación, y reemplazan su texto en el código de la aplicación final.
+Tanto el OQL (sección \ref{sub-oql}) como \verb'check' y \verb'typecheck' son macros: fragmentos de código que se ejecutan una sola vez, en tiempo de compilación, y reemplazan su texto en el código de la aplicación final.
 
 Un programador puede agregar sus propias macros declarando una función simple de PHP \verb"mi_macro" y luego llamándola con \verb"#@mi_macro" {\it parámetros} \verb"@#". Como se ve en lenguajes como C, las macros pueden llegar a tener un rol muy importante en un proyecto ya que son otra forma de modularización.
 \comment{

@@ -7,18 +7,18 @@
 \usepackage[left=2cm,top=3cm,right=2cm]{geometry}
 \usepackage[nolineno]{lgrind}
 
-\title{\PWB \\ Framework Multipropósito de Aplicaciones Web sobre PHP}
+\title{\PWB \\ {\normalsize Framework Multipropósito de Aplicaciones Web sobre PHP}}
 
 \date{}
 \author{
 \begin{tabular}[t]
 {c@{\extracolsep{5em}}c}
 Alejandro Siri & Mariano Montone \\
-Eureka Consulting & Eureka Consulting \\
-Calle 11 Nro 684 & Calle 11 Nro 684 \\
-La Plata, 1900, Argentina & La Plata, 1900, Argentina \\
-+54 221 489 5591 & +54 221 489 5591 \\
-asiri@eureka-consulting.com.ar & mmontone@eureka-consulting.com.ar
+\small Eureka Consulting & \small Eureka Consulting \\
+\small Calle 11 Nro 684 & \small Calle 11 Nro 684 \\
+\small La Plata, 1900, Argentina & \small La Plata, 1900, Argentina \\
+\small +54 221 489 5591 & \small +54 221 489 5591 \\
+\normalsize asiri@eureka-consulting.com.ar & \normalsize mmontone@eureka-consulting.com.ar
 \end{tabular}
 }
 
@@ -44,7 +44,7 @@ asiri@eureka-consulting.com.ar & mmontone@eureka-consulting.com.ar
 %También, si lo tiene, se puede incluir algun condimento respecto de que utilidad/visión (social/empresarial/politica) aporta el proyecto.
 El diseño y desarrollo de aplicaciones (tanto de escritorio como web) plantea muchos problemas reiterativos. Existen múltiples soluciones para cada una de ellas, cargando sobre el programador la responsabilidad de seleccionarlas e integrarlas. \PWB\ es un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web, tanto de Internet como de Intranet, que integra soluciones a cada uno de estos problemas, elegidas en base a la experiencia de la empresa en el desarrollo de este tipo de aplicaciones.
 
-{\bf Keywords}: Templates declarativos, desarrollo por componentes, mapeo objeto-relacional bajo persistencia por alcance, distintos engines de rendereo, compilación y macros.
+{\bf Keywords}: Templates declarativos, desarrollo por componentes, mapeo objeto-relacional, persistencia por alcance, AJAX, Comet, compilación, macros.
 
 }
 
@@ -95,7 +95,7 @@ Esto quiere decir que una aplicación se compone de 3 capas:
 Existe además otra parte que integra al framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas. Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de esta tarea, y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras áreas:
 
 \begin{itemize}
-\item Para el modelo, presenta un mapeo automático de base de datos (sección \ref{sub-pers}), autogeneración del esquema de base de datos (sección \ref{sub-adapt}), y un lenguaje de consultas complejas (sección \ref{sub-oql}) que tiene en cuenta la herencia del modelo de clases.  Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
+\item Para el modelo, presenta un mapeo automático de base de datos (sección \ref{sub-pers}), un lenguaje de consultas complejas (sección \ref{sub-oql}) que tiene en cuenta la herencia del modelo de clases, y autogeneración del esquema de base de datos (sección \ref{sub-adapt}). Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
 
 \item Para el controlador, utiliza un sistema de componentes (sección \ref{sub-comp}), que permiten reutilizar ``partes de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets (sección \ref{sub-widget}) simplifican y encapsulan la interacción con el usuario.
 
@@ -127,9 +127,8 @@ Los próximos pasos a realizar son: implementar mejoras en el manejo de coleccio
 
 
 %\section{Agradecimientos}
-
+\bibliographystyle{unsrt}
 \bibliography{references}
-\bibliographystyle{plain}
 
 \comment{
 \setcounter{section}{0}
