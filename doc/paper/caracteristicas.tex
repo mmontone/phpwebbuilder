@@ -35,7 +35,7 @@ Los datos del modelo necesitan en general ser persistidos para que éstos puedan
 
 \PWB \ posee un mecanismo para la persistencia que permite, mediante anotaciones especiales en los datos del modelo, el guardado y recuperación automática de los datos en la base de datos.
 
-La persistencia del modelo se consigue mediante la subclasificación de la clase especial \verb"PersistentObject". Esta clase provee la funcionalidad necesaria para describir la metadata en su inicialización, y también para las operaciones de guardado y borrado.
+La persistencia del modelo se consigue mediante la subclasificación de la clase especial \verb"PersistentObject". Esta clase provee la funcionalidad necesaria para describir la metadata en su inicialización y también para las operaciones de guardado y borrado.
 
 De esta manera declaramos la clase \verb"Post":
 
@@ -92,7 +92,7 @@ agregamos en la clase \verb"Post" el siguiente mensaje de clase:
 \subsection{Adaptación de base de datos}
 \label{sub-adapt}
 
-Para poder persistir los datos del modelo, se necesita un repositorio. \PWB\ utiliza una base de datos relacional para ello, y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
+Para poder persistir los datos del modelo, se necesita un repositorio. \PWB\ utiliza una base de datos relacional para ello y realiza un mapeo Objeto-Relacional de los datos. Para poder realizar este mapeo, es necesario que la base de datos mantenga una estructura específica.
 
 La estructura necesaria para la persistencia del modelo se puede inferir de la definición de los objetos, donde establecemos los tipos de las variables de cada clase y las relaciones de subclasificación.
 
@@ -142,7 +142,7 @@ El componente principal de la aplicación del blog consiste simplemente de una l
 
 \sourcecode{src/BlogComponent.class.php.tex}
 
-Un componente agrega sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent", dejándolo como \emph{hijo} suyo en el árbol de componentes de la aplicación. Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componenentes ya implementados y probados.
+Un componente agrega sub-componentes definiendo un método \verb"initialize" e invocando a \verb"addComponent", dejándolo como \emph{hijo} suyo en el árbol de componentes de la aplicación. Lo interesante de esta forma de diseñar la aplicación es que podemos obtener un componente a partir de otros componentes ya implementados y probados.
 
 %Además, cada componente posee su propio flujo de control. Esto significa que podemos componer libremente, casi sin restricciones y sin preocuparnos por formularios o pasaje de parámetros por URL, conceptos que surgen al desarrollar aplicaciones web en cualquier otro framework. Por último, cada componente maneja su propia entrada de datos y actualización de vistas.
 
@@ -201,7 +201,7 @@ La interacción es modal ya que el componente que llama a otro mediante \verb"ca
 %
 % Además, las funciones de múltiple dispatching pueden ser utilizadas pasando el contexto (la rama de componentes dentro de la que se hace el llamado) de aplicación, para de esta manera poder responder de manera diferente a un evento, dependiendo del contexto.
 %
-% Por ejemplo, podemos tener un componente TaskList que muestre las tareas realizada en un día. Para cada tarea muestra la descripción, la hora, y el nombre de quién la completo en un componente TaskList. Si luego quisieramos ver las tareas realizadas por uno de los usuarios, nos interesaría ver la hora, la descripción, pero no el nombre del usuario, porque ya se sabe por el contexto. Podríamos usar en ese caso un componente UserTaskShow.
+% Por ejemplo, podemos tener un componente TaskList que muestre las tareas realizada en un día. Para cada tarea muestra la descripción, la hora, y el nombre de quién la completo en un componente TaskList. Si luego quisiéramos ver las tareas realizadas por uno de los usuarios, nos interesaría ver la hora, la descripción, pero no el nombre del usuario, porque ya se sabe por el contexto. Podríamos usar en ese caso un componente UserTaskShow.
 %
 % Para implementar esa diferencia, una forma común sería tener 2 componentes, TaskList y UserTaskList. Esto duplica código, y además es difícil de implementar cuando el contexto de los componentes es de varios componentes (ya que tendríamos que hacer un nuevo componente para cada elemento en la rama de componentes hasta llegar al que realmente implementa la diferencia).
 %
@@ -215,7 +215,7 @@ Con la interacción de la aplicación ya implementada, falta presentar la inform
 \subsection{Templates}
 \label{sub-templates}
 
-Necesitamos darle formato a los datos a presentarle al usuario. Para esto utilizaremos templates, que se adaptan a cada uno de los componentes.
+Necesitamos darle formato a los datos a presentarle al usuario. Para ésto utilizaremos templates, que se adaptan a cada uno de los componentes.
 
 Para el \verb'PostItem', mostramos de manera resaltada el título, y el cuerpo, y más abajo los tags:
 
