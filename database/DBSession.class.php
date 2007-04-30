@@ -167,6 +167,7 @@ class DBSession {
                     $toRollback[] =& $elem;
                     $this->save($elem);
                 }
+                PersistentObject::CollectCycles();
             }
             catch (Exception $e) {
                 $this->registeredObjects = $toRollback;
@@ -331,6 +332,7 @@ class DBSession {
         $db->registerSave($object);
         try {
             $e =& $object->save();
+            return $object;
         }
         catch (Exception $e) {
             if ($db->rollback_on_error) {
@@ -346,8 +348,8 @@ class DBSession {
 
 		try {
             $e =& $object->delete();
-		} catch (Exception $e)
-        {
+            return $object;
+		} catch (Exception $e) {
 			if ($this->rollback_on_error) {
 				$this->primRollback();
 			}
