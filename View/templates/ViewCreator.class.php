@@ -56,13 +56,13 @@ class ViewCreator {
 	function loadTemplatesDir ($templatesdir){
 		$fs = getfilesrec(lambda('$file','$v=substr($file, -4)=="'.$this->app->page_renderer->templateExtension().'"; return $v;', $a=array()), $templatesdir);
 
-		$size = strlen(pwbdir);
-		if (pwbdir == substr ($templatesdir, 0, $size)){
-			$temp_url = pwb_url. substr ($templatesdir, $size);
+		$size = strlen(constant('pwbdir'));
+		if (constant('pwbdir') == substr ($templatesdir, 0, $size)){
+			$temp_url = constant('pwb_url') . substr ($templatesdir, $size);
 		} else {
-			$temp_url = site_url . substr ($templatesdir, strlen(basedir));
+			$temp_url = constant('site_url') . substr ($templatesdir, strlen(constant('basedir')));
 		}
- 		$this->parseTemplates($fs, $temp_url);
+        $this->parseTemplates($fs, $temp_url);
  	}
 
 	function addTemplates(&$templates){
