@@ -98,5 +98,9 @@ class User extends PersistentObject {
 		$u = & User :: logged();
 		return $u->user->getValue() == 'guest';
 	}
+
+    function printString() {
+    	return $this->user->getValue();
+    }
 }
 ?>
