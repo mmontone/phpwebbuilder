@@ -1,13 +1,15 @@
 <?php
 
-define('modules', 'Core,Application,View,database,Model,BugNotifier,DefaultCMS,QuicKlick,Instances');
+define('modules', 'Core,Application,View,Model,database,BugNotifier,DefaultCMS,QuicKlick,Instances');
 define('app_class', 'InstallApplication');
 define('pwbdir', dirname(dirname(__FILE__)).'/');
 define('basedir', '');
 define('app', 'InstallInstances');
 
+define('db_driver', 'MySQL');
 define('page_renderer', 'StandardPageRenderer');
-define('debugview', 'false');
+define('translator', 'EnglishTranslator');
+//define('debugview', 'false');
 define('templates', 'enabled');
 define('error_reporting', E_ERROR | E_WARNING | E_PARSE |E_COMPILE_ERROR);
 //define('error_reporting', E_ALL);
