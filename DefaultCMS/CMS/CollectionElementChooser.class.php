@@ -45,8 +45,8 @@ class CollectionElementChooser extends CollectionNavigator {
             $dialog->onAccept(new FunctionObject($this, 'doNothing'));
             $this->call($dialog);
         }
-        {
-            $this->refresh();
+        else {
+        	$this->refresh();
             $db->commit();
         }
     }//@#
