@@ -46,15 +46,16 @@ Example: <variable-assignment> "=" <expression> ";"
 
 After we create the grammar, we must:
 - Compile the grammar,
-	$g =& PHPCC::createGrammar(...the whole grammar as a string...);
+    $g =& PHPCC::createGrammar(...the whole grammar as a string...);
 
 - Add the pointcuts,
-	$g->addPointCuts(array('expression'=>new FunctionObject($n=null,'evalExpression'),
-					  'term'=>new FunctionObject($n=null,'evalExpression'),
-					  'value'=>new FunctionObject($n=null,'evalValue')));
+    $g->addPointCuts(array('expression'=>new FunctionObject($n=null,'evalExpression'),
+                      'term'=>new FunctionObject($n=null,'evalExpression'),
+                      'value'=>new FunctionObject($n=null,'evalValue')));
 
-	A function object for each non-terminal you want converted
+    A function object for each non-terminal you want converted
 
 - Parse the string
-	$g->compile($input);
-	This parses the input, and applies the pointcut functions whenever needed.
+    $g->compile($input);
+    This parses the input, and applies the pointcut functions whenever needed.
+

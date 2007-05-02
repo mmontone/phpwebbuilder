@@ -299,6 +299,7 @@ class Compiler {
 		return $this->tempdir;
 	}
 	function getTempDir($file) {
+		$file=str_replace('\\','/',$file);
 		$fd = dirname($file);
 		foreach($this->compile_path as $p) {
 			if ($p!=''&&substr($file, 0, strlen($p))==$p) {
@@ -306,6 +307,7 @@ class Compiler {
 				break;
 			}
 		}
+		//print_r($this->compile_path);
 		$dir = $this->tempdir . $fd;
 		if (substr($dir,-1)!=="/") $dir.='/';
 		$res = @ mkdir_r($dir, 0777);
