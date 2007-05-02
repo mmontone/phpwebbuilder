@@ -134,7 +134,13 @@ class CollectionField extends DataField {
     }
 
     function printString() {
-        return $this->primPrintString($this->colName . ' type:' . $this->getDataType());
+        if ($this->isDirect()) {
+        	$t = ' (direct)';
+        }
+        else {
+        	$t = ' (indirect)';
+        }
+        return $this->primPrintString($this->colName . ' type:' . $this->getDataType() . $t);
     }
 }
 
