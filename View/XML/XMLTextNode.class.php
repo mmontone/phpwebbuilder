@@ -32,6 +32,10 @@ class PlainTextNode extends XMLNodeModificationsTracker
 		parent::XMLNodeModificationsTracker('');
 		$this->data = $data;
 	}
+	function setData($data){
+		$this->data = $data;
+		$this->redraw();
+	}
 
 	function renderEcho() {
 		echo $this->renderNonEcho();
