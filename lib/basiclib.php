@@ -567,7 +567,7 @@ function get_subclasses_and_class($class){
 
 
 function sp2nbsp($str){
-	return str_replace(' ','&nbsp;',$str);
+	return str_replace(' ','&nbsp;',str_replace("\t",'    ',$str));
 }
 function htmlshow($str){
 	echo(nl2br(sp2nbsp(htmlentities($str))));

@@ -1,12 +1,14 @@
 <?php
 
-require_once 'PHPCC.class.php';
-require_once dirname(dirname(dirname(__FILE__))).'/Core/FunctionObject.class.php';
 define('pwbdir',dirname(dirname(dirname(__FILE__))));
 define('basedir',dirname(dirname(dirname(__FILE__))));
 define('app_class','Test-grammar');
 $_SESSION=array('shutdown_functions'=>array());
 require_once dirname(dirname(dirname(__FILE__))).'/lib/basiclib.php';
+require_once 'PHPCC.class.php';
+require_once dirname(dirname(dirname(__FILE__))).'/Core/FunctionObject.class.php';
+
+highlight_string('<?php '.substr(file_get_contents(__FILE__), 981));
 
 ?>
 <script>
@@ -32,13 +34,13 @@ htmlshow(PHPCC::ccGrammar()->print_tree());
 /* We first define the grammar*/
 ob_start();
 $g =& PHPCC::createGrammar(
-					'<expression(
-					   value::=	number=>/[0-9]+/ |
-							str=>/\'[^\']+\'/ |
-						   	bool=>/TRUE|FALSE/i.
-					   expression::= tree=>exp1-><expression> operator->("+"|"-") exp2-><expression>|value=><term>.
-					   term::= tree=>exp1-><term> operator->("*"|"\\") exp2-><term> | value=><value>.
-					)>');
+		'<expression(
+		   value::=	number=>/[0-9]+/ |
+				str=>/\'[^\']+\'/ |
+			   	bool=>/TRUE|FALSE/i.
+		   expression::= tree=>exp1-><expression> operator->("+"|"-") exp2-><expression>|value=><term>.
+		   term::= tree=>exp1-><term> operator->("*"|"\\") exp2-><term> | value=><value>.
+		)>');
 ob_end_clean();
 echo '<br/>';
 /* Then, the processing functions */
@@ -74,9 +76,7 @@ $g->addPointCuts(array('expression'=>new FunctionObject($n=null,'evalExpression'
 
 /* Now parsing AND processing */
 
-foreach(array('2*5
-* 9 		-3*8','2*5
-* 9 		-3*','25a', '3++', "\n2\n++\n\n 3\n") as $input){
+foreach(array('2*5*9','25a') as $input){
 	echo '<br/>parsing '.$input;
 	var_dump( $g->compile($input));
 }
