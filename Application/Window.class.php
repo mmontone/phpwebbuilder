@@ -90,7 +90,7 @@ class Window extends PWBObject{
 	}
 	function setTitle($title){
 		$this->wholeView->title=$title;
-		$this->addAjaxCommand(new AjaxCommand('window.title=',array($title)));
+		$this->addAjaxCommand(new AjaxCommand('document.title=',array($title)));
 	}
 	function navigate($bookmark, $params){
 		$this->urlManager->navigate($bookmark, $params);
