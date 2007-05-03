@@ -94,14 +94,14 @@ class DBDriver {
     function &openDatabase($persistent) {
     	if ($persistent){
     		if (!$this->pconn){
-	      		$this->pconn =& $this->basicPConnect();
+	      		$this->pconn = $this->basicPConnect();
     		} else {
     			return $this->pconn;
     		}
     		$con =& $this->pconn;
     	} else {
     		if (!$this->conn){
-	      		$this->conn =& $this->basicConnect();
+	      		$this->conn = $this->basicConnect();
     		} else {
     			return $this->conn;
     		}

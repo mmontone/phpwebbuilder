@@ -140,7 +140,7 @@ class PersistentObjectMetaData {
 		} else {
 			if (!isset($this->allFieldsNamesThisLevel)){
 				$fieldnames = array();
-				$fs =& $this->allFieldNamesThisLevel();
+				$fs = $this->allFieldNamesThisLevel();
 		        foreach ($fs as $field) {
 				    $fn = $this->fieldNamePrefixed($field, $operation, '{$prefix}');
 		            if ($fn != null) {

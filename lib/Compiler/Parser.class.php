@@ -17,13 +17,20 @@ class Parser {
 		$this->errorHandler[] =& $eh;
 	}
 	function &popErrorHandler(){
-		$eh =& array_pop($this->errorHandler);
+		$lastpos = $this->lastErrorHandlerPos();
+		$eh =& $this->errorHandler[$lastpos];
+		unset($this->errorHandler[$lastpos]);
 		return $eh;
+	}
+	function lastErrorHandlerPos(){
+		$poss = array_keys($this->errorHandler);
+		return $poss[count($poss)-1];
 	}
 	function &process($result){return $result;}
 	function setError($err){
 		/*echo "<br/>setting $err from ".get_class($this) . " to ".get_class($this->errorHandler[count($this->errorHandler)-1]);*/
-		$this->errorHandler[count($this->errorHandler)-1]->setError($err);
+		if (!isset($this->errorHandler[$this->lastErrorHandlerPos()]))print_r($this->errorHandler);
+		$this->errorHandler[$this->lastErrorHandlerPos()]->setError($err);
 	}
 }
 

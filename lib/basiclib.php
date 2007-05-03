@@ -917,7 +917,7 @@ function pwb_register_shutdown_function($key, &$function) {
 }
 
 function pwb_shutdown() {
-    $fs = $_SESSION['shutdown_functions'];
+    $fs = @$_SESSION['shutdown_functions'];
     if (!is_array($fs)) return;
     foreach (array_keys($fs) as $i) {
     	$f =& $fs[$i];

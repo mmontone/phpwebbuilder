@@ -303,7 +303,7 @@ class DBSession {
 		return $this->driver->fetchArray($res);
 	}
 
-	function query($q, $persistent=false) {
+	function &query($q, $persistent=false) {
 		return $this->driver->query($q, $persistent);
 	}
 
