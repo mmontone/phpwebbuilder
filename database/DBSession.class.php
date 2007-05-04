@@ -15,12 +15,14 @@ class DBSession {
         pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
     }
 
-    function shutdown() {
+    function &shutdown() {
     	if ($this->nesting !== 0) {
             $this->rollbackTransaction();
             $this->nesting = 0;
             print_backtrace_and_exit('Error: nesting level > 0 (rolling back transaction)');
         }
+        $null=null;
+        return $null;
     }
 
     function registerSave(&$object) {

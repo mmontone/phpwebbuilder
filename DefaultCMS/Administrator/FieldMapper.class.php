@@ -59,12 +59,6 @@ class TableCheckEnumFieldView extends FieldMapper {
 	}
 }
 class EmbedFieldFieldMapper extends FieldMapper {}
-class PasswordFieldFieldMapper extends TextFieldFieldMapper {
-	function unique(){}
-	function type (){
-		return "TEXT";
-	}
-}
 
 class NumFieldFieldMapper extends FieldMapper {
 	function type (){
@@ -95,6 +89,15 @@ class TextFieldFieldMapper extends FieldMapper {
 		return "TEXT";
 	}
 }
+
+class PasswordFieldFieldMapper extends TextFieldFieldMapper {
+	function unique(){}
+	function type (){
+		return "TEXT";
+	}
+}
+
+
 class EmailFieldFieldMapper extends TextFieldFieldMapper {}
 
 class IdFieldFieldMapper extends NumFieldFieldMapper {
