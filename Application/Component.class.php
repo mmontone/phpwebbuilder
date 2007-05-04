@@ -23,20 +23,59 @@ class Component extends PWBObject
 	#@use_mixin DynVars@#
 	function initialize(){}
 	function start() {}
-	function stop() {}
+
+	#@php4
+    function stop() {
+	   // I would use exceptions instead of booleans if in PHP5 :S
+       // To stop the calling flow return true
+       return false;
+
+	}
+
+    function stopAll() {
+        $res = $this->stop();
+        if (!$res) {
+            foreach(array_keys($this->__children) as $c) {
+                $child =& $this->__children[$c]->component;
+                if ($child!==null) {
+                    $res = $child->stopAll();
+                    if ($res) return $res;
+                }
+            }
+        }
+
+        return $res;
+    }
+
+    function stopCallingFlow() {
+        return true; // This is a dialog. You cannot avoid the question ;)
+    }
+    //@#
+
+    #@php5
+    function stop() {
+        // Don't throw exception
+        // To stop the calling flow raise a StopCallingFlowException
+    }
+
+    function stopCallingFlow() {
+    	throw new StopCallingFlowException('');
+    }
+
+    function stopAll() {
+        foreach(array_keys($this->__children) as $c) {
+            $child =& $this->__children[$c]->component;
+            if ($child!==null)
+            	$child->stopAll();
+        }
+        $this->stop();
+    }//@#
+
 	function stopAndRelease() {
 		$this->stopAll();
 		$this->releaseAll();
 	}
 
-	function stopAll() {
-		$this->stop();
-		foreach(array_keys($this->__children) as $c) {
-			$child =& $this->__children[$c]->component;
-			if ($child!==null)
-				$child->stopAll();
-		}
-	}
 	function reloadView(){
 		 #@check $this->viewHandler!=null@#
 		 $n = null;
@@ -101,7 +140,7 @@ class Component extends PWBObject
 		$this->obtainView();
 		$this->initialize();
 
-		$this->start();
+        $this->start();
 		$tl =&$this->toLink;
 		#@check is_array($this->toLink)@#
 		//if (!is_array($this->toLink)) echo getClass($this)
@@ -198,18 +237,47 @@ class Component extends PWBObject
 		$this->$index=&$this->__children[$index]->component;
 	}
 
-	function call(&$component) {
+	#@php5
+    function call(&$component) {
 		// Give control to $component
-		$component->listener =& $this;
-    	$this->basicCall($component);
+		try {
+            $this->stopAll();
+            $component->listener =& $this;
+            $this->basicCall($component);
+        }
+        catch (StopCallingFlowException $e) {
+            // Do nothing
+        }
 	}
+
     function stopAndCall(&$component) {
-		$this->basicCall($component);
-    	$this->releaseAll();
+		try {
+            $this->stopAll();
+            $this->basicCall($component);
+        	$this->releaseAll();
+        }
+        catch (StopCallingFlowException $e) {
+            // Do nothing
+        }
+    }//@#
+
+    #@php4
+    function call(&$component) {
+        // Give control to $component
+        if ($this->stopAll()) return;
+        $component->listener =& $this;
+        $this->basicCall($component);
     }
+
+    function stopAndCall(&$component) {
+        if ($this->stopAll()) return;
+        $this->basicCall($component);
+        $this->releaseAll();
+    }//@#
+
+
     function basicCall(&$component) {
 		#@typecheck $component:Component@#
-    	$this->stopAll();
     	$this->replaceView($component);
     	$this->holder->hold($component);
 		if (isset($this->app) and (!isset($component->app))) {
@@ -371,6 +439,10 @@ class FieldComponent extends Component{
 	function setValue(&$value){
 		$this->component->setValue($value);
 	}
+}
+
+class StopCallingFlowException extends PWBException {
+
 }
 
 ?>

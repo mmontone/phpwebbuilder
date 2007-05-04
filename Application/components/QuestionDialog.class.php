@@ -3,6 +3,7 @@
 class QuestionDialog extends Component
 {
 	var $message;
+    var $button_pressed = false;
 
 	function QuestionDialog($question) {
 		$this->message = $question;
@@ -24,11 +25,13 @@ class QuestionDialog extends Component
 	}
 
 	function yes() {
-		$this->callback('on_yes');
+		$this->button_pressed = true;
+        $this->callback('on_yes');
 	}
 
 	function no() {
-		$this->callback('on_no');
+		$this->button_pressed = true;
+        $this->callback('on_no');
 	}
 
 	function onYes(&$function) {
@@ -38,6 +41,13 @@ class QuestionDialog extends Component
 	function onNo(&$function) {
 		$this->registerCallback('on_no', $function);
 	}
+
+
+    function stop() {
+        if (!$this->button_pressed) {
+    	   return $this->stopCallingFlow(); // This is a modal question dialog
+        }
+    }
 }
 
 ?>
