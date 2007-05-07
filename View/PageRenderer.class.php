@@ -59,6 +59,9 @@ class PageRenderer // extends PWBObject
 		$initial_page_renderer = & new StandardPageRenderer(Application::Instance());
 		return $initial_page_renderer->renderPage($win);
 	}
+	function setTitle(&$win, $title){
+		$win->wholeView->title=toAjax($title);
+	}
 	function initialRender(){}
 	function render(&$win){
 		#@typecheck $win:Window@#
@@ -198,13 +201,16 @@ class StandardPageRenderer extends HTMLPageRenderer {
 	var $cached;
 	function renderPage(&$win){
 		#@typecheck $win:Window@#
+		header('Content-Type: text/html; charset=UTF-8');
 		if ($this->cached==null) {
 			$ret = '<!DOCTYPE html
 			     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 			     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 
 			$view =& $win->wholeView;
-			$ret .= "<html>\n<head><title>" .$view->title .	"</title>";
+			$ret .= "<html>\n<head>".
+
+					"<title>" .$view->title .	"</title>";
 			$ret .= $this->app->renderExtraHeaderContent();
 
 			foreach ($this->app->style_sheets as $c) {
@@ -267,6 +273,10 @@ class StandardPageRenderer extends HTMLPageRenderer {
 }
 
 class AjaxPageRenderer extends PageRenderer {
+	function setTitle(&$win, $title){
+		$win->wholeView->title=toAjax($title);
+		$win->addAjaxCommand(new AjaxCommand('document.title=',array($title)));
+	}
 	function initPage(&$win){
 		parent::initPage($win);
 		$win->wholeView->setAttribute('onsubmit','refresh();');
@@ -288,7 +298,7 @@ class AjaxPageRenderer extends PageRenderer {
 	function ajaxRenderPage(&$win){
 		#@typecheck $win:Window@#
 		header("Content-type: text/xml");
-		echo '<?xml version="1.0" encoding="ISO-8859-1" ?>';
+		echo '<?xml version="1.0" encoding="UTF-8" ?>';
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		echo '<ajax>';
 		echo $win->wholeView->renderAjaxResponseCommand();

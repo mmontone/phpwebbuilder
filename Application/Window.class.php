@@ -89,8 +89,7 @@ class Window extends PWBObject{
 		return $this->parent->getRealId() . CHILD_SEPARATOR.$this->owner_index();
 	}
 	function setTitle($title){
-		$this->wholeView->title=$title;
-		$this->addAjaxCommand(new AjaxCommand('document.title=',array($title)));
+		$this->parent->page_renderer->setTitle($this, $title);
 	}
 	function navigate($bookmark, $params){
 		$this->urlManager->navigate($bookmark, $params);
