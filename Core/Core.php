@@ -3,6 +3,7 @@
 compile_once (dirname(__FILE__).'/PWBObject.class.php');
 compile_once (dirname(__FILE__).'/Collection.class.php');
 compile_once (dirname(__FILE__).'/FunctionObject.class.php');
+compile_once (dirname(__FILE__).'/LambdaObject.class.php');
 compile_once (dirname(__FILE__).'/WeakReference.class.php');
 compile_once (dirname(__FILE__).'/PWBFactory.class.php');
 compile_once (dirname(__FILE__).'/PWBException.class.php');
