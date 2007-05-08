@@ -52,7 +52,8 @@ class CollectionElementChooser extends CollectionNavigator {
     }//@#
 
 	function &addLine(&$obj) {
-		$fc = & new PersistentObjectViewer($obj, $this->fields);
+		$fc = & new Component();
+		$fc->addComponent(new Label($obj->printString()), 'name');
 		$fc->addComponent(new CommandLink(array('text' => 'View', 'proceedFunction' => new FunctionObject($this, 'viewObject', array('object' => & $obj)))),'viewer');
 		$fc->addComponent(new ActionLink($this, 'selectObject', 'Select', $obj), 'select');
 		return $fc;

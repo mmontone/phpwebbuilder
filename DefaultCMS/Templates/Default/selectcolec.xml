@@ -11,11 +11,9 @@
 				</template>
 				<td>Select</td>
 			</tr>
-			<template class="PersistentObjectViewer">
+			<template class="Component">
 	 			<tr>
-					<template class="FieldValueComponent" >
-						<td><container id="value"/></td>
-					</template>
+					<td><container id='name'/></td>
 					<td><a href="#" id="select"><img class="operation" title="Select" src="$templatesdir/icons/stock_ok.png"/></a></td>
 					<td><a href="#" id="viewer">
 								<img class="operation" title="View"
