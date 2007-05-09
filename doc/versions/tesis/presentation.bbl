@@ -1,0 +1,74 @@
+\begin{thebibliography}{10}
+
+\bibitem{PWB}
+Phpwebbuilder - http://phpwebbuilder.sourceforge.net.
+
+\bibitem{mvc}
+Mvc - model-view-controller.
+\newblock {\em http://en.wikipedia.org/wiki/Model-view-controller}.
+
+\bibitem{WDGTS}
+Widgets.
+\newblock {\em http://en.wikipedia.org/wiki/GUI\_Widget}.
+
+\bibitem{XUL}
+El proyecto xul.
+\newblock {\em http://www.mozilla.org/projects/xul}.
+
+\bibitem{BISON}
+Bison.
+\newblock {\em http://www.gnu.org/software/bison}, 1920.
+
+\bibitem{YACC}
+Yet another compiler-compiler.
+\newblock {\em http://dinosaur.compilertools.net/yacc/index.html}.
+
+\bibitem{cake}
+Cakephp.
+\newblock {\em http://www.cakephp.org/}.
+
+\bibitem{RoR}
+Ruby on rails.
+\newblock {\em http://www.rubyonrails.org/}.
+
+\bibitem{seaside}
+Seaside - a framework for developing sophisticated web applications in
+  smalltalk.
+\newblock {\em http://seaside.st/}.
+
+\bibitem{Duca04e}
+St\'ephane Ducasse, Adrian Lienhard, and Lukas Renggli.
+\newblock Seaside --- a multiple control flow web application framework.
+\newblock In {\em Proceedings of ESUG Research Track 2004}, pages 231--257, sep
+  2004.
+
+\bibitem{activerecord}
+Active record pattern.
+\newblock {\em http://www.martinfowler.com/eaaCatalog/activeRecord.html}.
+
+\bibitem{hibernate}
+Hibernate.
+\newblock {\em www.hibernate.org/}.
+
+\bibitem{glorp}
+Glorp.
+\newblock {\em http://glorp.org/}.
+
+\bibitem{classtable}
+Class table inheritance.
+\newblock {\em
+  http://www.martinfowler.com/eaaCatalog/classTableInheritance.html}.
+
+\bibitem{OQL}
+Oql language.
+\newblock {\em http://www.odmg.org}.
+
+\bibitem{jpox}
+Jpox jdo.
+\newblock {\em http://www.jpox.org/}.
+
+\bibitem{jdo}
+Jdo.
+\newblock {\em http://java.sun.com/products/jdo/}.
+
+\end{thebibliography}
