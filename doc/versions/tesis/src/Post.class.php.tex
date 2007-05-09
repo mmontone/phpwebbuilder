@@ -1,0 +1,27 @@
+% Remember to use the lgrind style
+
+\Head{}
+\File{stdin}{2007}{4}{29}{10:35}{0}
+\L{\LB{}}
+\L{\LB{\K{class}_\V{Post}_\K{extends}_\V{PersistentObject}_\{}}
+\index{initialize}\Proc{initialize}\L{\LB{}\Tab{2}{\K{function}_\V{initialize}()_\{}}
+\L{\LB{}\Tab{4}{\N{\$this}\-\!\>\V{addField}(\K{new}_\V{TextField}(\K{array}(\S{}{'}fieldName{'}\SE{}=\>\S{}{'}title{'}\SE{})));}}
+\L{\LB{}\Tab{4}{\N{\$this}\-\!\>\V{addField}(\K{new}_\V{TextArea}(\K{array}(\S{}{'}fieldName{'}\SE{}=\>\S{}{'}text{'}\SE{})));}}
+\L{\LB{}\Tab{4}{\N{\$this}\-\!\>\V{addField}(\K{new}_\V{CollectionField}(}}
+\L{\LB{}\Tab{6}{\K{array}(}}
+\L{\LB{}\Tab{8}{\S{}{'}fieldName{'}\SE{}=\>\S{}{'}tags{'}\SE{},}}
+\L{\LB{}\Tab{8}{\S{}{'}direct{'}\SE{}=\>\K{false},}}
+\L{\LB{}\Tab{8}{\S{}{'}JoinType{'}\SE{}=\>\V{PostTag},}}
+\L{\LB{}\Tab{8}{\S{}{'}targetField{'}\SE{}=\>\S{}{'}tag{'}\SE{},}}
+\L{\LB{}\Tab{8}{\S{}{'}reverseField{'}\SE{}=\>\S{}{'}post{'}\SE{})}}
+\L{\LB{}\Tab{7}{)}}
+\L{\LB{}\Tab{4}{);}}
+\L{\LB{}\Tab{4}{\N{\$this}\-\!\>\V{addField}(\K{new}_\V{IndexField}(}}
+\L{\LB{}\Tab{8}{\K{array}(\S{}{'}fieldName{'}\SE{}_=\>_\S{}{'}author{'}\SE{},}}
+\L{\LB{}\Tab{15}{\S{}{'}type{'}\SE{}_=\>_\S{}{'}User{'}\SE{})}}
+\L{\LB{}\Tab{16}{)}}
+\L{\LB{}\Tab{8}{);}}
+\L{\LB{}\Tab{2}{\}}}
+\L{\LB{\}}}
+\L{\LB{}}
+\L{\LB{}}
