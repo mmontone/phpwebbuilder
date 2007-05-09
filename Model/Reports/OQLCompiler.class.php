@@ -101,6 +101,13 @@ class OQLCompiler {
 		if ($query['where']['expression'] !== null) {
 			$ret .= "'exp'=>" . $query['where']['expression'] . ',';
 		}
+		if ($query['order'] !== null) {
+			$o='';
+			foreach($query['order'][1] as $ord){
+				$o .= '\''.$ord[0][0].'\'=>\''.$ord[1].'\',';
+			}
+			$ret .= "'order'=>array(" .$o . '),';
+		}
 		if ($query['limit'] !== null) {
 			$ret .= "'limit'=>" . $query['limit'][1] . ',';
 		}

@@ -122,6 +122,10 @@ class Report extends Collection{
 		if (isset($params['exp'])){
 			$this->setSelectExp($params['exp']);
 		}
+		if (isset($params['order'])){
+			$this->orderByFields($params['order']);
+		}
+
 		if (isset($params['limit'])){
 			$this->setLimit($params['limit']);
 		}
