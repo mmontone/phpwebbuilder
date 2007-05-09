@@ -1,0 +1,19 @@
+% Remember to use the lgrind style
+
+\Head{}
+\File{stdin}{2007}{4}{29}{10:35}{0}
+\L{\LB{\K{SELECT}}}
+\L{\LB{}\Tab{4}{{`}\V{p\_post}{`}.{`}\V{id}{`}_\K{AS}_{`}\V{post\_id}{`},}}
+\L{\LB{}\Tab{4}{{`}\V{p\_post}{`}.{`}\V{title}{`}_\K{AS}_{`}\V{post\_title}{`},}}
+\L{\LB{}\Tab{4}{{`}\V{p\_post}{`}.{`}\V{text}{`}_\K{AS}_{`}\V{post\_text}{`},}}
+\L{\LB{}\Tab{4}{{`}\V{p\_post}{`}.{`}\V{PWBversion}{`}_\K{AS}_{`}\V{post\_PWBversion}{`}}}
+\L{\LB{}\Tab{2}{\K{FROM}_{`}\V{post}{`}_\K{AS}_{`}\V{p\_post}{`}}}
+\L{\LB{}\Tab{2}{\K{WHERE}_\V{EXISTS}}}
+\L{\LB{}\Tab{4}{(\K{SELECT}}}
+\L{\LB{}\Tab{8}{{`}\V{tag\_posttag\_tag}{`}.{`}\V{id}{`}_\K{AS}_{`}\V{tag\_id}{`}}}
+\L{\LB{}\Tab{7}{\K{FROM}_{`}\V{posttag}{`}_\K{AS}_{`}_\V{tag\_posttag}{`},_{`}\V{tag}{`}_\K{AS}_{`}\V{tag\_posttag\_tag}{`}}}
+\L{\LB{}\Tab{7}{\K{WHERE}_{`}\V{tag\_posttag}{`}.{`}\V{post}{`}_=_{`}\V{p\_post}{`}.{`}\V{id}{`}}}
+\L{\LB{}\Tab{10}{\V{AND}_{`}\V{tag\_posttag}{`}.{`}\V{tag}{`}_=_{`}\V{tag\_posttag\_tag}{`}.{`}\V{id}{`}}}
+\L{\LB{}\Tab{10}{\V{AND}_{`}\V{tag\_posttag\_tag}{`}.{`}\V{name}{`}_=_\N{\$tag}}}
+\L{\LB{}\Tab{4}{)}}
+\L{\LB{}}

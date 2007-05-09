@@ -1,0 +1,147 @@
+\documentclass[a4paper,10pt]{article}
+%\documentclass[a4paper,10pt,draft]{article}
+
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[left=2cm,top=3cm,right=2cm]{geometry}
+\usepackage[nolineno]{lgrind}
+
+\title{\PWB \\ {\normalsize Framework integral para el desarrollo de aplicaciones Web sobre PHP}}
+
+\date{}
+\author{
+\begin{tabular}[t]
+{c@{\extracolsep{5em}}c}
+Alejandro Siri & Mariano Montone \\
+\small Eureka Consulting & \small Eureka Consulting \\
+\small Calle 11 Nro 684 & \small Calle 11 Nro 684 \\
+\small La Plata, 1900, Argentina & \small La Plata, 1900, Argentina \\
+\normalsize asiri@eureka-consulting.com.ar & \normalsize mmontone@eureka-consulting.com.ar
+\end{tabular}
+}
+
+\newcommand{\comment}[1]{}
+\newcommand{\PITS}{\emph{Programming in the Small}} %en.wikipedia.org/wiki/Programming_in_the_small
+\newcommand{\PWB}{\emph{PHPWebBuilder}}
+
+\newcommand{\sourcecode}[1]{
+\begin{minipage}{12cm}
+\begin{lgrind}
+\input{#1}
+\end{lgrind}
+\end{minipage}
+}
+
+\begin{document}
+
+\maketitle
+
+\abstract{
+%El enfoque puede ser puramente tecnico, comentando los como, por que, quienes, cuanto y cuando hicieron el proyecto. Desde la elección de herramientas, problemas tecnicos encontrados, etc. o lo que consideren.
+%
+%También, si lo tiene, se puede incluir algun condimento respecto de que utilidad/visión (social/empresarial/politica) aporta el proyecto.
+El diseño y desarrollo de aplicaciones web plantea muchos problemas reiterativos. Existen librerías, frameworks y herramientas que facilitan el desarrollo de cada uno de los aspectos que componen una aplicación de este tipo. Sin embargo, la responsabilidad de seleccionar aquellas que son apropiadas e integrarlas queda en general a cargo del programador. En este artículo presentamos \PWB, un Framework Open Source Orientado a Objetos escrito en PHP para el desarrollo de aplicaciones Web que integra soluciones a cada uno de estos problemas. Estas fueron seleccionadas, desarrolladas y concretadas en el desarrollo de este framework en base a la experiencia que obtuvo nuestra empresa en el desarrollo de este tipo de aplicaciones.
+
+{\bf Keywords}: Templates declarativos, desarrollo por componentes, mapeo objeto-relacional, persistencia por alcance, AJAX, Comet, compilación, macros.
+
+}
+
+% \section{Nombre}
+% En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework, decidimos
+% rebautilzarlo. El nombre Perseus fue elegido por la mitología griega, ya que este era un heroe que, con ayuda de muchas herramientas, pudo acabar
+% al monstruo Medusa, que convertía a sus contrincantes en piedra.
+%
+% En un principio, Perseus fue llamado PHPWebBuilder (porque era utilizado para hacer webs en PHP). Luego de muchas modificaciones al framework decidimos rebautilzarlo. El nombre Perseus fue elegido por la mitología griega, ya que este era un heroe que, con ayuda de muchas herramientas, pudo acabar al monstruo Medusa, que convertía a sus contrincantes en piedra.
+%
+% Perseus, gracias a la integración de sus múltiples herramientas, sirve para atacar desde proyectos pequeños hasta los más grandes, que petrifican hasta a los mejores programadores.
+%
+% \section{Origenes}
+%
+% En un principio, Perseus fue diseñado para desarrollo de sitios web. Las ventajas principales las presentaba en cuanto a lo que es persistencia y mapeo Objeto-Relacional bajo PHP, además de contar con un CMS con permisos de acceso.
+%
+% Luego, se le implementó el framework de componentes, templates y de eventos, con lo que se pudo empezar con los primeros sistemas de intranet.
+%
+% En las últimas versiones, con el manejo de macros, oql, y compilación, los proyectos se simplifican cada vez más.
+%
+% \section{Tecnologías de soporte}
+%
+% La elección inicial de LAMP, para aplicaciones web, era evidente, por el amplio alcance de estas tecnologías en los servidores comerciales web.
+%
+% Ante la mayor cantidad de opciones para hacer software de escritorio e intranet, nos vimos inclinados por las tecnologías web, por la facilidad de distribución y la escalabilidad de la misma.
+%
+% Al haber elegido LAMP nos vimos forzados a desarrollar en PHP. Si bien tiene limitaciones, PHP resultó tener buen soporte, además de ser un lenguaje flexible, lo que permite hacer diseños fácilmente modificables.
+%
+% }
+
+\section{Introducción}
+
+El diseño y desarrollo de aplicaciones plantea muchos problemas reiterativos. La interacción con el usuario, la presentación de la información, el almacenamiento y la recuperación de la misma son algunos de los problemas más frecuentes y que más tiempo consumen.
+Por esto mismo han recibido mucha atención habiendo obtenido a lo largo de los años múltiples soluciones. Seleccionar e integrar cada una de éstas queda a cargo del programador o grupo de trabajo de un proyecto específico.
+
+\PWB \cite{PWB} es un framework de desarrollo que integra múltiples soluciones que según lo experimentado en nuestra empresa, mejoran el tiempo de desarrollo y la calidad del producto de software sin sacrificar flexibilidad en el diseño.
+
+El framework está diseñado bajo una arquitectura MVC (Model-View-Controller)\cite{mvc}.
+Esto quiere decir que una aplicación se compone de 3 capas:
+\begin{itemize}
+\item El \emph{Modelo}. Es la representación de la información de dominio específico de la aplicación.
+\item El \emph{Controlador}. Está basada en la programación de componentes. Responden a la acción del usuario y definen los aspectos navegacionales de la aplicación (más sobre ésto en la sección \ref{sec-controller}).
+\item La \emph{Vista}. La forma en la que se presentan los datos y botones que el usuario ve, se define a través de templates declarativos, HTML y CSS. Desarrollamos los aspectos de presentación en la sección \ref{sec-view}.
+\end{itemize}
+
+Existe además otra parte que integra al framework. Esto es la ``Programación en lo pequeño'' (\PITS), la programación de los módulos y funciones del programa, que sirven para unir estas capas. Los frameworks actuales ayudan a simplificar el desarrollo bajo MVC; el soporte para \PITS \ generalmente es dependiente del lenguaje/plataforma. \PWB \ se apoya en PHP para parte de esta tarea, y además provee al desarrollador herramientas para solucionar o simplificar las tareas en las otras áreas:
+
+\begin{itemize}
+\item Para el modelo, presenta un mapeo automático de base de datos (sección \ref{sub-pers}), un lenguaje de consultas complejas (sección \ref{sub-oql}) que tiene en cuenta la herencia del modelo de clases y autogeneración del esquema de base de datos (sección \ref{sub-adapt}). Esto permite que la tarea del desarrollador se limite a enfocarse a resolver la problemática que plantea el diseño del modelo.
+
+\item Para el controlador, utiliza un sistema de componentes (sección \ref{sub-comp}) que permiten reutilizar ``partes de aplicación'' , ya sea en diferentes partes de una misma aplicación o en diferentes proyectos. Además, los widgets (sección \ref{sub-widget}) simplifican y encapsulan la interacción con el usuario.
+
+\item Para la vista, el sistema de templates (sección \ref{sub-templates}) basados en XML permiten una adaptación directa del trabajo de un diseñador gráfico (sección \ref{sub-templates-adapt}). El sistema se encarga de presentar la información utilizando AJAX de manera transparente o mediante otra forma de rendereo (sección \ref{sub-render}).
+
+\item Por último, para \PITS, \PWB \ presenta características disponibles en otros lenguajes y plataformas pero no existentes en PHP. Algunas de ellas son la implementación de Eventos (sección \ref{sub-events}) 
+%Weak References (sección \ref{sub-weak}),
+%creación de DSLs (sección \ref{sub-phpcc}),
+%Mixins (sección \ref{sub-mixins}).
+y Macros (sección \ref{sub-macros}).
+
+\end{itemize}
+
+\input{caracteristicas}
+%\input{caracteristicas.lgrind.tex}
+
+%\section{Trabajos Hechos}
+%Entre los trabajos que hicimos, se encuentran sitios web y sistemas de intranet.
+
+\input{comparaciones}
+
+\section{Conclusiones}
+
+\PWB\ no presenta en sí conceptos novedosos, sino que reúne las opciones que consideramos mejores y los integra e interrelaciona dentro del mismo framework. Esto libera a los desarrolladores de muchas decisiones reiterativas y les permite enfocarse en los problemas específicos de la aplicación a desarrollar.
+
+Los próximos pasos a realizar son: implementar mejoras en el manejo de colecciones en el modelo e implementar persistencia por alcance \cite{jpox,jdo}.
+
+%Aún quedan cosas por hacer. Algunas de ellas son implementar mejoras en el manejo de colecciones en el modelo, documentar, agregar soporte DSLs composicionales, mejorar la integración y comunicación de múltiples aplicaciones y diseñar e implementar templates paramétricos y dependientes del contexto y implementar persistencia por alcance similar a JDO \cite{jpox}.
+
+
+%\section{Agradecimientos}
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+\comment{
+\setcounter{section}{0}
+\newpage
+\section*{Apéndices}
+\section{Código completo}
+
+Modelo:
+
+\sourcecode{src/Post.class.php.tex}
+\sourcecode{src/Tag.class.php.tex}
+
+Controller:
+
+\sourcecode{src/PostItem.class.php.tex}
+\sourcecode{src/PostList.class.php.tex}
+\sourcecode{src/BlogComponent.class.php.tex}
+}
+\end{document}

@@ -1,0 +1,128 @@
+format 29
+"Package1" // Package1
+  revision 1
+  modified_by 122 "alex"
+  // class settings
+  //class diagram settings
+  draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+  //use case diagram settings
+  package_name_in_tab default show_context default auto_label_position default shadow default
+  //sequence diagram settings
+  show_full_operations_definition default write_horizontally default drawing_language default shadow default
+  //collaboration diagram settings
+  show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+  //object diagram settings
+   write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+  //component diagram settings
+  package_name_in_tab default show_context default auto_label_position default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //deployment diagram settings
+  package_name_in_tab default show_context default write_horizontally default auto_label_position default shadow default
+  draw_component_as_icon default show_component_req_prov default show_component_rea default
+  //state diagram settings
+  package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+  show_activities default region_horizontally default drawing_language default
+  //activity diagram settings
+  package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+  show_infonote default drawing_language default
+  
+  classview 128122 "Class view2"
+    //class diagram settings
+    draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+    //collaboration diagram settings
+    show_full_operations_definition default show_hierarchical_rank default write_horizontally default drawing_language default package_name_in_tab default show_context default shadow default
+    //object diagram settings
+     write_horizontally default package_name_in_tab default show_context default auto_label_position default shadow default
+    //sequence diagram settings
+    show_full_operations_definition default write_horizontally default drawing_language default shadow default
+    //state diagram settings
+    package_name_in_tab default show_context default auto_label_position default write_trans_label_horizontally default show_trans_definition default shadow default
+    show_activities default region_horizontally default drawing_language default
+    //class settings
+    //activity diagram settings
+    package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default shadow default
+    show_infonote default drawing_language default
+    
+    classdiagram 128122 "Clases"
+      draw_all_relations default hide_attributes default hide_operations default show_members_full_definition default show_members_visibility default package_name_in_tab default class_drawing_mode default drawing_language default show_context_mode default auto_label_position default shadow default
+      size A4
+    end
+
+    class 128122 "Post"cpp_decl ""
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 128634 // author (<association>)
+	relation 128378 ----
+	  a role_name "author" multiplicity "" protected
+	    classrelation_ref 128634 // author (<association>)
+	  b role_name "" multiplicity "*" protected
+	    classrelation_ref 128762 // <association>
+      end
+
+      attribute 128122 "title"
+	protected explicit_type "string"
+	cpp_decl ""
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128250 "text"
+	protected explicit_type ""
+	cpp_decl ""
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 128890 // <association>
+	relation 128506 ----
+	  a role_name "" multiplicity "*" protected
+	    classrelation_ref 128890 // <association>
+	  b role_name "" multiplicity "*" protected
+	    classrelation_ref 129018 // <association>
+      end
+    end
+
+    class 128378 "User"cpp_decl ""
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 128762 // <association>
+	relation_ref 128378 // <association>
+      end
+
+      attribute 128506 "username"
+	protected explicit_type ""
+	cpp_decl ""
+	java_decl ""
+	idl_decl ""
+      end
+
+      attribute 128634 "password"
+	protected explicit_type ""
+	cpp_decl ""
+	java_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 128506 "Tag"cpp_decl ""
+      java_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 128378 "name"
+	protected explicit_type ""
+	cpp_decl ""
+	java_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129018 // <association>
+	relation_ref 128506 // <association>
+      end
+    end
+  end
+end
