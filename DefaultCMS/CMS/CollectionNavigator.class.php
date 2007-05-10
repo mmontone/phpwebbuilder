@@ -32,8 +32,9 @@ class CollectionNavigator extends Component {
 		/* Size */
 		$this->size =& new ValueHolder($s = 0);
 		$this->addComponent(new Text($this->size), 'realSize');
-		$this->pageSize =& new ValueHolder($pz = 5);
+		$this->pageSize =& new ValueHolder($pz = 0);
         $this->pageSize->addInterestIn('changed', new FunctionObject($this, 'refresh'), array('execute once' => true));
+        $this->pageSize->setValue(5);
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 		foreach ($this->fields as $n=>$f) {
 			$fc = & new CompositeWidget;
@@ -45,8 +46,6 @@ class CollectionNavigator extends Component {
 				$fc->addComponent(new ActionLink($this, 'sort', $f->displayString, $f->varName));
 			}
 		}
-
-        $this->showElements();
 	}
 
 	function addNavigationButtons() {
