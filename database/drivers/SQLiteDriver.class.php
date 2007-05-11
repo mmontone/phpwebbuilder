@@ -15,6 +15,7 @@ class SQLiteDriver extends DBDriver {
 	function basicQuery(&$conn,$sql){
 		$sql = str_replace('`','',$sql);
 		echo 'querying '.$sql;
+		$err = null;
 		$res = sqlite_query ($conn,$sql,SQLITE_ASSOC, $err);
 		echo $err;
 		return $res;

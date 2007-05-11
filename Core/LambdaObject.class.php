@@ -23,7 +23,7 @@ class LambdaObject  {
         if (!function_exists($this->functionName)) {
         	eval($this->fdef);
         }
-
+		$result = null;
         eval('$result =& ' . $this->functionName . '($self);');
 
         return $result;
@@ -34,7 +34,7 @@ class LambdaObject  {
         if (!function_exists($this->functionName)) {
             eval($this->fdef);
         }
-
+		$result = null;
         eval('$result =& ' . $this->functionName . '($self, $params);');
         return $result;
     }
