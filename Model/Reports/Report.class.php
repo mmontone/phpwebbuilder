@@ -48,7 +48,7 @@ class Report extends Collection{
       var $evaluated=false;
       var $parent = null;
       var $target_var=null;
-      var $collection=null;
+
 
 
 	function Report($params=array()) {
@@ -58,12 +58,7 @@ class Report extends Collection{
 	}
 
     function &getTargetVar() {
-    	//print_backtrace('Returning target var: ' . print_r($this->target_var,true) . ' in ' . $this->printString());
-        if (!isset($this->target_var) and isset($this->collection)) {
-            $this->collection->setTargetVar($this);
-            $this->setPathCondition($this->collection);
-        }
-        return $this->target_var;
+    	return $this->target_var;
     }
 	function evaluateAll(){
 		$this->inSQL();
@@ -99,7 +94,7 @@ class Report extends Collection{
             }
             else {
                 if (isset($params['collection'])) {
-                    $this->collection =& $params['collection'];
+                    //print_backtrace('Error');
                 }
             }
         }
@@ -115,7 +110,7 @@ class Report extends Collection{
 			}
 		}
 		if (isset($params['exp'])){
-			$this->setSelectExp($params['exp']);
+			$this->setPathCondition($params['exp']);
 		}
 		if (isset($params['order'])){
 			$this->orderByFields($params['order']);

@@ -65,7 +65,8 @@ class OQLCompiler {
                 $col_field = array_pop($real_path);
                 $var = $query['class']['result'][2];
 				$target = 'new CollectionPathExpression(\'' . implode('.', $real_path) . '\', \'' . $col_field  . '\',\'' . $var . '\')';
-				$ret = "'subq'=>new Report(array('collection' => $target)),";
+				//$ret = "'subq'=> SubReport::fromArray(array('collection' => $target)),";
+                $ret = "'collection' => $target,";
                 break;
 			case 'phpvar' :
 				$ret = "'subq'=>" . $query['class']['result'] . ",";
