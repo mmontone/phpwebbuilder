@@ -256,7 +256,7 @@ class PersistentObjectMetaData {
 		$obj =& $this->chooseSubclass($rec);
 		$obj->loadFrom($rec);
 		$obj->attachFieldsEvents();
-		$obj->initializeObject();
+		$obj->primInitializeObject();
 		return $obj;
 	}
 	/**
