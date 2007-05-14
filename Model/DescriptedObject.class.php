@@ -98,7 +98,7 @@ class DescriptedObject extends PWBObject {
 		}
         #@persistence_echo
         else {
-            echo 'Not registering modification of ' . $this->printString() . '<br/>';
+            echo 'Not registering modification of ' . $this->debugPrintString() . '<br/>';
         }//@#
 	}
 	function registerPersistence(){
@@ -106,12 +106,12 @@ class DescriptedObject extends PWBObject {
 			$db =& DBSession::Instance();
 			$db->registerObject($this);
 			#@persistence_echo
-            echo 'registering persistence of ' . $this->printString() . '<br/>';
+            echo 'Registering persistence of ' . $this->debugPrintString() . '<br/>';
         	//@#
 		}
 			#@persistence_echo
 			else {
-				echo 'NOT registering persistence of ' . $this->printString() . '<br/>';
+				echo 'NOT registering persistence of ' . $this->debugPrintString() . '<br/>';
 			}
 			//@#
 	}
@@ -352,7 +352,7 @@ class DescriptedObject extends PWBObject {
 
 		#@php5
         if (!$this->isValid()) {
-        	$ex =& new PWBValidationError(array('object' => $this));
+        	$ex =& new PWBValidationError(array('content' => array('object' => $this, 'errors' => $this->validation_errors)));
             $ex->raise();
         }//@#
         return $this->isValid();
