@@ -41,13 +41,6 @@ class QuestionDialog extends Component
 	function onNo(&$function) {
 		$this->registerCallback('on_no', $function);
 	}
-
-
-    function stop() {
-        if (!$this->button_pressed) {
-    	   return $this->stopCallingFlow(); // This is a modal question dialog
-        }
-    }
 }
 
 ?>

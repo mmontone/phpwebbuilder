@@ -1,121 +1,89 @@
 <?php
-
-class Component extends PWBObject
-{
+class Component extends PWBObject {
 	var $view;
 	var $viewHandler;
- 	var $model;
- 	var $app=null;
+	var $model;
+	var $app = null;
 	var $listener;
 	var $holder;
-	var $registered_callbacks = array();
+	var $registered_callbacks = array ();
 	var $configuration;
 	var $__children;
-	var $toLink = array();
+	var $toLink = array ();
 	var $nextChildrenPosition = 1;
-	var $dyn_vars = array();
+	var $dyn_vars = array ();
 
-	function Component($params=array()) {
-		parent::PWBObject($params);
-		$this->__children = array();
-		$this->listener =& new ChildCallbackHandler();
+	function Component($params = array ()) {
+		parent :: PWBObject($params);
+		$this->__children = array ();
+		$this->listener = & new ChildCallbackHandler();
 	}
 	#@use_mixin DynVars@#
-	function initialize(){}
-	function start() {}
-
-	#@php4
-    function stop() {
-	   // I would use exceptions instead of booleans if in PHP5 :S
-       // To stop the calling flow return true
-       return false;
-
+	function initialize() {
+	}
+	function start() {
 	}
 
-    function stopAll() {
-        $res = $this->stop();
-        if (!$res) {
-            foreach(array_keys($this->__children) as $c) {
-                $child =& $this->__children[$c]->component;
-                if ($child!==null) {
-                    $res = $child->stopAll();
-                    if ($res) return $res;
-                }
-            }
-        }
+	function stop() {
+	}
 
-        return $res;
-    }
-
-    function stopCallingFlow() {
-        return true; // This is a dialog. You cannot avoid the question ;)
-    }
-    //@#
-
-    #@php5
-    function stop() {
-        // Don't throw exception
-        // To stop the calling flow raise a StopCallingFlowException
-    }
-
-    function stopCallingFlow() {
-    	throw new StopCallingFlowException('');
-    }
-
-    function stopAll() {
-        foreach(array_keys($this->__children) as $c) {
-            $child =& $this->__children[$c]->component;
-            if ($child!==null)
-            	$child->stopAll();
-        }
-        $this->stop();
-    }//@#
+	function stopAll() {
+		foreach (array_keys($this->__children) as $c) {
+			$child = & $this->__children[$c]->component;
+			if ($child !== null) {
+				$child->stopAll();
+			}
+		}
+	}
 
 	function stopAndRelease() {
 		$this->stopAll();
 		$this->releaseAll();
 	}
 
-	function reloadView(){
-		 #@check $this->viewHandler!=null@#
-		 $n = null;
-		 $this->view =& $n;
-		 $this->viewHandler->release();
-		 $this->viewHandler =& $n;
-		 $this->obtainView();
-		foreach(array_keys($this->__children) as $c) {
-			$child =& $this->__children[$c]->component;
-			if ($child!=null) {
+	function reloadView() {
+		#@check $this->viewHandler!=null@#
+		$n = null;
+		$this->view = & $n;
+		$this->viewHandler->release();
+		$this->viewHandler = & $n;
+		$this->obtainView();
+		foreach (array_keys($this->__children) as $c) {
+			$child = & $this->__children[$c]->component;
+			if ($child != null) {
 				$child->reloadView();
 			}
 		}
 	}
-	function &getWindow(){
+	function & getWindow() {
 		return $this->getDynVar('window');
 	}
-	function releaseView(){
-		 #@check $this->viewHandler!=null@#
-		 $n = null;
-		 $this->view =& $n;
-		 $this->viewHandler->release();
-		 $this->viewHandler =& $n;
-		foreach(array_keys($this->__children) as $c) {
-			$child =& $this->__children[$c]->component;
-			if ($child!=null)$child->releaseView();
+	function releaseView() {
+		#@check $this->viewHandler!=null@#
+		$n = null;
+		$this->view = & $n;
+		$this->viewHandler->release();
+		$this->viewHandler = & $n;
+		foreach (array_keys($this->__children) as $c) {
+			$child = & $this->__children[$c]->component;
+			if ($child != null)
+				$child->releaseView();
 		}
 	}
 	function release() {
-		parent::release();
+		parent :: release();
 		$n = null;
 
-	    if ($this->viewHandler) $this->viewHandler->release();
-	    $this->viewHandler =& $n;
-		foreach(array_keys($this->__children) as $c) {
-			$child =& $this->__children[$c]->component;
-			if ($child!=null)$child->release();
+		if ($this->viewHandler)
+			$this->viewHandler->release();
+		$this->viewHandler = & $n;
+		foreach (array_keys($this->__children) as $c) {
+			$child = & $this->__children[$c]->component;
+			if ($child != null)
+				$child->release();
 		}
 	}
-	function checkAddingPermissions(){
+	function checkAddingPermissions() {
 		return true;
 	}
 	function releaseAll() {
@@ -123,42 +91,42 @@ class Component extends PWBObject
 		if ($this->listener != null)
 			$this->listener->releaseAll();
 	}
-	function createViews(){
+	function createViews() {
 		$this->obtainView();
 		$ks = array_keys($this->__children);
-		foreach($ks as $k){
-			$this->$k->createViews();
+		foreach ($ks as $k) {
+			$this-> $k->createViews();
 		}
 	}
 	function obtainView() {
 		$this->app->needsView($this);
 	}
 
-	function linkToApp(&$app){
+	function linkToApp(& $app) {
 		#@check !isset($this->app)@#
-		$this->app =& $app;
+		$this->app = & $app;
 		$this->obtainView();
 		$this->initialize();
 
-        $this->start();
-		$tl =&$this->toLink;
+		$this->start();
+		$tl = & $this->toLink;
 		#@check is_array($this->toLink)@#
 		//if (!is_array($this->toLink)) echo getClass($this)
-		foreach(array_keys($tl) as $k){
+		foreach (array_keys($tl) as $k) {
 			#@typecheck $tl[$k]: Component@#
-				$tl[$k]->linkToApp($app);
+			$tl[$k]->linkToApp($app);
 		}
-		$null = array();
-		$this->toLink =& $null;
+		$null = array ();
+		$this->toLink = & $null;
 	}
 	function startAll() {
 		$this->start();
-		foreach(array_keys($this->__children) as $k){
+		foreach (array_keys($this->__children) as $k) {
 			$this->__children[$k]->component->startAll();
 		}
 	}
 
-	function &application() {
+	function & application() {
 		return $this->app;
 	}
 
@@ -166,261 +134,238 @@ class Component extends PWBObject
 	 * Receives an array of selector=>FunctionObject
 	 */
 	function registerCallbacks($callbacks) {
-		$this->registered_callbacks =& $callbacks;
-    }
+		$this->registered_callbacks = & $callbacks;
+	}
 	/** Registers a callback for the component */
-    function registerCallback($selector, &$callback) {
-    	#@typecheck $selector:string, $callback:FunctionObject@#
-    	$this->registered_callbacks[$selector] =& WeakFunctionObject::fromFunctionObject($callback);
-    }
-	function &addComponent(&$component, $ind=null) {
+	function registerCallback($selector, & $callback) {
+		#@typecheck $selector:string, $callback:FunctionObject@#
+		$this->registered_callbacks[$selector] = & WeakFunctionObject :: fromFunctionObject($callback);
+	}
+	function & addComponent(& $component, $ind = null) {
 		#@check is_a($component, 'Component')@#
 		$res = $component->checkAddingPermissions();
-		if ($res == false){
+		if ($res == false) {
 			return $res;
 		} else {
-			if (($ind !==null) and (isset($this->__children[$ind]))) {
-				$this->$ind->stopAndCall($component);
+			if (($ind !== null) and (isset ($this->__children[$ind]))) {
+				$this-> $ind->stopAndCall($component);
 			} else {
 				#@gencheck if (isset($this->$ind)) {print_backtrace("There is a ".getClass($this->$ind)." in $ind on a ".getClass($this));} else {}@#
-				if ($ind===null){
+				if ($ind === null) {
 					$ind = $this->nextChildrenPosition++;
 				}
-				$this->__children[$ind] =& new ComponentHolder($component,$ind, $this);
-				if (isset($this->app)) {
+				$this->__children[$ind] = & new ComponentHolder($component, $ind, $this);
+				if (isset ($this->app)) {
 					$component->linkToApp($this->app);
 				} else {
-					$this->toLink[]=&$component;
+					$this->toLink[] = & $component;
 				}
 			}
 			return $component;
 		}
 	}
 
-	function deleteComponentAt($index){
-		$c =& $this->componentAt($index);
-		if ($c !== false) $c->delete();
+	function deleteComponentAt($index) {
+		$c = & $this->componentAt($index);
+		if ($c !== false)
+			$c->delete();
 	}
 
-	function deleteChildren(){
+	function deleteChildren() {
 		$ks = array_keys($this->__children);
-		foreach($ks as $k){
+		foreach ($ks as $k) {
 			$this->deleteComponentAt($k);
 		}
 	}
-	function delete(){
-		if ($this->view->parentNode)$this->view->parentNode->removeChild($this->view);
-		$h =& $this->holder;
-		$p =& $h->parent;
-		$pos =&  $h->__owner_index;
-		unset($p->__children[$pos]);
-		unset($p->$pos);
+	function delete() {
+		if ($this->view->parentNode)
+			$this->view->parentNode->removeChild($this->view);
+		$h = & $this->holder;
+		$p = & $h->parent;
+		$pos = & $h->__owner_index;
+		unset ($p->__children[$pos]);
+		unset ($p-> $pos);
 		$this->stopAndRelease();
 	}
-	function redraw(){
-		if ($this->viewHandler){
+	function redraw() {
+		if ($this->viewHandler) {
 			$this->viewHandler->redraw();
 		}
 	}
-	function &componentAt($index) {
-		if(isset($this->__children[$index])){
-			$holder =& $this->__children[$index];
+	function & componentAt($index) {
+		if (isset ($this->__children[$index])) {
+			$holder = & $this->__children[$index];
 			return $holder->component;
 		} else {
-			$false=false;
+			$false = false;
 			return $false;
 		}
 	}
-	function setChild($index, &$component){
+	function setChild($index, & $component) {
 		#@typecheck $component:Component@#
 		$this->__children[$index]->hold($component);
-		$this->$index=&$this->__children[$index]->component;
+		$this-> $index = & $this->__children[$index]->component;
 	}
 
-	#@php5
-    function call(&$component) {
+	function call(& $component) {
 		// Give control to $component
-		try {
-            $this->stopAll();
-            $component->listener =& $this;
-            $this->basicCall($component);
-        }
-        catch (StopCallingFlowException $e) {
-            // Do nothing
-        }
+		$component->listener = & $this;
+		$this->basicCall($component);
 	}
 
-    function stopAndCall(&$component) {
-		try {
-            $this->stopAll();
-            $this->basicCall($component);
-        	$this->releaseAll();
-        }
-        catch (StopCallingFlowException $e) {
-            // Do nothing
-        }
-    }//@#
+	function stopAndCall(& $component) {
+		$this->basicCall($component);
+		$this->releaseAll();
+	}
 
-    #@php4
-    function call(&$component) {
-        // Give control to $component
-        if ($this->stopAll()) return;
-        $component->listener =& $this;
-        $this->basicCall($component);
-    }
-
-    function stopAndCall(&$component) {
-        if ($this->stopAll()) return;
-        $this->basicCall($component);
-        $this->releaseAll();
-    }//@#
-
-
-    function basicCall(&$component) {
+	function basicCall(& $component) {
 		#@typecheck $component:Component@#
-    	$this->replaceView($component);
-    	$this->holder->hold($component);
-		if (isset($this->app) and (!isset($component->app))) {
+		$this->stopAll();
+		$this->replaceView($component);
+		$this->holder->hold($component);
+		if (isset ($this->app) and (!isset ($component->app))) {
 			$component->linkToApp($this->app);
-		}
-		else {
+		} else {
 			$component->startAll();
 		}
-    }
-	function callback($callback=null) {
-		$this->callbackWith($callback, $a = array());
+	}
+	function callback($callback = null) {
+		$this->callbackWith($callback, $a = array ());
 	}
 
-	function callbackWith($callback, &$params) {
+	function callbackWith($callback, & $params) {
 		#@check $this->listener !== null@#
 		$this->listener->takeControlOf($this, $callback, $params);
 	}
 
-	function takeControlOf(&$callbackComponent, $callback, &$params) {
+	function takeControlOf(& $callbackComponent, $callback, & $params) {
 		#@typecheck $callbackComponent:Component@#
-		$n=null;
-		$callbackComponent->listener =& $n;
+		$n = null;
+		$callbackComponent->listener = & $n;
 		$callbackComponent->stopAndCall($this);
-        if (($callback != null) and (isset($callbackComponent->registered_callbacks[$callback]))) {
+		if (($callback != null) and (isset ($callbackComponent->registered_callbacks[$callback]))) {
 			$callbackComponent->registered_callbacks[$callback]->executeWith($params);
 		}
 	}
 
-	function dynCallback($callback=null) {
-		$this->dynCallbackWith($callback, $a = array());
+	function dynCallback($callback = null) {
+		$this->dynCallbackWith($callback, $a = array ());
 	}
 
-	function dynCallbackWith($callback, &$params) {
+	function dynCallbackWith($callback, & $params) {
 		#@check $this->listener !== null@#
 		$this->listener->dynTakeControlOf($this, $callback, $params);
 	}
 
-	function dynTakeControlOf(&$callbackComponent, $callback, &$params) {
+	function dynTakeControlOf(& $callbackComponent, $callback, & $params) {
 		#@typecheck $callbackComponent:Component@#
-		$n=null;
-		$callbackComponent->listener =& $n;
+		$n = null;
+		$callbackComponent->listener = & $n;
 		$callbackComponent->stopAndCall($this);
-        if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
+		if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
 			$callbackComponent->registered_callbacks[$callback]->executeWith($params);
-		}
-		else {
+		} else {
 			#@check $this->listener !== null@#
 			$this->listener->dynTakeControlOf($this, $callback, $params);
 		}
 	}
 
-	function hasPermission($form){
-        $permission = $this->permissionNeeded($form);
-		if ($permission!=''){
+	function hasPermission($form) {
+		$permission = $this->permissionNeeded($form);
+		if ($permission != '') {
 			return fHasPermission(0, $permission);
 		} else
 			return true;
 	}
 
-	function permissionNeeded(){
+	function permissionNeeded() {
 		return '';
 	}
 
-	function noPermission ($form){ // The user has no permission
-		$err= Session::getAttribute("Username") ." needs ".print_r($this->permissionNeeded($form), TRUE);
+	function noPermission($form) { // The user has no permission
+		$err = Session :: getAttribute("Username") . " needs " . print_r($this->permissionNeeded($form), TRUE);
 		trace($err);
 	}
 
 	/**
-     * Functions for the views.
-     */
-	function viewUpdated ($params){}
+	 * Functions for the views.
+	 */
+	function viewUpdated($params) {
+	}
 	// TODO Remove View
-	function replaceView(&$other){
+	function replaceView(& $other) {
 
 		$other->takeView($this);
 	}
 
-	function takeView(&$comp) {
+	function takeView(& $comp) {
 		#@typecheck $comp:Component@#
-		if (isset($this->view)){
-			$pv =& $comp->view->parentNode;
+		if (isset ($this->view)) {
+			$pv = & $comp->view->parentNode;
 			$pv->replaceChild($this->view, $comp->view);
 		} else {
-    		$comp->createContainer();
+			$comp->createContainer();
 		}
 	}
-	function createContainer(){
-    	$v =&$this->view;
-	    $pv =& $v->parentNode;
-    	if ($v!=null && $pv!=null) {
-	    	$cont=& $this->myContainer();
-	    	$pv->replaceChild($cont, $v);
-	    	$vp =& $this->parentView();
-	    	$a1=array();$a2=array();
-	    	$a3=array(strtolower($cont->attributes['id'])=>&$cont);
-    	  	$vp->addTemplatesAndContainers($a1,$a2,$a3);
-	    	//$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array(strtolower($cont->attributes['id'])=>&$cont));
-	    }
+	function createContainer() {
+		$v = & $this->view;
+		$pv = & $v->parentNode;
+		if ($v != null && $pv != null) {
+			$cont = & $this->myContainer();
+			$pv->replaceChild($cont, $v);
+			$vp = & $this->parentView();
+			$a1 = array ();
+			$a2 = array ();
+			$a3 = array (
+				strtolower($cont->attributes['id']
+			) => & $cont);
+			$vp->addTemplatesAndContainers($a1, $a2, $a3);
+			//$this->holder->parent->view->addTemplatesAndContainers($a1=array(),$a2=array(),$a3=array(strtolower($cont->attributes['id'])=>&$cont));
+		}
 	}
-	function &myContainer(){
-		$cont =& new HTMLContainer('',array('id'=>$this->getSimpleID()));
-    	return $cont;
+	function & myContainer() {
+		$cont = & new HTMLContainer('', array (
+		'id' => $this->getSimpleID()));
+		return $cont;
 	}
-	function getId(){
+	function getId() {
 		return $this->holder->getRealId();
 	}
 	//TODO Remove View
-	function &parentView(){
+	function & parentView() {
 		return $this->holder->view();
 	}
-	function getSimpleId(){
+	function getSimpleId() {
 		return $this->holder->getSimpleId();
 	}
 	function translate($msg) {
 		return $this->app->translate($msg);
 	}
-	function getWidgets(&$ws){
+	function getWidgets(& $ws) {
 		$ks = array_keys($this->__children);
-		foreach ($ks as $key){
-			$comp =& $this->componentAt($key);
+		foreach ($ks as $key) {
+			$comp = & $this->componentAt($key);
 			$comp->getWidgets($ws);
 		}
 	}
-	function &getParent() {
+	function & getParent() {
 		return $this->holder->getParentElement();
 	}
-	function doNothing(){}
-	function printString(){
+	function doNothing() {
+	}
+	function printString() {
 		if (is_object($this->holder)) {
 			$id = $this->getId();
+		} else {
+			$id = 'without id';
 		}
-        else {
-        	$id = 'without id';
-        }
-        return $this->primPrintString($id);
+		return $this->primPrintString($id);
 	}
-
 }
 
 #@mixin EditorComponent
 {
-	function addFieldComponent(& $component, $field_name, $text=null) {
+	function addFieldComponent(& $component, $field_name, $text = null) {
 		#@typecheck $component:Component, $field_name:string@#
 		if ($text == null) {
 			$text = $field_name;
@@ -430,19 +375,14 @@ class Component extends PWBObject
 		$fc->addComponent($component, 'component');
 		$this->addComponent($fc, $field_name);
 	}
-}//@#
+} //@#
 
-class FieldComponent extends Component{
-	function getValue(){
+class FieldComponent extends Component {
+	function getValue() {
 		return $this->component->getValue();
 	}
-	function setValue(&$value){
+	function setValue(& $value) {
 		$this->component->setValue($value);
 	}
 }
-
-class StopCallingFlowException extends PWBException {
-
-}
-
 ?>
