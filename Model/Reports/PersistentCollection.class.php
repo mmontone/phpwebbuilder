@@ -14,7 +14,7 @@ class PersistentCollection extends Report{
 		}
 		$_SESSION['PersistentCollectionListener'][$class]->addInterestIn('change', $listener);
 	}
-	function chagedClass($class){
+	function changedClass($class){
 		if ($_SESSION['PersistentCollectionListener'][$class]===null){
 			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
 		}
