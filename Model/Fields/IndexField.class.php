@@ -19,6 +19,11 @@ class IndexField extends NumField {
 		}
 	}
 
+    function assignResult(&$component) {
+    	#@typecheck $component : Component@#
+        $component->setValueModel($this->asValueModel());
+    }
+
    function printString(){
         /*
         $target =& $this->getTarget();
@@ -66,10 +71,10 @@ class IndexField extends NumField {
             $this->setModified(true);
             $this->triggerEvent('changed', $this);
             if ($this->owner->isPersisted()){
-            	#@persistence_echo echo 'registering sibling'. $this->owner->printString().$target->printString().'<br/>';@#
+            	#@persistence_echo echo 'Registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             	$target->registerPersistence();
             } else {
-            #@persistence_echo echo 'NOT registering sibling'. $this->owner->printString().$target->printString().'<br/>';@#
+            #@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             }
         }
 	}
