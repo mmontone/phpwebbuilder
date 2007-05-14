@@ -253,7 +253,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 		return $this->getValue() == '';
 	}
 	function printString(){
-		return $this->primPrintString($this->colName);
+		return $this->primPrintString($this->getName());
 	}
 
 	//GARBAGE COLLECTION
