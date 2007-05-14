@@ -10,6 +10,14 @@ class DateTimeField extends DataField {
 		$this->value =& $this->buffered_value;
 		$this->setModified(false);
 	}
+
+    function printString() {
+    	$date =& $this->getValue();
+        return $this->primPrintString($this->getName() . ' - ' . $date->printString());
+    }
+
+
+
     function viewValue() {
         $value =& $this->getValue();
         return $value->printString();
@@ -57,6 +65,10 @@ class DateTimeField extends DataField {
 		else
 			return $this->value;
 	}
+
+    function &getDate() {
+        return $this->date;
+    }
 }
 
 class DateField extends DateTimeField {
