@@ -178,6 +178,10 @@ function sql_echo($text) {
 	return optionalCompile('sql_echo', $text);
 }
 
+function activation_echo($text) {
+	return optionalCompile('activation_echo', $text);
+}
+
 function sql_echo1($text) {
 	if (defined('sql_echo') and (constant('sql_echo') >= 1)) {
 		return $text;

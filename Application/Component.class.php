@@ -28,12 +28,14 @@ class Component extends PWBObject {
 	}
 
 	function stopAll() {
-		foreach (array_keys($this->__children) as $c) {
+		#@activation_echo echo 'Stopping ' . $this->printString() . '<br/>';@#
+        foreach (array_keys($this->__children) as $c) {
 			$child = & $this->__children[$c]->component;
 			if ($child !== null) {
 				$child->stopAll();
 			}
 		}
+        $this->stop();
 	}
 
 	function stopAndRelease() {
@@ -108,7 +110,8 @@ class Component extends PWBObject {
 		$this->obtainView();
 		$this->initialize();
 
-		$this->start();
+		#@activation_echo 'Starting ' . $this->printString() . '<br/>';@#
+        $this->start();
 		$tl = & $this->toLink;
 		#@check is_array($this->toLink)@#
 		//if (!is_array($this->toLink)) echo getClass($this)
@@ -120,7 +123,8 @@ class Component extends PWBObject {
 		$this->toLink = & $null;
 	}
 	function startAll() {
-		$this->start();
+		#@activation_echo echo 'Starting ' . $this->printString() . '<br/>';@#
+        $this->start();
 		foreach (array_keys($this->__children) as $k) {
 			$this->__children[$k]->component->startAll();
 		}
