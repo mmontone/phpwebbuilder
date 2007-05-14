@@ -76,14 +76,9 @@ class Report extends Collection{
             return $this->vars[$id];
         }
         else {
-        	if ($this->parent !== null) {
-        		return $this->parent->getVar($id);
-        	}
-            else {
-                //echo ('Variable: ' . $id  . ' not found in ' . $this->printString() . '<br/>');
+        	    //echo ('Variable: ' . $id  . ' not found in ' . $this->printString() . '<br/>');
 				$n=null;
             	return $n;
-            }
         }
     }
 
@@ -185,6 +180,7 @@ class Report extends Collection{
 
     function &primDefineVar($id, $class) {
     	$this->vars[$id] =& new ReportVar(array('id' => $id, 'class' => $class, 'prefix' => $id . '_'));
+    	PersistentCollection::listen($class, new FunctionObject($this, 'changed'));
         return $this->vars[$id];
     }
 

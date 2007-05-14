@@ -258,7 +258,9 @@ class PersistentObject extends DescriptedObject {
 			$res =& $this->insert();
 			$this->triggerEvent('id_changed',$n=null);
 		}
-
+		foreach($this->getPersistentClasses() as $sc){
+			PersistentCollection::changedClass($sc);
+		}
 		return $res;
 	}
 
@@ -340,6 +342,9 @@ class PersistentObject extends DescriptedObject {
 	            if (is_exception($res))  {return $res;}
 			}
 			$this->existsObject=FALSE;
+			foreach($this->getPersistentClasses() as $sc){
+				PersistentCollection::changedClass($sc);
+			}
 	    	return $res;
 		}
 		return $ex;

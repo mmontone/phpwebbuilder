@@ -8,7 +8,18 @@ class PersistentCollection extends Report{
 		parent::Report();
 		$this->setDataType($dataType);
 	}
-
+	function listen($class, &$listener){
+		if ($_SESSION['PersistentCollectionListener'][$class]===null){
+			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
+		}
+		$_SESSION['PersistentCollectionListener'][$class]->addInterestIn('change', $listener);
+	}
+	function chagedClass($class){
+		if ($_SESSION['PersistentCollectionListener'][$class]===null){
+			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
+		}
+		$_SESSION['PersistentCollectionListener'][$class]->triggerEvent('change', $n=null);
+	}
 	function setCondition($field, $comparator, $value){
 		//print_backtrace('Setting condition: ' . $field . $comparator . $value);
         $target_var =& $this->getTargetVar();

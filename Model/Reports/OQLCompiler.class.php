@@ -43,7 +43,7 @@ class OQLCompiler {
 		//'variable' => new FunctionObject($this, 'parseVariable'),
 		//'value' => new FunctionObject($this, 'parseValue'),
 		));
-		$config = & $grammars['oqlGrammar']->compile($query);
+		$config = 'Composite'.substr($grammars['oqlGrammar']->compile($query),3);
 		$this->error = $grammars['oqlGrammar']->getError();
 		$this->res = $grammars['oqlGrammar']->res;
 		return $config;
@@ -111,7 +111,7 @@ class OQLCompiler {
 		if ($query['limit'] !== null) {
 			$ret .= "'limit'=>" . $query['limit'][1] . ',';
 		}
-		$ret = 'CompositeReport::fromArray(array(' . $ret . '))';
+		$ret = 'SubReport::fromArray(array(' . $ret . '))';
 
 		return $ret;
 	}
