@@ -58,7 +58,7 @@ class DBSession {
     }
 
 	function registerObject(&$object){
-		#@persistence_echo echo 'Registering '.$object->printString() . '<br/>';@#
+		#@persistence_echo echo 'Registering ' . $object->debugPrintString() . '<br/>';@#
 		if ($this->transactionStarted()){
 			$this->save($object);
 			$set = false;
@@ -83,13 +83,13 @@ class DBSession {
 	}
 
 	function flushChanges(){
-			#@persistence_echo echo 'flushing changes';@#
-            foreach(array_keys($this->registeredObjects) as $k){
-    			$this->registeredObjects[$k]->flushChanges();
-				#@persistence_echo echo 'flushing changes of '.$this->registeredObjects[$k]->printString();@#
-    		}
-    		$n = array();
-            $this->registeredObjects =& $n;
+		#@persistence_echo echo 'Flushing changes<br/>';@#
+        foreach(array_keys($this->registeredObjects) as $k){
+			$this->registeredObjects[$k]->flushChanges();
+			#@persistence_echo echo 'Flushing changes of '.$this->registeredObjects[$k]->debugPrintString() . '<br/>';@#
+		}
+		$n = array();
+        $this->registeredObjects =& $n;
 	}
 
     function rollbackTransaction() {
@@ -116,16 +116,24 @@ class DBSession {
 	function transactionStarted(){
 		return @$GLOBALS['transactionnesting']>0;
 	}
-	function &commit() {
+	function &Commit() {
 		$db =& DBSession::Instance();
 		return $db->doCommit();
 	}
+
+    // Commits the modified objects in a transaction
+    function CommitInTransaction() {
+        $db =& DBSession::Instance();
+        $db->beginTransaction();
+        $db->doCommit();
+    }
+
 	function &doCommit(){
 		#@gencheck if (@$GLOBALS['transactionnesting'] <= 0)
         {
 		  print_backtrace('Error: trying to commit a non existing transaction');
 		}//@#
-		#@persistence_echo echo 'commiting '.@$GLOBALS['transactionnesting'].'<br/>';@#
+		#@persistence_echo echo 'Commiting '.@$GLOBALS['transactionnesting'].'<br/>';@#
         if (@$GLOBALS['transactionnesting'] == 1) {
 			$this->saveRegisteredObjects();
 			if (!$this->rollback) {
