@@ -256,7 +256,8 @@ class PersistentObjectMetaData {
 		$obj =& $this->chooseSubclass($rec);
 		$obj->loadFrom($rec);
 		$obj->attachFieldsEvents();
-		$obj->primInitializeObject();
+        // We don't call $obj->initializeObject from here. We want to initialize only newly created objects.
+
 		return $obj;
 	}
 	/**
