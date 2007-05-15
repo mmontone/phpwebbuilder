@@ -27,7 +27,8 @@ class PersistentObject extends DescriptedObject {
 		$this->createMetaData = $createMetaData;
 		parent::PWBObject($parems);
 		if ($create) {
-			$this->primInitializeObject();
+			$this->attachFieldsEvents();
+            $this->initializeObject();
 		}
 	}
 	function &getMetaData($class){
@@ -212,14 +213,9 @@ class PersistentObject extends DescriptedObject {
 		$this->basicInitialize();
 		return $this;
 	}
-	function primInitializeObject(){
-		$this->attachFieldsEvents();
-        $this->initializeObject();
-		//print_backtrace(getClass($this));
-	}
 
     function initializeObject() {
-        // Redefine in subclasses to initialize a created object
+        // Redefine in subclasses to initialize a newly created (not loaded) object
     }
 	/**
 	 * @category Persistence
