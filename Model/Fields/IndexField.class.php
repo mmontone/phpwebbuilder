@@ -19,11 +19,6 @@ class IndexField extends NumField {
 		}
 	}
 
-    function assignResult(&$component) {
-    	#@typecheck $component : Component@#
-        $component->setValueModel($this->asValueModel());
-    }
-
    function printString(){
         /*
         $target =& $this->getTarget();
@@ -170,9 +165,26 @@ class IndexField extends NumField {
     	return $this->isEmpty();
     }
 
-	function &asValueModel() {
+	// Glue functions
+
+    function &asValueModel() {
 		return new AspectAdaptor($this, 'Target');
 	}
+
+    function &asTextHolder() {
+    	$self =& $this;
+        $pa =& new PluggableAdaptor(new LambdaObject('','$target =& $self->getTarget(); return $target->printString();', get_defined_vars()),
+                                    new LambdaObject('', 'print_backtrace_and_exit("Error: see IndexField>>asTextHolder");'));
+        $this->addInterestIn('changed', new FunctionObject($pa, 'changed'));
+        return $pa;
+    }
+
+    function assignResult(&$component) {
+        #@typecheck $component : Component@#
+        $component->setValueModel($this->asValueModel());
+    }
+
+    // End glue functions
 
 
     function SQLvalue() {

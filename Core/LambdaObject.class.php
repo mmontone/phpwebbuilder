@@ -15,27 +15,35 @@ class LambdaObject  {
         $this->id = $_SESSION['lambda_object_id']++;
         $this->functionName = 'LambdaObject_' . $this->id;
         $this->env = $env;
-        $this->fdef = 'function ' . $this->functionName . '(&$_self,'. $args . ') { extract($_self->env,EXTR_REFS); '. $body . '}';
+
+        if ($args == '') {
+        	$largs = '&$_self';
+        }
+        else {
+        	$largs = '&$_self, ' . $args;
+        }
+
+        $this->fdef = 'function ' . $this->functionName . '(' . $largs .') { extract($_self->env,EXTR_REFS); '. $body . '}';
     }
 
     function &call() {
-    	$self =& $this;
+    	$_self =& $this;
         if (!function_exists($this->functionName)) {
         	eval($this->fdef);
         }
 		$result = null;
-        eval('$result =& ' . $this->functionName . '($self);');
+        eval('$result =& ' . $this->functionName . '($_self);');
 
         return $result;
     }
 
     function &callWith(&$params) {
-    	$self =& $this;
+    	$_self =& $this;
         if (!function_exists($this->functionName)) {
             eval($this->fdef);
         }
 		$result = null;
-        eval('$result =& ' . $this->functionName . '($self, $params);');
+        eval('$result =& ' . $this->functionName . '($_self, $params);');
         return $result;
     }
 

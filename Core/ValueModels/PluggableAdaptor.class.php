@@ -11,6 +11,14 @@ class PluggableAdaptor extends PWBObject {#@use_mixin ValueModel@#
     	$this->set_function =& $set_function;
     }
 
+    function setGetter(&$getter) {
+    	$this->get_function =& $getter;
+    }
+
+    function setSetter(&$setter) {
+    	$this->set_function =& $setter;
+    }
+
     function primitiveSetValue(&$value) {
     	$this->set_function->setValue($value);
     }
