@@ -9,7 +9,6 @@ compile_once (dirname(__FILE__).'/Menu.class.php');
 compile_once (dirname(__FILE__).'/DefaultCMSApplication.class.php');
 compile_once (dirname(__FILE__).'/Files/FileLoader.class.php');
 compile_once (dirname(__FILE__).'/Files/ReadFile.class.php');
-compile_once (dirname(__FILE__).'/CMS/CollectionNavigator.class.php');
 compile_once (dirname(__FILE__).'/CMS/CollectionViewer.class.php');
 compile_once (dirname(__FILE__).'/CMS/PersistentObjectPresenter.class.php');
 compile_once (dirname(__FILE__).'/CMS/PersistentObjectViewer.class.php');
