@@ -67,7 +67,7 @@ class DateTimeField extends DataField {
 	}
 
     function &getDate() {
-        return $this->date;
+        return $this->getValue();
     }
 }
 
