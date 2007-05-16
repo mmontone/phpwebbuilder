@@ -1,4 +1,10 @@
 <?php
+
+#@preprocessor
+Compiler::usesClass(__FILE__,constant('sessionHandler').'SessionHandler');
+//@#
+
+
 class SessionHandler{
 	function setHooks(){
 		if (defined('sessionHandler')){
