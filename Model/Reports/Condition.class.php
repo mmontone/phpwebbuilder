@@ -528,6 +528,7 @@ class ExistsExpression extends Expression {
 	var $query;
 
 	function ExistsExpression(&$query) {
+		#@typecheck $query:SubReport@#
 		$this->query =& $query;
 		parent::Expression();
 	}
