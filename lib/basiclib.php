@@ -169,6 +169,10 @@ function debugview($text) {
 	return optionalCompile('debugview', $text);
 }
 
+function debug_report($text) {
+	return optionalCompile('debug_report', $text);
+}
+
 
 function profile($text) {
 	return optionalCompile('profile', $text);

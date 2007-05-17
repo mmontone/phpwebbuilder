@@ -65,21 +65,20 @@ class Report extends Collection{
 		$this->selectsql();
 	}
     function &getVar($id) {
-        //echo ('Looking for variable: ' . $id . ' in ' . $this->printString() . '<br/>');
+        #@debug_report echo ('REPORT DEBUGGING: Looking for variable: ' . $id . ' in ' . $this->printString() . '<br/>');@#
         if (isset($this->vars[$id])) {
-        	//echo ('Found: ' . $id . ' in ' . $this->printString() . '<br/>');
+        	#@debug_report echo ('REPORT DEBUGGING: Found: ' . $id . ' in ' . $this->printString() . '<br/>');@#
             return $this->vars[$id];
         }
         else {
-        	    //echo ('Variable: ' . $id  . ' not found in ' . $this->printString() . '<br/>');
+        	    #@debug_report echo ('REPORT DEBUGGING: Variable: ' . $id  . ' not found in ' . $this->printString() . '<br/>');@#
 				$n=null;
             	return $n;
         }
     }
 
     function setTargetVar($var, $type) {
-    	//echo ('Setting target var: ' . $var . ' in ' . $this->printString() .'<br/>');
-
+    	#@debug_report echo ('REPORT DEBUGGING: Setting target var: ' . $var . ' in ' . $this->printString() .'<br/>');@#
         $v =& $this->primDefineVar($var, $type);
         $this->target_var =& $v;
         $this->dataType = $type;

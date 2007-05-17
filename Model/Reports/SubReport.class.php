@@ -27,10 +27,18 @@ class SubReport extends CompositeReport {
             //$this->report->setTargetVar($this->collection->var, $this->getDataType());
         }
         //print_backtrace('Returning target var: ' . print_r($this->target_var,true) . ' in ' . $this->printString());
-        return $this->target_var;
+        if ($this->collection!==null){
+            return $this->target_var;
+        } else {
+        	return parent::getTargetVar();
+        }
     }
     function getDataType() {
-        return $this->dataType;
+    	if ($this->collection!==null){
+            return $this->dataType;
+        } else{
+        	return parent::getDataType();
+        }
     }
     function &getVar($id) {
 		$var =& parent::getVar($id);
@@ -41,13 +49,15 @@ class SubReport extends CompositeReport {
        		return $this->parent->getVar($id);
         }
     }
-	function printString(){
+	/*
+    function printString(){
         $vars = array();
         foreach ($this->vars as $var) {
         	$vars[] = $var->id . ':' . $var->class;
         }
         return $this->primPrintString('(' . $this->getDataType() . $this->parent->printString().') vars: ' . implode(',', $vars));
-	}
+	}*/
+
     function debugPrintString() {
         return $this->primPrintString();
     }
