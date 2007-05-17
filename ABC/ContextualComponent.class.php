@@ -4,7 +4,7 @@
  */
 class ContextualComponent extends Component {
 	function call(&$workspace){
-		if ($this->__module!==null){
+		if ($this->__module!==null&&is_a($workspace,'ContextualComponent')){
 			$this->workspaceCall($workspace);
 		}
 		parent::call($workspace);
@@ -20,9 +20,16 @@ class ContextualComponent extends Component {
 	}
 	function restoreContext(){
 		if(isset($this->follower)){
+			$this->__module->removeReference($this->follower);
 			$this->follower->restoreContext();
 			$this->follower->callback();
+			unset($this->follower);
+		}
+	}
+	function restoreContextFromStart(){
+		if(isset($this->follower)){
 			$this->__module->removeReference($this->follower);
+			$this->follower->restoreContextFromStart();
 			unset($this->follower);
 		}
 	}
@@ -37,6 +44,7 @@ class ContextualComponent extends Component {
     function start() {
         $context =& $this->getContext();
 		$context->show();
+		$this->restoreContextFromStart();
 		$this->fillInActionsBar($context->getActionsBar());
 		$this->fillInNavigationBar($context->getNavigationBar());
 	}
