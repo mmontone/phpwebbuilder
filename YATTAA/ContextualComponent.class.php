@@ -50,12 +50,22 @@ class ContextualComponent extends Component {
 		$this->fillInNavigationBar($context->getNavigationBar());
 	}
 	var $navigationmenus = array();
-	function addNavigationMenu($name, $function){
+	function addNavigationMenu($name, &$function){
 		$this->navigationmenus[$name]=&$function;
+		$ctx =& $this->getContext();
+		if ($ctx!==null){
+			$nav =& $ctx->getNavigationBar();
+			//$nav->addComponent(new CommandLink(array('text' => $name, 'proceedFunction' => &$function)), $this->getInstanceId().$name);
+		}
 	}
 	var $actionmenus = array();
-	function addActionMenu($name, $function){
+	function addActionMenu($name, &$function){
 		$this->actionmenus[$name]=&$function;
+		$ctx =& $this->getContext();
+		if ($ctx!=null){
+			$nav =& $ctx->getActionsBar();
+			//$nav->addComponent(new CommandLink(array('text' => $name, 'proceedFunction' => &$function)), $this->getInstanceId().$name);
+		}
 	}
 	function removeActionMenu($name){
 		unset($this->actionmenus[$name]);
@@ -74,13 +84,13 @@ class ContextualComponent extends Component {
 		$id = $this->getInstanceId();
 
 		$nav =& $ctx->getNavigationBar();
-		foreach($this->navigationmenus as $name=>$function){
-			$nav->addComponent(new CommandLink(array('text' => $name, 'proceedFunction' => $function)), $id.$name);
+		foreach(array_keys($this->navigationmenus) as $name1){
+			$nav->addComponent(new CommandLink(array('text' => $name1, 'proceedFunction' => &$this->navigationmenus[$name1])), $id.$name1);
 		}
 
 		$act =& $ctx->getActionsBar();
-		foreach($this->actionmenus as $name=>$function){
-			$act->addComponent(new CommandLink(array('text' => $name, 'proceedFunction' => $function)), $id.$name);
+		foreach(array_keys($this->actionmenus) as $name2){
+			$act->addComponent(new CommandLink(array('text' => $name2, 'proceedFunction' => &$this->actionmenus[$name2])), $id.$name2);
 		}
 	}
 	function removeAllMenus(){
@@ -88,12 +98,12 @@ class ContextualComponent extends Component {
 		$id = $this->getInstanceId();
 
 		$nav =& $ctx->getNavigationBar();
-		foreach($this->navigationmenus as $name=>$function){
+		foreach(array_keys($this->navigationmenus) as $name){
 			$nav->deleteComponentAt($id.$name);
 		}
 
 		$act =& $ctx->getActionsBar();
-		foreach($this->actionmenus as $name=>$function){
+		foreach(array_keys($this->actionmenus) as $name){
 			$act->deleteComponentAt($id.$name);
 		}
 	}
