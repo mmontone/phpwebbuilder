@@ -1,8 +1,0 @@
-ABC is the Application Base Classes set. It contains classes for rapid development of simple data handling applications.
-
-Transform:
-
-CozzuolModuleComponent -> ABCModule. El módulo tiene los menúes.
-
-CozzuolComponent -> Workspace
-CozzuolAdmin     -> ObjectAdmin
