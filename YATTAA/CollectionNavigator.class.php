@@ -65,7 +65,7 @@ class CollectionNavigator extends Component {
 					}
 				}
 
-				$bar->addComponent(new SortLink(array (
+				$bar->addSortLink(new SortLink(array (
 					'text' => Translator :: Translate(ucfirst($n
 				)), 'exp' => & $exp, 'collection' => & $this->col)), 'orderby_' . $slot);
 			}
@@ -196,18 +196,7 @@ class SortLink extends Widget {
 		if (isset ($params['unorder'])) {
 			$this->unorder = $params['unorder'];
 		}
-
-		$this->collection->addInterestIn('unordered', new FunctionObject($this, 'collectionUnordered', array('sort_link' => &$this)));
-	}
-
-	function collectionUnordered(&$triggerer, $ps, $params) {
-		$sort_link =& $params['sort_link'];
-        if (!$sort_link->is($this)) {
-            $this->state = null;
-        }
-
-        $this->addStateComponent();
-	}
+    }
 
     function setEvents() {
 	}
@@ -219,26 +208,19 @@ class SortLink extends Widget {
 	}
 
 	function addStateComponent() {
-		$this->deleteMarks();
-        switch ($this->state) {
+		switch ($this->state) {
 			case 'ASC' :
-				$this->addComponent(new Component(), 'asc');
+				$this->addComponent(new Label(' (Ascendente)'), 'mark');
 				$this->onClickSend('execute', $this);
 				break;
 			case 'DESC' :
-				$this->addComponent(new Component(), 'desc');
+				$this->addComponent(new Label(' (Descendente)'), 'mark');
 				$this->onClickSend('execute', $this);
 				break;
 			default : /* null */
-				$this->addComponent(new Component(), 'not_applied');
+				$this->addComponent(new Label(' (Sin aplicar)'), 'mark');
 				$this->onClickSend('execute', $this);
 		}
-	}
-
-	function deleteMarks() {
-		$this->deleteComponentAt('asc');
-		$this->deleteComponentAt('desc');
-		$this->deleteComponentAt('not_applied');
 	}
 
 	function setState($state) {
@@ -269,10 +251,36 @@ class SortLink extends Widget {
 	}
 
     function printString() {
-    	return $this->primPrintString(' state: ' . $this->state);
+    	return $this->primPrintString(' state: ' . $this->state . ' exp: ' . $this->exp->path . '.' . $this->exp->attr);
     }
 }
 
-class OrderBar extends Component {}
+class OrderBar extends Component {
+	var $collection;
+    var $links = array();
+
+    function OrderBar(&$collection) {
+	   $this->collection =& $collection;
+
+       parent::Component();
+	}
+
+    function addSortLink(&$sortlink, $slot) {
+		$this->addComponent($sortlink, $slot);
+        $this->links[] =& $sortlink;
+        $sortlink->addInterestIn('executed', new FunctionObject($this, 'sortLinkExecuted'));
+	}
+
+    function sortLinkExecuted(&$sort_link) {
+        foreach (array_keys($this->links) as $l) {
+        	$link =& $this->links[$l];
+            if (!$link->is($sort_link)) {
+                $link =& $this->links[$l];
+                $link->state = null;
+                $link->addStateComponent();
+            }
+        }
+    }
+}
 
 ?>
