@@ -364,7 +364,7 @@ function getIncludes(){
 
 function includeAll() {
 	if (!defined('modules')) {
-		define('modules', "Core,Application,Model,ABC,Instances,View,database,DefaultCMS,QuicKlick,DrPHP,BugNotifier,Logging");
+		define('modules', "Core,Application,Model,YATTAA,Instances,View,database,DefaultCMS,QuicKlick,DrPHP,BugNotifier,Logging");
 	}
 	if (!defined('app_class')) {
 		define('app_class', "DefaultCMSApplication");
