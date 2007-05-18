@@ -9,12 +9,14 @@ class PersistentCollection extends Report{
 		$this->setDataType($dataType);
 	}
 	function listen($class, &$listener){
+		$class = strtolower($class);
 		if ($_SESSION['PersistentCollectionListener'][$class]===null){
 			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
 		}
 		$_SESSION['PersistentCollectionListener'][$class]->addInterestIn('change', $listener);
 	}
 	function changedClass($class){
+		$class = strtolower($class);
 		if ($_SESSION['PersistentCollectionListener'][$class]===null){
 			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
 		}
