@@ -892,6 +892,27 @@ function print_n($obj, $n=5){
 	}
 }
 
+function debug_print_r($array) {
+    if (is_array($array)) {
+        $printed_elements = array();
+        foreach (array_keys($array) as $i) {
+            $elem =& $array[$i];
+
+            $printed_elements[] = print_array($elem);
+        }
+
+        return 'array(' . implode(',', $printed_elements) .')';
+    }
+    else {
+        if (is_a($array, 'pwbobject')) {
+            return $array->debugPrintString();
+        }
+        else {
+            return print_r($array, true);
+        }
+    }
+}
+
 function array_union_values() {
     //echo func_num_args();  /* Get the total # of arguements (parameter) that was passed to this function... */
     //print_r(func_get_arg());  /* Get the value that was passed in via arguement/parameter #... in int, double, etc... (I think)... */

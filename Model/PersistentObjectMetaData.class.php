@@ -24,7 +24,13 @@ class PersistentObjectMetaData {
             }
         }
 
+        #@php4
         print_backtrace_and_exit('Field not found: ' . $name . ' in ' . $this->printString());
+        //@#
+
+        #@php5
+        throw PWBException('Field not found: ' . $name . ' in ' . $this->printString());
+        //@#
     }
 
 	function disposeObject(){

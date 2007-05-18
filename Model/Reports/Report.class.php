@@ -364,7 +364,18 @@ class Report extends Collection{
 
 	function orderBy($fieldname, $order='ASC') {
 		$this->order[$this->parseField($fieldname)] = $order;
+        $this->triggerEvent('changed');
 	}
+
+    function orderByPath(&$path, $order='ASC') {
+        #@typecheck $path : PathExpression@#
+        $attr = $path->evaluateIn($this);
+        $index = substr($attr, 1);
+        $index = substr($index, 0, count($index) - 2);
+        $this->order[$index] = $order;
+        $this->triggerEvent('changed');
+    }
+
 	/**
 	  * Removes all ordering
 	  */
@@ -372,6 +383,8 @@ class Report extends Collection{
 	function unordered() {
 		$order = array();
 		$this->order =& $order;
+        $this->triggerEvent('changed');
+        $this->triggerEvent('unordered');
 	}
 	/**
 	  * Creates a ORDER for the SQL query, based on the report's orderings
