@@ -25,16 +25,16 @@ class ObjectAdmin extends ContextualComponent {
         return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'gcObject')));
     }
 
-    function &getDeleteLink($text='Delete') {
-		return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'deleteObject')));
+    function &getDeleteFunction($text='Delete') {
+		return new FunctionObject($this, 'deleteObject');
 	}
 
-	function &getDeleteLogicallyLink($text='Delete logically') {
-		return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'deleteObjectLogically')));
+	function &getDeleteLogicallyFunction($text='Delete logically') {
+		return new FunctionObject($this, 'deleteObjectLogically');
 	}
 
-	function &getUndeleteLogicallyLink($text='Undelete logically') {
-		return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'undeleteObjectLogically')));
+	function &getUndeleteLogicallyFunction($text='Undelete logically') {
+		return new FunctionObject($this, 'undeleteObjectLogically');
 	}
 
 	/*
@@ -210,26 +210,26 @@ class ObjectAdmin extends ContextualComponent {
 		$this->callback('object_undeleted_logically');
 	}
 
-	function addDeleteObjectLink(&$context, $text='Delete') {
+	function addDeleteObjectLink($text='Delete') {
 		if (constant('delete_enabled')) {
-			$context->addComponent($this->getDeleteLink($text), 'delete');
+			$this->addActionMenu($text,$this->getDeleteFunction($text));
 		}
 	}
 
-	function addDeleteObjectLogicallyLink(&$context, $text='Delete') {
-		$context->addComponent($this->getDeleteLogicallyLink($text), 'delete_logically');
+	function addDeleteObjectLogicallyLink($text='Delete') {
+		$this->addActionMenu($text,$this->getDeleteLogicallyFunction($text));
 	}
 
-	function addUndeleteObjectLogicallyLink(&$context, $text='Undelete') {
-		$context->addComponent($this->getUndeleteLogicallyLink($text), 'undelete_logically');
+	function addUndeleteObjectLogicallyLink($text='Undelete') {
+		$this->addActionMenu($text,$this->getUndeleteLogicallyFunction($text));
 	}
 
-	function addViewObjectLink(&$context, $text='View') {
-		$context->addComponent(new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'viewObject'))), '_view');
+	function addViewObjectLink($text='View') {
+		$this->addActionMenu($text,new FunctionObject($this, 'viewObject'));
 	}
 
-	function addEditObjectLink(&$context, $text='Edit') {
-		$context->addComponent(new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'editObject'))), 'edit');
+	function addEditObjectLink($text='Edit') {
+		$this->addActionMenu($text,new FunctionObject($this, 'editObject'));
 	}
 
 	function removeDeleteObjectLink(&$comp) {
@@ -267,6 +267,15 @@ class ObjectAdmin extends ContextualComponent {
 		$model->flushChanges();
 		$this->changeBody($this->getObjectViewer($this->getModel()));
 	}
+
+	function checkDeleteObjectLogicallyPermissions() {
+		return !$this->object->isDeleted();
+	}
+
+	function checkUndeleteObjectLogicallyPermissions() {
+		return $this->object->isDeleted();
+	}
+
 
 	function editObject() {
    	  	$model =& $this->getModel();

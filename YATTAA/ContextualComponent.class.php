@@ -57,6 +57,18 @@ class ContextualComponent extends Component {
 	function addActionMenu($name, $function){
 		$this->actionmenus[$name]=&$function;
 	}
+	function removeActionMenu($name){
+		unset($this->actionmenus[$name]);
+		$ctx =& $this->getContext();
+		$act =& $ctx->getActionBar();
+		$act->deleteComponentAt($this->getInstanceId().$name);
+	}
+	function removeNavigationMenu($name){
+		unset($this->navigationmenus[$name]);
+		$ctx =& $this->getContext();
+		$nav =& $ctx->getNavigationBar();
+		$nav->deleteComponentAt($this->getInstanceId().$name);
+	}
 	function addAllMenus(){
 		$ctx =& $this->getContext();
 		$id = $this->getInstanceId();
