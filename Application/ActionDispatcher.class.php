@@ -30,6 +30,7 @@ class ActionDispatcher {
 		$view_updates = array ();
 		$de = 0;
 		$app = & Application::instance();
+
 		$event['window'] =&$app->windows['root'];
 		$event['app'] = & $app;
 		foreach ($form as $dir => $param) {

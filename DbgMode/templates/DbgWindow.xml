@@ -1,0 +1,128 @@
+<templates>
+	<template class="DbgLogger">
+		<h3>PWB Logger</h3>
+		<container id="list" />
+		<input type="button" id="clear" value="Clear" />
+	</template>
+	<template class="DbgInfo">
+		<h3>Debugging Info</h3>
+		<ul>
+			<template class="DbgInfoConstant">
+				<li>
+					<container id="const" />
+					:
+					<container id="value" />
+				</li>
+			</template>
+		</ul>
+	</template>
+	<template class="DbgWindow">
+		<h1>PWB Debugging Mode</h1>
+		<table>
+			<tbody>
+				<tr>
+					<td>
+						<container id="root" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<container id="logger" />
+					</td>
+					<td>
+						<container id="app_menu" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<container id="info" />
+					</td>
+					<td>
+						<container class="InspectorNavigator" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+	<template class="AppMenu">
+		<div>
+			<h3>Application Menu</h3>
+			<div>
+				<a id="inspect_app">Inspect</a>
+			</div>
+			<div>
+				<a id="restart">Restart</a>
+			</div>
+			<div>
+				<a id="recompile">Recompile</a>
+			</div>
+			<div>
+				<a id="restart_and_recompile">Restart and recompile</a>
+			</div>
+		</div>
+	</template>
+	<template class="InspectorNavigator">
+		<div width="20px" height="20px">
+			<h3>Object Inspector</h3>
+			<container id="body" />
+			<input type="button" id="back" value="Back" />
+			<input type="button" id="close" value="Close" />
+		</div>
+	</template>
+	<template class="PWBObjectInspector">
+		<h4>
+			<container id="title"></container>
+		</h4>
+		<div>
+			Type:
+			<container id="type" />
+		</div>
+		<div>
+			Id:
+			<container id="instance_id" />
+		</div>
+		<template class="VarEntry">
+			<div>
+				<container id="slot" />
+				:
+				<container id="link" />
+			</div>
+		</template>
+	</template>
+	<template class="ComponentInspector">
+		<h4>
+			<container id="title"></container>
+		</h4>
+		<div>
+			Type:
+			<container id="type" />
+		</div>
+		<div>
+			Id:
+			<container id="instance_id" />
+		</div>
+		<div>
+			Owner:
+			<container id="owner" />
+		</div>
+		<template class="VarEntry">
+			<div>
+				<container id="slot" />
+				:
+				<container id="link" />
+			</div>
+		</template>
+		<div>
+			Children:
+			<ul>
+				<template class="ChildEntry">
+					<li>
+						<container id="slot" />
+						:
+						<container id="link" />
+					</li>
+				</template>
+			</ul>
+		</div>
+	</template>
+</templates>

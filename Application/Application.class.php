@@ -16,10 +16,17 @@ class Application {
 		$this->createView();
 		$c =& new Component;
 		Window::setActiveInstance(new Window($c, 'root'));
+
 		$rc = & $this->setRootComponent();
+
+		if (defined('dbgmode')) {
+			$rc =& new DbgWindow($rc);
+		}
+
 		#@typecheck $rc:Component@#
 		$c->stopAndCall($rc);
 	}
+
 	function addWindow(&$win, $pos){
 		$this->windows[$pos]=&$win;
 		$win->createView();

@@ -196,7 +196,7 @@ class Compiler {
 		$file = Compiler::getRealPath($file);
 		if (in_array($file, $this->compiled)) return;
 		$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
-		//print_backtrace('compiling '.$file .' to '.$tmpname);
+		//echo ('compiling '.$file .' to '.$tmpname . '<br/>');
 		if (isset($_REQUEST['recompile']) or ((@constant('recompile')!='NEVER') && (@ filemtime($tmpname) < @ filemtime($file)))) {
 			$fo = fopen($tmpname, 'w');
 			$this->addClassUsageRule('/(\w+)[\s\t\n]*::/',1);

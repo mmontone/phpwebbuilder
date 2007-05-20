@@ -33,7 +33,10 @@ class DBDriver {
 		return $arr;
 	}
     function &query($sql, $persistent=false) {
-    	#@sql_echo	echo('Querying ' . $sql. '<br/>');@#
+    	#@sql_echo
+    	//echo('Querying ' . $sql. '<br/>');
+    	sql_log(array('Querying: ', $sql));//@#
+
     	$conn =& $this->openDatabase($persistent);
 		$this->setLastSQL($sql);
         #@sql_echo2 if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ($conn,'EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#

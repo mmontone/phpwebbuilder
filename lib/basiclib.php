@@ -1,7 +1,8 @@
 <?php
 
+
 //require_once 'md2.php';
-if (defined('md')){
+if (defined('md')) {
 	require_once 'md.php';
 }
 
@@ -17,61 +18,58 @@ require_once 'Compiler.class.php';
 #@defmacro defmd@#
 function defmd($text) {
 	// We use template language to parse macros input??
-	$out =& parse_with('$string {name} "(" $params {params} ")"' .
-			           '$param = $string {arg_name} ":" $string {arg_type}' .
-			           '$params = $param' .
-			           '$params = $param "," $params');
+	$out = & parse_with('$string {name} "(" $params {params} ")"' .
+	'$param = $string {arg_name} ":" $string {arg_type}' .
+	'$params = $param' .
+	'$params = $param "," $params');
 }
-
 
 $cache_var = 1;
 function get_cache_var() {
 	global $cache_var;
-    return '$this->cachevar_' . $cache_var++;
+	return '$this->cachevar_' . $cache_var++;
 }
 
 function getcached($text) {
-    preg_match('/(.*)[\s\t]*\{(.*)\}/s', $text, $matches);
-    $params = $matches[1];
-    $body = $matches[2];
+	preg_match('/(.*)[\s\t]*\{(.*)\}/s', $text, $matches);
+	$params = $matches[1];
+	$body = $matches[2];
 
-    $vars = array();
-    $ps = explode(',', $params);
-    foreach($ps as $p) {
-        $paramspec = trim($p);
-        $paramspec = explode('=>', $paramspec);
-        $vars[trim($paramspec[0])] = trim($paramspec[1]);
-    }
+	$vars = array ();
+	$ps = explode(',', $params);
+	foreach ($ps as $p) {
+		$paramspec = trim($p);
+		$paramspec = explode('=>', $paramspec);
+		$vars[trim($paramspec[0])] = trim($paramspec[1]);
+	}
 
+	if (isset ($vars['var'])) {
+		$var = $vars['var'];
+	} else {
+		$var = get_cache_var();
+	}
 
-    if (isset($vars['var'])) {
-    	$var = $vars['var'];
-    } else {
-    	$var = get_cache_var();
-    }
+	$initialize = $vars['initialize'];
 
-    $initialize = $vars['initialize'];
+	if (isset ($vars['result'])) {
+		$result = $vars['result'];
+	} else {
+		$result = $initialize;
+	}
 
-    if (isset($vars['result'])) {
-        $result = $vars['result'];
-    }
-    else {
-    	$result = $initialize;
-    }
-
-    $out = "if (is_null($var)) {\n
-    	       $body\n
-               $var =& $initialize;\n
-           }\n
-           $result =& $var;";
-    return $out;
+	$out = "if (is_null($var)) {\n
+	    	       $body\n
+	               $var =& $initialize;\n
+	           }\n
+	           $result =& $var;";
+	return $out;
 }
 
 $gensym = 0;
 function gensym() {
 	global $gensym;
 
-	return 'sym' . $gensym ++;
+	return 'sym' . $gensym++;
 }
 
 function sexp_parser($text) {
@@ -79,26 +77,25 @@ function sexp_parser($text) {
 }
 
 function yaml_parser($text) {
-	return Spyc::YAMLLoad($text);
+	return Spyc :: YAMLLoad($text);
 }
 
 function lambda_parser($text) {
 	return sexp_parser($text);
 }
 
-function preprocessor($code){
-	return eval($code);
+function preprocessor($code) {
+	return eval ($code);
 }
 
-
-$mixins = array();
-$_mixin_file=array();
+$mixins = array ();
+$_mixin_file = array ();
 #@mixin MyMixin
 {
 	function mixedFunc() {
 		echo 'Hola';
 	}
-}//@#
+} //@#
 
 function mixin($text) {
 	preg_match('/([[:alpha:]]*)\s*\{(.*)\}/s', $text, $matches);
@@ -107,9 +104,9 @@ function mixin($text) {
 	$body = $matches[2];
 	//echo 'Mixin body: ' . $body . '<br/>';
 	global $mixins;
-	$mixins[$name] = preg_replace("/\n|\r/", '',$body);
+	$mixins[$name] = preg_replace("/\n|\r/", '', $body);
 	//$mixins[$name] = $body;
-	return 'global $_mixin_file;$_mixin_file[\''.$name.'\']=\''.Compiler::actualFile().'\';';
+	return 'global $_mixin_file;$_mixin_file[\'' . $name . '\']=\'' . Compiler :: actualFile() . '\';';
 }
 /*
  class Mixed {
@@ -121,49 +118,49 @@ function mixin($text) {
 */
 
 function use_mixin($text) {
-	$ms = explode(',',$text);
+	$ms = explode(',', $text);
 	global $mixins;
 	$code = '';
 	foreach ($ms as $name) {
 		//echo 'UseMixin name: ' . $name . '<br/>';
 		$name = trim($name);
-		if (isset($mixins[$name])) {
-			$code .= 'var $__use_mixin_'.$name. '=true;';
+		if (isset ($mixins[$name])) {
+			$code .= 'var $__use_mixin_' . $name . '=true;';
 			$code .= $mixins[$name];
 		} else {
 			global $_mixin_file;
-			$comp =& Compiler::instance();
+			$comp = & Compiler :: instance();
 			$comp->compileFile($_mixin_file[$name]);
-			if (isset($mixins[$name])) {$code.=use_mixin($name); break;}
+			if (isset ($mixins[$name])) {
+				$code .= use_mixin($name);
+				break;
+			}
 			print_r($mixins);
-			print_backtrace_and_exit('Mixin '.$name .' not defined');
+			print_backtrace_and_exit('Mixin ' . $name . ' not defined');
 		}
 	}
 	return $code;
 }
 
 function optionalCompile($tag, $code) {
-	if (Compiler::CompileOpt($tag) || defined($tag)) {
+	if (Compiler :: CompileOpt($tag) || defined($tag)) {
 		return $code;
-	}
-	else {
-		return preg_replace('/[^\n]/', '',$code);
+	} else {
+		return preg_replace('/[^\n]/', '', $code);
 	}
 }
 
 function php5($code) {
-    return optionalCompile('php5', $code);
+	return optionalCompile('php5', $code);
 }
 
 function php4($code) {
 	if (!defined('php5')) {
 		return $code;
+	} else {
+		return '';
 	}
-    else {
-    	return '';
-    }
 }
-
 
 function debugview($text) {
 	return optionalCompile('debugview', $text);
@@ -172,7 +169,6 @@ function debugview($text) {
 function debug_report($text) {
 	return optionalCompile('debug_report', $text);
 }
-
 
 function profile($text) {
 	return optionalCompile('profile', $text);
@@ -193,41 +189,40 @@ function sql_echo1($text) {
 }
 
 function sql_echo2($text) {
-    if (defined('sql_echo') and (constant('sql_echo') >= 2)) {
-        return $text;
-    }
+	if (defined('sql_echo') and (constant('sql_echo') >= 2)) {
+		return $text;
+	}
 }
 
 function persistence_echo($text) {
 	return optionalCompile('persistence_echo', $text);
 }
 
-
 function track_events($text) {
 	return optionalCompile('track_events', $text);
 }
 
 function track_events1($text) {
-    if (defined('track_events') and constant('track_events') >= 1) {
-    	return $text;
-    }
+	if (defined('track_events') and constant('track_events') >= 1) {
+		return $text;
+	}
 }
 
 function track_events2($text) {
-    if (defined('track_events') and constant('track_events') >= 2) {
-        return $text;
-    }
+	if (defined('track_events') and constant('track_events') >= 2) {
+		return $text;
+	}
 }
 
 function track_events3($text) {
-    if (defined('track_events') and constant('track_events') >= 3) {
-        return $text;
-    }
+	if (defined('track_events') and constant('track_events') >= 3) {
+		return $text;
+	}
 }
 
 #@check $x>$y@#
 function check($text) {
-	return optionalCompile('assertions',"assert('".addslashes($text)."');\n");
+	return optionalCompile('assertions', "assert('" . addslashes($text) . "');\n");
 }
 
 function gencheck($text) {
@@ -236,48 +231,47 @@ function gencheck($text) {
 
 #@typecheck $t : PWBObject, $s : Component@#
 function typecheck($text) {
-	if (Compiler::CompileOpt('typechecking')) {
+	if (Compiler :: CompileOpt('typechecking')) {
 		$code = '';
 		$params = explode(',', $text);
-		foreach($params as $param) {
+		foreach ($params as $param) {
 			$case = explode(':', $param);
 			$arg = trim($case[0]);
 			$type = trim($case[1]);
 			//$code .= "assert('is_a(".addslashes($arg).", \'".addslashes($type)."\')');\n";
 			$escaped_arg = addslashes($arg);
-            $code .= "if (!hasType($arg,'$type')) {"
-				."print_backtrace('Type error. Argument: $escaped_arg. Type: ' . getTypeOf($arg) . '. Expected: $type');}";
+			$code .= "if (!hasType($arg,'$type')) {" .
+			"print_backtrace('Type error. Argument: $escaped_arg. Type: ' . getTypeOf($arg) . '. Expected: $type');}";
 		}
 		return $code;
-	}
-	else {
+	} else {
 		return '';
 	}
 }
 
-
-function hasType($arg, $type){
-	if(is_object($arg)) {
-		if ($type=='object') return true;
+function hasType($arg, $type) {
+	if (is_object($arg)) {
+		if ($type == 'object')
+			return true;
 		if (method_exists($arg, 'hasType')) {
 			return $arg->hasType($type);
 		} else {
-			return is_a($arg,$type);
+			return is_a($arg, $type);
 		}
 	} else {
-		return !strcasecmp(gettype($arg),$type);
+		return !strcasecmp(gettype($arg), $type);
 	}
 }
 
-function getTypeOf($arg){
-	if(is_object($arg)) {
+function getTypeOf($arg) {
+	if (is_object($arg)) {
 		return getClass($arg);
 	} else {
 		return gettype($arg);
 	}
 }
 
-function addsimplequoteslashes($body){
+function addsimplequoteslashes($body) {
 	return str_replace('\'', '\\\'', $body);
 }
 
@@ -285,19 +279,19 @@ function addsimplequoteslashes($body){
 function lam($text) {
 	//echo 'Trying to lam: ' . $text;
 
-	$matches = explode('->',$text, 2);
+	$matches = explode('->', $text, 2);
 	$params = $matches[0];
 	$body = $matches[1];
-	$t = "lambda('$params','".addsimplequoteslashes($body)."', get_defined_vars())";
+	$t = "lambda('$params','" . addsimplequoteslashes($body) . "', get_defined_vars())";
 	return $t;
 }
 
-$dyn_vars = array();
+$dyn_vars = array ();
 
-function defdyn($var, &$value) {
+function defdyn($var, & $value) {
 	global $dyn_vars;
 	if (!is_array($dyn_vars[$var])) {
-		$dyn_vars[$var] = array();
+		$dyn_vars[$var] = array ();
 	}
 
 	array_push($dyn_vars[$var], $value);
@@ -308,9 +302,9 @@ function undefdyn($var) {
 	array_pop($dyn_vars[$var]);
 }
 
-function &getdyn($var) {
+function & getdyn($var) {
 	global $dyn_vars;
-    $arr = $dyn_vars[$var];
+	$arr = $dyn_vars[$var];
 	return $arr[count($arr) - 1];
 }
 /*
@@ -326,11 +320,11 @@ function dlet($text) {
 
 	$code = '';
 	$vs = explode(',', $vars);
-	$vss = array();
+	$vss = array ();
 	foreach ($vs as $v) {
 		preg_match('/(.*)\s*=\&?\s*(.*)/', $v, $vmatches);
 		$var = trim($vmatches[1]);
-		$vss[] =& $var;
+		$vss[] = & $var;
 		$value = trim($vmatches[2]);
 		$code .= "defdyn($var, $value);\n";
 	}
@@ -352,9 +346,9 @@ function deprecated($text) {
 	return '';
 }
 
-function getIncludes(){
-	$modules = eval('return modules;');
-	$app = eval('return app;');
+function getIncludes() {
+	$modules = eval ('return modules;');
+	$app = eval ('return app;');
 	$inc = '';
 	$inc .= includeAllModules(pwbdir, $modules);
 	$inc .= includeAllModules(basedir, $app);
@@ -364,38 +358,43 @@ function getIncludes(){
 
 function includeAll() {
 	if (!defined('modules')) {
-		define('modules', "Core,Application,Model,YATTAA,Instances,View,database,DefaultCMS,QuicKlick,DrPHP,BugNotifier,Logging");
+
+		define('modules', "Core,Application,DbgMode,Model,YATTAA,Instances,View,database,DefaultCMS,QuicKlick,DrPHP,BugNotifier,Logging");
+
 	}
+
 	if (!defined('app_class')) {
 		define('app_class', "DefaultCMSApplication");
 	}
 	define('app', "MyInstances,MyComponents");
 
-	if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal') || Compiler::CompileOpt('minimal')) {
-		$comp =& Compiler::Instance();
-		$file = $comp->getTempDir('').strtolower(constant('app_class')).'.php';
-		if (!file_exists($file)) {$_REQUEST['recompile'] = 'yes';}
-		if (isset($_REQUEST['recompile'])) {
+	if (Compiler :: CompileOpt('recursive') || Compiler :: CompileOpt('optimal') || Compiler :: CompileOpt('minimal')) {
+		$comp = & Compiler :: Instance();
+		$file = $comp->getTempDir('') . strtolower(constant('app_class')) . '.php';
+		if (!file_exists($file)) {
+			$_REQUEST['recompile'] = 'yes';
+		}
+		if (isset ($_REQUEST['recompile'])) {
 			$fo = fopen($file, 'w');
-			$f = '<?php '.getIncludes().' ?>';
+			$f = '<?php ' . getIncludes() . ' ?>';
 			fwrite($fo, $f);
 			fclose($fo);
 		}
 		$comp->compile($file);
 		//$comp->compiled = array();
 	} else {
-		eval(getIncludes());
+		eval (getIncludes());
 	}
-	require_once pwbdir. 'Session/SessionStart.php';
+	require_once pwbdir . 'Session/SessionStart.php';
 
-	if (isset($_REQUEST['recompile'])) {
-		$temp_file = ViewCreator::getTemplatesFilename();
-		@unlink($temp_file);
+	if (isset ($_REQUEST['recompile'])) {
+		$temp_file = ViewCreator :: getTemplatesFilename();
+		@ unlink($temp_file);
 	}
 }
 
 function includeAllModules($prefix, $modules) {
-	$ret ='';
+	$ret = '';
 	foreach (explode(",", $modules) as $dir) {
 		$ret .= includemodule($prefix . trim($dir));
 	}
@@ -410,7 +409,7 @@ function getfilesrec($pred, $dir) {
 		$ret = array ();
 		$gestor = opendir($dir);
 		while (false !== ($f = readdir($gestor))) {
-			if ($f != '.' && $f!='..')
+			if ($f != '.' && $f != '..')
 				$ret = array_merge(getfilesrec($pred, implode(array (
 					$dir,
 					'/',
@@ -454,7 +453,7 @@ function getfiles($pred, $dir) {
  */
 function includefile(& $file) {
 	$ret = '';
-	foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
+		foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
 		$ret .= "compile_once ('$f');";
 	}
 	return $ret;
@@ -476,13 +475,13 @@ function includemodule($module) {
 	}
 }
 /*returns the dir inside the pwbdir*/
-function getDirName($file){
+function getDirName($file) {
 	//return pwbdir.substr(dirname($file), strlen(dirname(dirname(__FILE__)))+1);
 	return dirname($file);
 }
 
-function debug($str){
-	$app =& Application::Instance();
+function debug($str) {
+	$app = & Application :: Instance();
 	$app->page_renderer->debug($str);
 }
 
@@ -501,36 +500,35 @@ function trace_params() {
 		trace($name . "=" . $value . "<BR>");
 }
 
-function reset_metadata(){
-	$GLOBALS['persistentObjectsMetaData']=array();
+function reset_metadata() {
+	$GLOBALS['persistentObjectsMetaData'] = array ();
 }
 
-function find_metadata(){
-	$GLOBALS['allRelatedClasses']=array();
+function find_metadata() {
+	$GLOBALS['allRelatedClasses'] = array ();
 	find_subclasses();
-	$GLOBALS['persistentObjectsMetaData']=array();
-	foreach(get_subclasses('PersistentObject') as $sc){
-		if (Compiler::classCompiled($sc)){
-			PersistentObjectMetaData::getMetaData($sc);
+	$GLOBALS['persistentObjectsMetaData'] = array ();
+	foreach (get_subclasses('PersistentObject') as $sc) {
+		if (Compiler :: classCompiled($sc)) {
+			PersistentObjectMetaData :: getMetaData($sc);
 		}
 	}
 	//print_backtrace(strlen(serialize($GLOBALS['persistentObjectsMetaData'])));
-	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\''.addsimplequoteslashes(serialize($GLOBALS['allRelatedClasses'])).'\');';
-	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\''.addsimplequoteslashes(serialize($GLOBALS['persistentObjectsMetaData'])).'\');';
+	$ret = '$GLOBALS[\'allRelatedClasses\']=unserialize(\'' . addsimplequoteslashes(serialize($GLOBALS['allRelatedClasses'])) . '\');';
+	$ret .= '$GLOBALS[\'persistentObjectsMetaData\']=unserialize(\'' . addsimplequoteslashes(serialize($GLOBALS['persistentObjectsMetaData'])) . '\');';
 	return $ret;
 }
-
 
 /**
  * Finds all the subclases for the specified class (works only for PWB objects!)
  */
 function find_subclasses() {
-	$PWBclasses =& get_allRelatedClasses();
+	$PWBclasses = & get_allRelatedClasses();
 	$arr = get_declared_classes();
 	$ret = array ();
 	foreach ($arr as $o) {
 		$vars = get_class_vars($o);
-		if (isset ($vars["isClassOfPWB"]) && Compiler::classCompiled($o)) {
+		if (isset ($vars["isClassOfPWB"]) && Compiler :: classCompiled($o)) {
 			$PWBclasses[strtolower($o)] = array ();
 			$pcs = get_superclasses($o);
 			foreach ($pcs as $pc) {
@@ -540,13 +538,13 @@ function find_subclasses() {
 	}
 }
 
-function &get_allRelatedClasses(){
+function & get_allRelatedClasses() {
 	return getSessionGlobal('allRelatedClasses');
 }
 
-function &getSessionGlobal($name){
-	if (!isset($GLOBALS[$name])){
-		$GLOBALS[$name] =& Session::getAttribute($name);
+function & getSessionGlobal($name) {
+	if (!isset ($GLOBALS[$name])) {
+		$GLOBALS[$name] = & Session :: getAttribute($name);
 	}
 	return $GLOBALS[$name];
 }
@@ -555,37 +553,35 @@ function &getSessionGlobal($name){
  * Returns the subclasses of the specified class, in higher-to-lower order
  */
 function get_subclasses($str) {
-	$PWBclasses =& get_allRelatedClasses();
-	if ($PWBclasses==null)
+	$PWBclasses = & get_allRelatedClasses();
+	if ($PWBclasses == null)
 		find_subclasses();
-	$sub = @$PWBclasses[strtolower($str)];
-	if ($sub===null){
-		return array();
+	$sub = @ $PWBclasses[strtolower($str)];
+	if ($sub === null) {
+		return array ();
 	} else {
 		return $sub;
 	}
 }
 
-function get_subclasses_and_class($class){
+function get_subclasses_and_class($class) {
 	$arr = get_subclasses($class);
-	$arr[]=strtolower($class);
+	$arr[] = strtolower($class);
 	//array_unshift($arr, strtolower($class));
 	return $arr;
 }
 
-
-function sp2nbsp($str){
-	return str_replace(' ','&nbsp;',str_replace("\t",'    ',$str));
+function sp2nbsp($str) {
+	return str_replace(' ', '&nbsp;', str_replace("\t", '    ', $str));
 }
-function htmlshow($str){
-	echo(nl2br(sp2nbsp(htmlentities($str))));
+function htmlshow($str) {
+	echo (nl2br(sp2nbsp(htmlentities($str))));
 }
 
-
-function is_subclass($class_sub, $class_parent){
+function is_subclass($class_sub, $class_parent) {
 	return in_array(strtolower($class_sub), get_subclasses_and_class($class_parent));
 }
-function is_strict_subclass($class_sub, $class_parent){
+function is_strict_subclass($class_sub, $class_parent) {
 	return in_array(strtolower($class_sub), get_subclasses($class_parent));
 }
 
@@ -593,9 +589,9 @@ function is_strict_subclass($class_sub, $class_parent){
  * Returns the subclasses of the specified class, in lower-to-higher order
  */
 function get_superclasses($str) {
-	return get_superclasses_upto($str,'');
+	return get_superclasses_upto($str, '');
 }
-function get_superclasses_upto($str,$class) {
+function get_superclasses_upto($str, $class) {
 	$ret = array ();
 	$class = strtolower($class);
 	$pc = strtolower(get_parent_class($str));
@@ -603,8 +599,8 @@ function get_superclasses_upto($str,$class) {
 		$ret[] = $pc;
 		$pc = strtolower(get_parent_class($pc));
 	}
-	if ($pc!==$class) {
-		return array();
+	if ($pc !== $class) {
+		return array ();
 	} else {
 		return $ret;
 	}
@@ -641,38 +637,38 @@ function backtrace() {
 /**
  * prints the backtrace.
  */
-function print_backtrace($error='') {
+function print_backtrace($error = '') {
 	echo backtrace_string($error);
 
 }
 
-function print_backtrace_and_exit($error='') {
+function print_backtrace_and_exit($error = '') {
 	print_backtrace($error);
 	echo '<br />';
-	echo '<a href=' . site_url .'?restart=yes>Restart application</a>';
+	echo '<a href=' . site_url . '?restart=yes>Restart application</a>';
 	exit;
 }
 /**
  * Creates a text representation of the backtrace
  */
-function backtrace_string($error) {
+function backtrace_string($error, $sep = '<br/>') {
 	$ret = "<h1>$error</h1>";
 	foreach (debug_backtrace() as $trace) {
-		$ret .= "<br/><b> ".@$trace['file'].": ".@$trace['line']." ({$trace['function']})</b>";
+		$ret .= $sep . "<b> " . @ $trace['file'] . ": " . @ $trace['line'] . " ({$trace['function']})</b>";
 	}
 	return $ret;
 }
-function get_global_debug(){
-	echo '<h1>'.
-			'trace size: '.count(debug_backtrace()).
-			'memory size: '.memory_get_usage().
-		'</h1>';
+function get_global_debug() {
+	echo '<h1>' .
+	'trace size: ' . count(debug_backtrace()) .
+	'memory size: ' . memory_get_usage() .
+	'</h1>';
 
 	print_backtrace('');
-   /*foreach (array('allObjectsInMem','lambda_vars') as $key) {
-        echo "$key=";
-        echo strlen(serialize($GLOBALS[$key]));
-    }*/
+	/*foreach (array('allObjectsInMem','lambda_vars') as $key) {
+	     echo "$key=";
+	     echo strlen(serialize($GLOBALS[$key]));
+	 }*/
 
 }
 function backtrace_plain_string($error) {
@@ -700,9 +696,9 @@ assert_options(ASSERT_QUIET_EVAL, 1);
  */
 function my_assert_handler($file, $line, $code) {
 	echo "<hr>Assertion Failed:
-	       <b>File</b> '$file'<br />
-	       <b>Line</b> '$line'<br />
-	       <b>Code</b> '$code'<br />";
+		       <b>File</b> '$file'<br />
+		       <b>Line</b> '$line'<br />
+		       <b>Code</b> '$code'<br />";
 	print_backtrace('');
 	echo "</hr>";
 }
@@ -715,7 +711,7 @@ assert_options(ASSERT_CALLBACK, 'my_assert_handler');
  */
 
 function toAjax($s) {
-	$app =&Application::instance();
+	$app = & Application :: instance();
 	return $app->page_renderer->toAjax($s);
 }
 /**
@@ -724,25 +720,25 @@ function toAjax($s) {
  * anonymous function. The context can be obtained with get_defined_vars()
  */
 
-$lambda_vars = array();
+$lambda_vars = array ();
 
 function lambda($args, $code, $env = array ()) {
 	static $n = 0;
-	$functionName = 'ref_lambda_'. (++ $n);
+	$functionName = 'ref_lambda_' . (++ $n);
 	$GLOBALS['lambda_vars'][$functionName] = & $env;
 	//$declaration = implode('', array('function &',$functionName,'(',$args,') {extract($GLOBALS[\'lambda_vars\'][\'',$functionName,'\'],EXTR_REFS); ',$code,'}'));
-	$declaration = 'function &'.$functionName.'('.$args.') {extract($GLOBALS[\'lambda_vars\'][\''.$functionName.'\'],EXTR_REFS); '.$code.'}';
+	$declaration = 'function &' . $functionName . '(' . $args . ') {extract($GLOBALS[\'lambda_vars\'][\'' . $functionName . '\'],EXTR_REFS); ' . $code . '}';
 	//$ok =
-		eval ($declaration);
+	eval ($declaration);
 	//if($ok===FALSE /* or ! preg_match('/return(\s)*\$\w+;/s',$code)*/)
-		//print_backtrace($args.'==>'.$code);
+	//print_backtrace($args.'==>'.$code);
 	return $functionName;
 }
 /**
  * Frees the space used for the variable's context
  */
 function delete_lambda($name) {
-	unset($GLOBALS['lambda_vars'][$name]);
+	unset ($GLOBALS['lambda_vars'][$name]);
 }
 
 /**
@@ -791,21 +787,19 @@ function getClass(& $o) {
  */
 if (version_compare(phpversion(), '5.0') < 0) {
 	eval ('
-	    function clone($object) {
-	      return $object;
-	    }
-	    ');
+		    function clone($object) {
+		      return $object;
+		    }
+		    ');
 }
 
 function exceptions_enabled() {
 	return (defined('exceptions') and (constant('exceptions') == 1));
 }
 
-function is_exception(&$ex) {
-	return (is_a($ex,'PWBException')) or
-	       (is_a($ex, 'Exception'));
+function is_exception(& $ex) {
+	return (is_a($ex, 'PWBException')) or (is_a($ex, 'Exception'));
 }
-
 
 /***************************/
 /** Error handler **********/
@@ -824,23 +818,23 @@ function fatal_error_handler($buffer) {
 
 		// The following is copied from Session.php without understanding much :S
 		// Programming by instinct :P
-		SessionHandler::setHooks();
+		SessionHandler :: setHooks();
 		session_name(strtolower('BugNotifierApplication'));
 		$sessionid = $_COOKIE[session_name()];
-  		$orgpath = getcwd();
-  		@chdir(PHP_BINDIR);
-  		@chdir(session_save_path());
-  		$path = realpath(getcwd()).'/';
-  		if(file_exists($path.'sess_'.$sessionid)) {
-   			@unlink($path.'sess_'.$sessionid);
-  		}
-  		@chdir($orgpath);
-  		session_start();
-  		session_destroy();
-  		SessionHandler::setHooks();
-  		session_regenerate_id();
+		$orgpath = getcwd();
+		@ chdir(PHP_BINDIR);
+		@ chdir(session_save_path());
+		$path = realpath(getcwd()) . '/';
+		if (file_exists($path . 'sess_' . $sessionid)) {
+			@ unlink($path . 'sess_' . $sessionid);
+		}
+		@ chdir($orgpath);
 		session_start();
-		Session::removeAttribute(app_class);
+		session_destroy();
+		SessionHandler :: setHooks();
+		session_regenerate_id();
+		session_start();
+		Session :: removeAttribute(app_class);
 
 		$app = & new BugNotifierApplication;
 		$app->setError($err);
@@ -854,10 +848,10 @@ function fatal_error_handler($buffer) {
 function handle_error($errno, $errstr, $errfile, $errline) {
 	//error_log("$errstr in $errfile on line $errline");
 	//print_backtrace($errno);
-	if ((strpos($errstr,'Only variables')!==FALSE) && Compiler::CompileOpt('assertions')) {
-	    global $last_lambda;
+	if ((strpos($errstr, 'Only variables') !== FALSE) && Compiler :: CompileOpt('assertions')) {
+		global $last_lambda;
 		//print_r(array_slice($last_lambda, -10));
-		print_backtrace('REFERENCE ERROR!'.$errstr);
+		print_backtrace('REFERENCE ERROR!' . $errstr);
 	}
 	if ($errno == E_ERROR) {
 		echo "error</b>:<br/>";
@@ -865,94 +859,111 @@ function handle_error($errno, $errstr, $errfile, $errline) {
 		ob_end_flush();
 		echo "ERROR CAUGHT check log file";
 		exit (0);
-	} else if (ini_get('error_reporting') & $errno) {
-		print_backtrace($errno.$errstr);
-	}
+	} else
+		if (ini_get('error_reporting') & $errno) {
+			print_backtrace($errno . $errstr);
+		}
 }
 
 //set_error_handler('handle_error');
 
-function print_n($obj, $n=5){
-	if ($n!=0){
+function print_n($obj, $n = 5) {
+	if ($n != 0) {
 		if (is_array($obj)) {
 			$ret = 'Array(';
-			foreach($obj as $i=>$o) {
-				$ret .= $i .'=>'.print_n($o, $n-1);
+			foreach ($obj as $i => $o) {
+				$ret .= $i . '=>' . print_n($o, $n -1);
 			}
-			return $ret.')';
+			return $ret . ')';
 		}
 		if (is_object($obj)) {
 			$ret = 'Object(';
-			foreach($obj as $i=>$o) {
-				$ret .= $i .'=>'.print_n($o, $n-1);
+			foreach ($obj as $i => $o) {
+				$ret .= $i . '=>' . print_n($o, $n -1);
 			}
-			return $ret.')';
+			return $ret . ')';
 		}
-		return gettype($obj).':'.$obj;
+		return gettype($obj) . ':' . $obj;
 	}
 }
 
-function debug_print_r($array) {
-    if (is_array($array)) {
-        $printed_elements = array();
-        foreach (array_keys($array) as $i) {
-            $elem =& $array[$i];
+function print_object($array) {
+	if (is_array($array)) {
+		/*
+		$printed_elements = array();
+		foreach (array_keys($array) as $i) {
+		    $elem =& $array[$i];
 
-            $printed_elements[] = print_array($elem);
-        }
+		    $printed_elements[] = print_object($elem);
+		}
 
-        return 'array(' . implode(',', $printed_elements) .')';
-    }
-    else {
-        if (is_a($array, 'pwbobject')) {
-            return $array->debugPrintString();
-        }
-        else {
-            return print_r($array, true);
-        }
-    }
+		return 'array(' . implode(',', $printed_elements) .')';*/
+		return '[array size: ' . count($array) . ']';
+	} else {
+		if (is_a($array, 'pwbobject')) {
+			return $array->debugPrintString();
+		} else {
+			if (is_null($array)) {
+				return 'null';
+			} else {
+				if (is_bool($array)) {
+					if ($array) {
+						return 'true';
+					} else {
+						return 'false';
+					}
+				} else {
+					if (is_object($array)) {
+						return getClass($array);
+					} else {
+						return print_r($array, true);
+					}
+				}
+			}
+		}
+	}
 }
 
 function array_union_values() {
-    //echo func_num_args();  /* Get the total # of arguements (parameter) that was passed to this function... */
-    //print_r(func_get_arg());  /* Get the value that was passed in via arguement/parameter #... in int, double, etc... (I think)... */
-    //print_r(func_get_args());  /* Get the value that was passed in via arguement/parameter #... in arrays (I think)... */
+	//echo func_num_args();  /* Get the total # of arguements (parameter) that was passed to this function... */
+	//print_r(func_get_arg());  /* Get the value that was passed in via arguement/parameter #... in int, double, etc... (I think)... */
+	//print_r(func_get_args());  /* Get the value that was passed in via arguement/parameter #... in arrays (I think)... */
 
-    $loop_count1 = func_num_args();
-    $junk_array1 = func_get_args();
-    $xyz = 0;
+	$loop_count1 = func_num_args();
+	$junk_array1 = func_get_args();
+	$xyz = 0;
 
-    for ($x = 0; $x < $loop_count1; $x++) {
-        $array_count1 = count($junk_array1[$x]);
+	for ($x = 0; $x < $loop_count1; $x++) {
+		$array_count1 = count($junk_array1[$x]);
 
-        if ($array_count1 != 0) {
-            for ($y = 0; $y < $array_count1; $y++) {
-                $new_array1[$xyz] = $junk_array1[$x][$y];
-                $xyz++;
-            }
-        }
-    }
+		if ($array_count1 != 0) {
+			for ($y = 0; $y < $array_count1; $y++) {
+				$new_array1[$xyz] = $junk_array1[$x][$y];
+				$xyz++;
+			}
+		}
+	}
 
-    $new_array2 = array_unique($new_array1); /* Work a lot like DISTINCT() in SQL... */
+	$new_array2 = array_unique($new_array1); /* Work a lot like DISTINCT() in SQL... */
 
-    return $new_array2;
+	return $new_array2;
 }
 
-function pwb_register_shutdown_function($key, &$function) {
-    if (!isset($_SESSION['shutdown_functions'])) {
-        $_SESSION['shutdown_functions'] = array();
-    }
-    $_SESSION['shutdown_functions'][$key] =& $function;
+function pwb_register_shutdown_function($key, & $function) {
+	if (!isset ($_SESSION['shutdown_functions'])) {
+		$_SESSION['shutdown_functions'] = array ();
+	}
+	$_SESSION['shutdown_functions'][$key] = & $function;
 }
 
 function pwb_shutdown() {
-    $fs = @$_SESSION['shutdown_functions'];
-    if (!is_array($fs)) return;
-    foreach (array_keys($fs) as $i) {
-    	$f =& $fs[$i];
-        $f->call();
-    }
+	$fs = @ $_SESSION['shutdown_functions'];
+	if (!is_array($fs))
+		return;
+	foreach (array_keys($fs) as $i) {
+		$f = & $fs[$i];
+		$f->call();
+	}
 }
 register_shutdown_function('pwb_shutdown');
-
 ?>
