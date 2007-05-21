@@ -7,7 +7,7 @@ class LambdaObject  {
     var $id;
     var $functionName;
 
-    function LambdaObject($args, $body, $env) {
+    function LambdaObject($args, $body, $env=array()) {
     	if (!isset($_SESSION['lambda_object_id'])) {
     		$_SESSION['lambda_object_id'] = 1;
     	}
