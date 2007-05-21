@@ -4,6 +4,15 @@
 		<container id="list" />
 		<input type="button" id="clear" value="Clear" />
 	</template>
+	<template class="LogList">
+		<ul>
+			<template class="LogEntry">
+				<li>
+					<container class="Component"/>
+				</li>
+			</template>
+		</ul>
+	</template>
 	<template class="DbgInfo">
 		<h3>Debugging Info</h3>
 		<ul>
@@ -27,7 +36,7 @@
 				</tr>
 				<tr>
 					<td>
-						<container id="logger" />
+						<container id="info" />
 					</td>
 					<td>
 						<container id="app_menu" />
@@ -35,7 +44,7 @@
 				</tr>
 				<tr>
 					<td>
-						<container id="info" />
+						<container id="logger" />
 					</td>
 					<td>
 						<container class="InspectorNavigator" />

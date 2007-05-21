@@ -9,13 +9,43 @@ class DbgWindow extends Component {
 
 	function initialize() {
 		$this->addComponent($this->root_obj, 'root');
-		$logger = & new DbgLogger;
-		$this->addComponent($logger, 'logger');
-		$this->addComponent(new DbgInfo, 'info');
-		$logger->addInterestIn('object_selected', new FunctionObject($this, 'inspectObject'));
+
+        // The logger
+        $logger = & new DbgLogger;
+
+        if (constant('dbgmode') == 'wndmode') {
+            $w =& new Window($logger, 'Logger');
+            $w->open();
+        }
+        else {
+            $this->addComponent($logger, 'logger');
+        }
+
+        $this->logger =& $logger;
+        $logger->addInterestIn('object_selected', new FunctionObject($this, 'inspectObject'));
+
+        // The debugging info
+
+        $dbginfo =& new DbgInfo;
+        /*if (constant('dbgmode') == 'wndmode') {
+            $w =& new Window($dbginfo, 'Debugging info');
+            $w->open();
+        }
+        else {*/
+            $this->addComponent($dbginfo, 'info');
+        //}
+
+        // The application menu
 		$app_menu = & new AppMenu;
 		$app_menu->registerCallback('inspect_application', new FunctionObject($this, 'inspectApplication'));
-		$this->addComponent($app_menu, 'app_menu');
+
+        /*if (constant('dbgmode') == 'wndmode') {
+            $w =& new Window($app_menu, 'Application menu');
+            $w->open();
+        }
+        else {*/
+           $this->addComponent($app_menu, 'app_menu');
+        //}
 	}
 
 	function inspectApplication() {
@@ -29,8 +59,14 @@ class DbgWindow extends Component {
 	function addInspector(& $object) {
 		$inspector = & $this->getInspectorFor($object);
 		$inspector_navigator = & new InspectorNavigator($inspector);
-		//$this->addComponent($inspector_navigator, print_object($object));
-        $this->addComponent($inspector_navigator);
+
+		if (constant('dbgmode') == 'wndmode') {
+            $w =& new Window($inspector_navigator, print_object($object) . ' inspector');
+            $w->open();
+        }
+        else {
+            $this->addComponent($inspector_navigator);
+        }
 	}
 
 	function & getInspectorFor(& $object) {
