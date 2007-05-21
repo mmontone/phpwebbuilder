@@ -1,14 +1,14 @@
 <?php
 class DbgWindow extends Component {
-	var $root;
+	var $root_obj;
 
 	function DbgWindow(& $root) {
-		$this->root = & $root;
+		$this->root_obj = & $root;
 		parent :: Component();
 	}
 
 	function initialize() {
-		$this->addComponent($this->root, 'root');
+		$this->addComponent($this->root_obj, 'root');
 		$logger = & new DbgLogger;
 		$this->addComponent($logger, 'logger');
 		$this->addComponent(new DbgInfo, 'info');
@@ -203,7 +203,7 @@ class ObjectInspector extends Inspector {
 	}
 
 	function addVarEntry($var) {
-		$entry = & new VarEntry($this->object-> $var, $var);
+		$entry = & new VarEntry($this->object->$var, $var);
 		$this->addComponent($entry, 'var_' . $var);
 		$entry->addInterestIn('inspect_object', new FunctionObject($this, 'inspectVar'));
 	}
@@ -242,7 +242,7 @@ class ComponentInspector extends PWBObjectInspector {
 
 	function addChildInspectLink(& $child, $slot) {
 		$this->addComponent(new ChildEntry($child, $slot), $slot);
-		$this-> $slot->addInterestIn('inspect_object', new FunctionObject($this, 'inspectChild'));
+		$this->$slot->addInterestIn('inspect_object', new FunctionObject($this, 'inspectChild'));
 	}
 
 	function inspectChild(& $triggerer, & $child) {
@@ -263,11 +263,11 @@ class ComponentInspector extends PWBObjectInspector {
 
 class VarEntry extends Component {
 	var $child;
-	var $slot;
+	var $_slot;
 
 	function VarEntry(& $child, $slot) {
 		$this->child = & $child;
-		$this->slot = $slot;
+		$this->_slot = $slot;
 		parent :: Component();
 	}
 
@@ -275,7 +275,7 @@ class VarEntry extends Component {
 		$this->addComponent(new CommandLink(array (
 			'text' => print_object($this->child
 		), 'proceedFunction' => new FunctionObject($this, 'inspectObject'))), 'link');
-		$this->addComponent(new Label($this->slot), 'slot');
+		$this->addComponent(new Label($this->_slot), 'slot');
 	}
 
 	function inspectObject() {
