@@ -29,7 +29,8 @@ class DbgWindow extends Component {
 	function addInspector(& $object) {
 		$inspector = & $this->getInspectorFor($object);
 		$inspector_navigator = & new InspectorNavigator($inspector);
-		$this->addComponent($inspector_navigator, $object->getInstanceId() . '_inspector');
+		//$this->addComponent($inspector_navigator, print_object($object));
+        $this->addComponent($inspector_navigator);
 	}
 
 	function & getInspectorFor(& $object) {
@@ -327,11 +328,20 @@ class LogList extends Component {
 
 function sql_log($array) {
 	$entry = & new SQLLogEntry($array);
+    dbg_log($entry);
+}
+
+function dbg_log(&$entry) {
 	$app = & Window :: getActiveInstance();
-	$dbg_wnd = & $app->getComponent();
-	if (is_a($dbg_wnd, 'DbgWindow')) {
-		$dbg_wnd->logger->addEntry($entry);
-	}
+    $dbg_wnd = & $app->getComponent();
+    if (is_a($dbg_wnd, 'DbgWindow') and (is_object($dbg_wnd->logger))) {
+        $dbg_wnd->logger->addEntry($entry);
+    }
+}
+
+function event_log($array) {
+    $entry = & new EventTrackingLogEntry($array);
+    dbg_log($entry);
 }
 
 class LogEntry extends Component {
@@ -388,13 +398,9 @@ class LogEntry extends Component {
 
 }
 
-class SQLLogEntry extends LogEntry {
+class SQLLogEntry extends LogEntry {}
 
-}
-
-class EventTrackingLogEntry extends LogEntry {
-
-}
+class EventTrackingLogEntry extends LogEntry {}
 
 class DbgInfo extends Component {
 	function initialize() {
