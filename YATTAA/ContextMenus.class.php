@@ -49,5 +49,5 @@ class ContextMenus {
 
 class ActionsMenu extends Component{}
 class NavigationMenu extends Component{}
-
+class ReferenceBar extends Component{}
 ?>

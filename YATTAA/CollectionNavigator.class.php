@@ -256,14 +256,7 @@ class SortLink extends Widget {
 }
 
 class OrderBar extends Component {
-	var $collection;
     var $links = array();
-
-    function OrderBar(&$collection) {
-	   $this->collection =& $collection;
-
-       parent::Component();
-	}
 
     function addSortLink(&$sortlink, $slot) {
 		$this->addComponent($sortlink, $slot);
