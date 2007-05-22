@@ -212,17 +212,20 @@ class SortLink extends Widget {
 			case 'ASC' :
 				$this->addComponent(new Label(' (Asc)'), 'mark');
 				$this->onClickSend('execute', $this);
-				$this->linkName->setComponentState('unordered', false);
+				$this->setComponentState('unordered', false);
+				$this->setComponentState('ordered', true);
 				break;
 			case 'DESC' :
 				$this->addComponent(new Label(' (Desc)'), 'mark');
 				$this->onClickSend('execute', $this);
-				$this->linkName->setComponentState('unordered', false);
+				$this->setComponentState('unordered', false);
+				$this->setComponentState('ordered', true);
 				break;
 			default : /* null */
 				$this->addComponent(new Label(''), 'mark');
 				$this->onClickSend('execute', $this);
-				$this->linkName->setComponentState('unordered');
+				$this->setComponentState('unordered',true);
+				$this->setComponentState('ordered', false);
 		}
 	}
 
