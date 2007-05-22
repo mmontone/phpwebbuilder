@@ -9,6 +9,25 @@ class ComponentHTMLHandler extends HTMLHandler{
 		$v->appendChild($t);
 		return $v;
 	}
+	function setComponent(&$comp){
+		parent::setComponent($comp);
+		$this->setEvents($comp);
+	}
+	function setEvents(&$comp){
+		$comp->componentstates->onChangeSend('updateStates',$this);
+	}
+	function setView(& $view) {
+		parent :: setView($view);
+		$this->updateStates($this->component->componentstates, $n=null);
+	}
+	function updateState(&$col, $ev){
+		$this->view->addCSSClass($ev);
+	}
+	function updateStates(&$col, $ev){
+		$this->view->removeCSSClasses();
+		foreach($col->elements() as $e){
+			$this->updateState($col, $e);
+		}
+	}
 }
-
 ?>

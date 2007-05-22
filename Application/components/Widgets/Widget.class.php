@@ -25,24 +25,22 @@ class Widget extends Component {
 			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
 
-		$this->invalid =& new ValueHolder($b1=false);
 		$this->disabled =& new ValueHolder($b2=false);
-		$this->clickable =& new ValueHolder($b3=false);
 		$this->events =& new Collection();
 		$this->setEvents();
 		$this->registerCallbacks($callback_actions);
 	}
 
 	function fieldValidated(&$field) {
-		$this->invalid->setValue($b=false);
+		$this->setComponentState('invalid',false);
 	}
 
 	function fieldInvalid(&$field) {
-		$this->invalid->setValue($b=true);
+		$this->setComponentState('invalid',true);
 	}
 
 	function fieldRequiredButEmpty(&$field) {
-		$this->invalid->setValue($b=true);
+		$this->setComponentState('invalid',true);
 	}
 	function setEvents() {
 		/* Default events, override in subclasses */
@@ -70,7 +68,7 @@ class Widget extends Component {
 		$this->events->atPut($event, $a=array($event, $function));
 	}
 	function setOnClickEvent() {
-		$this->clickable->setValue($v=true);
+		$this->setComponentState('clickable',true);
 		$this->events->atPut('onclick', $a=array('onclick', 'return '.$this->componentClickedJSFunction() . '(getEventTarget(event));'));
 	}
 

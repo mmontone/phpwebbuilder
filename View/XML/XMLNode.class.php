@@ -33,7 +33,10 @@ class XMLNode extends DOMXMLNode {
 		$this->css_classes[$class] = $class;
 		$this->setAttribute('class', implode(' ', $this->css_classes));
 	}
-
+	function removeCSSClasses() {
+		$this->css_classes=array();
+		$this->removeAttribute('class');
+	}
 	function removeCSSClass($class) {
 		unset($this->css_classes[$class]);
 		if (empty($this->css_classes)) {

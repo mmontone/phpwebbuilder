@@ -14,6 +14,7 @@ class Component extends PWBObject {
 	var $dyn_vars = array ();
 
 	function Component($params = array ()) {
+		$this->componentstates =& new Collection;
 		parent :: PWBObject($params);
 		$this->__children = array ();
 		$this->listener = & new ChildCallbackHandler();
@@ -365,6 +366,12 @@ class Component extends PWBObject {
 		}
 		return $this->primPrintString($id);
 	}
+
+	function setComponentState($st, $b=true){
+		if ($b){$this->componentstates->atPut($st,$st);}
+		else{$this->componentstates->remove($st);}
+	}
+
 }
 
 #@mixin EditorComponent
