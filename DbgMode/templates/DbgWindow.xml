@@ -30,7 +30,7 @@
 		<table>
 			<tbody>
 				<tr>
-					<td>
+					<td colspan="2">
 						<container id="root" />
 					</td>
 				</tr>
@@ -133,5 +133,55 @@
 				</template>
 			</ul>
 		</div>
+	</template>
+	<template class="ArrayInspector">
+		<h4>
+			<container id="title"></container>
+		</h4>
+		<div>
+			Type:
+			<container id="type" />
+
+		</div>
+		<div>
+			Size:<container id="size_label" />
+		</div>
+		<ul id="elements">
+			<template class="ArrayElement">
+				<li>
+					<container id="key" /> => <container id="value" />
+
+				</li>
+			</template>
+		</ul>
+		<div>Page size:<input id="page_size" width="4"/> Page number:<input id="page_num" width="4"/></div>
+		<div>
+			<input type="button" id="previous_btn" value="&lt;&lt;" />
+			<input type="button" id="next_btn" value="&gt;&gt;" />
+
+			<input type="button" id="refresh_btn" value="Refresh" />
+		</div>
+	</template>
+	<template class="PrimitiveObjectInspector">
+		<h4>
+			<container id="title"></container>
+		</h4>
+		<div>
+			Type:
+			<container id="type" />
+
+		</div>
+		<div>
+			Id:
+			<container id="instance_id" />
+		</div>
+		<template class="VarEntry">
+			<div>
+				<container id="slot" />
+				:
+				<container id="link" />
+
+			</div>
+		</template>
 	</template>
 </templates>

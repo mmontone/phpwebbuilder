@@ -225,7 +225,100 @@ class BoolInspector extends Inspector {
 }
 class NullInspector extends Inspector {}
 // TODO: make a Navigation Inspector for Arrays
-class ArrayInspector extends Inspector {}
+class ArrayInspector extends Inspector {
+    var $pageSize;
+    var $pageNum;
+
+    function initialize() {
+        parent::initialize();
+        $this->pageSize =& new ValueHolder(2);
+        $this->pageNum =& new ValueHolder(1);
+        $this->addWidgets();
+    }
+
+    function addWidgets() {
+        //$this->deleteChildren();
+        $this->addComponent(new Label(count($this->object)), 'size_label');
+        $this->addComponent(new Input($this->pageSize), 'page_size');
+        $this->addComponent(new Input($this->pageNum), 'page_num');
+        $this->addComponent(new CommandLink(array('text' => '<<', 'proceedFunction' => new FunctionObject($this, 'previous'))), 'previous_btn');
+        $this->addComponent(new CommandLink(array('text' => '>>', 'proceedFunction' => new FunctionObject($this, 'next'))), 'next_btn');
+        $this->addComponent(new CommandLink(array('text' => 'refresh', 'proceedFunction' => new FunctionObject($this, 'showElements'))), 'refresh_btn');
+        $this->showElements();
+    }
+
+    function showElements() {
+        //$this->deleteComponentAt('elements');
+        $this->addComponent(new Component, 'elements');
+        $this_page = ($this->pageNum->getValue() - 1) * $this->pageSize->getValue();
+        $i = $this_page;
+
+        $keys = array_keys($this->object);
+
+        while ($i < count($keys) and $i < ($this_page + $this->pageSize->getValue())) {
+            $key = $keys[$i];
+            $value =& $this->object[$key];
+            $array_elem =& new ArrayElement($key, $value);
+            $array_elem->addInterestIn('object_selected', new FunctionObject($this, 'objectSelected'));
+            $this->elements->addComponent($array_elem);
+            $i++;
+        }
+    }
+
+    function objectSelected(&$triggerer, $params) {
+        $this->inspectObject($params);
+    }
+
+    function next() {
+        $this->pageNum->setValue($this->pageNum->getValue() + 1);
+        $this->addWidgets();
+    }
+
+    function previous() {
+        $this->pageNum->setValue($this->pageNum->getValue() - 1);
+        $this->addWidgets();
+    }
+
+    function checkNextPermissions() {
+        return ((($this->pageNum->getValue() - 1) * $this->pageSize->getValue())  + $this->pageSize->getValue()) < count($this->object);
+    }
+
+    function checkPreviousPermissions() {
+        return $this->pageNum->getValue() > 1;
+    }
+
+    function refresh() {
+        $this->deleteChildren();
+        $this->addWidgets();
+    }
+}
+
+class ArrayElement extends Component {
+    var $k;
+    var $v;
+
+    function ArrayElement($key, &$value) {
+        $this->k = $key;
+        $this->v =& $value;
+        parent::Component();
+    }
+
+    function initialize() {
+        $this->addComponent(new CommandLink(array('text' => print_object($this->k), 'proceedFunction' => new FunctionObject($this, 'keySelected'))), 'key');
+        $this->addComponent(new CommandLink(array('text' => print_object($this->v), 'proceedFunction' => new FunctionObject($this, 'valueSelected'))), 'value');
+    }
+
+    function keySelected() {
+        $params = array('object' => $this->k);
+        $this->triggerEvent('object_selected', $params);
+    }
+
+    function valueSelected() {
+        $params = array('object' => &$this->v);
+        $this->triggerEvent('object_selected', $params);
+    }
+}
+
 
 
 class ObjectInspector extends Inspector {
