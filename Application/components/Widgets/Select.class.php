@@ -24,6 +24,7 @@ class Select extends Widget {
     function initializeOptions(){
     	//$this->options->onChangeSend('refresh', $this);
         $this->options->addInterestIn('refresh', new FunctionObject($this, 'refresh'), array('execute once' => true));
+        $this->options->addInterestIn('changed', new FunctionObject($this, 'refresh'), array('execute once' => true));
         if (($this->getValueIndex() == -1) and (!$this->options->isEmpty())) {
     		$this->setValueIndex($i = 0);
     	}
