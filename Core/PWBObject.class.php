@@ -73,9 +73,13 @@ class PWBObject
 		$varname = '__use_mixin_'.$mixin;
 		return isset($this->$varname);
 	}
+	function getAllTypes(){
+		return array_merge($this->getTypes(), get_superclasses(getClass($this)));
+	}
 	function getTypes(){
 		$c =& $GLOBALS['types'][getClass($this)];
 		if ($c===null){
+			$arr = array();
 			foreach(array_keys(get_class_vars(getClass($this))) as $k=>$v){
 				if (substr($v, 0,12)=='__use_mixin_')
 					$arr[$k]=strtolower(substr($v, 12));

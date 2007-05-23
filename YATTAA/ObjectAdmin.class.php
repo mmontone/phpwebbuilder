@@ -47,7 +47,13 @@ class ObjectAdmin extends ContextualComponent {
 	*/
 
 	function confirmDeleteMessage() {
-		return '¿Está seguro de querer borrar el '.getClass($this->object).'?';
+		foreach($this->object->getAllTypes() as $type){
+			$mess = Translator::TranslateHard('Confirm delete '.$type);
+			if ($mess!==null) {
+				return $mess;
+			}
+		}
+		//return '¿Está seguro de querer borrar el '.getClass($this->object).'?';
 	}
 
 	function confirmLogicDeleteMessage() {
@@ -59,28 +65,28 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
     function gcObject() {
-        $question =& newQuestionDialog($this->confirmGCObjectMessage());
+        $question =& QuestionDialog::create($this->confirmGCObjectMessage());
         $question->registerCallback('on_yes', new FunctionObject($this, 'gcConfirmed'));
         $question->registerCallback('on_no', new FunctionObject($this, 'gcRejected'));
         $this->call($question);
     }
 
 	function deleteObject() {
-		$question =& newQuestionDialog($this->confirmDeleteMessage());
+		$question =& QuestionDialog::create($this->confirmDeleteMessage());
 		$question->registerCallback('on_yes', new FunctionObject($this, 'deleteConfirmed'));
 		$question->registerCallback('on_no', new FunctionObject($this, 'deleteRejected'));
 		$this->call($question);
 	}
 
 	function deleteObjectLogically() {
-		$question =& newQuestionDialog($this->confirmLogicDeleteMessage());
+		$question =& QuestionDialog::create($this->confirmLogicDeleteMessage());
 		$question->registerCallback('on_yes', new FunctionObject($this, 'logicDeleteConfirmed'));
 		$question->registerCallback('on_no', new FunctionObject($this, 'logicDeleteRejected'));
 		$this->call($question);
 	}
 
 	function undeleteObjectLogically() {
-		$question =& newQuestionDialog($this->confirmLogicUndeleteMessage());
+		$question =& QuestionDialog::create($this->confirmLogicUndeleteMessage());
 		$question->registerCallback('on_yes', new FunctionObject($this, 'logicUndeleteConfirmed'));
 		$question->registerCallback('on_no', new FunctionObject($this, 'logicUndeleteRejected'));
 		$this->call($question);
@@ -99,13 +105,13 @@ class ObjectAdmin extends ContextualComponent {
 
 		if (is_exception($ex)) {
 			$db->rollBack();
-			$error_dialog =& newErrorDialog($ex->getMessage());
+			$error_dialog =& ErrorDialog::create($ex->getMessage());
 			$error_dialog->onAccept(new FunctionObject($this, 'couldNotDelete'));
 			$this->call($error_dialog);
 		}
 		else {
 			$db->commit();
-			$dialog =& newNotificationDialog($this->objectDeletedMessage($this->getModel()));
+			$dialog =& NotificationDialog::create($this->objectDeletedMessage($this->getModel()));
 			$dialog->onAccept(new FunctionObject($this, 'objectDeleted'));
 			$this->call($dialog);
 		}
@@ -119,13 +125,13 @@ class ObjectAdmin extends ContextualComponent {
         try {
             $db->delete($this->object);
             $db->commit();
-            $dialog =& newNotificationDialog($this->objectDeletedMessage($this->getModel()));
+            $dialog =& NotificationDialog::create($this->objectDeletedMessage($this->getModel()));
             $dialog->onAccept(new FunctionObject($this, 'objectDeleted'));
             $this->call($dialog);
         }
         catch (Exception $ex) {
             $db->rollBack();
-            $error_dialog =& newErrorDialog($ex->getMessage());
+            $error_dialog =& ErrorDialog::create($ex->getMessage());
             $error_dialog->onAccept(new FunctionObject($this, 'couldNotDelete'));
             $this->call($error_dialog);
         }
@@ -138,13 +144,13 @@ class ObjectAdmin extends ContextualComponent {
         try {
             $db->delete($this->object);
             $db->commit();
-            $dialog =& newNotificationDialog($this->objectDeletedMessage($this->getModel()));
+            $dialog =& NotificationDialog::create($this->objectDeletedMessage($this->getModel()));
             $dialog->onAccept(new FunctionObject($this, 'doNothing'));
             $this->call($dialog);
         }
         catch (Exception $ex) {
             $db->rollBack();
-            $error_dialog =& newErrorDialog($ex->getMessage());
+            $error_dialog =& ErrorDialog::create($ex->getMessage());
             $error_dialog->onAccept(new FunctionObject($this, 'doNothing'));
             $this->call($error_dialog);
         }
@@ -155,7 +161,7 @@ class ObjectAdmin extends ContextualComponent {
 		$db->beginTransaction();
 		$this->object->deleteLogically();
 		$db->commit();
-		$dialog =& newNotificationDialog($this->objectDeletedLogicallyMessage($this->getModel()));
+		$dialog =& NotificationDialog::create($this->objectDeletedLogicallyMessage($this->getModel()));
 		$dialog->onAccept(new FunctionObject($this, 'objectDeletedLogically'));
 		$this->call($dialog);
 	}
@@ -165,7 +171,7 @@ class ObjectAdmin extends ContextualComponent {
 		$db->beginTransaction();
 		$this->object->undeleteLogically();
 		$db->commit();
-		$dialog =& newNotificationDialog($this->objectUndeletedLogicallyMessage($this->getModel()));
+		$dialog =& NotificationDialog::create($this->objectUndeletedLogicallyMessage($this->getModel()));
 		$dialog->onAccept(new FunctionObject($this, 'objectUndeletedLogically'));
 		$this->call($dialog);
 	}
