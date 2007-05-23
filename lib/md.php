@@ -148,6 +148,7 @@ function findMdContextFunction($function, &$comp, $params){
 	//foreach($layers as $p){echo ' '.getClass($p);}
 	//echo ' params: ';
 	//foreach($params as $p){echo ' '.getClass($p);}
+	$better = array();
 	foreach ($fs['user'] as $fun){
 		$fun = strtolower($fun);
 		if (substr($fun, 0, $size)==$function){
@@ -157,7 +158,6 @@ function findMdContextFunction($function, &$comp, $params){
 			//print_r($types);
 			$endctx=count($params);
 			$matches = true;
-			$better = array();
 			foreach(array_keys($types) as $i){
 				//echo '<br/>typing '.$types[$i];
 				if ($i<$endctx){
@@ -175,7 +175,7 @@ function findMdContextFunction($function, &$comp, $params){
 						($better[$i]==null || is_subclass($types[$i],$better[$i]))
 					  )) {
 					$matches = false;
-					//echo '<br/>failed matching '.getClass($target).' to '.$types[$i];
+					//echo '<br/>failed matching '.getClass($target).' to '.$types[$i]. ', better is '.print_r($better,TRUE);
 					break;
 				}
 			}

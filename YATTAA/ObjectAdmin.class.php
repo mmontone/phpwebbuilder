@@ -47,13 +47,7 @@ class ObjectAdmin extends ContextualComponent {
 	*/
 
 	function confirmDeleteMessage() {
-		foreach($this->object->getAllTypes() as $type){
-			$mess = Translator::TranslateHard('Confirm delete '.$type);
-			if ($mess!==null) {
-				return $mess;
-			}
-		}
-		//return '¿Está seguro de querer borrar el '.getClass($this->object).'?';
+		return Translator::TranslateHard($this->object->getAllTypes(), 'Confirm delete ');
 	}
 
 	function confirmLogicDeleteMessage() {

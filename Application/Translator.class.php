@@ -54,6 +54,16 @@ class Translator extends PWBObject
 	function TranslateHard ($msg){
 		return Translator::TranslateWith(translator,$msg);
 	}
+	function TranslateAny($options, $prefix='', $suffix=''){
+		foreach($options as $opt){
+			$mess = Translator::TranslateHard($prefix.$opt.$suffix);
+			if ($mess!==null) {
+				return $mess;
+			}
+		}
+		return $prefix.$options[0].$suffix;
+	}
+
 	function &GetInstance($dicclass){
 		$app =& Application::instance();
 		if (!isset($app->translators[$dicclass])){
