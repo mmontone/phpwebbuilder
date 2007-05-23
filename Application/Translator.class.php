@@ -12,11 +12,12 @@ class Translator extends PWBObject
     	}
     	return $this->dictionary;
     }
+    function getDictionaryFile(){}
 
     function trans($msg) {
         $key = strtolower($msg);
         $translated = $this->translateMessage($msg);
-        if ($translated != null) {
+        if ($translated != null || getClass($this) == 'translator') {
         	return $translated;
         }
         else {
@@ -25,10 +26,6 @@ class Translator extends PWBObject
     }
 
     function translateMessage($msg) {
-    	if (getClass($this) == 'translator') {
-    		return $msg;
-		}
-		else {
 			$key = strtolower($msg);
 			$dictionary = $this->dictionary();
 			if (array_key_exists($key, $dictionary)) {
@@ -41,7 +38,6 @@ class Translator extends PWBObject
 	        	}
 			}
 			return null;
-		}
     }
 
 
@@ -51,9 +47,13 @@ class Translator extends PWBObject
 	}
 
 	function Translate ($msg){
+		$ret = Translator::TranslateWith(translator,$msg);
+		if ($ret===null) return $msg;
+		else return $ret;
+	}
+	function TranslateHard ($msg){
 		return Translator::TranslateWith(translator,$msg);
 	}
-
 	function &GetInstance($dicclass){
 		$app =& Application::instance();
 		if (!isset($app->translators[$dicclass])){

@@ -6,6 +6,9 @@ class ModuleComponent extends Component{
 		$this->addComponent(new ActionsMenu,'actionsbar');
 		$this->changeBody($this->getRootComponent());
 	}
+	function getTitle(){
+		return Translator::Translate(ucfirst(getClass($this)));
+	}
 	function changeBody(&$body) {
 		$this->resetReferences();
 		$body->setModule($this);
