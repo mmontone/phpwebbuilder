@@ -303,4 +303,24 @@ class ObjectAdmin extends ContextualComponent {
     }
 }
 
+#@defmdf &getObjectCreator[Component](&$objects:Collection)
+{
+	$dt = $objects->getDataType();
+	$obj =& new $dt;
+	return mdcompcall('getObjectEditor',array($_context,$obj));
+}
+//@#
+#@defmdf &getObjectViewer[Component](&$object:PersistentObject)
+{
+		return new ObjectViewer($object);
+}
+//@#
+
+#@defmdf &getObjectEditor[Component](&$object:PersistentObject)
+{
+		return new ObjectEditor($object);
+}
+//@#
+
+
 ?>
