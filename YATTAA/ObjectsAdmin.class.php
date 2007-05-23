@@ -75,7 +75,7 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 
 	function &getCreatorComponent() {
-		return mdcompcall('getObjectCreator', array(&$this));
+		return mdcompcall('getObjectCreator', array(&$this,&$this->objects));
 	}
 
 	function &listComponentFor(&$objects) {

@@ -41,7 +41,7 @@ function defmdf($text) {
 	foreach($ps as $p) {
 		$pp = explode(':', $p);
 		$arg = trim($pp[0]);
-		$type = trim($pp[1]);
+		$type = trim(str_replace('<','OF',str_replace('>','',$pp[1])));
 		$pss[$arg] = $type;
 	}
 	$rules['with'] = $pss;
@@ -114,7 +114,8 @@ function &mdcall($function, $args) {
 	}
 
 	//echo 'Multiple dispatch: ' . $function . '(' . print_r($c, true) . ')<br/>';
-	$fname = _mdcall($function, $c, 0);
+	$fname = findMdFunction($function, $args);
+	//$fname = _mdcall($function, $c, 0);
 
 	if ($fname != null) {
 		$params = array();
@@ -131,74 +132,61 @@ function &mdcall($function, $args) {
 	}
 }
 
-function _mdcall($function, $arg_types, $i) {
-	$n = count($arg_types);
-	if ($i == $n) {
-		$fname = $function;
-		for ($j = 0; $j < $n; $j++) {
-			$fname .= '_' . strtoupper($arg_types[$j]);
-		}
-
-		//echo 'Checking for ' . $fname . '</br>';
-		if (function_exists($fname)) {
-			return $fname;
-		}
-		else {
-			return null;
-		}
-	}
-	else {
-		$fname = _mdcall($function, $arg_types, $i + 1);
-		$parent = get_parent_class($arg_types[$i]);
-		while (($fname == null) and $parent) {
-			$arg_types[$i] = $parent;
-			$fname = _mdcall($function, $arg_types, $i + 1);
-			$parent = get_parent_class($arg_types[$i]);
-		}
-
-		return $fname;
-	}
+function findMdFunction($function, $params){
+	return findMdContextFunction($function, $null, $params);
 }
 
-// No se puede usar porque es ineficiente!!! :S
-// No se como hacer multiple dispatch eficiente
 
-function _mdcompcall($function, $count_layers, $arg_types, $i) {
-	$n = count($arg_types);
-	if ($i == $n) {
-		$fname = $function . '_begctx';
-
-
-		for ($j = 0; $j < $count_layers; $j++) {
-			$fname .= '_' . strtoupper($arg_types[$j]);
-		}
-		$fname .= '_endctx';
-
-		for ($j = $count_layers; $j < $n; $j++) {
-			$fname .= '_' . strtoupper($arg_types[$j]);
-		}
-
-		trace('Checking for ' . $fname . '</br>');
-		if (function_exists($fname)) {
-			return $fname;
-		}
-		else {
-			return null;
+function findMdContextFunction($function, &$comp, $params){
+	$fs = get_defined_functions();
+	ob_implicit_flush();
+	$funs = array();
+	$params = array_reverse($params);
+	$size = strlen($function);
+	$function = strtolower($function);
+	$layers = md_get_layers($comp);
+	//echo '<br/> searching'.$function;
+	//foreach($layers as $p){echo ' '.getClass($p);}
+	//echo ' params: ';
+	//foreach($params as $p){echo ' '.getClass($p);}
+	foreach ($fs['user'] as $fun){
+		$fun = strtolower($fun);
+		if (substr($fun, 0, $size)==$function){
+			//echo '<br/>checking '.$fun;
+			$types = array_reverse(explode('_',substr($fun, $size+1))); //The "+1" is for the first '_'
+			//Hasta count($params) son parametros, luego son contexto.
+			//print_r($types);
+			$endctx=count($params);
+			$matches = true;
+			$better = array();
+			foreach(array_keys($types) as $i){
+				//echo '<br/>typing '.$types[$i];
+				if ($i<$endctx){
+					//echo ',search in params';
+					$target=& $params[$i];
+				} else {
+					if ($i==$endctx || $i==count($types)-1) continue;
+					//echo ',search in context, layer '.($i-$endctx-1);
+					$target=& $layers[$i-$endctx-1];
+				}
+				//echo ' comparing type '.getClass($target).' to '.$types[$i];
+				if (!(
+					hasType($target,$types[$i])
+					&&
+						($better[$i]==null || is_subclass($types[$i],$better[$i]))
+					  )) {
+					$matches = false;
+					//echo '<br/>failed matching '.getClass($target).' to '.$types[$i];
+					break;
+				}
+			}
+			if ($matches) {$better = $types;$betterfun = $fun;$funs []=$fun;}
 		}
 	}
-	else {
-		$fname = _mdcompcall($function, $count_layers, $arg_types, $i + 1);
-		$parent = get_parent_class($arg_types[$i]);
-		while (($fname == null) and $parent) {
-			$arg_types[$i] = $parent;
-			$fname = _mdcompcall($function, $count_layers, $arg_types, $i + 1);
-			$parent = get_parent_class($arg_types[$i]);
-		}
-
-		return $fname;
-	}
+	//var_dump($funs);
+	//var_dump($betterfun);
+	return $betterfun;
 }
-
 
 function &mdcompcall($function, $args) {
 	$c = array();
@@ -214,8 +202,6 @@ function &mdcompcall($function, $args) {
 	}
 
 	$comp =& $args[0];
-	$flayers = md_get_layers($comp);
-	$layers = $flayers;
 	$fname = null;
 	/*
 	#@md_echo
@@ -224,17 +210,9 @@ function &mdcompcall($function, $args) {
     $msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
     echo $msg;//@#
     */
-
-	while (!empty($layers) and $fname == null) {
-		$f = $function . '_begctx_' . implode('_', $layers) . '_endctx';
-		$fname = _mdcall($f, $c, 0);
-
-		// _mdcompcall es mas flexible pero extremadamente ineficiente
-		//$fname = _mdcompcall($function, count($layers), array_merge($layers, $c), 0);
-
-		array_shift($layers);
-	}
-
+    $params = $args;
+	array_shift($params);
+	$fname = findMdContextFunction($function, $comp, $params);
 	if ($fname != null) {
 		$params = array();
 		for($i = 0; $i < $n; $i++) {
@@ -250,24 +228,21 @@ function &mdcompcall($function, $args) {
 	}
 	else {
 		$msg = 'error</b>:<br/>Dispatch failed: <br/>';
-		$msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
+		//$msg .= 'Context: ' . print_r($flayers,true) . '<br/>';
 		$msg .= 'Function:' . $function . '(' . print_r($c, true) . ');<br/>';
-		print_backtrace($msg);
+		print_backtrace_and_exit($msg);
 	}
 }
 
 function md_get_layers(&$comp) {
-	$layers = array(strtoupper(get_class($comp)));
-	$c =& $comp->getParent();
+	$c =& $comp;
 
 	$i = 0;
 	while(($c !== null) and (getClass($c) != 'stdclass')) {
-		array_push($layers, strtoupper(get_class($c)));
-
+		$layers[$i]=&$c;
 		$c =& $c->getParent();
 		$i++;
 	}
-	$layers = array_reverse($layers);
 	return $layers;
 }
 
