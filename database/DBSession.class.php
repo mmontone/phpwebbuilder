@@ -84,7 +84,7 @@ class DBSession {
 
 	function flushChanges(){
 		#@persistence_echo echo 'Flushing changes<br/>';@#
-        foreach(array_keys($this->registeredObjects) as $k){
+        foreach(array_keys((array)$this->registeredObjects) as $k){
 			$this->registeredObjects[$k]->flushChanges();
 			#@persistence_echo echo 'Flushing changes of '.$this->registeredObjects[$k]->debugPrintString() . '<br/>';@#
 		}

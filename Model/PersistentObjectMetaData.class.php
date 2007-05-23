@@ -34,7 +34,7 @@ class PersistentObjectMetaData {
     }
 
 	function disposeObject(){
-		unset($this->class);
+		//unset($this->class);
 	}
 	function initialize(){
 		$this->class->basicInitialize();

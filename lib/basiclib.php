@@ -582,6 +582,8 @@ function htmlshow($str) {
 }
 
 function is_subclass($class_sub, $class_parent) {
+	$class_sub = preg_replace('/\<\w*\>/','',$class_sub);
+	$class_parent = preg_replace('/\<\w*\>/','',$class_parent);
 	return in_array(strtolower($class_sub), get_subclasses_and_class($class_parent));
 }
 function is_strict_subclass($class_sub, $class_parent) {

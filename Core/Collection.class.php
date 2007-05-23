@@ -299,9 +299,9 @@ class Collection extends PWBObject {
 		return '';
 	}
 	function hasType($type){
-		$params = explode('of',$type, 2);
+		$params = explode('<',$type, 2);
 		if (count($params)>1){
-			return parent::hasType($params[0]) && is_subclass($this->getDataType(), $params[1]);
+			return parent::hasType($params[0]) && is_subclass($this->getDataType(), str_replace('>','',$params[1]));
 		} else {
 			return parent::hasType($params[0]);
 		}

@@ -41,7 +41,7 @@ function defmdf($text) {
 	foreach($ps as $p) {
 		$pp = explode(':', $p);
 		$arg = trim($pp[0]);
-		$type = trim(str_replace('<','OF',str_replace('>','',$pp[1])));
+		$type = trim(str_replace('<','__tp_',str_replace('>','_tp__',$pp[1])));
 		$pss[$arg] = $type;
 	}
 	$rules['with'] = $pss;
@@ -149,8 +149,8 @@ function findMdContextFunction($function, &$comp, $params){
 	//echo ' params: ';
 	//foreach($params as $p){echo ' '.getClass($p);}
 	$better = array();
-	foreach ($fs['user'] as $fun){
-		$fun = strtolower($fun);
+	foreach ($fs['user'] as $fun0){
+		$fun = strtolower(str_replace('__tp_','<',(str_replace('_tp__','>',$fun0))));
 		if (substr($fun, 0, $size)==$function){
 			//echo '<br/>checking '.$fun;
 			$types = array_reverse(explode('_',substr($fun, $size+1))); //The "+1" is for the first '_'
@@ -179,7 +179,7 @@ function findMdContextFunction($function, &$comp, $params){
 					break;
 				}
 			}
-			if ($matches) {$better = $types;$betterfun = $fun;$funs []=$fun;}
+			if ($matches) {$better = $types;$betterfun = $fun0;$funs []=$fun0;}
 		}
 	}
 	//var_dump($funs);

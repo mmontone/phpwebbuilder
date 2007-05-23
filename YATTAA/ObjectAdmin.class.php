@@ -15,6 +15,12 @@ class ObjectAdmin extends ContextualComponent {
         $aspect->setModelSendsUpdates(true);
         $this->addComponent(new Text($aspect), 'model_string');
         $this->viewObject();
+        $this->addActionButtons();
+	}
+	function addActionButtons(){
+		$this->addDeleteObjectLink('Borrar');
+		$this->addViewObjectLink('Ver');
+		$this->addEditObjectLink('Editar');
 	}
 
 	function &getModel() {

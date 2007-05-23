@@ -83,4 +83,10 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 }
 
+#@defmdf &getAdminComponent[Component](&$object:PersistentObject)
+{
+		return new ObjectAdmin($object);
+}
+//@#
+
 ?>
