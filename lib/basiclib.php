@@ -154,6 +154,9 @@ function php5($code) {
 	return optionalCompile('php5', $code);
 }
 
+function model_events_echo($code) {
+	return optionalCompile('model_events_echo', $code);
+}
 function php4($code) {
 	if (!defined('php5')) {
 		return $code;

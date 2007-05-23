@@ -139,7 +139,6 @@ function findMdFunction($function, $params){
 
 function findMdContextFunction($function, &$comp, $params){
 	$fs = get_defined_functions();
-	ob_implicit_flush();
 	$funs = array();
 	$params = array_reverse($params);
 	$size = strlen($function);
