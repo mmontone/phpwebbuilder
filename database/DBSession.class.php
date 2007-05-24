@@ -426,7 +426,7 @@ class CreateObjectDBCommand extends DBCommand {
 	function commit() {
 		#@sql_echo 	echo 'Committing creation: ' . $this->object->debugPrintString() . '<br />';@#
 
-		$this->object->commitMetaFields();
+		$this->object->commitChanges();
 	}
 
 	function rollback() {
@@ -440,7 +440,7 @@ class UpdateObjectDBCommand extends DBCommand {
 	function commit() {
 		#@sql_echo echo 'Committing update: ' . $this->object->debugPrintString() . '<br />';@#
 
-		$this->object->commitMetaFields();
+		$this->object->commitChanges();
 	}
 
 	function rollback() {

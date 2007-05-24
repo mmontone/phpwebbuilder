@@ -5,7 +5,6 @@ class Select extends Widget {
 	var $displayF;
 	var $selected_index = -1;
 	var $size = 1;
-
     function Select(&$value_model, &$collection, $displayF=null) {
     	#@typecheck $collection:Collection@#
     	parent::Widget($value_model);
@@ -44,12 +43,14 @@ class Select extends Widget {
 		return $primitive;
 	}
 	function refresh(){
-		$this->options->refresh();
+		//$this->options->refresh();
 		$this->refreshView();
 	}
 
     function refreshView() {
-    	$this->viewHandler->updateFromCollection();
+    	if ($this->viewHandler){
+    		$this->viewHandler->updateFromCollection();
+    	}
     }
 
     function viewUpdated($new_value) {

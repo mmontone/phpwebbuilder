@@ -61,7 +61,7 @@ class Translator extends PWBObject
 				return $mess;
 			}
 		}
-		return $prefix.$options[0].$suffix;
+		return $prefix.$opt.$suffix;
 	}
 
 	function &GetInstance($dicclass){

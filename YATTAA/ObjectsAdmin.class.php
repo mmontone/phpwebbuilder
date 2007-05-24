@@ -44,13 +44,18 @@ class ObjectsAdmin extends ContextualComponent {
 
 	function newObject() {
 		$creator =& $this->getCreatorComponent();
-        $creator->registerCallback('object_edited', new FunctionObject($this, 'objectCreated'));
+		$creator->addInterestIn('object_edited', new FunctionObject($this, 'objectCreated'));
 		$this->call($creator);
 	}
 
 	function objectCreated(&$obj) {
-		$this->adminObject($obj);
+		$this->saveCreation($obj);
 	}
+
+    function saveCreation(&$obj) {$this->triggerEvent('object_created', $obj);}
+    function performSave(&$obj) {$this->triggerEvent('object_edited', $obj);}
+    function performDelete(&$obj) {$this->triggerEvent('object_deleted', $obj);}
+
 
 	function &adminObject(&$obj) {
 		$admin =& $this->getAdminComponent($obj);
@@ -60,6 +65,7 @@ class ObjectsAdmin extends ContextualComponent {
 
 	function &getAdminComponent(&$dt) {
 		$admin =& $this->adminComponentFor($dt);
+		$admin->addInterestIn('object_edited', new FunctionObject($this, 'performSave'));
 		return $admin;
 	}
 
@@ -83,6 +89,34 @@ class ObjectsAdmin extends ContextualComponent {
 		return mdcompcall('getListComponent',array(&$this, &$objects));
 	}
 }
+
+#@mixin RootObjectsAdminActions
+{
+	function saveCreation(&$object) {
+		echo 'creating';
+		$object->makeRootObject();
+		DBSession::commitInTransaction();
+		$this->adminObject($object);
+	}
+	function performDeletion(&$object) {
+		$object->deleteRootObject();
+	}
+	function performSave(&$object) {
+		echo 'saving';
+		DBSession::commitInTransaction();
+	}
+}
+//@#
+
+class RootObjectsAdmin extends ObjectsAdmin{
+	#@use_mixin RootObjectsAdminActions@#
+}
+
+#@defmdf &getAdminComponent[Component](&$object:Collection<PersistentObject>)
+{
+		return new ObjectsAdmin($object);
+}
+//@#
 
 #@defmdf &getAdminComponent[Component](&$object:PersistentObject)
 {

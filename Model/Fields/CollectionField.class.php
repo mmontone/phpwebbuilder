@@ -56,7 +56,12 @@ class CollectionField extends DataField {
 
         return $this->type->createInstance($params);
 	}
-
+	function addFromEvent(& $triggerer, &$elem){
+		return $this->add($elem);
+	}
+	function removeFromEvent(& $triggerer, &$elem){
+		return $this->remove($elem);
+	}
 	function add(& $elem) {
 	   return $this->type->add($elem);
 	}

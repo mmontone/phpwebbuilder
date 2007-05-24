@@ -458,7 +458,7 @@ function getfiles($pred, $dir) {
 /**
  * Includes all php files from a directory tree
  */
-function includefile(& $file) {
+function includefile($file) {
 	$ret = '';
 		foreach (getfilesrec(lambda('$file', '$v=substr($file, -4)==".php";return $v;', $a = array ()), $file) as $f) {
 		$ret .= "compile_once ('$f');";

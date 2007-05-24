@@ -396,6 +396,7 @@ class PersistentObject extends DescriptedObject {
 
 	function makeRootObject(){
 		$this->rootObject->setValue(true);
+		$this->registerPersistence();
 	}
 	function deleteRootObject(){
 		$this->rootObject->setValue(false);
