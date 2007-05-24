@@ -214,7 +214,8 @@ class Component extends PWBObject {
 
 	function call(& $component) {
 		// Give control to $component
-		$component->listener = & $this;
+		#@calling_echo echo $this->printString() . ' calling ' . $component->printString() . '<br/>';@#
+        $component->listener = & $this;
 		$this->basicCall($component);
 	}
 
@@ -240,16 +241,19 @@ class Component extends PWBObject {
 
 	function callbackWith($callback, & $params) {
 		#@check $this->listener !== null@#
-		$this->listener->takeControlOf($this, $callback, $params);
+		#@calling_echo echo $this->printString() . ' calling back: ' . $callback . '<br/>';@#
+        $this->listener->takeControlOf($this, $callback, $params);
 	}
 
 	function takeControlOf(& $callbackComponent, $callback, & $params) {
 		#@typecheck $callbackComponent:Component@#
-		$n = null;
+		#@calling_echo echo $this->printString() . ' taking control of: ' . $callbackComponent->printString() . ' callback: ' . $callback . '<br/>';@#
+        $n = null;
 		$callbackComponent->listener = & $n;
 		$callbackComponent->stopAndCall($this);
 		if (($callback != null) and (isset ($callbackComponent->registered_callbacks[$callback]))) {
-			$callbackComponent->registered_callbacks[$callback]->executeWith($params);
+			#@calling_echo echo $this->printString() . ' executing callback: ' . $callback . ' function: ' . $callbackComponent->registered_callbacks[$callback]->printString() .'<br/>';@#
+            $callbackComponent->registered_callbacks[$callback]->executeWith($params);
 		}
 	}
 

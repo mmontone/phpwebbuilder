@@ -93,7 +93,7 @@ class AppMenu extends Component {
 			'inspectApplication'
 		))), 'inspect_app');
 		$this->addComponent(new Link(constant('site_url') . '?restart=yes', 'Restart'), 'restart');
-		$this->addComponent(new Link(constant('site_url') . '?recompile=yes', 'Recompile'), 'recompile');
+		$this->addComponent(new Link(constant('site_url') . '/Action.php?recompile=yes', 'Recompile'), 'recompile');
 		$this->addComponent(new Link(constant('site_url') . '?restart=yes&recompile=yes', 'Restart and recompile'), 'restart_and_recompile');
 	}
 
@@ -455,12 +455,16 @@ class LogList extends Component {
 	}
 }
 
-function sql_log($array) {
-	$entry = & new SQLLogEntry($array);
-    dbg_log($entry);
+function dbg_log($array) {
+	dbg_log_entry(new LogEntry($array));
 }
 
-function dbg_log(&$entry) {
+function sql_log($array) {
+	$entry = & new SQLLogEntry($array);
+    dbg_log_entry($entry);
+}
+
+function dbg_log_entry(&$entry) {
 	$app = & Window :: getActiveInstance();
     $dbg_wnd = & $app->getComponent();
     if (is_a($dbg_wnd, 'DbgWindow') and (is_object($dbg_wnd->logger))) {
@@ -470,7 +474,7 @@ function dbg_log(&$entry) {
 
 function event_log($array) {
     $entry = & new EventTrackingLogEntry($array);
-    dbg_log($entry);
+    dbg_log_entry($entry);
 }
 
 class LogEntry extends Component {

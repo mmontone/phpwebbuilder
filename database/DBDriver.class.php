@@ -34,8 +34,13 @@ class DBDriver {
 	}
     function &query($sql, $persistent=false) {
     	#@sql_echo
-    	//echo('Querying ' . $sql. '<br/>');
-    	sql_log(array('Querying: ', $sql));//@#
+    	if (defined('dbgmode')) {
+            sql_log(array('Querying: ', $sql));
+        }
+        else {
+            echo('Querying ' . $sql. '<br/>');
+        }//@#
+
 
     	$conn =& $this->openDatabase($persistent);
 		$this->setLastSQL($sql);

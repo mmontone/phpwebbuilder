@@ -44,6 +44,7 @@ class ObjectsAdmin extends ContextualComponent {
 
 	function newObject() {
 		$creator =& $this->getCreatorComponent();
+        $creator->registerCallback('object_edited', new FunctionObject($this, 'objectCreated'));
 		$this->call($creator);
 	}
 

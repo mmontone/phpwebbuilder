@@ -185,6 +185,10 @@ function activation_echo($text) {
 	return optionalCompile('activation_echo', $text);
 }
 
+function calling_echo($text) {
+    return optionalCompile('calling_echo', $text);
+}
+
 function sql_echo1($text) {
 	if (defined('sql_echo') and (constant('sql_echo') >= 1)) {
 		return $text;
@@ -919,8 +923,17 @@ function print_object($array) {
 					}
 				} else {
 					if (is_object($array)) {
-						return getClass($array);
-					} else {
+						#@php4
+                        $r = getClass($array);
+                        //@#
+
+                        #@php5
+                        //$r = '[' . getClass($array) . ':' . spl_object_hash($array)  .' ]';
+                        $r = getClass($array);
+                        //@#
+
+                        return $r;
+                    } else {
 						return print_r($array, true);
 					}
 				}

@@ -10,9 +10,11 @@ class ChildCallbackHandler {
 	}
 
 	function dynTakeControlOf(&$callbackComponent, $callback, &$parameters) {
-		if ($callback != null) {
+		#@calling_echo echo $this->printString() . ' taking control of: ' . $callbackComponent->printString() . 'callback: ' . $callback . '<br/>';@#
+        if ($callback != null) {
 			if ($callbackComponent->registered_callbacks[$callback] != null) {
-				$callbackComponent->registered_callbacks[$callback]->executeWith($parameters);
+				#@calling_echo echo $this->printString() . ' executing callback: ' . $callback . ' function: ' . $callbackComponent->registered_callbacks[$callback]->printString() .'<br/>';@#
+                $callbackComponent->registered_callbacks[$callback]->executeWith($parameters);
 			}
 			else {
 				$p =& $callbackComponent->getParent();
