@@ -3,8 +3,10 @@
 #@preprocessor
 if (isset($_REQUEST['render'])) {
 			$page_renderer= $_REQUEST['render'].'PageRenderer';
-		} else {
+		} else if (defined('page_renderer')){
 			$page_renderer = constant('page_renderer');
+		} else {
+			$page_renderer = 'StandardPageRenderer';
 		}
 Compiler::usesClass(__FILE__,$page_renderer);
 //@#
@@ -27,8 +29,10 @@ class PageRenderer // extends PWBObject
 		$v = null;
 		if (isset($_REQUEST['render'])) {
 			$page_renderer= $_REQUEST['render'].'PageRenderer';
-		} else {
+		} else if (defined('page_renderer')){
 			$page_renderer = constant('page_renderer');
+		} else {
+			$page_renderer = 'StandardPageRenderer';
 		}
 		$v =& new $page_renderer($app);
 		return $v;

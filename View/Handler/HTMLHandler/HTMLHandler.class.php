@@ -18,9 +18,7 @@ class ComponentHTMLHandler extends HTMLHandler{
 	}
 	function setView(& $view) {
 		parent :: setView($view);
-		foreach($view->css_classes as $class){
-			$this->component->componentstates->add($class);
-		}
+		$this->component->componentstates->addAll($view->css_classes);
 		$this->updateStates($this->component->componentstates, $n=null);
 	}
 	function updateState(&$col, $ev){

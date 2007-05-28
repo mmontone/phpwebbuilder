@@ -1,7 +1,9 @@
 <?php
 
 #@preprocessor
-Compiler::usesClass(__FILE__,constant('sessionHandler').'SessionHandler');
+if (defined('sessionHandler')){
+	Compiler::usesClass(__FILE__,constant('sessionHandler').'SessionHandler');
+}
 //@#
 
 
