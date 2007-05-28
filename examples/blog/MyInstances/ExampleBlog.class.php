@@ -22,14 +22,14 @@
 
 class AddPost extends Component{
 	function initialize(){
-	  $this->post =& new Post;
+	  $this->postInst =& new Post;
       $this->addComponent(new Input($this->post->title), 'title');
       $this->addComponent(new TextAreaComponent($this->post->body), 'body');
       $this->addComponent(new ActionLink($this, 'processPostForm', 'Submit', $n=null), 'post');
 	}
    function processPostForm(){
-      $this->post->save();
-      $this->getParent()->addPost($this->post);
+      $this->postInst->save();
+      $this->getParent()->addPost($this->postInst);
       $this->stopAndCall(new AddPost);
    }
 }

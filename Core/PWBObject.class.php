@@ -140,9 +140,10 @@ class PWBObject
 	 * Adds a listener for the event, with the specified callback function
 	 */
 
-    function makeHandle(&$object) {
+    function makeHandle(&$function) {
+    	$object =& $function->getTarget();
         if (is_object($object)) {
-            return 't_' . $object->__instance_id;
+            return 't_' . $object->__instance_id . $function->getMethodName();
         }
         else {
         	return ++$this->event_handles;
@@ -152,7 +153,7 @@ class PWBObject
 
     function addInterestIn($event, &$function, $params = array()) {
        	$target =& $function->getTarget();
-       	$handle = $this->makeHandle($target);
+       	$handle = $this->makeHandle($function);
         if (isset($this->event_listeners[$event][$handle])) {
             if (!isset($params['force'])) {
                 #@track_events2 echo 'Avoiding adding interest in ' .  $this->printString() . '>>' .$event . $function->printString() . '<br/>';@#

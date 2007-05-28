@@ -2,9 +2,9 @@
 
 
 //require_once 'md2.php';
-if (defined('md')) {
-	require_once 'md.php';
-}
+if (!defined('md')) {define('md','compiled');}
+require_once 'md.php';
+//}
 
 //require_once 'query_lang.php';
 require_once 'Compiler.class.php';
