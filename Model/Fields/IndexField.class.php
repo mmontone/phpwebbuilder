@@ -20,17 +20,7 @@ class IndexField extends NumField {
 	}
 
    function printString(){
-        /*
-        $target =& $this->getTarget();
-        if (!is_object($target)) {
-        	$t = 'null';
-        }
-        else {
-        	$t = $target->printString();
-        }
-
-        return $this->primPrintString($this->colName . ' value: ' . $this->getValue() . ' target: ' . $t);*/
-        return $this->primPrintString($this->colName . ' value: ' . $this->getValue());
+        return $this->primPrintString($this->colName . ' value: ' . $this->getValue() . ' target: ' . print_object($this->buffered_target));
     }
 
     function createInstance($params){
@@ -82,7 +72,14 @@ class IndexField extends NumField {
 			);
 		}
 		$this->setValue(0);
+        // We have to set the buffered target in null because
+		// a value setting sets the buffered target in null if 
+		// there has been a change in the value. Maybe setValue should
+		// set the buffered target to null always?
+		$n = null;
+        $this->buffered_target =& $n;
 	}
+
 	function registerCollaborators(){
 		$t =& $this->getTarget();
 		if ($t!=null){
@@ -98,12 +95,14 @@ class IndexField extends NumField {
 		if ($this->buffered_target == null) {
 			$this->buffered_target =& $this->loadTarget();
 		}
+
 		return $this->buffered_target;
 	}
 
 	function &loadTarget() {
 		//return $this->collection->getObj($this->getValue());
-		$o =& PersistentObject::getWithId($this->datatype, $this->getValue());
+
+        $o =& PersistentObject::getWithId($this->datatype, $this->getValue());
 		return $o;
 	}
 
@@ -122,7 +121,7 @@ class IndexField extends NumField {
 	}
 
 	function setValue($value) {
-		if ($this->value != $value) {
+		if ($this->buffered_value != $value) {
             $n = null;
             $this->buffered_target =& $n;
             parent::setValue($value);
