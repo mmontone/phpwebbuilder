@@ -48,13 +48,13 @@ class ObjectsAdmin extends ContextualComponent {
 		$this->call($creator);
 	}
 
-	function objectCreated(&$obj) {
+	function objectCreated(&$admin,&$obj) {
 		$this->saveCreation($obj);
 	}
 
     function saveCreation(&$obj) {$this->triggerEvent('object_created', $obj);}
-    function performSave(&$obj) {$this->triggerEvent('object_edited', $obj);}
-    function performDelete(&$obj) {$this->triggerEvent('object_deleted', $obj);}
+    function performSave(&$admin,&$obj) {$this->triggerEvent('object_edited', $obj);}
+    function performDelete(&$admin,&$obj) {$this->triggerEvent('object_deleted', $obj);}
 
 
 	function &adminObject(&$obj) {
@@ -66,6 +66,7 @@ class ObjectsAdmin extends ContextualComponent {
 	function &getAdminComponent(&$dt) {
 		$admin =& $this->adminComponentFor($dt);
 		$admin->addInterestIn('object_edited', new FunctionObject($this, 'performSave'));
+		$admin->addInterestIn('object_deleted', new FunctionObject($this, 'performDelete'));
 		return $admin;
 	}
 
