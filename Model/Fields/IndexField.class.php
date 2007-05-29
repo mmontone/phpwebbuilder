@@ -65,7 +65,7 @@ class IndexField extends NumField {
 	}
     function removeTarget(){
 		if ($this->buffered_target !== null){
-			$this->buffered_target->retractInterestIn('id_changed', $this);
+			$this->buffered_target->retractInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
 			$self =& $this;
 			$this->mapChild(
 				#@lam $e->$e->decrementRefCount();$e->removedAsTarget($self->owner, $self->varName);return $e;@#
@@ -73,7 +73,7 @@ class IndexField extends NumField {
 		}
 		$this->setValue(0);
         // We have to set the buffered target in null because
-		// a value setting sets the buffered target in null if 
+		// a value setting sets the buffered target in null if
 		// there has been a change in the value. Maybe setValue should
 		// set the buffered target to null always?
 		$n = null;
