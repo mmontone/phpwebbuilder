@@ -207,13 +207,13 @@ class DescriptedObject extends PWBObject {
 	 * sets the field with the name
 	 */
 	function setField($name, & $field) {
-		$this-> $name = & $field;
+		$this->$name = & $field;
 	}
 	/**
 	 * Returns the field with specified name
 	 */
 	function & fieldNamed($name) {
-		$f = & $this-> $name;
+		$f = & $this->$name;
 		return $f;
 	}
 	/**
@@ -237,7 +237,7 @@ class DescriptedObject extends PWBObject {
 		#@typecheck $field:ValueModel@#
 		$name = $field->varName;
 		$field->table = $this->table;
-		$this-> $name = & $field;
+		$this->$name = & $field;
 		$this->fieldNames[$name] = $name;
 		$this->fields[$this->actClass][$name]=&$field;
 		if ($field->isIndex()) {
@@ -330,7 +330,7 @@ class DescriptedObject extends PWBObject {
 		$ret = false;
 
 		foreach ($field_names as $field) {
-			$ret |= ! $this-> $field->isEmpty();
+			$ret |= ! $this->$field->isEmpty();
 		}
 
 		if (!$ret) {

@@ -144,7 +144,16 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	 */
 	function setValue($data) {
 		if ($data != $this->buffered_value) {
-			$this->buffered_value = $data;
+
+            $current_component =& getdyn('current_component');
+            if (is_object($current_component)) {
+                $current_component->registerFieldModification($this);
+            }
+            else {
+            	#@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#
+            }
+
+            $this->buffered_value = $data;
             $n = null;
             $this->setModified(true);
 			$this->triggerEvent('changed', $this);
@@ -253,8 +262,12 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 		return $this->getValue() == '';
 	}
 	function printString(){
-		return $this->primPrintString($this->getName());
+		return $this->debugPrintString();
 	}
+
+    function debugPrintString() {
+    	return $this->primPrintString($this->owner->printString() . '>>' . $this->getName() . ' value: ' . $this->getValue());
+    }
 
 	//GARBAGE COLLECTION
 	function mapChild($method){}
@@ -264,6 +277,10 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
     // Initialization ocurrs after the field has been added to an object
     function initialize() {
 
+    }
+
+    function &getModificationObject() {
+    	return new FieldModification($this);
     }
 }
 

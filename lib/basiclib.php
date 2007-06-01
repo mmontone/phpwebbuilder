@@ -181,6 +181,10 @@ function sql_echo($text) {
 	return optionalCompile('sql_echo', $text);
 }
 
+function tm_echo($text) {
+	return optionalCompile('tm_echo', $text);
+}
+
 function activation_echo($text) {
 	return optionalCompile('activation_echo', $text);
 }
@@ -282,7 +286,7 @@ function addsimplequoteslashes($body) {
 	return str_replace('\'', '\\\'', $body);
 }
 
-#@lam $x,$y -> return $x + $y;@#
+#@lam $x,$y ->return $x + $y;@#
 function lam($text) {
 	//echo 'Trying to lam: ' . $text;
 
@@ -778,9 +782,9 @@ function & apply_messages(& $u, $mess) {
 function & apply_message(& $u, $mess) {
 	if (substr($mess, -2) == '()') {
 		$m = substr($mess, 0, -2);
-		return $u-> $m ();
+		return $u->$m ();
 	} else {
-		return $u-> $mess;
+		return $u->$mess;
 	}
 }
 
@@ -896,7 +900,7 @@ function print_n($obj, $n = 5) {
 	}
 }
 
-function print_object($array) {
+function print_object($array, $extra = '') {
 	if (is_array($array)) {
 		/*
 		$printed_elements = array();
@@ -907,29 +911,29 @@ function print_object($array) {
 		}
 
 		return 'array(' . implode(',', $printed_elements) .')';*/
-		return '[array size: ' . count($array) . ']';
+		return '[array size: ' . count($array) . $extra . ']';
 	} else {
 		if (is_a($array, 'pwbobject')) {
-			return $array->debugPrintString();
+			return $array->primPrintString($extra);
 		} else {
 			if (is_null($array)) {
-				return 'null';
+				return 'null' . $extra;
 			} else {
 				if (is_bool($array)) {
 					if ($array) {
-						return 'true';
+						return 'true' . $extra;
 					} else {
-						return 'false';
+						return 'false' . $extra;
 					}
 				} else {
 					if (is_object($array)) {
 						#@php4
-                        $r = getClass($array);
+                        $r = '[' . getClass($array) . ':' . get_primitive_object_id($array) . $extra . ']';
                         //@#
 
                         #@php5
                         //$r = '[' . getClass($array) . ':' . spl_object_hash($array)  .' ]';
-                        $r = getClass($array);
+                        $r = '[' . getClass($array) . ':' . get_primitive_object_id($array) . $extra . ']';
                         //@#
 
                         return $r;
@@ -940,6 +944,15 @@ function print_object($array) {
 			}
 		}
 	}
+}
+
+function get_primitive_object_id(&$object) {
+	ob_start();
+    print($object);
+    $c = ob_get_contents();
+    $c = substr($c, strlen('Object id #'));
+    ob_end_clean();
+    return $c;
 }
 
 function array_union_values() {

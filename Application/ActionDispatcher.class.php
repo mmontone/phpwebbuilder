@@ -57,12 +57,28 @@ class ActionDispatcher {
 					}
 			}
 		}
+
+        $target = & $this->getComponent(@$event['target'], $event['app']);
+        //echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
+        //var_dump(getClass($target));
+
+        if ($target != null){
+        	#@tm_echo echo 'Setting current component: ' . $target->debugPrintString() . '<br/>';@#
+            defdyn('current_component', $target);
+        }
+
 		Window::setActiveInstance($event['window']);
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
 		if (isset($form['bm'])) {$event['window']->goToUrl($form['bm']);}
         DBUpdater::updateAll();
 		EventHandler::ExecuteDeferredEvents();
+
+        if ($target != null) {
+        	undefdyn('current_component');
+            #@tm_echo echo 'Unsetting current component: ' . $target->debugPrintString() . '<br/>';@#
+        }
+
         #@track_events
         global $triggeredEvents;
         echo $triggeredEvents . ' events triggered in total<br/>';

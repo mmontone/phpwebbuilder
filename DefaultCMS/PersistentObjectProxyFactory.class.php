@@ -54,7 +54,7 @@ class Command {
 
 	function execute() {
 		$selector = $this->selector;
-		$this->target-> $selector ($this->value);
+		$this->target->$selector ($this->value);
 	}
 }
 

@@ -172,8 +172,8 @@ class PWBObject
         $this->event_listeners[$event][$handle] =& $event_handler;
         return $handle;
     }
-    function retractInterestIn($event, &$listener){
-		$handle = $this->makeHandle($listener);
+    function retractInterestIn($event, &$function){
+		$handle = $this->makeHandle($function);
         #@track_events2
         if (@isset($this->event_listeners[$event][$handle])) {
         	$s = $this->event_listeners[$event][$handle]->printString();

@@ -13,7 +13,7 @@ class Component extends PWBObject {
 	var $nextChildrenPosition = 1;
 	var $dyn_vars = array ();
 
-	function Component($params = array ()) {
+	function Component($params = array()) {
 		$this->componentstates =& new Collection;
 		parent :: PWBObject($params);
 		$this->__children = array ();
@@ -98,7 +98,7 @@ class Component extends PWBObject {
 		$this->obtainView();
 		$ks = array_keys($this->__children);
 		foreach ($ks as $k) {
-			$this-> $k->createViews();
+			$this->$k->createViews();
 		}
 	}
 	function obtainView() {
@@ -109,7 +109,11 @@ class Component extends PWBObject {
 		#@check !isset($this->app)@#
 		$this->app = & $app;
 		$this->obtainView();
-		$this->initialize();
+		#@tm_echo echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
+        defdyn('current_component', $this);
+        $this->initialize();
+        undefdyn('current_component');
+        #@tm_echo echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
 
 		#@activation_echo 'Starting ' . $this->printString() . '<br/>';@#
         $this->start();
@@ -153,7 +157,7 @@ class Component extends PWBObject {
 			return $res;
 		} else {
 			if (($ind !== null) and (isset ($this->__children[$ind]))) {
-				$this-> $ind->stopAndCall($component);
+				$this->$ind->stopAndCall($component);
 			} else {
 				#@gencheck if (isset($this->$ind)) {print_backtrace("There is a ".getClass($this->$ind)." in $ind on a ".getClass($this));} else {}@#
 				if ($ind === null) {
@@ -189,7 +193,7 @@ class Component extends PWBObject {
 		$p = & $h->parent;
 		$pos = & $h->__owner_index;
 		unset ($p->__children[$pos]);
-		unset ($p-> $pos);
+		unset ($p->$pos);
 		$this->stopAndRelease();
 	}
 	function redraw() {
@@ -209,7 +213,7 @@ class Component extends PWBObject {
 	function setChild($index, & $component) {
 		#@typecheck $component:Component@#
 		$this->__children[$index]->hold($component);
-		$this-> $index = & $this->__children[$index]->component;
+		$this->$index = & $this->__children[$index]->component;
 	}
 
 	function call(& $component) {
@@ -376,6 +380,53 @@ class Component extends PWBObject {
 		else{$this->componentstates->remove($st);}
 	}
 
+    // mixin DBComponent
+    // DBComponents implement memory transactions
+    // The problem with dynamically-bound memory transactions are:
+    // 1) How to get noticed of model changes to record field modifications?: when we are modifying
+    //    an object, the memory transaction is not at hand (it's not on the stack). We need real dynamic-variable
+    //    support for that.
+    // 2) Transactions interleaving: In transaction A, the field O>>f gets modified. So A records old value for the O>>f field.
+    //                            Then, the same field gets modified but in transaction B. So B records the value assigned by A as old.
+    //                            A rollsback. B rollsback and O>>f value is the value assigned by A and not the original value!!
+    //                            Possible solution?: versioning at the fields granularity. An exception is raised whenever a versioning
+    //                            error ocurs.
+
+    var $transaction; // The transaction the component may begin
+
+    function beginMemoryTransaction() {
+        #@tm_echo echo 'Beggining memory transaction in ' . $this->printString() . '<br/>';@#
+        if (is_object($this->memory_transaction)) {
+        	print_backtrace('Transaction already begun in: ' . $this->debugPrintString());
+        }
+        else {
+            $this->memory_transaction =& new MemoryTransaction($this);
+            $this->setDynVar('memory_transaction', $this->memory_transaction);
+        }
+        return $this->memory_transaction;
+    }
+
+    function &getMemoryTransaction() {
+    	return $this->getVeryDynVar('memory_transaction');
+    }
+
+    function &getMemoryTransactionOrBegin() {
+    	$t =& $this->getMemoryTransaction();
+        if(!is_object($t)) {
+        	$t =& $this->beginMemoryTransaction();
+        }
+
+        return $t;
+    }
+
+    function rollbackMemoryTransaction() {
+        $this->memory_transaction->rollback();
+    }
+
+    function registerFieldModification(&$field) {
+        $t =& $this->getMemoryTransactionOrBegin();
+        $t->registerFieldModification($field);
+    }
 }
 
 #@mixin EditorComponent

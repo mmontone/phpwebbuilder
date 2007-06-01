@@ -537,16 +537,25 @@ class EventTrackingLogEntry extends LogEntry {}
 
 class DbgInfo extends Component {
 	function initialize() {
-		//$constants = get_defined_constants();
+	  //$constants = get_defined_constants();
+
 		$constants = array (
 			'modules',
 			'page_renderer',
-			'PHP5',
+			'php5',
 			'pwbdir',
 			'site_url',
 			'basedir',
-			'compile'
-		);
+			'compile',
+			'recompile',
+			'db_driver',
+			'translator',
+			'basename',
+			'baseuser',
+			'activation_echo',
+			'persistence_echo',
+				    'sql_echo');
+		
 		foreach ($constants as $constant) {
 			$this->addComponent(new DbgInfoConstant($constant), $constant);
 		}

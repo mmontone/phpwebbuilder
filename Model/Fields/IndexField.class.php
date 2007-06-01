@@ -20,7 +20,11 @@ class IndexField extends NumField {
 	}
 
    function printString(){
-        return $this->primPrintString($this->colName . ' value: ' . $this->getValue() . ' target: ' . print_object($this->buffered_target));
+        return $this->debugPrintString();
+    }
+
+    function debugPrintString() {
+    	return $this->primPrintString($this->owner->debugPrintString() . '>>' . $this->getName() . ' value: ' . $this->getValue() . ' target: ' . print_object($this->buffered_target));
     }
 
     function createInstance($params){
@@ -47,7 +51,15 @@ class IndexField extends NumField {
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
-			$this->removeTarget();
+            $current_component =& getdyn('current_component');
+            if (is_object($current_component)) {
+                $current_component->registerFieldModification($this);
+            }
+            else {
+                #@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#
+            }
+
+            $this->removeTarget();
 			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'), array('execute on triggering' => true));
             $this->buffered_target =& $target;
 			$this->buffered_value = $target->getId();
@@ -63,9 +75,18 @@ class IndexField extends NumField {
             }
         }
 	}
+
     function removeTarget(){
 		if ($this->buffered_target !== null){
-			$this->buffered_target->retractInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
+            $current_component =& getdyn('current_component');
+            if (is_object($current_component)) {
+                $current_component->registerFieldModification($this);
+            }
+            else {
+                #@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#
+            }
+
+            $this->buffered_target->retractInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
 			$self =& $this;
 			$this->mapChild(
 				#@lam $e->$e->decrementRefCount();$e->removedAsTarget($self->owner, $self->varName);return $e;@#
@@ -79,6 +100,10 @@ class IndexField extends NumField {
 		$n = null;
         $this->buffered_target =& $n;
 	}
+
+    function &getModificationObject() {
+    	return new IndexFieldModification($this);
+    }
 
 	function registerCollaborators(){
 		$t =& $this->getTarget();

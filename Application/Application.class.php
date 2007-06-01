@@ -238,9 +238,26 @@ class Application {
 			}
 		}
 	}
+
+    function &getVeryDynVar($name) {
+        if (isset($this->dyn_vars[$name])) {
+            return $this->dyn_vars[$name];
+        }
+        else {
+            if (method_exists($this->listener,'getVeryDynVar')) {
+                return $this->listener->getVeryDynVar($name);
+            } else {
+                $parent =& $this->getParent();
+                #@check $parent !== null@#
+                if (method_exists($parent,'getVeryDynVar')) {
+                    return $parent->getVeryDynVar($name);
+                } else {
+                    $n = null;
+                    return $n;
+                }
+            }
+        }
+    }
 }//@#
-
-
-
 
 ?>
