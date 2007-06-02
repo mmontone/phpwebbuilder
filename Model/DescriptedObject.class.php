@@ -59,7 +59,7 @@ class DescriptedObject extends PWBObject {
 		$md =& PersistentObjectMetaData::getMetaData(getClass($this));
         $idFields = $md->allIndexFieldNames();
         foreach ($idFields as $field) {
-            $ret []= $field . ':' .  $this->$field->viewValue();
+            $ret []= $field . ':' .  $this->$field->debugViewValue();
         }
         $ret = implode(',',$ret);
         return $this->primPrintString($ret);

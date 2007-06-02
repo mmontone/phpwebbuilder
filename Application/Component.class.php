@@ -395,7 +395,6 @@ class Component extends PWBObject {
     var $transaction; // The transaction the component may begin
 
     function beginMemoryTransaction() {
-        #@tm_echo echo 'Beggining memory transaction in ' . $this->printString() . '<br/>';@#
         if (is_object($this->memory_transaction)) {
         	print_backtrace('Transaction already begun in: ' . $this->debugPrintString());
         }
@@ -403,6 +402,7 @@ class Component extends PWBObject {
             $this->memory_transaction =& new MemoryTransaction($this);
             $this->setDynVar('memory_transaction', $this->memory_transaction);
         }
+        #@tm_echo echo 'Beggining memory transaction:' . $this->memory_transaction->debugPrintString() . '<br/>';@#
         return $this->memory_transaction;
     }
 
@@ -426,6 +426,16 @@ class Component extends PWBObject {
     function registerFieldModification(&$field) {
         $t =& $this->getMemoryTransactionOrBegin();
         $t->registerFieldModification($field);
+    }
+
+    function aboutToExecuteFunction(&$function) {
+    	#@tm_echo echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
+        defdyn('current_component', $this);
+    }
+
+    function functionExecuted(&$function) {
+        #@tm_echo echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
+        undefdyn('current_component');
     }
 }
 

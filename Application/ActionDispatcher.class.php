@@ -62,22 +62,12 @@ class ActionDispatcher {
         //echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
         //var_dump(getClass($target));
 
-        if ($target != null){
-        	#@tm_echo echo 'Setting current component: ' . $target->debugPrintString() . '<br/>';@#
-            defdyn('current_component', $target);
-        }
-
-		Window::setActiveInstance($event['window']);
+        Window::setActiveInstance($event['window']);
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
 		if (isset($form['bm'])) {$event['window']->goToUrl($form['bm']);}
         DBUpdater::updateAll();
 		EventHandler::ExecuteDeferredEvents();
-
-        if ($target != null) {
-        	undefdyn('current_component');
-            #@tm_echo echo 'Unsetting current component: ' . $target->debugPrintString() . '<br/>';@#
-        }
 
         #@track_events
         global $triggeredEvents;
@@ -91,7 +81,14 @@ class ActionDispatcher {
 		$ks = array_keys($updates);
 		foreach ($ks as $k) {
 			//echo 'View updated: ' . getClass($updates[$k][0]) . $updates[$k][0]->getId() . ' update: ' . $updates[$k][1] . '</br>';
-			$updates[$k][0]->viewUpdated($updates[$k][1]);
+			//$updates[$k][0]->viewUpdated($updates[$k][1]);
+
+            // We use a FunctionObject here so that the dynamic variable 'current_component''
+            // is set. That is needed in order to be able to register model changes in the memory transaction.
+            // The current transaction is set in Component>>aboutToExecuteFunction method. See MemoryTransaction implementation
+            //                                          -- marian
+            $f =& new FunctionObject($updates[$k][0], 'viewUpdated');
+            $f->executeWith($updates[$k][1]);
 		}
 	}
 	function triggerEvent(& $event) {

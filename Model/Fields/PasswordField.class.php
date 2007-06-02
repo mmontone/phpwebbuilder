@@ -8,9 +8,9 @@ class PasswordField extends TextField {
 		if (isset ($form[$name . "1"])) {
 			if ($form[$name . "1"] == $form[$name . "2"]) {
 				if ($form[$name . "1"] == "") {
-					$this->setValue("");
+					$this->setReadValue("");
 				} else {
-					$this->setValue($form[$name . "1"]);
+					$this->setReadValue($form[$name . "1"]);
 				}
 			}
 		}

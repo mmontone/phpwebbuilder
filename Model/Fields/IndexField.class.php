@@ -145,6 +145,15 @@ class IndexField extends NumField {
 		}
 	}
 
+    function debugViewValue() {
+        $obj = & $this->obj();
+        if ($obj){
+            return $obj->debugPrintString();
+        } else {
+            return '';
+        }
+    }
+
 	function setValue($value) {
 		if ($this->buffered_value != $value) {
             $n = null;
@@ -152,6 +161,13 @@ class IndexField extends NumField {
             parent::setValue($value);
         }
 	}
+
+    function setReadValue($value) {
+    	if (is_object($this->buffered_value)) {
+    		print_backtrace_and_exit('Error: this should not have ocurred');
+    	}
+        parent::setReadValue($value);
+    }
 
 	function getValue() {
 		if ($this->buffered_target != null) {

@@ -139,6 +139,10 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	function viewValue() {
 		return $this->getValue();
 	}
+
+    function debugViewValue() {
+    	return $this->viewValue();
+    }
 	/**
 	 * Sets (buffers) the value of the field
 	 */
@@ -153,12 +157,27 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
             	#@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#
             }
 
-            $this->buffered_value = $data;
-            $n = null;
-            $this->setModified(true);
-			$this->triggerEvent('changed', $this);
+            $this->primSetValue($data);
 		}
 	}
+
+    function primSetValue($data) {
+    	$this->buffered_value = $data;
+        $n = null;
+        $this->setModified(true);
+        $this->triggerEvent('changed', $this);
+    }
+
+     /**
+     * Sets the value read from the database. We should not inform a field modification to the
+     * current memory transaction
+     */
+    function setReadValue($data) {
+        if ($data != $this->buffered_value) {
+            $this->primSetValue($data);
+        }
+    }
+
 	/**
 	 * Returns the value of the field
 	 */
@@ -213,7 +232,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	 */
 	function loadFrom($reg) {
 		$val = @$reg[$this->sqlName()];
-		$this->setValue($val);
+		$this->setReadValue($val);
 	}
 	/**
 	 * Validates, and returns false

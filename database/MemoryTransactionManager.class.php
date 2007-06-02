@@ -58,6 +58,7 @@ class MemoryTransaction {
         undefdyn('current_component');
         $a = array();
         $this->modifications =& $a;
+        #@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
     }
 
     function registerFieldModification(&$field) {

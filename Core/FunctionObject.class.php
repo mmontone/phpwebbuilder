@@ -37,24 +37,50 @@ class FunctionObject
 	function &getTarget(){
 		return $this->target;
 	}
+
+    // executePreviousMethod and executeNextMethod were originally implemented
+    // to support the "current component" abstraction. See Component>>aboutToExecuteFunction.
+    //                       -- marian
+    function executePreviousMethod() {
+        $t =& $this->getTarget();
+        if (method_exists($t, 'aboutToExecuteFunction')) {
+        	$t->aboutToExecuteFunction($this);
+        }
+    }
+
+    function executeNextMethod() {
+        $t =& $this->getTarget();
+        if (method_exists($t, 'functionExecuted')) {
+            $t->functionExecuted($this);
+        }
+    }
+
     function &call() {
-      	$method_name = $this->method_name;
+      	$this->executePreviousMethod();
+        $method_name = $this->method_name;
       	$ret = '';
        	eval($this->callString($method_name) . '($this->params);');
+        $this->executeNextMethod();
        	return $ret;
     }
 	function execute() {
-      	$method_name = $this->method_name;
+      	$this->executePreviousMethod();
+        $method_name = $this->method_name;
        	eval($this->executeString($method_name) . '($this->params);');
+        $this->executeNextMethod();
     }
 	function executeWith(&$params) {
-      	$method_name = $this->method_name;
+      	$this->executePreviousMethod();
+        $method_name = $this->method_name;
        	eval($this->executeString($method_name) . '($params, $this->params);');
+        $this->executeNextMethod();
     }
 
 	function executeWithWith(&$param1, &$param2) {
-      	$method_name = $this->method_name;
+      	$this->executePreviousMethod();
+        $method_name = $this->method_name;
        	eval($this->executeString($method_name) . '($param1, $param2, $this->params);');
+        $this->executeNextMethod();
     }
 
     function callString($method) {
