@@ -6,7 +6,7 @@ class PWBObject
 {
     var $disabled_events = array();
     var $__instance_id = null;
-    var $creationParams;
+    //var $creationParams;
     var $event_handles = 0;
 
 
@@ -25,7 +25,7 @@ class PWBObject
 			$iid =& Session::getAttribute('instance_id');
 		}
 		$this->__instance_id = ++$iid;
-		$this->creationParams =& $params;
+		//$this->creationParams =& $params;
 		$this->__wakeup();
 		$this->createInstance($params);
 	}

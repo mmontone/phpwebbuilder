@@ -207,7 +207,7 @@ class Collection extends PWBObject {
 		return $n;
 	}
 	/**
-	 *  If you dont' know foldl, then don't use it
+	 *  An interative approach to a fold
 	 */
 	function & foldl(& $z, $f) {
 		$acc = & $z;
@@ -218,7 +218,7 @@ class Collection extends PWBObject {
 		return $acc;
 	}
 	/**
-	 *  If you dont' know foldr, then don't use it
+	 *  A recursive approach to a fold. Basic implementation, only to use with commutative functions.
 	 */
 	function & foldr(& $z, $f) {
 		$col = & $this->reverse();
@@ -298,6 +298,7 @@ class Collection extends PWBObject {
 	function getDataType() {
 		return '';
 	}
+	/** Checks for typing, using type parameters is needed */
 	function hasType($type){
 		$params = explode('<',$type, 2);
 		if (count($params)>1){
