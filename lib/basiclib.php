@@ -185,6 +185,12 @@ function tm_echo($text) {
 	return optionalCompile('tm_echo', $text);
 }
 
+function tm_echo2($text) {
+	if (defined('tm_echo') and (constant('tm_echo') >= 2)) {
+        return $text;
+    }
+}
+
 function activation_echo($text) {
 	return optionalCompile('activation_echo', $text);
 }
