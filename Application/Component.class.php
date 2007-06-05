@@ -132,11 +132,11 @@ class Component extends PWBObject {
 		#@check !isset($this->app)@#
 		$this->app = & $app;
 		$this->obtainView();
-		#@tm_echo echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
+		#@tm_echo2 echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
         defdyn('current_component', $this);
         $this->initialize();
         undefdyn('current_component');
-        #@tm_echo echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
+        #@tm_echo2 echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
 
 		#@activation_echo 'Starting ' . $this->printString() . '<br/>';@#
         $this->start();
@@ -454,12 +454,12 @@ class Component extends PWBObject {
     }
 
     function aboutToExecuteFunction(&$function) {
-    	#@tm_echo echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
+    	#@tm_echo2 echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
         defdyn('current_component', $this);
     }
 
     function functionExecuted(&$function) {
-        #@tm_echo echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
+        #@tm_echo2 echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
         undefdyn('current_component');
     }
 }
