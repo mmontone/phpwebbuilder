@@ -32,7 +32,7 @@ class Window extends PWBObject{
 			$this->wholeView->parentNode =& $this;
 			$this->wholeView->appendChild($tc);
 			$this->wholeView->controller = & $this;
-			$this->wholeView->getTemplatesAndContainers();
+			$this->wholeView->getTemplatesAndContainers(false);
 			$this->setTitle($this->parent->getTitle());
 			$this->component->linkToApp($this->parent);
 			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));

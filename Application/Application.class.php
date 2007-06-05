@@ -90,6 +90,9 @@ class Application {
 		$this->windows['root']->setTitle($title);
 	}
 
+    function &getParent() {
+    	return null;
+    }
 	function getTitle(){return '';}
 	function initializeStyleSheets() {
 		$this->wholeView->style_sheets = array ();
