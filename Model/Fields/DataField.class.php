@@ -148,8 +148,10 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	 * Sets (buffers) the value of the field
 	 */
 	function setValue($data) {
-		if ($data != $this->buffered_value) {
-
+		// Beware: we need to use a != (non typed difference) instead of a !== because we are receiving
+        //         strings from somewhere. If you want to change to !==, be sure you are only receiving appropiate
+        //         typed values.  -- marian
+        if ($data != $this->buffered_value) {
             $current_component =& getdyn('current_component');
             if (is_object($current_component)) {
                 $current_component->registerFieldModification($this);
