@@ -111,7 +111,7 @@ class ObjectAdmin extends ContextualComponent {
 		$model->flushChanges();
    	  	$editor =& $this->getObjectEditor($this->getModel());
    	  	$editor->addInterestIn('object_edited', new FunctionObject($this, 'objectEdited'));
-    	$editor->addInterestIn('cancel', new FunctionObject($this, 'editionCancelled'));
+    	$editor->registerCallback('cancel', new FunctionObject($this, 'editionCancelled'));
     	$this->changeBody($editor);
     }
 
@@ -128,7 +128,11 @@ class ObjectAdmin extends ContextualComponent {
     	$this->viewObject();
     	$this->triggerEvent('object_edited', $this->object);
     }
-	function saveEditions(){DBSession::commitInTransaction();}
+
+    function saveEditions() {
+	   DBSession::commitInTransaction();
+    }
+
     function editionCancelled() {
     	$this->viewObject();
     }
@@ -150,8 +154,6 @@ class ObjectAdmin extends ContextualComponent {
 #@defmdf &getObjectEditor[Component](&$object:PersistentObject)
 {
 		return new ObjectEditor($object);
-}
-//@#
-
+}//@#
 
 ?>
