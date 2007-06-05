@@ -138,7 +138,7 @@ class XMLNode extends DOMXMLNode {
 					return;
 			}
 			$tn = $this->tagName;
-			$out .= implode('',array('<',$tn));
+			$out .= '<'.$tn;
 
 
 			foreach ($this->attributes as $name => $val) {
@@ -149,12 +149,11 @@ class XMLNode extends DOMXMLNode {
 				$out .= '/>';
 			} else {
 				$out .= '>';
-				$ks = array_keys($cn);
-				foreach ($ks as $k) {
+				foreach (array_keys($cn) as $k) {
 					$out .= $cn[$k]->renderNonEcho();
 				}
 				//echo implode(array("\n</".$this->tagName.'>'));
-				$out .= implode(array('</'.$tn.'>'));
+				$out .= '</'.$tn.'>';
 			}
 			$this->cache = $out;
 		}
@@ -207,14 +206,14 @@ class XMLNode extends DOMXMLNode {
 			}
 		}
 	}
-	function getTemplatesAndContainers() {
+	function getTemplatesAndContainers($addTemplates) {
 		$temp = array ();
 		$cont = array ();
 		$childId = array ();
 		$cn = & $this->childNodes;
 		foreach (array_keys($cn) as $k) {
 			$t = & $cn[$k];
-			$t->getTemplatesAndContainers();
+			$t->getTemplatesAndContainers($addTemplates);
 			if ($t->isTemplate()) {
 				$temp[] = & $t;
 				$cont[] = & $t;
@@ -223,9 +222,10 @@ class XMLNode extends DOMXMLNode {
 			} else if ($t->isContainer()) {
 				$cont[] = & $t;
 			} else {
-				$this->addTemplatesAndContainersChild($t);
+				$this->addTemplatesAndContainersChild($t, $addTemplates);
 			}
 		}
+		if (!$addTemplates) {$temp = array();}
 		$this->addTemplatesAndContainers($temp, $cont, $childId);
 	}
 	function addTemplatesAndContainers(& $temp, & $cont, & $childId) {
@@ -249,8 +249,12 @@ class XMLNode extends DOMXMLNode {
 			$c[] = & $cont[$k3];
 		}
 	}
-	function addTemplatesAndContainersChild(& $v) {
-		$this->addTemplatesAndContainers($v->templates, $v->containers, $v->childById);
+	function addTemplatesAndContainersChild(& $v, $addTemplates) {
+		if ($addTemplates){
+			$this->addTemplatesAndContainers($v->templates, $v->containers, $v->childById);
+		} else {
+			$this->addTemplatesAndContainers($arr=array(), $v->containers, $v->childById);
+		}
 	}
 	function &templateForClass(& $component) {
 		$ts =& $this->templates;

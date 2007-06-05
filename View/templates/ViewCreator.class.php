@@ -42,7 +42,7 @@ class ViewCreator {
 		$tpr =& new HTMLTemplate();
 		foreach($xs as $x){
 			$tpl =& $tpr->xml2template($x);
-			$tpl->getTemplatesAndContainers();
+			$tpl->getTemplatesAndContainers(true);
 			$tps[]=&new TemplateProxy($tpl);
 
 		}
@@ -85,7 +85,7 @@ class ViewCreator {
 		#@debugview $db = false;@#
 		if ($vid!=null){
 			if (!$vid->isContainer()){
-				$vid->getTemplatesAndContainers();
+				$vid->getTemplatesAndContainers(false);
 				$this->instantiateFor($vid,$component);
 				#@debugview
 					{$vid->addCSSClass('containerWithId');
@@ -127,7 +127,8 @@ class ViewCreator {
 			}
 			#@debugview $tp->addCSSClass('template');@#
 			$view =& $tp;
-			$view->getTemplatesAndContainers();
+			$view->getTemplatesAndContainers(false);
+			//$view->getTemplatesAndContainers();
 			#@debugview if ( $db) $view->addCSSClass('debugging');@#
 		}
 		$parentView->replaceChild($view,$pos);
@@ -182,7 +183,9 @@ class ViewCreator {
 			$vh =& $this->app->page_renderer->viewHandler();
 			$handler =& $vh->createFor($component);
 		}
-		return $handler->instantiateTemplate($template);
+		$view =& $handler->instantiateTemplate($template);
+		$view->templates =& $template->templates;
+		return $view;
 	}
 	function &defaultTemplate(&$component){
 		$vh =& $this->app->page_renderer->viewHandler();
