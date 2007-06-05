@@ -76,6 +76,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 		$this->isIndex = $ps['is_index'];
 		$this->displayString = $ps['display'];
 		$this->value = $ps['default'];
+		$this->buffered_value = $ps['default'];
 	}
 	/**
 	 * Returns the default initialization values of the object
