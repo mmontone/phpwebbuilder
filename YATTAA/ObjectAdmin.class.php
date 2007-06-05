@@ -69,9 +69,7 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function addDeleteObjectLink($text='Delete') {
-		if (constant('delete_enabled')) {
-			$this->addActionMenu($text,$this->getDeleteFunction($text));
-		}
+		$this->addActionMenu($text,$this->getDeleteFunction($text));
 	}
 
 	function addViewObjectLink($text='View') {
@@ -83,9 +81,7 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function removeDeleteObjectLink(&$comp) {
-		if (constant('delete_enabled')) {
-			$comp->deleteComponentAt('delete');
-		}
+		$comp->deleteComponentAt('delete');
 	}
 
 	function removeViewObjectLink(&$comp) {

@@ -43,8 +43,10 @@ class ContextualComponent extends Component {
 	}
     function start() {
         $context =& $this->getContext();
-		$context->show();
-		$this->restoreContextFromStart();
+        if ($this->__module){
+        	$context->show();
+			$this->restoreContextFromStart();
+        }
 		$this->addAllMenus();
 		$this->fillInActionsBar($context->getActionsBar());
 		$this->fillInNavigationBar($context->getNavigationBar());
@@ -121,6 +123,19 @@ class ContextualComponent extends Component {
 	function fillInNavigationBar(&$bar) {}
 	function releaseActionsBar(&$bar) {}
 	function releaseNavigationBar(&$bar) {}
+}
+
+
+
+class WrapperContextualComponent extends ContextualComponent{
+
+	function WrapperContextualComponent(&$component){
+		$this->comp =& $component;
+		parent::ContextualComponent();
+	}
+	function initialize(){
+		$this->addComponent($this->comp);
+	}
 }
 
 ?>

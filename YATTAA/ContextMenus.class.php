@@ -42,8 +42,7 @@ class ContextMenus {
 			$this->follower->closeContext();
 			unset($this->follower);
 		}
-		$this->actions_bar->callback();
-		$this->navigation_bar->callback();
+		$this->releaseBars();
 	}
 }
 
