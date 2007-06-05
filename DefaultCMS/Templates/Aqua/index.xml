@@ -1,5 +1,5 @@
 <templates>
-	<template class="DefaultCMS">
+	<template class="ModuleComponent">
 		<div class="page" align="center">
 			<div class="header">
 				<div class="companyname" align="left"><container id="siteName"/></div>
@@ -14,8 +14,10 @@
 			</div>
 			<br />
 			<div class="content">
+				<span id="activeReference" style="text-align:left;width:100%;"><template class="CommandLink"><span> &gt;&gt; <container id="linkName"/></span></template></span>
 				<div class="leftpanel">
-					<container id="menu" />
+					<container id="navigationbar" />
+					<container id="actionsbar" />
 				</div>
 				<div class="contenttext">
 					<container id="body" />
@@ -31,7 +33,28 @@
 			</div>
 		</div>
 	</template>
-	<template class="MenuSectionComponent">
+	<template class="NavigationMenu">
+		<div class="table_top">
+			<span class="title_panel">
+				<container id="secName" />
+			</span>
+		</div>
+		<div class="table_content">
+			<div class="table_text">
+				<template class="CommandLink">
+					<a class="news_more">
+						<container id="linkName" /><br />
+					</a>
+				</template>
+			</div>
+		</div>
+		<div class="table_bottom">
+			<img src="$templatesdirimages/table_bottom.jpg" width="204" height="23"
+				border="0" alt="" />
+		</div>
+		<br />
+	</template>
+		<template class="ActionsMenu">
 		<div class="table_top">
 			<span class="title_panel">
 				<container id="secName" />

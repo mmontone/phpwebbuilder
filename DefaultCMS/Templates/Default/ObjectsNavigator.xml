@@ -1,0 +1,37 @@
+<templates>
+	<template class="ObjectsNavigator">
+		<table class="titulo">
+			<tbody>
+				<tr>
+					<td>
+						<table border="0" cellpadding="1"
+							cellspacing="3" width="0" class="editor">
+							<tbody>
+								<template class="FieldComponent">
+									<tr>
+										<td bgcolor="#fbfbfb"
+											valign="top">
+											<div align="left">
+													<container
+														id="field_name" />:
+											</div>
+										</td>
+										<td bgcolor="#fbfbfb"
+											valign="top">
+											<div align="left">
+													<container
+														id="component" />
+											</div>
+										</td>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+						<input type="button" id="search" value="Buscar" />
+						<container class="Component" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</template>
+</templates>

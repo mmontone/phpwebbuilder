@@ -1,0 +1,80 @@
+<templates>
+	<template class="OrderBar">
+		<span>Ordenar por:
+			<template class="SortLink">
+				<span>&amp;nbsp;
+					<container id="linkName" />
+					<container class="Component"/>
+				</span>
+			</template>
+		</span>
+	</template>
+	<template class="ObjectsList">
+		<table border="0" cellpadding="5" cellspacing="0" height="100%"
+			width="100%">
+			<thead>
+				<tr>
+					<td class="titulo">
+							<container id="listTitle" />
+							<container id="listName" />
+					</td>
+				</tr>
+			</thead>
+			<container id="order_bar"/>
+			<tbody id="objs">
+				<container class="Component" />
+			</tbody>
+		</table>
+		<a id="first">Inicio</a>&amp;nbsp;
+		<a id="prev">Anteriores</a>&amp;nbsp;
+  	    <a id="next">Siguientes</a>&amp;nbsp;
+		<a id="last">Fin</a>&amp;nbsp;
+		<a id="refresh">Refrescar</a>
+		<p>
+			Mostrando desde el <span id="firstElem" handler="TextHTMLHandler"/> de <container id="realSize" /> elementos en total.
+		</p>
+	</template>
+	<template class="ObjectElement">
+		<tr>
+			<td>
+				<table border="0" cellpadding="1" cellspacing="1"
+					width="0">
+					<tbody>
+						<tr>
+							<td bgcolor="#ffffff" valign="top">
+								<div align="left">
+									<!-- <img
+										src="$templatesdir/images/documento.jpg" border="0"
+										height="32" width="32" /> -->
+								</div>
+							</td>
+							<td bgcolor="#ffffff" valign="top">
+								<div align="left">
+									<table border="0" cellpadding="1"
+										cellspacing="1" width="0">
+										<tbody>
+											<tr>
+												<td bgcolor="#ffffff"
+													valign="top">
+													<div align="left">
+														<a>
+																<container
+																	id="select" />
+																<container
+																	class="Component" />
+														</a>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<hr />
+			</td>
+		</tr>
+	</template>
+</templates>

@@ -1,0 +1,40 @@
+<templates>
+		<template class="ObjectPresenter">
+		<table class="titulo">
+			<tbody>
+				<tr>
+					<td>
+						<container id="validation_errors" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table border="0" cellpadding="1"
+							cellspacing="3" width="0" class="editor">
+							<tbody>
+								<template class="FieldComponent">
+									<tr>
+										<td bgcolor="#fbfbfb"
+											valign="top">
+											<div align="left">
+													<container
+														id="field_name" />:
+											</div>
+										</td>
+										<td bgcolor="#fbfbfb"
+											valign="top">
+											<div align="left">
+													<container
+														id="component" />
+											</div>
+										</td>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</template>
+</templates>
