@@ -147,15 +147,15 @@ function findMdContextFunction($function, &$comp, $params){
 	//echo '<br/> searching'.$function;
 	//foreach($layers as $p){echo ' '.getClass($p);}
 	//echo ' params: ';
-	//foreach($params as $p){echo ' '.getClass($p);}
+	//foreach($params as $p){echo ' '.getClass($p);};
 	$better = array();
 	foreach ($fs['user'] as $fun0){
 		$fun = strtolower(str_replace('__tp_','<',(str_replace('_tp__','>',$fun0))));
 		if (substr($fun, 0, $size)==$function){
-			//echo '<br/>checking '.$fun;
 			$types = array_reverse(explode('_',substr($fun, $size+1))); //The "+1" is for the first '_'
+			//echo '<br/>checking '.$fun; print_r($types);
 			//Hasta count($params) son parametros, luego son contexto.
-			//print_r($types);
+			//
 			$endctx=count($params);
 			$matches = true;
 			foreach(array_keys($types) as $i){
@@ -235,7 +235,7 @@ function &mdcompcall($function, $args) {
 
 function md_get_layers(&$comp) {
 	$c =& $comp;
-
+	$layers=array();
 	$i = 0;
 	while(($c !== null) and (getClass($c) != 'stdclass')) {
 		$layers[$i]=&$c;

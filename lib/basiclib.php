@@ -608,11 +608,11 @@ function get_superclasses_upto($str, $class) {
 	$ret = array ();
 	$class = strtolower($class);
 	$pc = strtolower(get_parent_class($str));
-	while ($pc != $class && $pc != '') {
+	while ($pc != $class & $pc != '') {
 		$ret[] = $pc;
 		$pc = strtolower(get_parent_class($pc));
 	}
-	if ($pc !== $class) {
+	if ($pc != $class) {
 		return array ();
 	} else {
 		return $ret;
