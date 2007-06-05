@@ -12,6 +12,7 @@ class Component extends PWBObject {
 	var $toLink = array ();
 	var $nextChildrenPosition = 1;
 	var $dyn_vars = array ();
+	var $calling=false; // It is true when the component is calling other component (but not calling back)
 
 	function Component($params = array()) {
 		$this->componentstates =& new Collection;
@@ -36,7 +37,29 @@ class Component extends PWBObject {
 				$child->stopAll();
 			}
 		}
+        if ($this->calling) {
+        	$this->callStop();
+        }
+        else {
+        	$this->nonCallStop();
+        }
         $this->stop();
+	}
+
+	// This function gets called when the component stops because
+	// its calling other component. Its useful for some protocols. For example,
+	// object editors dont want to flush the changes when they stop for making a call (See ObjectEditor class).
+	//                                                    -- marian
+	function callStop() {
+
+	}
+
+	// This function gets called when the component stops and it is NOT
+	// calling other component. Its useful for some protocols. For example,
+	// object editors dont want to flush the changes when they stop (See ObjectEditor class)
+	//                                                    -- marian
+	function nonCallStop() {
+
 	}
 
 	function stopAndRelease() {
@@ -219,8 +242,10 @@ class Component extends PWBObject {
 	function call(& $component) {
 		// Give control to $component
 		#@calling_echo echo $this->printString() . ' calling ' . $component->printString() . '<br/>';@#
+        $this->calling = true;
         $component->listener = & $this;
 		$this->basicCall($component);
+		$this->calling = false;
 	}
 
 	function stopAndCall(& $component) {
