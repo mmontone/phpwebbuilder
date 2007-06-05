@@ -1,17 +1,16 @@
 <?php
-class Menu extends Component {
+class InitialDefaultCMSComponent extends ContextualComponent {
 	function initialize() {
-		$this->addComponent(new CompositeWidget, 'menus');
-		$this->newmenu();
+		$this->addComponent($comp =& new Login);
+		$comp->addInterestIn('logged', new FunctionObject($this, 'newmenu'));
+
 	}
 	function newmenu() {
 		$u =& User::logged();
 		$un = $u->user->getValue();
 		$this->addComponent(new Text(new ValueHolder($un)), "username");
-		$this->menus->deleteChildren();
 		$this->menus();
-		$this->redraw();
-		$this->menus->objects->addComponent(new ActionLink($this, 'newmenu', 'Refresh', $n=null), 'refresh');
+		$this->addAllMenus();
 	}
 	function menus() {
 		$this->realMenus();
@@ -23,76 +22,29 @@ class Menu extends Component {
 		$ms->map($f=lambda('&$m','$self->realMenuSection($m); return $x;',get_defined_vars()));
 	}
 	function realMenuSection(& $menu) {
-		$sect = & new MenuSectionComponent();
-		$mv = $menu->name->getValue();
-		$sect->addComponent(new Text(new ValueHolder($mv)), 'secName');
 		$col = & $menu->items->collection->elements();
 		$ks2 =  array_keys($col);
 		$arr=array();
 		foreach ($ks2 as $k2) {
 			$menu = & $col[$k2];
-			$this->additem($arr[$k2]=array ('bookmark'=>'MenuItem',
-				'Component' => $menu->controller->getValue()
-			, 'params'=>$menu->params->getValue()), $menu->name->getValue(), $sect);
+			$this->addNavigationMenu($menu->name->getValue(),new FunctionObject($this, 'callComponent', $menu));
 		}
-		$this->menus->addComponent($sect, $mv);
+	}
+	function callComponent($menu){
+		$cont = $menu->controller->getValue();
+		$this->call(new WrapperContextualComponent(new $cont($menu->params->getValue())));
 	}
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
-		$sect = & new MenuSectionComponent();
-		$sect->addComponent(new Label('Objects'), 'secName');
-		$u =& User::logged();
 		$temp = array();
 		foreach ($arr as $p=>$c) {
 			$class =& $arr[$p];
 			$obj =& new $class;
-			$sect->addComponent(new NavigationLink('CollectionViewer', $obj->displayString,
-					$temp[$p] = array ('class' => $class)));
+			$this->addNavigationMenu($class,new FunctionObject($this, 'showClass', $class));
 		}
-		$log = array ('bookmark'=>'MenuItem',
-			'Component' => 'Logout'
-		);
-		$this->additem($log, 'Logout', $sect);
-		$this->menus->addComponent($sect, 'objects');
 	}
-	function additem(& $comp, $text, & $sect) {
-		$sect->addItem(new NavigationLink($comp['bookmark'], $text, $comp));
-	}
-	function menuclick(& $comp) {
-		$c = & new $comp['Component'] ($comp['params']);
-		$this->triggerEvent('menuClicked', $c);
-	}
-}
-
-class MenuSectionComponent extends Component {
-	var $add = false;
-	function addItem(&$i){
-		$this->add = $this->addComponent($i);
-	}
-	function checkAddingPermissions(){
-		return count($this->__children)>1;
-	}
-}
-
-/*class MenuItemComponent extends Component {
-	var $text, $items;
-	function MenuItemComponent(& $menu, $text, & $items) {
-		$this->text = $text;
-		$this->items =& $items;
-		parent :: Component();
-	}
-	function initialize(){
-		$bk =$this->items['bookmark'];
-		unset($this->items['bookmark']);
-		$this->addComponent(new NavigationLink($bk, $this->text,$this->items), "link");
-	}
-}*/
-
-class MenuItemComponent extends NavigationLink {
-	function MenuItemComponent(& $menu, $text, & $items) {
-		$bk =$this->items['bookmark'];
-		unset($this->items['bookmark']);
-		parent::NavigationLink($bk, $text,$items);
+	function showClass($class){
+		$this->call(new WrapperContextualComponent(new CollectionViewer(new PersistentCollection($class))));
 	}
 }
 
