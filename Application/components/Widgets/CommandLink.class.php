@@ -29,7 +29,11 @@ class CommandLink extends Widget{
 	}
 
     function printString() {
-    	return $this->primPrintString($this->proceed->target->printString() . '->' . $this->proceed->method_name);
+        return $this->debugPrintString();
+    }
+
+    function debugPrintString() {
+        return $this->primPrintString($this->proceed->target->printString() . '->' . $this->proceed->method_name);
     }
 }
 ?>
