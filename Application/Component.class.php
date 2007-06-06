@@ -445,6 +445,10 @@ class Component extends PWBObject {
     }
 
     function rollbackMemoryTransaction() {
+        if (!is_object($this->memory_transaction)) {
+        	print_backtrace_and_exit('Error: you are trying to rollback a non existing transaction in ' . $this->debugPrintString() . '.' .
+                    ' Make sure that beginMemoryTransaction is called before in this component');
+        }
         $this->memory_transaction->rollback();
     }
 
