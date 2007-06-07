@@ -10,6 +10,7 @@ class DBSession {
 	var $nesting = 0;
 	var $commands = array();
 	var $registeredObjects = array();
+	var $unprepare=array();
 
     function DBSession() {
         pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
@@ -170,6 +171,7 @@ class DBSession {
 
             try {
                 $toRollback = array();
+
                 while(!empty($this->registeredObjects)){
                     $ks = array_keys($this->registeredObjects);
                     $elem =& $this->registeredObjects[$ks[0]];
@@ -178,13 +180,23 @@ class DBSession {
                     $this->save($elem);
                 }
                 PersistentObject::CollectCycles();
+                $this->unprepareObjects();
             }
             catch (Exception $e) {
+                // It's a pity we don't have a finally clause for cleaning things up
+                $this->unprepareObjects();
                 $this->registeredObjects = $toRollback;
                 $e->raise();
             }
     }//@#
-
+	function unprepareObjects() {
+		foreach(array_keys($this->unprepare) as $i) {
+           	$obj =& $this->unprepare[$i];
+           	$obj->prepared_to_save = false;
+        }
+        $a = null;
+        $this->prepared_to_save =& $a;
+	}
     #@php4
     function saveRegisteredObjects() {
         //ActionDispatcher::ExecuteDeferredEvents();
@@ -338,18 +350,21 @@ class DBSession {
 
     #@php5
     function &save(&$object) {
+        $object->primPrepareToSave();
+        $this->unprepare[$object->getInstanceId()] =& $object;
         $db=&DBSession::Instance();
         $db->registerSave($object);
         try {
-            $e =& $object->save();
+            $object->save();
             return $object;
         }
         catch (Exception $e) {
-            if ($db->rollback_on_error) {
+        	if ($db->rollback_on_error) {
                 $db->primRollback();
             }
             return $e->raise();
         }
+
     }//@#
 
 	#@php5
