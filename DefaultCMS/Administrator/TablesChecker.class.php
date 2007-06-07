@@ -136,8 +136,8 @@ class ObjectMapper {
 
 class TablesChecker {
 	function checkTables($stepping=false){
-		$arr = get_subclasses("PersistentObject");
 		reset_metadata();
+		$arr = get_subclasses("PersistentObject");
 		/*Comparing existing tables, existing objects, and added objects*/
 		/*If a table has not an object table, we have to delete it*/
 		$sql = "SHOW TABLES FROM `" . basename. '` LIKE \''.baseprefix.'%\'';

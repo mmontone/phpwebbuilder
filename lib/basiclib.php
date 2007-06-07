@@ -519,6 +519,7 @@ function trace_params() {
 
 function reset_metadata() {
 	$GLOBALS['persistentObjectsMetaData'] = array ();
+	$GLOBALS['allRelatedClasses'] = array ();
 }
 
 function find_metadata() {
