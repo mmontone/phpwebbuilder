@@ -121,8 +121,8 @@ class Application {
 
 	function addAjaxRenderingSpecificScripts() {
 		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
-		$this->addScript(constant('pwb_url') . 'lib/history.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
+		$this->addScript(constant('pwb_url') . 'lib/history.js');
 	}
 	function rendersAjax(){
 		$app =& Application::Instance();
