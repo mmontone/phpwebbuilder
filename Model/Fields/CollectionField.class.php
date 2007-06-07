@@ -240,7 +240,7 @@ class IndirectCollectionFieldType extends CollectionFieldType {
         }
 
         if (!isset($params['joinType'])) {
-        	print_backtrace_and_exit('Specify join type for ' . $this->collection_field->printString());
+        	print_backtrace_and_exit('Specify join type for ' . $this->collection_field->owner->debugPrintString());
         }//@#
     }
 
@@ -274,7 +274,8 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 
     function add(&$elem) {
         // Esto no anda
-        $joinObject =& new $this->getJoinDataType();
+        $jdt = $this->getJoinDataType();
+        $joinObject =& new $jdt;
         $joinObject->{$this->getReverseField()}->setTarget($this->collection_field->getOwner());
         $joinObject->{$this->getTargetField()}->setTarget($elem);
         if ($this->collection_field->owner->isPersisted()) {
