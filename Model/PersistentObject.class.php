@@ -15,6 +15,18 @@ class PersistentObject extends DescriptedObject {
 	 * (only the ones of this level)
 	 */
 
+	var $prepared_to_save = false;
+
+	function primPrepareToSave() {
+		if (!$this->prepared_to_save) {
+			$this->prepareToSave();
+			$this->prepared_to_save = true;
+		}
+	}
+
+	function prepareToSave() {
+
+	}
 
 	function setID($id) {
 		foreach ($this->metadata->allFieldNamesThisLevel() as $field) {
