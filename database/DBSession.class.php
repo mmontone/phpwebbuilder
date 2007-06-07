@@ -39,7 +39,7 @@ class DBSession {
     }
 
     function addCommand(&$command) {
-        #@sql_echo echo 'Adding command ' . getClass($command) . ' target: ' . getClass($command->object) . '<br/>';@#
+        #@sql_echo echo 'Adding command ' . $command->debugPrintString() . '<br/>';@#
     	$this->commands[] =& $command;
     }
 
@@ -110,7 +110,7 @@ class DBSession {
 			$this->driver->beginTransaction();
 		}
 
-		#@sql_echo echo 'Beggining transaction ('. @$GLOBALS['transactionnesting'] . ')';@#
+		#@sql_echo echo 'Beggining transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>';@#
         #@sql_echo2 print_backtrace();@#
 	}
 	function transactionStarted(){
@@ -420,6 +420,10 @@ class DBCommand {
 	function &getObject() {
 		return $this->object;
 	}
+
+    function debugPrintString() {
+    	 return '[' . getClass($this) . ' target: ' . $this->object->debugPrintString() . ']';
+    }
 }
 
 class CreateObjectDBCommand extends DBCommand {
