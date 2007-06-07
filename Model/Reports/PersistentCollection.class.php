@@ -11,7 +11,7 @@ class PersistentCollection extends Report{
 	function listen($class, &$listener){
 		$class = strtolower($class);
 		#@model_events_echo echo '<br/>'.$listener->printString().' listens to '.$class;@#
-		if ($_SESSION['PersistentCollectionListener'][$class]===null){
+		if (@$_SESSION['PersistentCollectionListener'][$class]===null){
 			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
 		}
 		$_SESSION['PersistentCollectionListener'][$class]->addInterestIn('change', $listener);
@@ -19,7 +19,7 @@ class PersistentCollection extends Report{
 	function changedClass($class){
 		$class = strtolower($class);
 		#@model_events_echo print_backtrace('triggering for '.$class);@#
-		if ($_SESSION['PersistentCollectionListener'][$class]===null){
+		if (@$_SESSION['PersistentCollectionListener'][$class]===null){
 			$_SESSION['PersistentCollectionListener'][$class] =& new PWBObject();
 		}
 		$_SESSION['PersistentCollectionListener'][$class]->triggerEvent('change', $n=null);

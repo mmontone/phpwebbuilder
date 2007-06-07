@@ -307,7 +307,7 @@ $dyn_vars = array ();
 
 function defdyn($var, & $value) {
 	global $dyn_vars;
-	if (!is_array($dyn_vars[$var])) {
+	if (!is_array(@$dyn_vars[$var])) {
 		$dyn_vars[$var] = array ();
 	}
 
