@@ -72,19 +72,21 @@ class OptionalComponent extends Component {
 
 		parent::Component();
 	}
-
+	function onEnterClickOn(){}
 	function initialize() {
 		$selectOption =& new CheckBox(new AspectAdaptor($this, 'selectOption'));
 		$selectOption->onChangeSend('selectOptionChanged', $this);
 		$this->addComponent($selectOption, 'selectoption_checkbox');
 
 		$this->addComponent($this->comp, 'opt_comp');
+		$this->comp->onChangeSend('changed', $this);
 		$this->comp->enable($this->selectOption);
 	}
 
 	function selectOptionChanged() {
 		$this->opt_comp->enable($this->selectOption);
 		$this->callbackWith('select_option_changed', $this->selectOption);
+		$this->changed();
 	}
 
 	function setSelectOption(&$value) {

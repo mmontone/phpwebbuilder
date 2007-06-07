@@ -14,8 +14,9 @@ class Bookmark {
 
 
 class HomeBookmark extends Bookmark{
-	function launchIn(&$app, $params){
-		$app->component->start();
+	function launchIn(&$win, $params){
+		$win->component->start();
+		$win->urlManager->setUrl('Home');
 	}
 }
 ?>
