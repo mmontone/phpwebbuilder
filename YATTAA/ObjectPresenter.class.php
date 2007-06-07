@@ -14,13 +14,17 @@ class ObjectPresenter extends ContextualComponent {
 	function addDisplayFields(){
 		$this->addDefaultDisplayFields();
 	}
-	function addDefaultDisplayFields(){
-		$fields =& $this->object->fieldsWithNames($this->object->metadata->allFieldNames());
+	function getFieldNames(){
+		$fields = $this->object->metadata->allFieldNames();
 		unset($fields['id']);
 		unset($fields['PWBversion']);
 		unset($fields['super']);
 		unset($fields['refCount']);
 		unset($fields['rootObject']);
+		return $fields;
+	}
+	function addDefaultDisplayFields(){
+		$fields =& $this->object->fieldsWithNames($this->getFieldNames());
        	foreach(array_keys($fields) as $f2){
     		$this->addFieldComponent($this->chooseFieldDisplayer($fields[$f2]), $f2);
        	}

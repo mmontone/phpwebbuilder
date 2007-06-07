@@ -185,4 +185,16 @@ class ObjectEditor extends ObjectPresenter {
 }
 //@#
 
+#@defmdf &getFieldEditor[Component](&$field: DateTimeField)
+{
+	return new DateTimeInput($field->getValue());
+}
+//@#
+
+#@defmdf &getFieldEditor[Component](&$field: BoolField)
+{
+	return new CheckBox($field);
+}
+//@#
+
 ?>

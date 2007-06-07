@@ -24,12 +24,19 @@ class ObjectsNavigator extends ContextualComponent {
 		$this->searchObjects();
         $this->addActionMenu($this->printObjectsMessage(), new FunctionObject($this, 'printList'));
 	}
-	function initializeRestrictions(){
+	function getFieldNames(){
 		$meta =& $this->objects->getMetaData();
-		$fields =& $meta->class->fieldsWithNames($meta->allIndexFieldNames());
+		$fields = $meta->allIndexFieldNames();
 		unset($fields['id']);
 		unset($fields['PWBversion']);
 		unset($fields['super']);
+		unset($fields['refCount']);
+		unset($fields['rootObject']);
+		return $fields;
+	}
+	function initializeRestrictions(){
+		$meta =& $this->objects->getMetaData();
+		$fields =& $meta->class->fieldsWithNames($this->getFieldNames());
        	foreach(array_keys($fields) as $f2){
     		$this->addRestriction(mdcompcall('getFieldRestrictionComponent',array(&$this,&$fields[$f2])));
        	}
@@ -168,10 +175,6 @@ class ObjectsNavigator extends ContextualComponent {
 	//return new Input($restriction);
 }//@#
 
-#@defmdf getComponentFor(&$navigator : ObjectsNavigator, &$restriction : IndexRestriction)
-{
-	return new Select($restriction, $restriction->getValues());
-}//@#
 #@defmdf &getListComponent[Component](&$contacts: Collection)
 {
 	return new ObjectsNavigator($contacts);
@@ -186,6 +189,12 @@ class ObjectsNavigator extends ContextualComponent {
 #@defmdf getFieldRestrictionComponent[Component](&$field: DataField)
 {
 	return new TextRestriction(
+    			array('name' => $field->getName(), 'field' => new AttrPathExpression('',$field->getName()), 'operation' => '='));
+}//@#
+
+#@defmdf getFieldRestrictionComponent[Component](&$field: BoolField)
+{
+	return new BoolRestriction(
     			array('name' => $field->getName(), 'field' => new AttrPathExpression('',$field->getName()), 'operation' => '='));
 }//@#
 
@@ -335,23 +344,70 @@ class StrictBoolRestriction extends BoolRestriction {
 function &getComponentFor_OBJECTSNAVIGATOR_STRICTBOOLRESTRICTION(&$navigator, &$restriction) {
 	return new Checkbox($restriction);
 }
-/*
-class IndexRestiction extends Restriction {
+
+
+#@defmdf getFieldRestrictionComponent[Component](&$field: IndexField)
+{
+	return new OptionalRestriction(new IndexRestriction(
+    			array('values'=>new PersistentCollection($field->getDataType()),'name' => $field->getName(), 'field' => new AttrPathExpression('',$field->getName()))));
+}//@#
+
+class IndexRestriction extends Restriction {
 	var $values;
 
 	function IndexRestriction($params) {
 		$this->values =& $params['values'];
 		parent::Restriction($params);
 	}
+	function isFilled(){
+		return true;
+	}
 
-	function &getSQLValue() {
-
+	function applyTo(&$collection) {
+		if ($this->isFilled()) {
+			$c =& new Condition(array(
+				'exp1'=>$this->getFieldName(),
+				'operation'=>'=',
+				'exp2'=>new ObjectExpression($this->getValue())
+			));
+			$collection->setPathCondition($c);
+		}
 	}
 
 	function &getValues() {
 		return $this->values;
 	}
 }
-*/
+
+class OptionalRestriction extends Restriction{
+	function OptionalRestriction(&$restriction){
+		$this->res=& $restriction;
+		parent::Restriction(array('name'=>$restriction->name, 'field'=>$restriction->field));
+	}
+	function applyTo(&$collection) {
+		if ($this->isFilled()){
+			$this->res->applyTo($collection);
+		}
+	}
+	function isFilled(){
+		return $this->oc->getSelectOption();
+	}
+	function setComponent(&$oc){
+		$this->oc =& $oc;
+	}
+}
+
+#@defmdf getComponentFor(&$navigator : ObjectsNavigator, &$restriction : OptionalRestriction)
+{
+	$oc =& new OptionalComponent(mdcall('getComponentFor',array($navigator, $restriction->res)));
+	$restriction->setComponent($oc);
+	return $oc;
+}//@#
+
+
+#@defmdf getComponentFor(&$navigator : ObjectsNavigator, &$restriction : IndexRestriction)
+{
+	return new Select($restriction, $restriction->getValues());
+}//@#
 
 ?>

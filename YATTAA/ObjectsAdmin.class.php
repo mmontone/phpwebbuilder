@@ -94,7 +94,6 @@ class ObjectsAdmin extends ContextualComponent {
 #@mixin RootObjectsAdminActions
 {
 	function saveCreation(&$object) {
-		echo 'creating';
 		$object->makeRootObject();
 		DBSession::commitInTransaction();
 		$this->adminObject($object);
@@ -103,7 +102,6 @@ class ObjectsAdmin extends ContextualComponent {
 		$object->deleteRootObject();
 	}
 	function performSave(&$object) {
-		echo 'saving';
 		DBSession::commitInTransaction();
 	}
 }
