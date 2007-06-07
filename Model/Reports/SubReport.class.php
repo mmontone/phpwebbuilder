@@ -18,10 +18,13 @@ class SubReport extends CompositeReport {
         return $s;
 
     }
-
+    function addEvalExpression(&$exp){
+		$this->select_exp->addExpression($exp);
+    }
     function &getTargetVar() {
         if (($this->target_var===null) and ($this->collection!==null)) {
             //print_backtrace('setting collection in' . $this->debugPrintString());
+            $this->collection->parent =& $this;
             $this->collection->setTargetVar($this);
             $this->setPathCondition($this->collection);
             //$this->report->setTargetVar($this->collection->var, $this->getDataType());

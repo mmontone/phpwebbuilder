@@ -18,7 +18,7 @@ class OQLCompiler {
 										   		 fields->["(" fields->{<valueorfunction> "as" <identifier> ; ","} ")"]
 										   		 from->["from" from->{var-><identifier> ":" class-><identifier> ; ","}]
 										   		 where->["where" expression-><expression>]
-												 order->[/order/i {<variable> /desc|asc/i;","}]
+												 order->[/order by/i {<variable> /desc|asc/i;","}]
 												 limit->[/limit/i <number>]
 											.
 									   variable::={<identifier> ; "."}.
