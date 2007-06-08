@@ -290,6 +290,7 @@ class AjaxPageRenderer extends PageRenderer {
 		return true;
 	}
 	function initialRender(&$win){
+		$win->wholeView->registering=true;
 		$win->redraw();
 	}
 	function initializeScripts(&$app) {

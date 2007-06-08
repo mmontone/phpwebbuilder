@@ -43,7 +43,8 @@ class Window extends PWBObject{
 	}
 	function unsetChildWithId(){}
 	function redraw() {
-		$this->wholeView->replaceChild($this->wholeView->first_child(), clone($this->wholeView->first_child()));
+		$rc =& new ReplaceChildXMLNodeModification($this->wholeView, $this->wholeView, $this->wholeView);
+		$this->wholeView->toFlush->setTarget($rc);
 	}
 
 	function addAjaxCommand(&$cmd) {
@@ -67,7 +68,6 @@ class Window extends PWBObject{
 	function modWindows(){
 		$myname = $this->owner_index();
 		$ws =& $this->parent->windows;
-		//echo $this->toFlush->printTree();
 		$modwins= array();
 		foreach(array_keys($ws) as $win){
 			if ($win!=$myname && $ws[$win]->hasModifications()){
