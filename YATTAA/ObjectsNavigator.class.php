@@ -49,7 +49,7 @@ class ObjectsNavigator extends ContextualComponent {
 		$c =& $this->getComponentFor($restriction);
 		$fc =& new FieldComponent;
 		$fc->addComponent($c, 'component');
-		$c->onChangeSend('searchObjects',$this);
+		$c->onEagerChangeSend('searchObjects',$this);
 		$fc->addComponent(new Label(ucfirst(Translator::Translate($restriction->printName()))), 'field_name');
 		$this->addComponent($fc, $restriction->getName() . 'Restriction');
 		return $c;

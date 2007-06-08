@@ -189,6 +189,13 @@ class PWBObject
     function onChangeSend($call_back_selector, & $listener) {
 		$this->addInterestIn('changed',new FunctionObject($listener, $call_back_selector));
 	}
+
+    function onEagerChangeSend($call_back_selector, & $listener) {
+    	$this->addInterestIn('changed',new FunctionObject($listener, $call_back_selector));
+		$this->addInterestIn('eagerChanged',new FunctionObject($listener, $call_back_selector));
+	}
+
+
 	/**
 	 * Triggers a changed event
 	 */
