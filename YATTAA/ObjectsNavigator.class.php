@@ -34,6 +34,7 @@ class ObjectsNavigator extends ContextualComponent {
 		unset($fields['rootObject']);
 		return $fields;
 	}
+
 	function initializeRestrictions(){
 		$meta =& $this->objects->getMetaData();
 		$fields =& $meta->class->fieldsWithNames($this->getFieldNames());
