@@ -91,7 +91,8 @@ class Application {
 	}
 
     function &getParent() {
-    	return null;
+    	$n = null;
+    	return $n;
     }
 	function getTitle(){return '';}
 	function initializeStyleSheets() {

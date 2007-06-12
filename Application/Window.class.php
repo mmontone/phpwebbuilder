@@ -5,6 +5,7 @@ class Window extends PWBObject{
 	var $urlManager;
 	var $wholeView;
 	var $opened=false;
+	var $listener;
 	#@use_mixin DynVars@#
 	function &getWindow(){
 		return $this;
