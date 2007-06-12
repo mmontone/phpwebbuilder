@@ -18,7 +18,7 @@ class DBSessionHandler extends SessionHandler{
 		$this->ss->setCondition('session_id','=',"'$sess_id'");
 		if (!$this->ss->isEmpty()){
 			$this->instance =& $this->ss->first();
-			$ret = $this->instance->session_data->getValue();
+			$ret = $this->instance->session_data->getCompleteValue();
 			$this->isStarted = true;
 			return $ret;
 		} else {
@@ -40,7 +40,8 @@ class DBSessionHandler extends SessionHandler{
 	}
 	function gc(){
 		$db =& DBSession::instance();
-		$q = 'DELETE FROM '.$this->instance->tableName().' WHERE last_updated < ADDTIME(now(), \'-00:20:00.0\')';
+		$meta =&  PersistentObjectMetaData::getMetaData(getClass($this->instance));
+		$q = 'DELETE FROM '.$meta->tableName().' WHERE last_updated < ADDTIME(now(), \'-00:20:00.0\')';
 		$db->query($q);
 		return true;
 	}
