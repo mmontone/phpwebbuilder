@@ -27,7 +27,7 @@
 								</template>
 							</tbody>
 						</table>
-						<input type="button" id="search" value="Buscar" />
+						<input type="button" id="search" value="Search"/>
 						<container class="Component" />
 					</td>
 				</tr>

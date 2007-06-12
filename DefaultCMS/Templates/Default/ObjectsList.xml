@@ -1,10 +1,13 @@
 <templates>
 	<template class="OrderBar">
-		<span>Ordenar por:
+		<span>
+			<translated>Order by</translated>
+			:
 			<template class="SortLink">
-				<span>&amp;nbsp;
+				<span>
+					&amp;nbsp;
 					<container id="linkName" />
-					<container class="Component"/>
+					<container class="Component" />
 				</span>
 			</template>
 		</span>
@@ -15,23 +18,45 @@
 			<thead>
 				<tr>
 					<td class="titulo">
-							<container id="listTitle" />
-							<container id="listName" />
+						<container id="listTitle" />
+						<container id="listName" />
 					</td>
 				</tr>
 			</thead>
-			<container id="order_bar"/>
+			<container id="order_bar" />
 			<tbody id="objs">
 				<container class="Component" />
 			</tbody>
 		</table>
-		<a id="first">Inicio</a>&amp;nbsp;
-		<a id="prev">Anteriores</a>&amp;nbsp;
-  	    <a id="next">Siguientes</a>&amp;nbsp;
-		<a id="last">Fin</a>&amp;nbsp;
-		<a id="refresh">Refrescar</a>
+		<a id="first">
+			<translated>First</translated>
+		</a>
+		&amp;nbsp;
+		<a id="prev">
+			<translated>Previous</translated>
+		</a>
+		&amp;nbsp;
+		<a id="next">
+			<translated>Next</translated>
+		</a>
+		&amp;nbsp;
+		<a id="last">
+			<translated>Last</translated>
+		</a>
+		&amp;nbsp;
+		<a id="refresh">
+			<translated>Refresh</translated>
+		</a>
 		<p>
-			Mostrando desde el <span id="firstElem" handler="TextHTMLHandler"/> de <container id="realSize" /> elementos en total.
+			<translated>Showing</translated>
+			&amp;nbsp;
+			<span id="firstElem" handler="TextHTMLHandler" />
+			&amp;nbsp;
+			<translated>of</translated>
+			&amp;nbsp;
+			<container id="realSize" />
+			&amp;nbsp;
+			<translated>elements available</translated>
 		</p>
 	</template>
 	<template class="ObjectElement">
@@ -58,10 +83,10 @@
 													valign="top">
 													<div align="left">
 														<a>
-																<container
-																	id="select" />
-																<container
-																	class="Component" />
+															<container
+																id="select" />
+															<container
+																class="Component" />
 														</a>
 													</div>
 												</td>

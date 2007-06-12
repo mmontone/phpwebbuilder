@@ -14,7 +14,7 @@
 			</div>
 			<br />
 			<div class="content">
-				<span id="activeReference" style="text-align:left;width:100%;"><template class="CommandLink"><span> &gt;&gt; <container id="linkName"/></span></template></span>
+				<template class="ReferenceBar"><div style="text-align:left;width:100%;"><template class="CommandLink"><span> &gt;&gt; <container id="linkName"/></span></template></div></template>
 				<div class="leftpanel">
 					<container id="navigationbar" />
 					<container id="actionsbar" />
