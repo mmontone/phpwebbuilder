@@ -9,8 +9,8 @@ class AspectAdaptor extends ObjectHolder
     	parent::ObjectHolder($object);
 
     	if (is_array($aspect)) {
-    		$this->get_selector = $aspect['get'];
-    		$this->set_selector = $aspect['set'];
+    		$this->get_selector = @$aspect['get'];
+    		$this->set_selector = @$aspect['set'];
     	}
     	else {
 			$this->get_selector = 'get' . ucfirst($aspect);

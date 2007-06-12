@@ -108,7 +108,8 @@ class Collection extends PWBObject {
 		$i = & $this->indexOf($elem);
 
 		if ($i == -1) {
-			return null;
+			$n = null;
+			return $n;
 		} else {
 			$es = & $this->elements;
 			$newelems = array();
