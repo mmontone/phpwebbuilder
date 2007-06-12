@@ -9,7 +9,7 @@ class BlobField extends DataField {
      $value = $this->getValue();
      return "'$value', " ;
    }
-   function &getCompleteValue(){
+   function getCompleteValue(){
    	   $r =& new Report();
    	   $r->fields[$this->colName] = 'data';
    	   $r->defineVar('o', getClass($this->owner));

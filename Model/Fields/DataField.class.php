@@ -302,7 +302,8 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
     }
 
     function &getModificationObject() {
-    	return new FieldModification($this);
+    	$fm =& new FieldModification($this);
+    	return $fm;
     }
 }
 

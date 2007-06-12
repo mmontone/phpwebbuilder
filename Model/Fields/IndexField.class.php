@@ -208,7 +208,8 @@ class IndexField extends NumField {
 	// Glue functions
 
     function &asValueModel() {
-		return new AspectAdaptor($this, 'Target');
+    	$aa =& new AspectAdaptor($this, 'Target');
+		return $aa;
 	}
 
     function &asTextHolder() {
