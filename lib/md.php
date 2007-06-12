@@ -172,7 +172,7 @@ function findMdContextFunction($function, &$comp, $params){
 				if (!(
 					hasType($target,$types[$i])
 					&&
-						($better[$i]==null || is_subclass($types[$i],$better[$i]))
+						(@$better[$i]==null || is_subclass($types[$i],$better[$i]))
 					  )) {
 					$matches = false;
 					//echo '<br/>failed matching '.getClass($target).' to '.$types[$i]. ', better is '.print_r($better,TRUE);

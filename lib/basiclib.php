@@ -321,8 +321,10 @@ function undefdyn($var) {
 
 function & getdyn($var) {
 	global $dyn_vars;
-	$arr = $dyn_vars[$var];
-	return $arr[count($arr) - 1];
+	$arr = @$dyn_vars[$var];
+	$ret =& $arr[count($arr) - 1];
+	return $ret;
+
 }
 /*
 #@dlet a=array(), c=& new MyObject
