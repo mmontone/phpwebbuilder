@@ -8,13 +8,15 @@ class ObjectViewer extends ObjectPresenter {
 
 #@defmdf &getFieldViewer(&$field: DataField)
 {
-	return new Text($field);
+	$t =& new Text($field);
+	return $t;
 }
 //@#
 
 #@defmdf &getFieldViewer(&$field: IndexField)
 {
-	return new Label($field->asTextHolder());
+	$lab =& new Label($field->asTextHolder());
+	return $lab;
 }
 //@#
 
@@ -27,7 +29,8 @@ class ObjectViewer extends ObjectPresenter {
 //@#
 #@defmdf &getFieldViewer(&$field: CollectionField)
 {
-	return new ObjectsNavigator($field->collection);
+	$on =& new ObjectsNavigator($field->collection);
+	return $on;
 }
 //@#
 ?>

@@ -18,9 +18,9 @@ class ObjectAdmin extends ContextualComponent {
         $this->addActionButtons();
 	}
 	function addActionButtons(){
-		$this->addDeleteObjectLink('Borrar');
-		$this->addViewObjectLink('Ver');
-		$this->addEditObjectLink('Editar');
+		$this->addDeleteObjectLink();
+		$this->addViewObjectLink();
+		$this->addEditObjectLink();
 	}
 
 	function &getModel() {
@@ -28,7 +28,8 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
     function &getDeleteFunction($text='Delete') {
-		return new FunctionObject($this, 'deleteObject');
+    	$do =& new FunctionObject($this, 'deleteObject');
+		return $do;
 	}
 	function confirmDeleteMessage() {
 		return Translator::TranslateAny($this->object->getAllTypes(), 'Confirm delete ');

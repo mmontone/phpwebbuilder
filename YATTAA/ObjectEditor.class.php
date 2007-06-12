@@ -52,11 +52,13 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function &getSaveLink($text='Save') {
-    	return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'saveObject')));
+    	$sl =& new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'saveObject')));
+    	return $sl;
     }
 
     function &getCancelLink($text='Cancel') {
-		return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'cancel')));
+		$sl =&new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'cancel')));
+		return $sl;
 	}
 
 	function addButtons() {

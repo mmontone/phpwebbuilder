@@ -46,7 +46,8 @@ class ObjectElement extends ContextualComponent {
 	}
 
 	function &getSelectionLink() {
-		return new CommandLink(array('text' => $this->printElement(), 'proceedFunction' => new FunctionObject($this, 'elementSelected')));
+		$sl =& new CommandLink(array('text' => $this->printElement(), 'proceedFunction' => new FunctionObject($this, 'elementSelected')));
+		return $sl;
 	}
 
 	function printElement() {

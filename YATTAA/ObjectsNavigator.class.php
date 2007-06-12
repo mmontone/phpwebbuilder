@@ -3,6 +3,7 @@
 class ObjectsNavigator extends ContextualComponent {
 	var $objects;
 	var $restrictions = array();
+	var $validation_errors;
 	#@use_mixin EditorComponent@#
 	function ObjectsNavigator(&$objects) {
 		$this->objects =& $objects;
@@ -12,7 +13,7 @@ class ObjectsNavigator extends ContextualComponent {
 	function initialize() {
 		$this->initializeRestrictions();
 
-		$search =& new CommandLink(array('text' => 'Buscar', 'proceedFunction' => new FunctionObject($this, 'searchObjects')));
+		$search =& new CommandLink(array('text' => Translator::translate('Search'), 'proceedFunction' => new FunctionObject($this, 'searchObjects')));
 		$this->addComponent($search, 'search');
 		$rs =& $this->restrictions;
 		foreach (array_keys($rs) as $r) {
@@ -155,13 +156,14 @@ class ObjectsNavigator extends ContextualComponent {
     }
 
     function printObjectsMessage() {
-        return 'Imprimir';
+        return Translator::translate('Print');
     }
 }
 
 #@defmdf getComponentFor (&$navigator : ObjectsNavigator, &$restriction : Restriction)
 {
-	return new Input($restriction);
+	$in =& new Input($restriction);
+	return $in;
 }//@#
 
 #@defmdf getComponentFor (&$navigator : ObjectsNavigator, &$restriction : BoolRestriction)
@@ -237,9 +239,9 @@ class Restriction extends ValueHolder {
 	var $name;
 
 	function Restriction($params) {
-		$this->name = $params['name'];
-		$this->fieldname = $params['field'];
-		$this->operation = $params['operation'];
+		$this->name = @$params['name'];
+		$this->fieldname = @$params['field'];
+		$this->operation = @$params['operation'];
 		if ($this->name == null)
 			$this->name = $this->fieldname;
 
@@ -383,7 +385,7 @@ class IndexRestriction extends Restriction {
 class OptionalRestriction extends Restriction{
 	function OptionalRestriction(&$restriction){
 		$this->res=& $restriction;
-		parent::Restriction(array('name'=>$restriction->name, 'field'=>$restriction->field));
+		parent::Restriction(array('name'=>$restriction->name, 'field'=>$restriction->fieldname));
 	}
 	function applyTo(&$collection) {
 		if ($this->isFilled()){
@@ -408,7 +410,8 @@ class OptionalRestriction extends Restriction{
 
 #@defmdf getComponentFor(&$navigator : ObjectsNavigator, &$restriction : IndexRestriction)
 {
-	return new Select($restriction, $restriction->getValues());
+	$sel =& new Select($restriction, $restriction->getValues());
+	return $sel;
 }//@#
 
 ?>
