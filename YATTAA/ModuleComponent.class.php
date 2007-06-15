@@ -21,7 +21,7 @@ class ModuleComponent extends Component{
 		$this->actionsbar->call($cont->getActionsBar());
 	}
 	function addReference(&$ref){
-		$this->activeReference->addComponent(new CommandLink(array('text'=>$ref->getTitle(),'proceedFunction'=>new FunctionObject($ref, 'restoreContext'))),$ref->getInstanceId());
+		$this->activeReference->addComponent(new CommandLink(array('text'=>Translator::translate($ref->getTitle()),'proceedFunction'=>new FunctionObject($ref, 'restoreContext'))),$ref->getInstanceId());
 	}
 	function resetReferences(){
 		$this->addComponent(new ReferenceBar,'activeReference');

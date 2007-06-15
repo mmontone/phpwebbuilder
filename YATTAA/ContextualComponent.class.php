@@ -3,8 +3,10 @@
  * A Component with context.
  */
 class ContextualComponent extends Component {
+	var $__module;
 	function call(&$workspace){
-		if ($this->__module!==null&&is_a($workspace,'ContextualComponent')){
+		$this->follower=&$workspace;
+		if ($this->__module!==null && is_a($workspace,'ContextualComponent')){
 			$this->workspaceCall($workspace);
 		}
 		parent::call($workspace);
@@ -12,7 +14,6 @@ class ContextualComponent extends Component {
 	function workspaceCall(&$workspace){
 		$workspace->setModule($this->__module);
 		$cont =& $this->getContext();
-		$this->follower=&$workspace;
 		$cont->switchTo($workspace->getContext());
 	}
 	function getTitle(){
@@ -20,16 +21,20 @@ class ContextualComponent extends Component {
 	}
 	function restoreContext(){
 		if(isset($this->follower)){
-			$this->__module->removeReference($this->follower);
-			$this->follower->restoreContext();
+			if (is_a($this->follower,'ContextualComponent')){
+				$this->__module->removeReference($this->follower);
+				$this->follower->restoreContext();
+			}
 			$this->follower->callback();
 			unset($this->follower);
 		}
 	}
 	function restoreContextFromStart(){
 		if(isset($this->follower)){
-			$this->__module->removeReference($this->follower);
-			$this->follower->restoreContextFromStart();
+			if (is_a($this->follower,'ContextualComponent')){
+				$this->__module->removeReference($this->follower);
+				$this->follower->restoreContextFromStart();
+			}
 			unset($this->follower);
 		}
 	}

@@ -96,10 +96,11 @@ class ObjectsAdmin extends ContextualComponent {
 	function saveCreation(&$object) {
 		$object->makeRootObject();
 		DBSession::commitInTransaction();
-		$this->adminObject($object);
+		/*$this->adminObject($object);*/
 	}
-	function performDeletion(&$object) {
+	function performDelete(&$admin,&$object) {
 		$object->deleteRootObject();
+		DBSession::commitInTransaction();
 	}
 	function performSave(&$object) {
 		DBSession::commitInTransaction();

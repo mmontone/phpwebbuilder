@@ -36,7 +36,8 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function confirmCancelMessage() {
-    	return '¿Descartar los cambios realizados?';
+    	//return '¿Descartar los cambios realizados?';
+    	return Translator::Translate('Cancel all changes?');
     }
 
     function cancelRejected() {
@@ -134,7 +135,8 @@ class ObjectEditor extends ObjectPresenter {
 	}
 
     function successfulSaveMessage() {
-    	return 'Los cambios han sido aplicados exitosamente';
+    	//return 'Los cambios han sido aplicados exitosamente';
+    	return Translator::Translate('Changes were applied successfully');
     }
 
     function objectEditedCallback() {
