@@ -19,7 +19,9 @@ class ComponentHolder
 	function owner_index() {
 		return $this->__owner_index;
 	}
-
+	function holds(&$comp){
+		return $this->component->is($comp);
+	}
     function hold(&$component) {
     	$i = $this->owner_index();
 	    $this->parent->$i=&$component;

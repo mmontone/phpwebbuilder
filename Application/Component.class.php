@@ -12,6 +12,7 @@ class Component extends PWBObject {
 	var $toLink = array ();
 	var $nextChildrenPosition = 1;
 	var $dyn_vars = array ();
+	var $memory_transaction;
 	var $calling=false; // It is true when the component is calling other component (but not calling back)
 
 	function Component($params = array()) {
@@ -243,8 +244,8 @@ class Component extends PWBObject {
 		// Give control to $component
 		#@calling_echo echo $this->printString() . ' calling ' . $component->printString() . '<br/>';@#
         $this->calling = true;
-        $component->listener = & $this;
 		$this->basicCall($component);
+        $component->listener = & $this;
 		$this->calling = false;
 	}
 
@@ -255,13 +256,18 @@ class Component extends PWBObject {
 
 	function basicCall(& $component) {
 		#@typecheck $component:Component@#
-		$this->stopAll();
-		$this->replaceView($component);
-		$this->holder->hold($component);
-		if (isset ($this->app) and (!isset ($component->app))) {
-			$component->linkToApp($this->app);
+		if (isset($this->holder) && !$this->holder->holds($this)){
+			//echo '<br/>'.$this->printString().' has next comp '.$this->listener->printString();
+			$this->enqueuedCall =& $component;
 		} else {
-			$component->startAll();
+			$this->stopAll();
+			$this->replaceView($component);
+			$this->holder->hold($component);
+			if (isset ($this->app) and (!isset ($component->app))) {
+				$component->linkToApp($this->app);
+			} else {
+				$component->startAll();
+			}
 		}
 	}
 	function callback($callback = null) {
@@ -279,7 +285,13 @@ class Component extends PWBObject {
 		#@calling_echo echo $this->printString() . ' taking control of: ' . $callbackComponent->printString() . ' callback: ' . $callback . '<br/>';@#
         $n = null;
 		$callbackComponent->listener = & $n;
+		//Check if there was an enqueued call
 		$callbackComponent->stopAndCall($this);
+		/*if (isset($this->enqueuedCall)){
+			echo 'calling from queue '.$this->enqueuedCall->printString();
+			$this->call($this->enqueuedCall);
+			unset($this->enqueuedCall);
+		}*/
 		if (($callback != null) and (isset ($callbackComponent->registered_callbacks[$callback]))) {
 			#@calling_echo echo $this->printString() . ' executing callback: ' . $callback . ' function: ' . $callbackComponent->registered_callbacks[$callback]->printString() .'<br/>';@#
             $callbackComponent->registered_callbacks[$callback]->executeWith($params);
@@ -339,7 +351,8 @@ class Component extends PWBObject {
 	function takeView(& $comp) {
 		#@typecheck $comp:Component@#
 		if (isset ($this->view)) {
-			$pv = & $comp->view->parentNode;
+			$pv =& $comp->view->parentNode;
+			if (!$pv) ($comp->printString() . $this->printString());
 			$pv->replaceChild($this->view, $comp->view);
 		} else {
 			$comp->createContainer();
