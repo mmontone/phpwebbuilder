@@ -5,7 +5,8 @@ class DefaultCMS extends ModuleComponent{
 		return sitename.'\'s CMS';
 	}
 	function &getRootComponent(){
-		return new InitialDefaultCMSComponent;
+		$comp =& new InitialDefaultCMSComponent;
+		return $comp;
 	}
 }
 ?>

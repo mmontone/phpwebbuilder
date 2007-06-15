@@ -151,7 +151,7 @@ border:2px inset #CCCCCC ;
 }
 
 table table{
-border:2px outset #CCCCCC ;
+border:none;
 }
 
 div#loader {

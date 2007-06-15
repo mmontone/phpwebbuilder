@@ -40,8 +40,8 @@
 							</tbody>
 						</table>
 						<container class="ObjectPresenter"/>
-						<input type="submit" id="save" value="Guardar" />
-						<input type="submit" id="cancel" value="Cancelar" />
+						<input type="submit" id="save" value="Save" />
+						<input type="submit" id="cancel" value="Cancel" />
 					</td>
 				</tr>
 			</tbody>
