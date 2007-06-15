@@ -78,6 +78,12 @@ class CollectionField extends DataField {
 	function addedAsTarget(& $elem, $field) {
 		if ($this->creationParams['reverseField'] == $field && $elem->hasType($this->creationParams['type'])) {
 			$elem->incrementRefCount();
+			if ($this->owner->isPersisted()){
+            	#@persistence_echo echo 'Registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
+            	$elem->registerPersistence();
+            } else {
+            	#@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
+            }
 		}
 	}
 

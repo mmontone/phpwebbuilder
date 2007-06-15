@@ -71,7 +71,7 @@ class IndexField extends NumField {
             	#@persistence_echo echo 'Registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             	$target->registerPersistence();
             } else {
-            #@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
+            	#@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             }
         }
 	}
@@ -102,7 +102,8 @@ class IndexField extends NumField {
 	}
 
     function &getModificationObject() {
-    	return new IndexFieldModification($this);
+    	$mo =& new IndexFieldModification($this);
+    	return $mo;
     }
 
 	function registerCollaborators(){
