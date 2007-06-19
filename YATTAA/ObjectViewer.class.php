@@ -22,14 +22,14 @@ class ObjectViewer extends ObjectPresenter {
 
 #@defmdf &getFieldViewer(&$field: TextArea)
 {
-	$textArea =& new TextAreaComponent($person->observations);
+	$textArea =& new TextAreaComponent($field);
 	$textArea->disable();
 	return $textArea;
 }
 //@#
 #@defmdf &getFieldViewer(&$field: CollectionField)
 {
-	$on =& new ObjectsNavigator($field->collection);
+	$on =& new ObjectsNavigator($field->getCollection());
 	return $on;
 }
 //@#

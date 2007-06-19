@@ -14,12 +14,12 @@ class ObjectAdmin extends ContextualComponent {
 	var $options;
 	var $edit_function;
 	var $delete_function;
-	
+
 	function ObjectAdmin(&$object, $options=array()) {
 	  $this->object =& $object;
 	  $this->options = $this->getDefaultOptions();
 	  $this->setOptions($options);
-	  
+
 	  parent::ContextualComponent();
 	}
 
@@ -40,11 +40,11 @@ class ObjectAdmin extends ContextualComponent {
 	function onDeletionDo(&$function) {
 	  $this->deletion_function =& $function;
 	}
-	
+
 	function getTitle(){
 		return $this->object->printString();
 	}
-	
+
 	function initialize() {
 	  $aspect =& new AspectAdaptor($this->object, array('get' => 'printString'));
 	  $aspect->setModelSendsUpdates(true);
@@ -52,7 +52,7 @@ class ObjectAdmin extends ContextualComponent {
 	  $this->viewObject();
 	  $this->addActionButtons();
 	}
-	
+
 	function addActionButtons(){
 		$this->addDeleteObjectLink('Borrar');
 		$this->addViewObjectLink('Ver');
@@ -180,10 +180,12 @@ class ObjectAdmin extends ContextualComponent {
 #@defmdf &getObjectCreator[Component](&$objects:Collection)
 {
 	$dt = $objects->getDataType();
-	$obj =& new $dt;
-	return mdcompcall('getObjectEditor',array($_context,$obj));
+	//$obj =& new $dt;
+	//return mdcompcall('getObjectEditor',array($_context,$obj));
+	return new CommonObjectCreator($dt);
 }
 //@#
+
 #@defmdf &getObjectViewer[Component](&$object:PersistentObject)
 {
 		return new ObjectViewer($object);

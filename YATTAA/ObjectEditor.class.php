@@ -13,7 +13,7 @@
 class ObjectEditor extends ObjectPresenter {
 	var $object_edited = false;
 	var $edit_function;
-	
+
 	function initialize(){
 	  $this->beginMemoryTransaction();
 	  parent::initialize();
@@ -23,7 +23,7 @@ class ObjectEditor extends ObjectPresenter {
 	function createInstance($params) {
 	   $this->edit_function =& new LambdaObject('&$x', '');
 	}
-	
+
 	function onEditionDo(&$function) {
 	  $this->edit_function =& $function;
 	}
@@ -78,11 +78,13 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function &getSaveLink($text='Save') {
-    	return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'saveObject')));
+    	$sl =& new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'saveObject')));
+    	return $sl;
     }
 
     function &getCancelLink($text='Cancel') {
-      return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'cancel')));
+      $cl =& new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'cancel')));
+      return $cl;
     }
 
 	function addButtons() {
@@ -139,7 +141,7 @@ class ObjectEditor extends ObjectPresenter {
 
     function rollbackTransaction() {
       // We don't have to unregister all objects as in the case of ObjectCreators
-    }  
+    }
 
     function validateObject() {
     	return $this->object->validateAll();
@@ -197,10 +199,11 @@ class ObjectEditor extends ObjectPresenter {
 
 #@defmdf &getFieldEditor[Component](&$field: CollectionField)
 {
-	$oa =& mdcompcall('getAdminComponent',array($_context,$field->collection));
-	$oa->addInterestIn('object_created',new FunctionObject($field, 'addFromEvent'));
-	$oa->addInterestIn('object_deleted',new FunctionObject($field, 'removeFromEvent'));
-	return $oa;
+	//$oa =& mdcompcall('getAdminComponent',array($_context,$field->getCollection()));
+	//$oa->addInterestIn('object_created',new FunctionObject($field, 'addFromEvent'));
+	//$oa->addInterestIn('object_deleted',new FunctionObject($field, 'removeFromEvent'));
+	//return $oa;
+	return new Label('');
 }
 //@#
 

@@ -29,8 +29,16 @@ class ObjectCreator extends ObjectEditor {
   function ObjectCreator() {
     parent::ObjectEditor($this->createObject());
   }
-
-
 }
+
+class CommonObjectCreator extends ObjectCreator{
+	function CommonObjectCreator($class){
+		$this->objectClass = $class;
+		parent::ObjectCreator();
+	}
+	function createObject(){$class = $this->objectClass; return new $class;}
+}
+
+
 
 ?>
