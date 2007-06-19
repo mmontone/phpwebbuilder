@@ -2,6 +2,8 @@
 
 #@preprocessor Compiler::usesClass(__FILE__, constant('db_driver'));@#
 
+$prepared_to_save = array();
+
 class DBSession {
   var $commands = array();  // Undoable commands
 	var $registeredObjects = array();
@@ -14,14 +16,18 @@ class DBSession {
         pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
     }
 
+    function setTransactionStarted($bool) {
+    	$this->transaction_started = $bool;
+    }
+
     function &shutdown() {
         if ($this->committing or $this->transaction_started) {
+            print_backtrace_and_exit('DB Error: rolling back transaction. committing: ' . print_r($this->committing,true) . ' transaction started: ' . print_r($this->transaction_started,true));
             $this->rollbackTransaction();
             $this->committing = false;
-            print_backtrace_and_exit('DB Error: rolling back transaction');
         }
-	$a = array();
-	$this->registeredObjects =& $a;
+        $a = array();
+        $this->registeredObjects =& $a;
         $null=null;
         return $null;
     }
@@ -45,6 +51,7 @@ class DBSession {
     }
 
     function commitTransaction() {
+      #@sql_echo echo 'Committing transaction';@#
       $this->beginTransaction();
       $this->committing =true;
       $this->driver->commit();
@@ -59,7 +66,7 @@ class DBSession {
 		$n = array();
 		$this->registeredObjects =& $n;
         $this->committing=false;
-	$this->transaction_started=false;
+	    $this->setTransactionStarted(false);
     }
 
     function rollbackTransaction() {
@@ -73,7 +80,7 @@ class DBSession {
 		}
 
 		$this->commands = array();
-		$this->transaction_started=false;
+		$this->setTransactionStarted(false);
     }
 
 
@@ -90,7 +97,7 @@ class DBSession {
 
 	function beginTransaction() {
 	  if (!$this->transaction_started) {
-	    $this->transaction_started=true;
+	    $this->setTransactionStarted(true);
 	    $this->driver->beginTransaction();
 	    #@sql_echo echo 'Beggining transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>';@#
 	    #@sql_echo2 print_backtrace();@#
@@ -104,11 +111,10 @@ class DBSession {
       // doing explicit commits.
       //                          -- marian
 
+      #@persistence_echo echo 'Committing  global DB transaction</br>';@#
       $db =& DBSession::Instance();
-      if (!empty($db->registeredObjects)) {
-	$db->beginTransaction();
-        $db->doCommit($db->registeredObjects);
-      }
+      $db->beginTransaction();
+      $db->doCommit($db->registeredObjects);
     }
 
     // This is a class method
@@ -122,7 +128,7 @@ class DBSession {
     function unregisterAllObjects() {
       // We have to set all objects isPersisted to false so that they get registered for
 // persistence again afterwards --marian
-								
+
       $db =& DBSession::Instance();
       #@persistence_echo echo 'Unregistering all objects(' . count($db->registeredObjects). ')</br>';@#
       foreach(array_keys($db->registeredObjects) as $i) {
@@ -137,11 +143,12 @@ class DBSession {
             $db =& DBSession::Instance();
       #@persistence_echo echo 'Unregistering object ' . $object->debugPrintString() . '</br>';@#
 												unset($db->registeredObjects[$object->getInstanceId()]);
-      $object->toPersist=false;												
+      $object->toPersist=false;
     }
 
     function CommitMemoryTransaction(&$transaction) {
-		$db =& DBSession::Instance();
+		#@persistence_echo echo 'Committing  ' . $object->debugPrintString() . '</br>';@#
+        $db =& DBSession::Instance();
         $db->beginTransaction();
         $db->doCommit($transaction->registeredObjects);
     }
@@ -149,7 +156,7 @@ class DBSession {
 	function &doCommit(&$registeredObjects){
 		try {
 			$this->saveRegisteredObjects($registeredObjects);
-			$this->commitTransaction();
+            $this->commitTransaction();
 		}
 		catch(DBError $e) {
 			$this->rollbackTransaction();
@@ -158,19 +165,19 @@ class DBSession {
 	}
 
     function &saveRegisteredObjects(&$registeredObjects) {
+        global $prepared_to_save;
         try {
             $toRollback = $registeredObjects;
-	  $prepared_to_save = array();
-		while(!empty($registeredObjects)){
+
+		      while(!empty($registeredObjects)){
                 $ks = array_keys($registeredObjects);
                 $elem =& $registeredObjects[$ks[0]];
                 unset($registeredObjects[$ks[0]]);
 
 				if (!isset($prepared_to_save[$elem->getInstanceId()])) {
-					$prepared_to_save[$elem->getInstanceId()] = 1;
-				 
-				  #@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
-				  $elem->prepareToSave();
+				    $prepared_to_save[$elem->getInstanceId()] = true;
+                    #@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
+				    $elem->prepareToSave();
 				}
                 $this->save($elem);
             }
@@ -293,11 +300,11 @@ class DBSession {
 	  }
 	  catch (Exception $e) {
 	    $this->rollbackTransaction();
-            
+
             return $e->raise();
 	  }
 	}
-    
+
 	function &delete(&$object) {
 	  $this->beginTransaction();
 	  $this->registerDelete($object);

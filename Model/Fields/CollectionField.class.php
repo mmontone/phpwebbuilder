@@ -95,10 +95,10 @@ class CollectionField extends DataField {
 		if ($this->creationParams['reverseField'] == $field && $elem->hasType($this->creationParams['type'])) {
 			$elem->incrementRefCount();
 			if ($this->owner->isPersisted()){
-            	#@persistence_echo echo 'Registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
+            	#@persistence_echo echo 'Registering persistence of: ' . $elem->debugPrintString() . '<br/>';@#
             	$elem->registerPersistence();
             } else {
-            	#@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
+            	#@persistence_echo echo 'NOT registering persistence of: ' . $elem->debugPrintString() . '<br/>';@#
             }
 		}
 	}
@@ -232,7 +232,6 @@ class DirectCollectionFieldType extends CollectionFieldType {
 		// want to save registered objects to the database.
 		$comp =& getdyn('current_component');
 		$comp->saveMemoryTransactionObjects();
-		
 		$this->collection_field->collection->refresh();
         }
 	else {

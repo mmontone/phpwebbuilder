@@ -58,16 +58,16 @@ class MemoryTransaction {
       if ($this->commited) {
 	print_backtrace_and_exit('You cannot rollback a commited transaction: ' . $this->debugPrintString());
       }
-      
+
       #@tm_echo print_backtrace('Rolling back ' . $this->debugPrintString() . '<br/>');@#
 
-     // We need too rollback modifications in order									     
+     // We need too rollback modifications in order
      $original_modifications = array_reverse($this->modifications);
 	foreach(array_keys($original_modifications) as $key) {
 	  $mod =& $original_modifications[$key];
 	  $mod->rollback();
 	}
-	
+
         $a = array();
         $this->modifications =& $a;
 
@@ -118,7 +118,7 @@ class MemoryTransaction {
 	  if ($this->commited) {
 	    print_backtrace_and_exit('Transaction already commited ' . $this->debugPrintString());
 	  }
-	  
+
 	  #@persistence_echo echo 'Committing transaction: ' . $this->debugPrintString() . '<br/>';
 	  //DBSession::CommitMemoryTransaction($this);
 	  DBSession::CommitInTransaction();
@@ -135,9 +135,17 @@ class MemoryTransaction {
 	  // In a threaded implementation, object changes should be registered in memory transactions, and not globally in
 	  // the DBSession
 
-	  DBSession::CommitInTransaction();
-	  $this->db_touched = true;
-	}
+	  $db =& DBSession::Instance();
+      $db->beginTransaction();
+      try {
+            $db->saveRegisteredObjects($db->registeredObjects);
+            $this->db_touched = true;
+      }
+      catch(DBError $e) {
+            $db->rollbackTransaction();
+            $e->raise();
+      }
+    }
 
 	function unregisterAllObjects() {
 	  // TODO: make threaded
@@ -199,7 +207,7 @@ class IndexFieldModification extends FieldModification {
 
 class CollectionFieldModification extends FieldModification {
   var $elem;
-  
+
   function CollectionFieldModification(&$field, &$elem) {
     $this->elem =& $elem;
     parent::FieldModification($field);
@@ -210,7 +218,7 @@ class CollectionFieldModification extends FieldModification {
   function getHash() {
     return getClass($this) . get_primitive_object_id($this);
   }
-  
+
    function debugPrintString() {
      return print_object($this, ' field: ' . $this->field->debugPrintString() . ' elem: ' . $this->elem->debugPrintString());
     }

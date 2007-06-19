@@ -13,6 +13,7 @@ class Component extends PWBObject {
 	var $nextChildrenPosition = 1;
 	var $dyn_vars = array ();
 	var $calling=false; // It is true when the component is calling other component (but not calling back)
+    var $memory_transaction;
 
 	function Component($params = array()) {
 		$this->componentstates =& new Collection;
@@ -31,7 +32,7 @@ class Component extends PWBObject {
 
 	function stopAll() {
 		#@activation_echo echo 'Stopping ' . $this->printString() . '<br/>';@#
-        defdyn('current_component', $this);							      
+        defdyn('current_component', $this);
 		foreach (array_keys($this->__children) as $c) {
 			$child = & $this->__children[$c]->component;
 			if ($child !== null) {

@@ -1,0 +1,8 @@
+Implement in-memory collections suport.
+
+The current problem:
+1) We want to be able to add things to collections in-memory.
+And then work with them with the reports interface.
+Requirements: related reports should all filter the same collection.
+I mean, all reports which work on users should work on the same global collection (the collection of all users).
+That way reports remain updated as users are added or removed from that collection.
