@@ -64,7 +64,8 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function &getDeleteFunction($text='Delete') {
-		return new FunctionObject($this, 'deleteObject');
+		$f =& new FunctionObject($this, 'deleteObject');
+        return $f;
 	}
 
 	function confirmDeleteMessage() {

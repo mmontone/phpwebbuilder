@@ -104,7 +104,7 @@ class CollectionField extends DataField {
 	}
 
 	function defaultValues($params) {
-		$v = array ('fieldName' => $params['type'] . $params['reverseField']);
+		$v = array ('fieldName' => @$params['type'] . $params['reverseField']);
 
 		return array_merge($v, parent :: defaultValues(array_merge($params, $v)));
 	}
@@ -245,10 +245,10 @@ class DirectCollectionFieldType extends CollectionFieldType {
             $this->collection_field->creationParams['reverseField'] }
         ->removeTarget();
         $elem->decrementRefCount();
-	//$db =& DBSession::Instance();
-	//$db->save($elem);
-	$comp =& getdyn('current_component');
-	$comp->saveMemoryTransactionObjects();
+	   //$db =& DBSession::Instance();
+	   //$db->save($elem);
+	   $comp =& getdyn('current_component');
+	   $comp->saveMemoryTransactionObjects();
         $this->collection_field->collection->refresh();
     }
 
