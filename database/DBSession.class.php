@@ -71,8 +71,7 @@ class DBSession {
 
     function rollbackTransaction() {
 		$this->driver->rollback();
-      print_backtrace('Rolling back transaction');
-      // We want to apply rollbacks in order
+       // We want to apply rollbacks in order
       $cmds = array_reverse($this->commands);
       foreach (array_keys($cmds) as $c) {
 			$cmd =& $this->commands[$c];
