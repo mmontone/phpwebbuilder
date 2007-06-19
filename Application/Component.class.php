@@ -12,7 +12,6 @@ class Component extends PWBObject {
 	var $toLink = array ();
 	var $nextChildrenPosition = 1;
 	var $dyn_vars = array ();
-	var $memory_transaction;
 	var $calling=false; // It is true when the component is calling other component (but not calling back)
 
 	function Component($params = array()) {
@@ -32,7 +31,8 @@ class Component extends PWBObject {
 
 	function stopAll() {
 		#@activation_echo echo 'Stopping ' . $this->printString() . '<br/>';@#
-        foreach (array_keys($this->__children) as $c) {
+        defdyn('current_component', $this);							      
+		foreach (array_keys($this->__children) as $c) {
 			$child = & $this->__children[$c]->component;
 			if ($child !== null) {
 				$child->stopAll();
@@ -45,6 +45,7 @@ class Component extends PWBObject {
         	$this->nonCallStop();
         }
         $this->stop();
+	undefdyn('current_component');
 	}
 
 	// This function gets called when the component stops because
@@ -136,11 +137,9 @@ class Component extends PWBObject {
 		#@tm_echo2 echo 'Setting current component: ' . $this->debugPrintString() . '<br/>';@#
         defdyn('current_component', $this);
         $this->initialize();
-        undefdyn('current_component');
-        #@tm_echo2 echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
 
 		#@activation_echo 'Starting ' . $this->printString() . '<br/>';@#
-        $this->start();
+		 $this->start();
 		$tl = & $this->toLink;
 		#@check is_array($this->toLink)@#
 		//if (!is_array($this->toLink)) echo getClass($this)
@@ -150,6 +149,8 @@ class Component extends PWBObject {
 		}
 		$null = array ();
 		$this->toLink = & $null;
+		undefdyn('current_component');
+		#@tm_echo2 echo 'Unsetting current component: ' . $this->debugPrintString() . '<br/>';@#
 	}
 	function startAll() {
 		#@activation_echo echo 'Starting ' . $this->printString() . '<br/>';@#
@@ -244,8 +245,8 @@ class Component extends PWBObject {
 		// Give control to $component
 		#@calling_echo echo $this->printString() . ' calling ' . $component->printString() . '<br/>';@#
         $this->calling = true;
-		$this->basicCall($component);
         $component->listener = & $this;
+		$this->basicCall($component);
 		$this->calling = false;
 	}
 
@@ -465,9 +466,30 @@ class Component extends PWBObject {
         $this->memory_transaction->rollback();
     }
 
-    function registerFieldModification(&$field) {
+    function commitMemoryTransaction() {
+      if (!is_object($this->memory_transaction)) {
+	print_backtrace_and_exit('Trying to commit a non started transaction in ' . $this->debugPrintString());
+      }
+      $this->memory_transaction->commitInTransaction();
+    }
+
+    function saveMemoryTransactionObjects() {
+      if (!is_object($this->memory_transaction)) {
+	print_backtrace_and_exit('Trying to save  objects of a non started transaction in ' . $this->debugPrintString());
+      }
+      $this->memory_transaction->saveObjectsInTransaction();
+    }
+
+    function unregisterAllMemoryTransactionObjects() {
+      if (!is_object($this->memory_transaction)) {
+	print_backtrace_and_exit('Trying to unregister objects of a non started transaction in ' . $this->debugPrintString());
+      }
+      $this->memory_transaction->unregisterAllObjects();
+    }
+
+    function registerFieldModification(&$mod) {
         $t =& $this->getMemoryTransactionOrBegin();
-        $t->registerFieldModification($field);
+        $t->registerFieldModification($mod);
     }
 
     function aboutToExecuteFunction(&$function) {

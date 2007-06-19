@@ -45,7 +45,7 @@ class Compiler {
 		if (!in_array($file, $this->compiled)) {
 				$this->compiled[$file] = $file;
 				$this->actualFile[] = $file;
-				//echo 'Adding file: ' . $file . '<br />';
+		  //echo 'Adding file: ' . $file . '<br />';
 
 				$f = file_get_contents($file);
 				$f = $this->compileString($f,'/__FILE__/s',

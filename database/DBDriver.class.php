@@ -58,7 +58,8 @@ class DBDriver {
     	$conn =& $this->openDatabase(false);
         /* If transactions are not supported, go on silently (logging is another option)*/
         $this->basicbeginTransaction($conn);
-        //trigger_error("Starting transaction");
+      #@sql_echo echo 'Beggining DB transaction<br/>';@#
+      //trigger_error("Starting transaction");
     }
 	function queryDB($query){
 		$res = $this->batchExec(array($query));
@@ -84,14 +85,16 @@ class DBDriver {
         $conn=&$this->openDatabase(false);
         /* If transactions are not supported, go on silently (logging is another option)*/
         $this->basicCommit($conn);
-        //trigger_error("Comitting transaction");
+      #@sql_echo echo 'Committing DB transaction<br/>';@#
+      //trigger_error("Comitting transaction");
     }
 
     function rollBack() {
         $conn=& $this->openDatabase(false);
         /* If transactions are not supported, go on silently (logging is another option)*/
         $this->basicRollback($conn);
-        //trigger_error("Rolling back transaction");
+      #@sql_echo echo 'Rolling back DB transaction<br/>';@#
+      //trigger_error("Rolling back transaction");
     }
 	function &registerDBError($sql) {
     	trigger_error($this->getError());

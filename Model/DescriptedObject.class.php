@@ -88,12 +88,12 @@ class DescriptedObject extends PWBObject {
 	}
 
     function registerForPersistence() {
-    	$this->toPersist = true;
+      $this->toPersist = true;
     }
 
 	function registerModifications(){
 		if ($this->isPersisted()){
-			$db =& DBSession::Instance();
+			$db =& $this->currentTransaction();
 			$db->registerObject($this);
 		}
         #@persistence_echo
@@ -101,9 +101,34 @@ class DescriptedObject extends PWBObject {
             echo 'Not registering modification of ' . $this->debugPrintString() . '<br/>';
         }//@#
 	}
+
+	/* Non threaded behaviour: there are not transactions. A single db instance for every thread. Problem:
+	 * what happens when we commit modifications made by a component and there's another editor component
+	 * active? That editor will have saved the changes although the accept button was never hit. That's not
+	 * compositional.
+	 */
+
+	function &currentTransaction() {
+		return DBSession::Instance();
+	}
+	/*
+	 * Threaded behaviour: object changes are registered per thread. That is compositional.
+	 */
+	 /*
+	 function &currentTransaction() {
+	 	$current_component =& getdyn('current_component');
+        if (is_object($current_component)) {
+        	if (is_object($comp =& $current_component->getMemoryTransaction())) {
+        		return $comp;
+        	}
+        }
+
+        return DBSession::Instance();
+     }*/
+
 	function registerPersistence(){
 		if (!$this->isPersisted()){
-			$db =& DBSession::Instance();
+			$db =& $this->currentTransaction();
 			$db->registerObject($this);
 			#@persistence_echo
             echo 'Registering persistence of ' . $this->debugPrintString() . '<br/>';
@@ -116,7 +141,7 @@ class DescriptedObject extends PWBObject {
 			//@#
 	}
 	function isPersisted(){
-		return $this->existsObject or $this->toPersist;
+	  return $this->existsObject or $this->toPersist;
 	}
 	function registerCollaborators(){
 		foreach($this->metadata->allFieldNames() as $f) {
@@ -419,6 +444,14 @@ class DescriptedObject extends PWBObject {
 class PWBValidationError extends PWBException {
 
 }
+
+#@mixin RootObject
+{
+	function initializeObject() {
+		  parent::initializeObject();
+		  	 $this->makeRootObject();
+			 }			 
+}//@#
 
 
 ?>

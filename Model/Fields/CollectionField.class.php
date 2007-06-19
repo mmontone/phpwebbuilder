@@ -63,11 +63,27 @@ class CollectionField extends DataField {
 		return $this->remove($elem);
 	}
 	function add(& $elem) {
-	   return $this->type->add($elem);
+	  $validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
+	  $this->owner->$validation_method($elem);
+	  $current_component =& getdyn('current_component');
+	  if (is_object($current_component)) {
+	    $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
+	  }
+	  else {
+	    #@tm_echo echo 'Not registering addition of ' . $elem->debugPrintString() . ' to ' . $this->debugPrintString()  .'<br/>';@#
+	     }
+	  return $this->type->add($elem);
 	}
 
 	function remove(& $elem) {
-		return $this->type->remove($elem);
+	  $current_component =& getdyn('current_component');
+	  if (is_object($current_component)) {
+	    $current_component->registerFieldModification(new CollectionFieldRemoval($this, $elem));
+	  }
+	  else {
+	    #@tm_echo echo 'Not registering removal of ' . $elem->debugPrintString() . ' to ' . $this->debugPrintString()  .'<br/>';@#
+	     }
+	  return $this->type->remove($elem);
 	}
 
 	function removedAsTarget(& $elem, $field) {
@@ -193,14 +209,36 @@ class DirectCollectionFieldType extends CollectionFieldType {
     }
 
     function add(&$elem) {
-    	$elem-> {
-            $this->collection_field->getReverseField()}
-        ->setTarget($this->collection_field->getOwner());
         if ($this->collection_field->owner->isPersisted()) {
-            $elem->registerPersistence();
+        	// Now, the explanation for doing a save to the DB now.
+		// As we are handling collections of objects directly from the DB we have to make collection changes
+		// immediatly observable. That means we have to do a query to the DB each time we modify the collection.
+		// There two consecuences:
+		// 1) We don't have in-memory collections at the moment. That means we cannot modify a non-saved object's collection.
+		//    This one does not have a solution right now. We would have to be able to access in-memory collections and
+		//    db-collection with the same interface (the Report interface basically)
+		// 2) We need to start a transaction if it was not started before. We prefer doing everything in a transaction.
+		//    We wouldn't like to call "beginTransaction" explicitly as
+		// "we prefer doing everything in a transaction" and "there are not nested transactions" -> "we begin the transaction before doing any insert/update to the database automatically"
+		// The programmer is still in charge of committing everything before the request finishes.
+		// I wish I had time to implement in-memory collections.
+		//                                          -- marian
+		$elem->registerForPersistence();
+		$elem->{$this->collection_field->getReverseField()}->setTarget($this->collection_field->getOwner());
+		$elem->incrementRefCount();
+
+                // This "commit" may seem to be tricky. We are not doing commitMemoryTransaction because that is not our
+		// purpose. We don't want to discard rollbackable commands. The transaction is not finished. We only
+		// want to save registered objects to the database.
+		$comp =& getdyn('current_component');
+		$comp->saveMemoryTransactionObjects();
+		
+		$this->collection_field->collection->refresh();
         }
-        $this->collection_field->collection->add($elem);
-        $elem->incrementRefCount();
+	else {
+	  print_backtrace_and_exit('Sorry: in-memory persistent collections not implemented. ' . $this->collection_field->owner->debugPrintString() . ' is not' .
+	                           ' persisted and so we cannot reference it from the database');
+	}
     }
 
     function remove($elem) {
@@ -208,7 +246,11 @@ class DirectCollectionFieldType extends CollectionFieldType {
             $this->collection_field->creationParams['reverseField'] }
         ->removeTarget();
         $elem->decrementRefCount();
-        $this->collection_field->collection->remove($elem);
+	//$db =& DBSession::Instance();
+	//$db->save($elem);
+	$comp =& getdyn('current_component');
+	$comp->saveMemoryTransactionObjects();
+        $this->collection_field->collection->refresh();
     }
 
     function isDirect() {
@@ -272,22 +314,41 @@ class IndirectCollectionFieldType extends CollectionFieldType {
     }
 
     function setID($id) {
-        // TODO: estaria bueno usar ValueHolders para las partes variantes de un report. Cada vez
-        // que un valor cambia, el report se evalua nuevamente.
-        // Por el momento, genero de vuelta el report.
+        // TODO: implement Report in data-flow style (using ValueHolders) so that it gets
+	// automatically updated. We rebuild it for now.
         $this->collection_field->collection = & $this->buildReport();
     }
 
     function add(&$elem) {
-        // Esto no anda
-        $jdt = $this->getJoinDataType();
-        $joinObject =& new $jdt;
-        $joinObject->{$this->getReverseField()}->setTarget($this->collection_field->getOwner());
-        $joinObject->{$this->getTargetField()}->setTarget($elem);
         if ($this->collection_field->owner->isPersisted()) {
-            $joinObject->registerPersistence();
+		// Now, the explanation for doing a save to the DB now.
+		// As we are handling collections of objects directly from the DB we have to make collection changes
+		// immediatly observable. That means we have to do a query to the DB each time we modify the collection.
+		// There two consecuences:
+		// 1) We don't have in-memory collections at the moment. That means we cannot modify a non-saved object's collection.
+		//    This one does not have a solution right now. We would have to be able to access in-memory collections and
+		//    db-collection with the same interface (the Report interface basically)
+		// 2) We need to start a transaction if it was not started before. We prefer doing everything in a transaction.
+		//    We wouldn't like to call "beginTransaction" explicitly as
+		// "we prefer doing everything in a transaction" and "there are not nested transactions" -> "we begin the transaction before doing any insert/update to the database automatically"
+		// The programmer is still in charge of committing everything before the request finishes.
+		// I wish I had time to implement in-memory collections.
+		//                                          -- marian
+		$jdt = $this->getJoinDataType();
+		$joinObject =& new $jdt;
+		$joinObject->registerForPersistence();
+	        $joinObject->{$this->getReverseField()}->setTarget($this->collection_field->getOwner());
+		$joinObject->{$this->getTargetField()}->setTarget($elem);
+		$comp =& getdyn('current_component');
+		$comp->saveMemoryTransactionObjects();
         }
-        $this->collection_field->collection->add($elem);
+	else {
+	  print_backtrace_and_exit('Sorry: in-memory persistent collections not implemented. ' . $this->collection_field->owner->debugPrintString() . ' is not' .
+	                           ' persisted and so we cannot reference it from the database');
+	}
+
+
+        $this->collection_field->collection->refresh();
     }
 
     function remove(&$elem) {
@@ -303,17 +364,20 @@ class IndirectCollectionFieldType extends CollectionFieldType {
                                                       'exp2' => new ObjectExpression($owner))));
 
         if ($r->isEmpty()) {
-        	$ex =& new PWBException(array('message' => 'Error removing object: ' . $elem->printString() . ' does not belong to ' . $this->collection_field->printString()));
+        	$ex =& new PWBException(array('message' => 'Error removing object: ' . $elem->debugPrintString() . ' does not belong to ' . $this->collection_field->printString()));
             return $ex->raise();
         }
         else {
-            $joinObject =& $r->first();
-            $n = null;
-            $joinObject->{$this->getReverseField()}->removeTarget();
-            $joinObject->{$this->getTargetField()}->removeTarget();
-            $joinObject->decrementRefCount();
-
-            return false;
+	     $joinObject =& $r->first();
+	     $joinObject->{$this->getReverseField()}->getTarget();
+	     $joinObject->{$this->getReverseField()}->removeTarget();
+	     $joinObject->{$this->getTargetField()}->removeTarget();
+	     //$db =& DBSession::Instance();
+	     // We assume there are not other references to JoinObjects so we can safely remove it from the db
+	     //$db->delete($joinObject);
+	     $comp =& getdyn('current_component');
+	     $comp->saveMemoryTransactionObjects();
+	     $this->collection_field->collection->refresh();
         }
     }
 

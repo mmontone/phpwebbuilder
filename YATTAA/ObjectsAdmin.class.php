@@ -1,18 +1,45 @@
 <?php
 
+  /*
+   ObjectsAdmin are components designed with the purpose of managing collections of objects
+   in a default way.
+   They receive a collection of objects. The collection can be a CollectionField or a RootObjectCollection.
+  */
+
+  /* Notes: reasons why I use explicit functions instead of events (see onEditionDo, onDeletionDo protocol) is
+   that I don't want ObjectsAdmin do too much. I want the admin to be in control, and events don't fully let us (specially because we
+   may not know when events are going to be executed).
+   With events, the editor says: "I don't know how to goon, let's trigger an event an wait for intructions"
+   Without events, the editor says: "Tell me what to do when a I have edited the object and don't worry, I'm in charge"
+  */
 class ObjectsAdmin extends ContextualComponent {
 	var $objects;
-	function ObjectsAdmin(&$objects) {
-		$this->objects =& $objects;
+	var $options;
 
-		parent::ContextualComponent();
+	function ObjectsAdmin(&$objects, $options = array()) {
+		$this->objects =& $objects;
+	  $this->options = $this->getDefaultOptions();
+	  $this->setOptions($options);
+	  parent::ContextualComponent();
 	}
+
+	function getDefaultOptions() {
+	  return array('commit' => true, 'inform_creation_success' => true);
+	}
+
+	function setOptions($options) {
+	  foreach($this->options as $key => $value) {
+	    $this->options[$key] = $value;
+	  }
+	}
+	
 	function getTitle(){
 		return $this->listObjectsMessage();
 	}
-    function setTitle($title) {
-        $this->addComponent(new Label($title), 'admin_title');
-    }
+
+	function setTitle($title) {
+	  $this->addComponent(new Label($title), 'admin_title');
+	}
 
 	function initialize() {
 		$this->displayList();
@@ -28,10 +55,10 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 
 	function &displayList() {
-		$list =& $this->listComponentFor($this->getObjects());
-		$list->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
-		$this->changeBody($list);
-		return $list;
+	  $list =& $this->listComponentFor($this->getObjects()->getCollection());
+	  $list->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
+	  $this->changeBody($list);
+	  return $list;
 	}
 
 	function elementSelected(&$object) {
@@ -43,39 +70,33 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 
 	function newObject() {
-		$creator =& $this->getCreatorComponent();
-		$creator->addInterestIn('object_edited', new FunctionObject($this, 'objectCreated'));
-		$this->call($creator);
+	  $self =& $this;
+	  $creator =& $this->getCreatorComponent();
+	  $creator->onCreationDo(new LambdaObject('&$object', '$self->objects->add($object);', get_defined_vars()));
+	  $creator->registerCallback('object_edited', new FunctionObject($this, 'displayList'));
+	  $this->call($creator);
 	}
-
-	function objectCreated(&$admin,&$obj) {
-		$this->saveCreation($obj);
-	}
-
-    function saveCreation(&$obj) {$this->triggerEvent('object_created', $obj);}
-    function performSave(&$admin,&$obj) {$this->triggerEvent('object_edited', $obj);}
-    function performDelete(&$admin,&$obj) {$this->triggerEvent('object_deleted', $obj);}
-
 
 	function &adminObject(&$obj) {
-		$admin =& $this->getAdminComponent($obj);
-        $this->call($admin);
-		return $admin;
+	  $admin =& $this->getAdminComponent($obj);
+	  $self =& $this;
+	  $admin->onEditionDo(new LambdaObject('&$object', '$self->doNothing();', get_defined_vars()));
+	  $admin->onDeletionDo(new LambdaObject('&$object', '$self->objects->remove($object);', get_defined_vars()));
+	  $this->call($admin);
+	  return $admin;
 	}
 
 	function &getAdminComponent(&$dt) {
 		$admin =& $this->adminComponentFor($dt);
-		$admin->addInterestIn('object_edited', new FunctionObject($this, 'performSave'));
-		$admin->addInterestIn('object_deleted', new FunctionObject($this, 'performDelete'));
 		return $admin;
 	}
 
 	function newObjectMessage() {
-		return Translator::Translate('New ' . strtolower($this->objects->dataType));
+	  return Translator::Translate('New ' . strtolower($this->objects->getCollection()->dataType));
 	}
 
 	function listObjectsMessage() {
-		return Translator::Translate(ucfirst($this->objects->dataType) . 's');
+	  return Translator::Translate(ucfirst($this->objects->getCollection()->dataType) . 's');
 	}
 
 	function &adminComponentFor(&$object) {
@@ -83,34 +104,33 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 
 	function &getCreatorComponent() {
-		return mdcompcall('getObjectCreator', array(&$this,&$this->objects));
+	  $collection =& $this->objects->getCollection();
+	  return mdcompcall('getObjectCreator', array(&$this,&$collection));
 	}
 
 	function &listComponentFor(&$objects) {
 		return mdcompcall('getListComponent',array(&$this, &$objects));
 	}
+
+	function successfulCreationMessage() {
+	  return 'La creación se ha realizado con éxito';
+	}
 }
 
-#@mixin RootObjectsAdminActions
+#@mixin DontInformCreationSuccess
 {
-	function saveCreation(&$object) {
-		$object->makeRootObject();
-		DBSession::commitInTransaction();
-		/*$this->adminObject($object);*/
-	}
-	function performDelete(&$admin,&$object) {
-		$object->deleteRootObject();
-		DBSession::commitInTransaction();
-	}
-	function performSave(&$object) {
-		DBSession::commitInTransaction();
-	}
-}
-//@#
 
-class RootObjectsAdmin extends ObjectsAdmin{
-	#@use_mixin RootObjectsAdminActions@#
-}
+  function creationSuccessful(&$object) {
+    $this->adminObject($object);
+    $this->triggerEvent('object_created', $obj);
+  }
+}//@#
+
+// This mixins can be applied to both ObjectsAdmins and ObjectAdmins
+#@mixin DontCommit
+{
+  function commitTransaction() {}
+}//@#
 
 #@defmdf &getAdminComponent[Component](&$object:Collection<PersistentObject>)
 {

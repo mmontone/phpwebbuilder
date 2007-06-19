@@ -17,7 +17,7 @@ class EventHandler {
     }
 
     function initialize($params) {
-    	$this->function =& WeakFunctionObject::fromFunctionObject($params['function']);
+      $this->function =& $params['function']->weakVersion();
         $this->event = $params['event'];
         $this->triggerer =& $params['triggerer'];
     }

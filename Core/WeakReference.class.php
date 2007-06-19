@@ -64,46 +64,49 @@ class WeakFunctionObject extends FunctionObject{
 	}
 }
 
-/*
-class WeakFunctionObject {
-    var $function;
-    var $target;
+class WeakLambdaObject extends LambdaObject {
+  var $target;
+  
+  function &fromLambdaObject(&$lam) {
+    $weaken_env = $lam->env;
+    $target =& $lam->getTarget();
+    $null = null;
+    $weaken_env['self'] =& $null;
+    $wr =& new WeakLambdaObject('','',$weaken_env);
+    $wr->fdef = $lam->fdef;
+    $wr->setTarget($target);
+    return $wr;
+  }
 
-    function WeakFunctionObject(&$function) {
-    	$this->function =& $function;
-        $this->target =& new WeakReference($function->getTarget());
-        $n = null;
-        $this->function->setTarget($n);
-    }
+  function call() {
+    // Temporarily restore the target
+    $this->env['self'] =& $this->getTarget();
+    parent::call();
+    $null = null;
+    $this->env['self'] =& $null;
+  }
 
-    function &fromFunctionObject(&$fo){
-        $wr =& new WeakFunctionObject($fo);
-        return $wr;
-    }
+  function callWith(&$params) {
+    // Temporarily restore the target
+    $this->env['self'] =& $this->getTarget();
+    parent::callWith($params);
+    $null = null;
+    $this->env['self'] =& $null;
+  }
 
-    function isNotNull(){
-        return $this->target->isNotNull();
-    }
-
-    function printString() {
-    	return '[' . getClass($this) . ' on: ' . $this->function->printString() . ']';
-    }
-
-    function executeWithWith(&$param1, &$param2) {
-    	$this->function->setTarget($this->target->getTarget());
-        $this->function->executeWithWith($param1, $param2);
-        $n = null;
-        $this->function->setTarget($n);
-    }
-
-    function executeWith(&$params) {
-    	$this->function->setTarget($this->target->getTarget());
-        $this->function->executeWith($params);
-        $n = null;
-        $this->function->setTarget($n);
-    }
+  	function setTarget(&$target){
+		$this->target =& new WeakReference($target);
+	}
+	function &getTarget(){
+		return $this->target->getTarget();
+	}
+	function isNotNull(){
+		return $this->target->isNotNull();
+	}
 }
-*/
+
+
+
 
 
 class WeakCollection extends Collection {

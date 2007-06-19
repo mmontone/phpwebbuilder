@@ -1,55 +1,100 @@
 <?php
+
+  /* Possible options:
+   "ask_deletion" : when true, ask before deleting. Default: true.
+   "commit" : when true, editions are commited to the database. Default: true.
+
+   Mixins:
+   DontAskDeletion, DontCommit
+  */
+
+
 class ObjectAdmin extends ContextualComponent {
 	var $object;
-
-	function ObjectAdmin(&$object) {
-		$this->object =& $object;
-
-		parent::ContextualComponent();
+	var $options;
+	var $edit_function;
+	var $delete_function;
+	
+	function ObjectAdmin(&$object, $options=array()) {
+	  $this->object =& $object;
+	  $this->options = $this->getDefaultOptions();
+	  $this->setOptions($options);
+	  
+	  parent::ContextualComponent();
 	}
+
+	function getDefaultOptions() {
+	  return array('commit' => true, 'ask_deletion' => true);
+	}
+
+	function setOptions($options) {
+	  foreach($this->options as $key => $value) {
+	    $this->options[$key] = $value;
+	  }
+	}
+
+	function onEditionDo(&$function) {
+	  $this->edit_function =& $function;
+	}
+
+	function onDeletionDo(&$function) {
+	  $this->deletion_function =& $function;
+	}
+	
 	function getTitle(){
 		return $this->object->printString();
 	}
+	
 	function initialize() {
-	   	$aspect =& new AspectAdaptor($this->object, array('get' => 'printString'));
-        $aspect->setModelSendsUpdates(true);
-        $this->addComponent(new Text($aspect), 'model_string');
-        $this->viewObject();
-        $this->addActionButtons();
+	  $aspect =& new AspectAdaptor($this->object, array('get' => 'printString'));
+	  $aspect->setModelSendsUpdates(true);
+	  $this->addComponent(new Text($aspect), 'model_string');
+	  $this->viewObject();
+	  $this->addActionButtons();
 	}
+	
 	function addActionButtons(){
-		$this->addDeleteObjectLink();
-		$this->addViewObjectLink();
-		$this->addEditObjectLink();
+		$this->addDeleteObjectLink('Borrar');
+		$this->addViewObjectLink('Ver');
+		$this->addEditObjectLink('Editar');
 	}
 
 	function &getModel() {
 		return $this->object;
 	}
 
-    function &getDeleteFunction($text='Delete') {
-    	$do =& new FunctionObject($this, 'deleteObject');
-		return $do;
+	function &getDeleteFunction($text='Delete') {
+		return new FunctionObject($this, 'deleteObject');
 	}
+
 	function confirmDeleteMessage() {
 		return Translator::TranslateAny($this->object->getAllTypes(), 'Confirm delete ');
 	}
-	function deleteObject() {
-		$question =& QuestionDialog::create($this->confirmDeleteMessage());
-		$question->registerCallback('on_yes', new FunctionObject($this, 'deleteConfirmed'));
-		$question->registerCallback('on_no', new FunctionObject($this, 'deleteRejected'));
-		$this->call($question);
-	}
 
+	function deleteObject() {
+	  if ($this->options['ask_deletion']) {
+	    $question =& QuestionDialog::create($this->confirmDeleteMessage());
+	    $question->registerCallback('on_yes', new FunctionObject($this, 'deleteConfirmed'));
+	    $question->registerCallback('on_no', new FunctionObject($this, 'deleteRejected'));
+	    $this->call($question);
+	  }
+	  else {
+	    $this->deleteConfirmed();
+	  }
+	}
 
 	function changeBody(&$component) {
 		$this->addComponent($component, 'body');
 	}
+
 	function deleteConfirmed() {
-		$this->triggerEvent('object_deleted', $this->object);
+		$this->callbackWith('object_deleted', $this->object);
 	}
-    function performSave(&$object) {
-    	$this->triggerEvent('object_edited', $this->object);
+
+	function commitTransaction() {
+	  if ($this->options['commit']) {
+	    DBSession::commitInTransaction();
+	  }
 	}
 
 	function objectDeletedMessage(&$model) {
@@ -65,8 +110,7 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function objectDeleted() {
-		$this->triggerEvent('object_deleted');
-		$this->callback();
+	  $this->callbackWith('object_deleted', $this->object);
 	}
 
 	function addDeleteObjectLink($text='Delete') {
@@ -103,19 +147,21 @@ class ObjectAdmin extends ContextualComponent {
 
 	function viewObject() {
 		$model =& $this->getModel();
-		$model->flushChanges();
 		$this->changeBody($this->getObjectViewer($this->getModel()));
 	}
 
 	function editObject() {
    	  	$model =& $this->getModel();
-		$model->flushChanges();
    	  	$editor =& $this->getObjectEditor($this->getModel());
-   	  	$editor->addInterestIn('object_edited', new FunctionObject($this, 'objectEdited'));
-    	$editor->registerCallback('cancel', new FunctionObject($this, 'editionCancelled'));
-    	$this->changeBody($editor);
+	  $editor->onEditionDo($this->edit_function);
+   	  	$editor->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
+	  $editor->registerCallback('cancel', new FunctionObject($this, 'editionCancelled'));
+	  $this->changeBody($editor);
     }
 
+	function objectEdited(&$object) {
+	  $this->viewObject();
+	}
     function &getObjectEditor(&$object) {
     	return mdcompcall('getObjectEditor', array(&$this, &$object));
     }
@@ -124,20 +170,12 @@ class ObjectAdmin extends ContextualComponent {
     	return mdcompcall('getObjectViewer', array(&$this, &$object));
     }
 
-    function objectEdited() {
-    	$this->saveEditions();
-    	$this->viewObject();
-    	$this->triggerEvent('object_edited', $this->object);
-    }
-
-    function saveEditions() {
-	   DBSession::commitInTransaction();
-    }
-
     function editionCancelled() {
     	$this->viewObject();
     }
 }
+
+#@mixin InformEdition
 
 #@defmdf &getObjectCreator[Component](&$objects:Collection)
 {

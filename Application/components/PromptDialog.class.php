@@ -4,6 +4,7 @@ class PromptDialog extends Component
 {
 	var $message;
 	var $text;
+	var $accepted = false;
 
 	function PromptDialog($message) {
 		$this->message = $message;
@@ -20,9 +21,16 @@ class PromptDialog extends Component
 		}
 	}
 
+	function nonCallStop() {
+	  if (!$this->accepted) {
+	    $this->rollbackMemoryTransaction();
+	  }
+	}
+
 	function initialize() {
-		$this->addComponent(new Label($this->message), 'msg');
-		$this->addComponent(new Input($this->text), 'input');
+	  $this->beginMemoryTransaction();
+	  $this->addComponent(new Label($this->message), 'msg');
+	  $this->addComponent(new Input($this->text), 'input');
 	}
 
 	function setText($text) {
@@ -30,7 +38,8 @@ class PromptDialog extends Component
 	}
 
 	function accept() {
-		$this->callbackWith('on_accept', $this->text->getValue());
+	  $this->accepted = true;
+	  $this->callbackWith('on_accept', $this->text->getValue());
 	}
 
 	function cancel() {

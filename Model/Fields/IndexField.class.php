@@ -51,14 +51,7 @@ class IndexField extends NumField {
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
         if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
-            $current_component =& getdyn('current_component');
-            if (is_object($current_component)) {
-                $current_component->registerFieldModification($this);
-            }
-            else {
-                #@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#
-            }
-
+	  $this->registerFieldModification();
             $this->removeTarget();
 			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'), array('execute on triggering' => true));
             $this->buffered_target =& $target;
@@ -71,20 +64,18 @@ class IndexField extends NumField {
             	#@persistence_echo echo 'Registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             	$target->registerPersistence();
             } else {
-            	#@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
+            #@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             }
         }
 	}
 
     function removeTarget(){
-		if ($this->buffered_target !== null){
-            $current_component =& getdyn('current_component');
-            if (is_object($current_component)) {
-                $current_component->registerFieldModification($this);
-            }
-            else {
-                #@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#
-            }
+      // We call get target because we need the target in memory
+      // in order to register the modification when we set the target to null
+      // -- marian
+      $this->getTarget();
+      if ($this->buffered_target !== null){
+	$this->registerFieldModification();
 
             $this->buffered_target->retractInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
 			$self =& $this;

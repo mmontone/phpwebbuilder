@@ -1,13 +1,35 @@
 <?php
 
+  /* Options:
+   "display_buttons: when true, display save and cancel buttons. Default: true.
+   "commit": when true, commit changes to the database. Default: true.
+   "confirm_cancel": when true, confirm cancel. Default: true.
+   "inform_success": when true, inform successful edition. Default: true.
+   Mixins:
+   DontDisplayButtons, DontCommit, DontConfirmCancel, DontInformSuccess
+  */
+
 
 class ObjectEditor extends ObjectPresenter {
 	var $object_edited = false;
-
+	var $edit_function;
+	
 	function initialize(){
-		$this->beginMemoryTransaction();
-        parent::initialize();
-		$this->addButtons();
+	  $this->beginMemoryTransaction();
+	  parent::initialize();
+	  $this->addButtons();
+	}
+
+	function createInstance($params) {
+	   $this->edit_function =& new LambdaObject('&$x', '');
+	}
+	
+	function onEditionDo(&$function) {
+	  $this->edit_function =& $function;
+	}
+
+	function getDefaultOptions() {
+	  return array('display_buttons' => true, 'commit' => true, 'confirm_cancel' => true, 'inform_success' => true);
 	}
 
  	function nonCallStop() {
@@ -15,11 +37,11 @@ class ObjectEditor extends ObjectPresenter {
  	}
 
 	function doFlush(){
-        $this->rollbackMemoryTransaction();
+	  $this->rollbackMemoryTransaction();
 	}
 
-    function cancel() {
-    	if ($this->object->isModified()) {
+	function cancel() {
+    	if (!$this->memory_transaction->isEmpty()) {
     		$this->confirmCancel();
     	}
     	else
@@ -29,19 +51,22 @@ class ObjectEditor extends ObjectPresenter {
 		return mdcompcall('getFieldEditor', array(&$this,&$field));
 	}
     function confirmCancel() {
-    	$question =& QuestionDialog::create($this->confirmCancelMessage());
+      if ($this->options['confirm_cancel']) {
+	$question =& QuestionDialog::Create($this->confirmCancelMessage());
     	$question->registerCallback('on_yes', new FunctionObject($this, 'cancelConfirmed'));
     	$question->registerCallback('on_no', new FunctionObject($this, 'cancelRejected'));
     	$this->call($question);
+      }
+      else {
+	$this->cancelConfirmed();
+      }
     }
 
     function confirmCancelMessage() {
-    	//return '¿Descartar los cambios realizados?';
-    	return Translator::Translate('Cancel all changes?');
+    	return '¿Descartar los cambios realizados?';
     }
 
     function cancelRejected() {
-		$this->triggerEvent('cancel_rejected', $this);
     }
 
     function cancelConfirmed() {
@@ -53,18 +78,18 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function &getSaveLink($text='Save') {
-    	$sl =& new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'saveObject')));
-    	return $sl;
+    	return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'saveObject')));
     }
 
     function &getCancelLink($text='Cancel') {
-		$sl =&new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'cancel')));
-		return $sl;
-	}
+      return new CommandLink(array('text' => $text, 'proceedFunction' => new FunctionObject($this, 'cancel')));
+    }
 
 	function addButtons() {
-		$this->addSaveButton();
-		$this->addCancelButton();
+	  if ($this->options['display_buttons']) {
+	    $this->addSaveButton();
+	    $this->addCancelButton();
+	  }
 	}
 
 	function removeButtons() {
@@ -89,68 +114,64 @@ class ObjectEditor extends ObjectPresenter {
 	}
 
 
-    #@php4
     function saveObject() {
-    	if ($this->validateObject()) {
-			$this->saveValidatedObject();
-		}
-    	else {
-            $this->addComponent(new ValidationErrorsDisplayer($this->object->validation_errors), 'validation_errors');
-		}
-    }//@#
+	  // CommitInTransaction and unregisterAllObject should be threaded. That means,
+	  // in the case of unregisterAllObject, only objects related to the creator component are unregistered.
+	  //                                  -- marian
 
-    #@php5
-    function saveObject() {
-        try {
-        	$this->validateObject();
-            $this->saveValidatedObject();
+	  // TODO: fix mixins so I can put comments inside them :)
+      try {
+	$this->validateObject();
+	$this->edit_function->callWith($this->object);
+	$this->commitTransaction();
+	$this->objectEdited();
         }
         catch (PWBValidationError $e) {
         	$this->addComponent(new ValidationErrorsDisplayer($this->object->validation_errors), 'validation_errors');
         }
-    }//@#
+	catch (DBError $e) {
+	  $this->rollbackTransaction();
+	  $dialog =& ErrorDialog::Create($e->getMessage());
+	  $dialog->onAccept(new FunctionObject($this, 'doNothing'));
+	  $this->call($dialog);
+	}
+    }
+
+    function rollbackTransaction() {
+      // We don't have to unregister all objects as in the case of ObjectCreators
+    }  
 
     function validateObject() {
     	return $this->object->validateAll();
-    }
-
-    function saveError(&$ex) {
-    	$dialog =& ErrorDialog::create($ex->getMessage());
-		$dialog->onAccept(new FunctionObject($this, 'errorAccepted'));
-		$this->call($dialog);
-    }
-
-    function saveSuccessful() {
-    	$notification =& NotificationDialog::create($this->successfulSaveMessage());
-		$notification->onAccept(new FunctionObject($this, 'objectSaved'));
-		$this->call($notification);
-    }
-
-    function errorAccepted() {
-
-    }
-
-    function objectSaved() {
-		$this->callback();
-	}
-
-    function successfulSaveMessage() {
-    	//return 'Los cambios han sido aplicados exitosamente';
-    	return Translator::Translate('Changes were applied successfully');
     }
 
     function objectEditedCallback() {
     	return 'object_edited';
     }
 
-    function saveValidatedObject() {
-        $this->objectEdited();
-        $this->saveSuccessful();
+    function objectEdited() {
+      if ($this->options['inform_success']) {
+	$dialog =& NotificationDialog::Create($this->successfulEditionMessage());
+	$dialog->onAccept(new FunctionObject($this, 'successMessageConfirmed'));
+	$this->call($dialog);
+      }
+      else {
+	$this->successMessageConfirmed();
+      }
     }
 
-    function objectEdited() {
-		$this->object_edited = true;
-    	$this->triggerEvent($this->objectEditedCallback(), $this->object);
+    function successfulEditionMessage() {
+      return 'El objeto ha sido editado con éxito';
+    }
+
+    function successMessageConfirmed() {
+      $this->object_edited = true;
+      $this->callbackWith($this->objectEditedCallback(), $this->object);
+    }
+    function commitTransaction() {
+      if ($this->options['commit']) {
+	$this->commitMemoryTransaction();
+      }
     }
 }
 

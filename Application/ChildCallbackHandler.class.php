@@ -27,5 +27,13 @@ class ChildCallbackHandler {
 	function releaseAll() {
 
 	}
+
+	function debugPrintString() {
+	  return print_object($this);
+	}
+
+	function printString() {
+	  return $this->debugPrintString();
+	}
 }
 ?>

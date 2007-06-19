@@ -2,11 +2,23 @@
 
 class ObjectPresenter extends ContextualComponent {
 	var $object;
-	#@use_mixin EditorComponent@#
-	function ObjectPresenter(&$object) {
-		$this->object =& $object;
+	var $options = array();
 
+	#@use_mixin EditorComponent@#
+	  function ObjectPresenter(&$object, $options = array()) {
+		$this->object =& $object;
+	  $this->options = $this->getDefaultOptions();
 		parent::ContextualComponent();
+	}
+
+	function setOptions($options) {
+	  foreach($this->options as $key => $value) {
+	    $this->options[$key] = $value;
+	  }
+	}
+
+	function getDefaultOptions() {
+	  return array();
 	}
 	function initialize(){
 		$this->addDisplayFields();
@@ -28,7 +40,6 @@ class ObjectPresenter extends ContextualComponent {
        	foreach(array_keys($fields) as $f2){
     		$this->addFieldComponent($this->chooseFieldDisplayer($fields[$f2]), $f2);
        	}
-
 	}
 	function getTitle(){
 		return $this->object->printString();

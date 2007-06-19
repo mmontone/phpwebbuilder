@@ -23,6 +23,10 @@ class FunctionObject
         $this->params = $params;
     }
 
+    function &weakVersion() {
+      return WeakFunctionObject::fromFunctionObject($this);
+    }
+
     function getMethodName() {
     	return $this->method_name;
     }

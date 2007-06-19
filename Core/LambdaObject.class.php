@@ -26,6 +26,15 @@ class LambdaObject  {
         $this->fdef = 'function ' . $this->functionName . '(' . $largs .') { extract($_self->env,EXTR_REFS); '. $body . '}';
     }
 
+    function &getTarget() {
+      // I assume the client uses 'self' to indicate the "target" object
+      return $this->env['self'];
+    }
+
+    function &weakVersion() {
+      return WeakLambdaObject::fromLambdaObject($this);
+    }
+
     function &call() {
     	$_self =& $this;
         if (!function_exists($this->functionName)) {
