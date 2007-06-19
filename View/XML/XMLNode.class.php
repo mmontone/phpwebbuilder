@@ -225,7 +225,7 @@ class XMLNode extends DOMXMLNode {
 				$this->addTemplatesAndContainersChild($t, $addTemplates);
 			}
 		}
-		if (!$addTemplates) {$temp = array();}
+		//if (!$addTemplates) {$temp = array();}
 		$this->addTemplatesAndContainers($temp, $cont, $childId);
 	}
 	function addTemplatesAndContainers(& $temp, & $cont, & $childId) {
