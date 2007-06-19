@@ -152,7 +152,7 @@ class DBSession {
         $db->doCommit($transaction->registeredObjects);
     }
 
-	function &doCommit(&$registeredObjects){
+	function doCommit(&$registeredObjects){
 		try {
 			$this->saveRegisteredObjects($registeredObjects);
             $this->commitTransaction();
@@ -163,7 +163,7 @@ class DBSession {
 		}
 	}
 
-    function &saveRegisteredObjects(&$registeredObjects) {
+    function saveRegisteredObjects(&$registeredObjects) {
         global $prepared_to_save;
         try {
             $toRollback = $registeredObjects;
