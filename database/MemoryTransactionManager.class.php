@@ -56,7 +56,7 @@ class MemoryTransaction {
 
     function rollback() {
       if ($this->commited) {
-	print_backtrace_and_exit('You cannot rollback a commited transaction: ' . $this->debugPrintString());
+	       print_backtrace_and_exit('You cannot rollback a commited transaction: ' . $this->debugPrintString());
       }
 
       #@tm_echo print_backtrace('Rolling back ' . $this->debugPrintString() . '<br/>');@#
@@ -119,7 +119,7 @@ class MemoryTransaction {
 	    print_backtrace_and_exit('Transaction already commited ' . $this->debugPrintString());
 	  }
 
-	  #@persistence_echo echo 'Committing transaction: ' . $this->debugPrintString() . '<br/>';
+	  #@persistence_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
 	  //DBSession::CommitMemoryTransaction($this);
 	  DBSession::CommitInTransaction();
 
