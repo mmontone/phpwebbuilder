@@ -6,7 +6,7 @@ class SubReport extends CompositeReport {
 
        function &fromArray($params){
 
-        if (!$params['subq']) {
+        if (!isset($params['subq'])) {
            $s =& new SubReport(new Report());
            //print_backtrace('setting collection in' . $s->debugPrintString());
            $s->collection =& $params['collection'];
