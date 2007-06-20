@@ -63,7 +63,8 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function confirmCancelMessage() {
-    	return '¿Descartar los cambios realizados?';
+    	//return '¿Descartar los cambios realizados?';
+    	return Translator::Translate('Cancel all changes?');
     }
 
     function cancelRejected() {
