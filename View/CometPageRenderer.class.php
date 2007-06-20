@@ -67,7 +67,9 @@ class CometPageRenderer extends PageRenderer {
 		echo '<script>window.onload=function(){parWin.closeComet();};</script>';
 
 	}
-	function sendFooters(){}
+	function sendFooters(){
+		echo '<script>parWin.cometInterrupted = false;</script>';
+	}
 	function renderWindow(&$win){
 		$win->wholeView->renderJsResponseCommand();
 	}

@@ -11,14 +11,14 @@ function initialize_loading(){
 
 addOnLoad(initialize_loading);
 
-function loadingStart() {
+function loadingStart(count) {
         loader.style.visibility="visible";
-        loader.replaceChild(document.createTextNode(ajax_queue.length +" actions remaining..."),loader.firstChild);
+        loader.replaceChild(document.createTextNode(count +" actions remaining..."),loader.firstChild);
 }
 
-function loadingStop() {
-        loader.replaceChild(document.createTextNode(ajax_queue.length +" actions remaining..."),loader.firstChild);
-        if (ajax_queue.length == 0) {
+function loadingStop(count) {
+        loader.replaceChild(document.createTextNode(count +" actions remaining..."),loader.firstChild);
+        if (count == 0) {
             loader.style.visibility="hidden";
         }
 }
