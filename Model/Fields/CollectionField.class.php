@@ -63,28 +63,26 @@ class CollectionField extends DataField {
 		return $this->remove($elem);
 	}
 	function add(& $elem) {
-	  $validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
-	  $this->owner->$validation_method($elem);
-	  $current_component =& getdyn('current_component');
-	  if (is_object($current_component)) {
-	    $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
-	  }
-	  else {
-	    #@tm_echo echo 'Not registering addition of ' . $elem->debugPrintString() . ' to ' . $this->debugPrintString()  .'<br/>';@#
-	     }
-	  return $this->type->add($elem);
-	}
+      $current_component =& getdyn('current_component');
+	  $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
+      $this->primAdd($elem);
+    }
+
+    function primAdd(&$elem) {
+    	$validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
+        $this->owner->$validation_method($elem);
+        return $this->type->add($elem);
+    }
 
 	function remove(& $elem) {
 	  $current_component =& getdyn('current_component');
-	  if (is_object($current_component)) {
-	    $current_component->registerFieldModification(new CollectionFieldRemoval($this, $elem));
-	  }
-	  else {
-	    #@tm_echo echo 'Not registering removal of ' . $elem->debugPrintString() . ' to ' . $this->debugPrintString()  .'<br/>';@#
-	     }
-	  return $this->type->remove($elem);
+	  $current_component->registerFieldModification(new CollectionFieldRemoval($this, $elem));
+	  $this->primRemove($elem);
 	}
+
+    function primRemove(&$elem) {
+    	return $this->type->remove($elem);
+    }
 
 	function removedAsTarget(& $elem, $field) {
 		if ($this->creationParams['reverseField'] == $field && $elem->hasType($this->creationParams['type'])) {
@@ -237,7 +235,7 @@ class DirectCollectionFieldType extends CollectionFieldType {
 	else {
 	  print_backtrace_and_exit('Sorry: in-memory persistent collections not implemented. ' . $this->collection_field->owner->debugPrintString() . ' is not' .
 	                           ' persisted and so we cannot reference it from the database');
-	}
+	   }
     }
 
     function remove($elem) {
@@ -248,8 +246,9 @@ class DirectCollectionFieldType extends CollectionFieldType {
 	   //$db =& DBSession::Instance();
 	   //$db->save($elem);
 	   $comp =& getdyn('current_component');
-	   $comp->saveMemoryTransactionObjects();
-        $this->collection_field->collection->refresh();
+       $comp->saveMemoryTransactionObjects();
+       $elem->existsObject = false;
+       $this->collection_field->collection->refresh();
     }
 
     function isDirect() {
@@ -354,10 +353,9 @@ class IndirectCollectionFieldType extends CollectionFieldType {
         $owner =& $this->collection_field->getOwner();
 
         $r =& new Report(array('class' => $this->getJoinDataType()));
-        $r->defineVar('_joinTarget', $this->collection_field->getDataType());
 
         $r->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('target', $this->getTargetField()),
-                                                      'exp2' => new ObjectPathExpression('_joinTarget'))));
+                                                      'exp2' => new ObjectExpression($elem))));
 
         $r->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('target', $this->getReverseField()),
                                                       'exp2' => new ObjectExpression($owner))));
@@ -371,12 +369,12 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 	     $joinObject->{$this->getReverseField()}->getTarget();
 	     $joinObject->{$this->getReverseField()}->removeTarget();
 	     $joinObject->{$this->getTargetField()}->removeTarget();
-	     //$db =& DBSession::Instance();
+         //$db =& DBSession::Instance();
 	     // We assume there are not other references to JoinObjects so we can safely remove it from the db
 	     //$db->delete($joinObject);
 	     $comp =& getdyn('current_component');
 	     $comp->saveMemoryTransactionObjects();
-	     $this->collection_field->collection->refresh();
+         $this->collection_field->collection->refresh();
         }
     }
 
