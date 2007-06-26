@@ -414,7 +414,11 @@ class Report extends Collection{
 	/**
 	  * Removes all field grouping
 	  */
-
+	function groupByFields($fields) {
+		foreach($fields as $field) {
+			$this->groupBy($field);
+		}
+	}
 	function ungrouped() {
 		$order = array();
 		$this->group =& $order;
