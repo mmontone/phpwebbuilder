@@ -68,7 +68,8 @@ class Select extends Widget {
 		return $this->size;
 	}
 	function getValueIndex() {
-		return $this->options->indexOf($this->getValue());
+		$val =& $this->getValue();
+		return $this->options->indexOf($val);
 	}
 
 	function setValueIndex(&$index){

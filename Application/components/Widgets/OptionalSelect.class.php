@@ -84,7 +84,8 @@ class OptionalComponent extends Component {
 	}
 
 	function selectOptionChanged() {
-		$this->opt_comp->enable($this->selectOption);
+		$this->selectOption = $this->selectoption_checkbox->getValue();
+		$this->comp->enable($this->selectOption);
 		$this->callbackWith('select_option_changed', $this->selectOption);
 		$this->changed();
 	}
