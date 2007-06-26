@@ -116,7 +116,7 @@ class ObjectEditor extends ObjectPresenter {
 		$this->deleteComponentAt('cancel');
 	}
 
-
+	#@php5
     function saveObject() {
 	  // CommitInTransaction and unregisterAllObject should be threaded. That means,
 	  // in the case of unregisterAllObject, only objects related to the creator component are unregistered.
@@ -124,21 +124,45 @@ class ObjectEditor extends ObjectPresenter {
 
 	  // TODO: fix mixins so I can put comments inside them :)
       try {
-	$this->validateObject();
-	$this->edit_function->callWith($this->object);
-	$this->commitTransaction();
-	$this->objectEdited();
-        }
-        catch (PWBValidationError $e) {
+		$this->validateObject();
+		$this->edit_function->callWith($this->object);
+		$this->commitTransaction();
+		$this->objectEdited();
+      }
+      catch (PWBValidationError $e) {
         	$this->addComponent(new ValidationErrorsDisplayer($this->object->validation_errors), 'validation_errors');
-        }
-	catch (DBError $e) {
-	  $this->rollbackTransaction();
-	  $dialog =& ErrorDialog::Create($e->getMessage());
-	  $dialog->onAccept(new FunctionObject($this, 'doNothing'));
-	  $this->call($dialog);
-	}
+      }
+	  catch (DBError $e) {
+	  	$this->rollbackTransaction();
+	  	$dialog =& ErrorDialog::Create($e->getMessage());
+	  	$dialog->onAccept(new FunctionObject($this, 'doNothing'));
+	  	$this->call($dialog);
+	  }
     }
+	//@#
+
+	#@php4
+    function saveObject() {
+	  // CommitInTransaction and unregisterAllObject should be threaded. That means,
+	  // in the case of unregisterAllObject, only objects related to the creator component are unregistered.
+	  //                                  -- marian
+
+	  // TODO: fix mixins so I can put comments inside them :)
+		if (is_exception($e =& $this->validateObject())){
+			$this->addComponent(new ValidationErrorsDisplayer($this->object->validation_errors), 'validation_errors');
+		} else {
+			$this->edit_function->callWith($this->object);
+			if (is_exception($e =& $this->commitTransaction())){
+			  	$this->rollbackTransaction();
+			  	$dialog =& ErrorDialog::Create($e->getMessage());
+			  	$dialog->onAccept(new FunctionObject($this, 'doNothing'));
+			  	$this->call($dialog);
+			} else {
+				$this->objectEdited();
+			}
+      }
+    }
+	//@#
 
     function rollbackTransaction() {
       // We don't have to unregister all objects as in the case of ObjectCreators
