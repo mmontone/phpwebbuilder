@@ -54,9 +54,9 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function addActionButtons(){
-		$this->addDeleteObjectLink('Borrar');
-		$this->addViewObjectLink('Ver');
-		$this->addEditObjectLink('Editar');
+		$this->addDeleteObjectLink();
+		$this->addViewObjectLink();
+		$this->addEditObjectLink();
 	}
 
 	function &getModel() {
@@ -89,7 +89,7 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function deleteConfirmed() {
-		$this->callbackWith('object_deleted', $this->object);
+		$this->deletion_function->callWith($this->object);
 	}
 
 	function commitTransaction() {
