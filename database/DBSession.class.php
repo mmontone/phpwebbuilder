@@ -157,7 +157,7 @@ class DBSession {
 		$this->saveRegisteredObjects($registeredObjects);
 		$this->commitTransaction();
 	}
-
+	#@php5
 	function saveRegisteredObjects(& $registeredObjects) {
 		global $prepared_to_save;
 		try {
@@ -185,6 +185,35 @@ class DBSession {
 			$e->raise();
 		}
 	}
+	//@#
+
+	#@php4
+	function saveRegisteredObjects(& $registeredObjects) {
+		global $prepared_to_save;
+		$toRollback = $registeredObjects;
+
+		while (!empty ($registeredObjects)) {
+			$ks = array_keys($registeredObjects);
+			$elem = & $registeredObjects[$ks[0]];
+			unset ($registeredObjects[$ks[0]]);
+
+			if (!isset ($prepared_to_save[$elem->getInstanceId()])) {
+				$prepared_to_save[$elem->getInstanceId()] = true;
+				#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
+				$elem->prepareToSave();
+			}
+			if (is_exception($e =& $this->save($elem))){
+				foreach (array_keys($toRollback) as $i) {
+					echo 'REGISTERING object ' . $toRollback[$i]->debugPrintString() . '<br/>';
+					$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
+				}
+
+				return $e->raise();
+			}
+		}
+		PersistentObject :: CollectCycles();
+	}
+	//@#
 
 	function rollback() {
 		#@sql_echo echo ( 'Rolling back transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>');@#
@@ -282,7 +311,7 @@ class DBSession {
 	function batchExec($sqls) {
 		return $this->driver->batchExec($sqls);
 	}
-
+	#@php5
 	function & save(& $object) {
 		$db = & DBSession :: Instance();
 		$db->beginTransaction();
@@ -296,7 +325,21 @@ class DBSession {
 			return $e->raise();
 		}
 	}
+	//@#
+	#@php4
+	function & save(& $object) {
+		$db = & DBSession :: Instance();
+		$db->beginTransaction();
+		$db->registerSave($object);
+		if (is_exception($e =& $object->save())){
+			$this->rollbackTransaction();
+			return $e->raise();
+		}
+		return $object;
+	}
+	//@#
 
+	#@php5
 	function & delete(& $object) {
 		$this->beginTransaction();
 		$this->registerDelete($object);
@@ -309,7 +352,19 @@ class DBSession {
 			return $e->raise();
 		}
 	}
+	//@#
+	#@php4
+	function & delete(& $object) {
+		$this->beginTransaction();
+		$this->registerDelete($object);
 
+		if (is_exception($e =& $object->delete())){
+			$this->rollbackTransaction();
+			return $e->raise();
+		}
+		return $object;
+	}
+	//@#
 	function tableExists($table) {
 		return $this->driver->tableExists($table);
 	}
