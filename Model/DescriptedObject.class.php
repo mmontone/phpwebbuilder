@@ -35,20 +35,22 @@ class DescriptedObject extends PWBObject {
 
 	function commitChanges() {
 		//print_backtrace('Committing changes');
-		foreach($this->metadata->allFieldNames() as $f) {
-			$field =& $this->fieldNamed($f);
-			$field->commitChanges();
-		}
+		foreach($this->getPersistentClasses() as $sc){
+            foreach (array_keys($this->fields[$sc]) as $index) {
+                $this->fields[$sc][$index]->commitChanges();
+            }
+        }
 		$this->setModified(false);
 		$this->triggerEvent('changes_committed', $this);
 	}
 
 	function primitiveCommitChanges() {
 		//print_backtrace('Primitive committing changes');
-		foreach($this->metadata->allFieldNames() as $f) {
-			$field =& $this->fieldNamed($f);
-			$field->primitiveCommitChanges();
-		}
+		      foreach($this->getPersistentClasses() as $sc){
+            foreach (array_keys($this->fields[$sc]) as $index) {
+                $this->fields[$sc][$index]->primitiveCommitChanges();
+            }
+        }
 		$this->setModified(false);
 		$this->triggerEvent('changes_committed', $this);
 	}
@@ -69,10 +71,11 @@ class DescriptedObject extends PWBObject {
 	 */
 	function flushChanges() {
 		//print_backtrace('Flushing changes');
-		foreach($this->metadata->allFieldNames() as $f) {
-			$field =& $this->fieldNamed($f);
-			$field->flushChanges();
-		}
+		foreach($this->getPersistentClasses() as $sc){
+            foreach (array_keys($this->fields[$sc]) as $index) {
+                $this->fields[$sc][$index]->flushChanges();
+            }
+        }
 		$this->setModified(false);
 	}
 	/**
@@ -450,7 +453,7 @@ class PWBValidationError extends PWBException {
 	function initializeObject() {
 		  parent::initializeObject();
 		  	 $this->makeRootObject();
-			 }			 
+			 }
 }//@#
 
 
