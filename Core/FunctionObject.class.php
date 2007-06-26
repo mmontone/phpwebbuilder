@@ -24,7 +24,8 @@ class FunctionObject
     }
 
     function &weakVersion() {
-      return WeakFunctionObject::fromFunctionObject($this);
+    	$wfo =& WeakFunctionObject::fromFunctionObject($this);
+      return $wfo;
     }
 
     function getMethodName() {

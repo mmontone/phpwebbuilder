@@ -14,7 +14,7 @@ class WeakReference {
 	}
 	function &getTarget(){
 		$obj =& $GLOBALS['allObjectsInMem'][$this->refId];
-		#@gencheck if ($obj!=null && $this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}@#
+		#@gencheck if ($obj!=null && @$this->refClass!=getClass($obj)) { echo "got ".$this->refClass ."instead of".getClass($obj);}@#
 		return $obj;
 	}
 	function isNotNull(){
@@ -66,7 +66,7 @@ class WeakFunctionObject extends FunctionObject{
 
 class WeakLambdaObject extends LambdaObject {
   var $target;
-  
+
   function &fromLambdaObject(&$lam) {
     $weaken_env = $lam->env;
     $target =& $lam->getTarget();
@@ -86,12 +86,13 @@ class WeakLambdaObject extends LambdaObject {
     $this->env['self'] =& $null;
   }
 
-  function callWith(&$params) {
+  function &callWith(&$params) {
     // Temporarily restore the target
     $this->env['self'] =& $this->getTarget();
-    parent::callWith($params);
+    $ret =& parent::callWith($params);
     $null = null;
     $this->env['self'] =& $null;
+    return $ret;
   }
 
   	function setTarget(&$target){
