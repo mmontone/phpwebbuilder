@@ -8,9 +8,12 @@ class Translator extends PWBObject
 
     function dictionary() {
     	if ($this->dictionary == null) {
-    		$this->dictionary = parse_ini_file($this->getDictionaryFile(), FALSE);
+    		$df = $this->getDictionaryFile();
+    		if ($df!=null){
+    			$this->dictionary = parse_ini_file($df, FALSE);
+    		}
     	}
-    	return $this->dictionary;
+    	return (array)$this->dictionary;
     }
     function getDictionaryFile(){}
 
