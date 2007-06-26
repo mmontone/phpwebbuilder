@@ -32,7 +32,7 @@ class ObjectsAdmin extends ContextualComponent {
 	    $this->options[$key] = $value;
 	  }
 	}
-	
+
 	function getTitle(){
 		return $this->listObjectsMessage();
 	}
@@ -55,7 +55,8 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 
 	function &displayList() {
-	  $list =& $this->listComponentFor($this->getObjects()->getCollection());
+	  $objs =& $this->getObjects();
+	  $list =& $this->listComponentFor($objs->getCollection());
 	  $list->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
 	  $this->changeBody($list);
 	  return $list;
@@ -92,11 +93,13 @@ class ObjectsAdmin extends ContextualComponent {
 	}
 
 	function newObjectMessage() {
-	  return Translator::Translate('New ' . strtolower($this->objects->getCollection()->dataType));
+		$col =& $this->objects->getCollection();
+	  return Translator::Translate('New ' . strtolower($col->dataType));
 	}
 
 	function listObjectsMessage() {
-	  return Translator::Translate(ucfirst($this->objects->getCollection()->dataType) . 's');
+		$col =& $this->objects->getCollection();
+	  return Translator::Translate(ucfirst($col->dataType) . 's');
 	}
 
 	function &adminComponentFor(&$object) {
