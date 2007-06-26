@@ -16,7 +16,7 @@ function md_echo ($code) {
 }
 
 function defmdf($text) {
-	preg_match('/([[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*)\)[\s\t]*\{(.*)\}/s', $text, $matches);
+	preg_match('/(&?[[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*)\)[\s\t]*\{(.*)\}/s', $text, $matches);
 	//print_r($matches);
 	$name = $matches[1];
 	$context = $matches[2];
@@ -266,7 +266,7 @@ function compile_md_function($f, $rules) {
 function def_md_rule_rule($f, $ruledef) {
 	$params = $ruledef['with'];
 	$body = $ruledef['do'];
-	$s = "function &$f";
+	$s = "function $f";
 
 	if (!is_array($params)) $params = array();
 
