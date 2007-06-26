@@ -47,7 +47,7 @@ class ObjectsNavigator extends ContextualComponent {
 		$this->list->refresh();
 	}
 
-	function addRestrictionComponent(&$restriction, &$component) {
+	function &addRestrictionComponent(&$restriction, &$component) {
 		$c =& $this->getComponentFor($restriction);
 		$fc =& new FieldComponent;
 		$fc->addComponent($c, 'component');
@@ -83,7 +83,7 @@ class ObjectsNavigator extends ContextualComponent {
 		}
 	}
 
-	function validateRestrictions() {
+	function &validateRestrictions() {
 		$errors = array();
 
 		foreach (array_keys($this->restrictions) as $r) {
@@ -119,11 +119,10 @@ class ObjectsNavigator extends ContextualComponent {
 		$this->restrictions[] =& $restriction;
 	}
 
-	function &displayObjects(&$objects) {
+	function displayObjects(&$objects) {
 		$list =& $this->getListComponent($objects);
 		$list->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
 		$this->addComponent($list, 'list');
-		return $list;
 	}
 
 	function elementSelected(&$object) {
@@ -180,12 +179,14 @@ class ObjectsNavigator extends ContextualComponent {
 
 #@defmdf &getListComponent[Component](&$contacts: Collection)
 {
-	return new ObjectsNavigator($contacts);
+	$on =& new ObjectsNavigator($contacts);
+	return $on;
 }
 //@#
 #@defmdf &getListComponent[ObjectsNavigator](&$contacts: Collection)
 {
-	return new ObjectsList($contacts);
+	$ol =& new ObjectsList($contacts);
+	return $ol;
 }
 //@#
 
@@ -281,10 +282,11 @@ class Restriction extends ValueHolder {
 		return $this->getValue();
 	}
 
-	function validate() {
+	function &validate() {
 		// Change this
 		// We need a field to validate
-		return true;
+		$t = true;
+		return $t;
 	}
 
 	/*
