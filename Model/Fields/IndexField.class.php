@@ -50,7 +50,12 @@ class IndexField extends NumField {
 
 	function setTarget(& $target) {
 		#@typecheck $target:PersistentObject@#
-        if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
+	    if (is_null($target)) {
+	      $this->removeTarget();
+	    return;
+	    }
+	  
+	    if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
 	  $this->registerFieldModification();
             $this->removeTarget();
 			$target->addInterestIn('id_changed', new FunctionObject($this, 'refreshId'), array('execute on triggering' => true));

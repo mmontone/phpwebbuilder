@@ -20,6 +20,10 @@ class CollectionField extends DataField {
         }
 	}
 
+	function isEmpty() {
+	  return $this->collection->isEmpty();
+	}
+
     function addResult(&$component) {
     	#@typecheck $component : Component@#
         $component->setValueModel(new PluggableAdaptor(new FunctionObject($this, 'add'), new FunctionObject($this, 'shouldNotImplement')));
