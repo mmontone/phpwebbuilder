@@ -240,14 +240,21 @@ class CollectionFieldModification extends FieldModification {
 }
 
 class CollectionFieldRemoval extends CollectionFieldModification {
+
+  /* This is not working at the moment: we disable it
   function rollback() {
     $this->field->add($this->elem);
-  }
+    }*/
+
+  function rollback() {}
 }
 
 class CollectionFieldAddition extends CollectionFieldModification {
+  /* This is not working at the moment: we disable it
   function rollback() {
     $this->field->remove($this->elem);
+    }*/
+  function rollback() {
   }
 }
 

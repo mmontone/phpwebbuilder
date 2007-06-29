@@ -92,11 +92,11 @@ class CollectionField extends DataField {
 	function addedAsTarget(& $elem, $field) {
 		if ($this->creationParams['reverseField'] == $field && $elem->hasType($this->creationParams['type'])) {
 			$elem->incrementRefCount();
-			if ($this->owner->isPersisted()){
-            	#@persistence_echo echo 'Registering persistence of: ' . $elem->debugPrintString() . '<br/>';@#
-            	$elem->registerPersistence();
+			if ($elem->isPersisted()){
+            	#@persistence_echo echo 'Registering persistence of: ' . $this->owner->debugPrintString() . '<br/>';@#
+            	$this->owner->registerPersistence();
             } else {
-            	#@persistence_echo echo 'NOT registering persistence of: ' . $elem->debugPrintString() . '<br/>';@#
+            	#@persistence_echo echo 'NOT registering persistence of: ' . $this->owner->debugPrintString() . '<br/>';@#
             }
 		}
 	}
@@ -231,6 +231,7 @@ class DirectCollectionFieldType extends CollectionFieldType {
 		$comp =& getdyn('current_component');
 		$comp->saveMemoryTransactionObjects();
 		$this->collection_field->collection->refresh();
+	  $this->collection_field->collection->changed();
         }
 	else {
 	  print_backtrace_and_exit('Sorry: in-memory persistent collections not implemented. ' . $this->collection_field->owner->debugPrintString() . ' is not' .
@@ -249,6 +250,7 @@ class DirectCollectionFieldType extends CollectionFieldType {
        $comp->saveMemoryTransactionObjects();
        $elem->existsObject = false;
        $this->collection_field->collection->refresh();
+      $this->collection_field->collection->changed();
     }
 
     function isDirect() {
@@ -347,6 +349,7 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 
 
         $this->collection_field->collection->refresh();
+	$this->collection_field->collection->changed();
     }
 
     function remove(&$elem) {
@@ -375,6 +378,7 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 	     $comp =& getdyn('current_component');
 	     $comp->saveMemoryTransactionObjects();
          $this->collection_field->collection->refresh();
+	  $this->collection_field->collection->changed();
         }
     }
 
