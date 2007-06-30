@@ -15,7 +15,7 @@ class ObjectViewer extends ObjectPresenter {
 
 #@defmdf &getFieldViewer(&$field: IndexField)
 {
-	$lab =& new Label($field->asTextHolder());
+	$lab =& new Text($field->asTextHolder());
 	return $lab;
 }
 //@#

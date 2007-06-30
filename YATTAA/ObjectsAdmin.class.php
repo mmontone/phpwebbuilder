@@ -125,7 +125,7 @@ class ObjectsAdmin extends ContextualComponent {
 
   function creationSuccessful(&$object) {
     $this->adminObject($object);
-    $this->triggerEvent('object_created', $obj);
+    $this->triggerEvent('object_created', $object);
   }
 }//@#
 
@@ -137,13 +137,15 @@ class ObjectsAdmin extends ContextualComponent {
 
 #@defmdf &getAdminComponent[Component](&$object:Collection<PersistentObject>)
 {
-		return new ObjectsAdmin($object);
+		$oa =& new ObjectsAdmin($object);
+		return $oa;
 }
 //@#
 
 #@defmdf &getAdminComponent[Component](&$object:PersistentObject)
 {
-		return new ObjectAdmin($object);
+		$oa =& new ObjectAdmin($object);
+		return $oa;
 }
 //@#
 

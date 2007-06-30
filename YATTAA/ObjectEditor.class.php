@@ -205,20 +205,23 @@ class ObjectEditor extends ObjectPresenter {
 
 #@defmdf &getFieldEditor[Component](&$field: DataField)
 {
-	return new Input($field);
+	$in =& new Input($field);
+	return $in;
 }
 //@#
 
 #@defmdf &getFieldEditor[Component](&$field: TextArea)
 {
-	return new TextAreaComponent($field);
+	$tac =& new TextAreaComponent($field);
+	return $tac;
 }
 //@#
 
 
 #@defmdf &getFieldEditor[Component](&$field: IndexField)
 {
-	return new Select($field->asValueModel(), new PersistentCollection($field->getDataType()));
+	$sel =& new Select($field->asValueModel(), new PersistentCollection($field->getDataType()));
+	return $sel;
 }
 //@#
 
@@ -228,25 +231,29 @@ class ObjectEditor extends ObjectPresenter {
 	//$oa->addInterestIn('object_created',new FunctionObject($field, 'addFromEvent'));
 	//$oa->addInterestIn('object_deleted',new FunctionObject($field, 'removeFromEvent'));
 	//return $oa;
-	return new Label('');
+	$lab =& new Label('');
+	return $lab;
 }
 //@#
 
 #@defmdf &getFieldEditor[Component](&$field: DateField)
 {
-	return new DateInput($field->getValue());
+	$di =& new DateInput($field->getValue());
+	return $di;
 }
 //@#
 
 #@defmdf &getFieldEditor[Component](&$field: DateTimeField)
 {
-	return new DateTimeInput($field->getValue());
+	$di =& new DateTimeInput($field->getValue());
+	return $di;
 }
 //@#
 
 #@defmdf &getFieldEditor[Component](&$field: BoolField)
 {
-	return new CheckBox($field);
+	$cb =& new CheckBox($field);
+	return $cb;
 }
 //@#
 

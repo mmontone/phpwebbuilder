@@ -188,14 +188,15 @@ class ObjectAdmin extends ContextualComponent {
 //@#
 
 #@defmdf &getObjectViewer[Component](&$object:PersistentObject)
-{
-		return new ObjectViewer($object);
+{		$ov =& new ObjectViewer($object);
+		return $ov;
 }
 //@#
 
 #@defmdf &getObjectEditor[Component](&$object:PersistentObject)
 {
-		return new ObjectEditor($object);
+		$oe =& new ObjectEditor($object);
+		return $oe;
 }//@#
 
 ?>

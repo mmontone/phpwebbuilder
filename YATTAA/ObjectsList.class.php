@@ -68,7 +68,7 @@ class ObjectElement extends ContextualComponent {
 }
 
 #@defmdf &getListElement[ObjectsList](&$object:PersistentObject)
-{return new ObjectElement($object);}
+{$oe =& new ObjectElement($object);return $oe;}
 //@#
 
 ?>
