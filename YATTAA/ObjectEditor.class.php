@@ -11,7 +11,7 @@
 
 
 class ObjectEditor extends ObjectPresenter {
-	var $object_edited = false;
+	var $object_edited	 = false;
 	var $edit_function;
 
 	function initialize(){
@@ -177,6 +177,7 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function objectEdited() {
+      $this->object_edited = true;
       if ($this->options['inform_success']) {
 	$dialog =& NotificationDialog::Create($this->successfulEditionMessage());
 	$dialog->onAccept(new FunctionObject($this, 'successMessageConfirmed'));
@@ -192,8 +193,7 @@ class ObjectEditor extends ObjectPresenter {
     }
 
     function successMessageConfirmed() {
-      $this->object_edited = true;
-      $this->callbackWith($this->objectEditedCallback(), $this->object);
+      	$this->callbackWith($this->objectEditedCallback(), $this->object);
     }
     function commitTransaction() {
       if ($this->options['commit']) {
