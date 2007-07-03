@@ -227,6 +227,11 @@ class DirectCollectionFieldType extends CollectionFieldType {
 		//                                          -- marian
 		$elem->registerForPersistence();
 		$elem->{$this->collection_field->getReverseField()}->setTarget($this->collection_field->getOwner());
+		// We need to call setModify explicitly here because we want the object to be persisted
+		// If we don't do this we have a bug, because maybe the elem reversed field target was already set
+		// but the object was not registered for persistence at the moment. Then, when we call setTarget here
+		// no modification is triggered and the object is not persisted, silently.
+		$elem->setModified(true);
 		$elem->incrementRefCount();
 
                 // This "commit" may seem to be tricky. We are not doing commitMemoryTransaction because that is not our
@@ -341,8 +346,11 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 		$jdt = $this->getJoinDataType();
 		$joinObject =& new $jdt;
 		$joinObject->registerForPersistence();
-	        $joinObject->{$this->getReverseField()}->setTarget($this->collection_field->getOwner());
+	    $joinObject->{$this->getReverseField()}->setTarget($this->collection_field->getOwner());
 		$joinObject->{$this->getTargetField()}->setTarget($elem);
+		// We need to call setModify explicitly here because we want the object to be persisted.
+		// See the comment in DirectCollectionFieldType>>add method
+		$elem->setModified(true);
 		$comp =& getdyn('current_component');
 		$comp->saveMemoryTransactionObjects();
         }
