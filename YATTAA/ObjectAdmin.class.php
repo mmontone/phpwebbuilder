@@ -19,6 +19,8 @@ class ObjectAdmin extends ContextualComponent {
 	  $this->object =& $object;
 	  $this->options = $this->getDefaultOptions();
 	  $this->setOptions($options);
+	  $this->edit_function =& new LambdaObject('&$object','');
+	  $this->delete_function =& new LambdaObject('&$object','');
 
 	  parent::ContextualComponent();
 	}
@@ -154,10 +156,10 @@ class ObjectAdmin extends ContextualComponent {
 	function editObject() {
    	  	$model =& $this->getModel();
    	  	$editor =& $this->getObjectEditor($this->getModel());
-	  $editor->onEditionDo($this->edit_function);
-   	  	$editor->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
-	  $editor->registerCallback('cancel', new FunctionObject($this, 'editionCancelled'));
-	  $this->changeBody($editor);
+	  	$editor->onEditionDo($this->edit_function);
+	  	$editor->registerCallback('object_edited', new FunctionObject($this, 'objectEdited'));
+		$editor->registerCallback('cancel', new FunctionObject($this, 'editionCancelled'));
+		$this->changeBody($editor);
     }
 
 	function objectEdited(&$object) {
