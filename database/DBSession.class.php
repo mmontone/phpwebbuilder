@@ -26,6 +26,7 @@ class DBSession {
 			print_backtrace_and_exit('DB Error: rolling back transaction. committing: ' . print_r($this->committing, true) . ' transaction started: ' . print_r($this->transaction_started, true));
 			$this->rollbackTransaction();
 			$this->committing = false;
+			$this->transaction_started=false;
 			$a = array ();
 			$this->registeredObjects = & $a;
 		}

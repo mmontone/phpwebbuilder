@@ -81,7 +81,7 @@ class ObjectsAdmin extends ContextualComponent {
 	function &adminObject(&$obj) {
 	  $admin =& $this->getAdminComponent($obj);
 	  $self =& $this;
-	  $admin->onEditionDo(new LambdaObject('&$object', '$self->doNothing();', get_defined_vars()));
+	  $admin->onEditionDo(new LambdaObject('&$object', ''));
 	  $admin->onDeletionDo(new LambdaObject('&$object', '$self->objects->remove($object);', get_defined_vars()));
 	  $this->call($admin);
 	  return $admin;

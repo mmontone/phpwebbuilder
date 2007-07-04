@@ -74,6 +74,7 @@ class WeakLambdaObject extends LambdaObject {
     $weaken_env['self'] =& $null;
     $wr =& new WeakLambdaObject('','',$weaken_env);
     $wr->fdef = $lam->fdef;
+    $wr->functionName = $lam->functionName;
     $wr->setTarget($target);
     return $wr;
   }

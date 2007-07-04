@@ -174,7 +174,7 @@ class Component extends PWBObject {
 	/** Registers a callback for the component */
 	function registerCallback($selector, & $callback) {
 		#@typecheck $selector:string, $callback:FunctionObject@#
-		$this->registered_callbacks[$selector] = & WeakFunctionObject :: fromFunctionObject($callback);
+	    $this->registered_callbacks[$selector] = & $callback->weakVersion();
 	}
 	function & addComponent(& $component, $ind = null) {
 		#@check is_a($component, 'Component')@#

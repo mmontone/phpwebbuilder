@@ -48,12 +48,23 @@ class LambdaObject  {
 
     function &callWith(&$params) {
     	$_self =& $this;
-        if (!function_exists($this->functionName)) {
+      echo $this->debugPrintString() . ' function name: ' . $this->functionName . '<br/>';
+      echo $this->debugPrintString() . ' fdef: ' . $this->fdef . '<br/>';
+      if (!function_exists($this->functionName)) {
             eval($this->fdef);
+	    echo $this->debugPrintString() . ' evaluatin fdef: ' . $this->fdef . '<br/>';
         }
 		$result = null;
         eval('$result =& ' . $this->functionName . '($_self, $params);');
         return $result;
+    }
+
+    function execute() {
+      $this->call();
+    }
+
+    function executeWith(&$params) {
+      $this->callWith($params);
     }
 
     function &getValue() {
@@ -62,6 +73,14 @@ class LambdaObject  {
 
     function setValue(&$value) {
     	$this->callWith($value);
+    }
+
+    function printString() {
+      return $this->debugPrintString();
+    }
+
+    function debugPrintString() {
+      return '[' . ucfirst(get_class($this)) . ' ' . $this->fdef . ']';
     }
 }
 
