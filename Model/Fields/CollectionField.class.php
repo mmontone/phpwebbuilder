@@ -69,23 +69,36 @@ class CollectionField extends DataField {
 	function add(& $elem) {
       $current_component =& getdyn('current_component');
 	  $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
+      $current_component->saveMemoryTransactionObjects();
       $this->primAdd($elem);
+      $this->collection->refresh();
+		$this->collection->changed();
     }
 
     function primAdd(&$elem) {
     	$validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
         $this->owner->$validation_method($elem);
-        return $this->type->add($elem);
+        // This "commit" may seem to be tricky. We are not doing commitMemoryTransaction because that is not our
+		// purpose. We don't want to discard rollbackable commands. The transaction is not finished. We only
+		// want to save registered objects to the database.
+		$this->type->add($elem);
+		$current_component =& getdyn('current_component');
+    	$current_component->saveMemoryTransactionObjects();
     }
 
 	function remove(& $elem) {
 	  $current_component =& getdyn('current_component');
 	  $current_component->registerFieldModification(new CollectionFieldRemoval($this, $elem));
+	  $current_component->saveMemoryTransactionObjects();
 	  $this->primRemove($elem);
+	$this->collection->refresh();
+	$this->collection->changed();
 	}
 
     function primRemove(&$elem) {
-    	return $this->type->remove($elem);
+    	$this->type->remove($elem);
+    	$current_component =& getdyn('current_component');
+    	$current_component->saveMemoryTransactionObjects();
     }
 
 	function removedAsTarget(& $elem, $field) {
@@ -233,14 +246,6 @@ class DirectCollectionFieldType extends CollectionFieldType {
 		// no modification is triggered and the object is not persisted, silently.
 		$elem->setModified(true);
 		$elem->incrementRefCount();
-
-                // This "commit" may seem to be tricky. We are not doing commitMemoryTransaction because that is not our
-		// purpose. We don't want to discard rollbackable commands. The transaction is not finished. We only
-		// want to save registered objects to the database.
-		$comp =& getdyn('current_component');
-		$comp->saveMemoryTransactionObjects();
-		$this->collection_field->collection->refresh();
-	  $this->collection_field->collection->changed();
         }
 	else {
 	  print_backtrace_and_exit('Sorry: in-memory persistent collections not implemented. ' . $this->collection_field->owner->debugPrintString() . ' is not' .
@@ -253,13 +258,7 @@ class DirectCollectionFieldType extends CollectionFieldType {
             $this->collection_field->creationParams['reverseField'] }
         ->removeTarget();
         $elem->decrementRefCount();
-	   //$db =& DBSession::Instance();
-	   //$db->save($elem);
-	   $comp =& getdyn('current_component');
-       $comp->saveMemoryTransactionObjects();
        $elem->existsObject = false;
-       $this->collection_field->collection->refresh();
-      $this->collection_field->collection->changed();
     }
 
     function isDirect() {
@@ -351,17 +350,11 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 		// We need to call setModify explicitly here because we want the object to be persisted.
 		// See the comment in DirectCollectionFieldType>>add method
 		$elem->setModified(true);
-		$comp =& getdyn('current_component');
-		$comp->saveMemoryTransactionObjects();
         }
 	else {
 	  print_backtrace_and_exit('Sorry: in-memory persistent collections not implemented. ' . $this->collection_field->owner->debugPrintString() . ' is not' .
 	                           ' persisted and so we cannot reference it from the database');
 	}
-
-
-        $this->collection_field->collection->refresh();
-	$this->collection_field->collection->changed();
     }
 
     function remove(&$elem) {
@@ -384,13 +377,6 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 	     $joinObject->{$this->getReverseField()}->getTarget();
 	     $joinObject->{$this->getReverseField()}->removeTarget();
 	     $joinObject->{$this->getTargetField()}->removeTarget();
-         //$db =& DBSession::Instance();
-	     // We assume there are not other references to JoinObjects so we can safely remove it from the db
-	     //$db->delete($joinObject);
-	     $comp =& getdyn('current_component');
-	     $comp->saveMemoryTransactionObjects();
-         $this->collection_field->collection->refresh();
-	  $this->collection_field->collection->changed();
         }
     }
 

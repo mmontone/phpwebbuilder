@@ -96,7 +96,7 @@ class ObjectAdmin extends ContextualComponent {
 
 	function commitTransaction() {
 	  if ($this->options['commit']) {
-	    DBSession::commitInTransaction();
+	    DBSessionInstance::CommitInTransaction();
 	  }
 	}
 

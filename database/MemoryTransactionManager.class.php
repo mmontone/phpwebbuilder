@@ -41,13 +41,11 @@ class MemoryTransaction {
     var $modifications = array();
     var $thread;
     var $nesting = -1;
-    // Tells whether there's been a db query in the transaction context
-    // If that is true, then we have to commit when we rollback.
-    var $db_touched = false;
     var $commited=false;
 
     function MemoryTransaction(&$thread) {
     	$this->thread =& $thread;
+    	DBSessionInstance::BeginTransaction();
     }
 
     function isEmpty() {
@@ -61,6 +59,8 @@ class MemoryTransaction {
 
       #@tm_echo print_backtrace('Rolling back ' . $this->debugPrintString() . '<br/>');@#
 
+      DBSessionInstance::Rollback();
+
      // We need too rollback modifications in order
      $original_modifications = array_reverse($this->modifications);
 	foreach(array_keys($original_modifications) as $key) {
@@ -71,13 +71,8 @@ class MemoryTransaction {
         $a = array();
         $this->modifications =& $a;
 
-	// If the db was touched, then we have to commit the rollback
-	if ($this->db_touched) {
-	  $this->commitInTransaction();
+		#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
 	}
-
-	#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
-    }
 
     function registerFieldModification(&$mod) {
         #@tm_echo echo 'Registering ' . $mod->debugPrintString() . ' in ' . $this->debugPrintString() . '<br/>';@#
@@ -120,8 +115,8 @@ class MemoryTransaction {
 	  }
 
 	  #@persistence_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
-	  //DBSession::CommitMemoryTransaction($this);
-	  DBSession::CommitInTransaction();
+	  //DBSessionInstance::CommitMemoryTransaction($this);
+	  DBSessionInstance::Commit();
 
 	  // We remove modifications, contrary to saveObjectsInTransaction
 	  $a = array();
@@ -139,7 +134,6 @@ class MemoryTransaction {
       $db->beginTransaction();
       try {
             $db->saveRegisteredObjects($db->registeredObjects);
-            $this->db_touched = true;
       }
       catch(DBError $e) {
             $db->rollbackTransaction();
@@ -159,7 +153,6 @@ class MemoryTransaction {
             $db->rollbackTransaction();
             $e->raise();
       }
-      $this->db_touched = true;
     }
 	//@#
 	function unregisterAllObjects() {
@@ -240,27 +233,24 @@ class CollectionFieldModification extends FieldModification {
 }
 
 class CollectionFieldRemoval extends CollectionFieldModification {
-
-  /* This is not working at the moment: we disable it
   function rollback() {
-    $this->field->add($this->elem);
-    }*/
-
-  function rollback() {}
+  	//$this->field->primAdd($this->elem);
+  	$this->field->collection->refresh();
+  	$this->field->collection->changed();
+  }
 }
 
 class CollectionFieldAddition extends CollectionFieldModification {
-  /* This is not working at the moment: we disable it
   function rollback() {
-    $this->field->remove($this->elem);
-    }*/
-  function rollback() {
-  }
+    //$this->field->primRemove($this->elem);
+    $this->field->collection->refresh();
+  	$this->field->collection->changed();
+    }
 }
 
 class RootObjectsCollectionAddition extends CollectionFieldModification {
   function rollback() {
-    DBSession::unregisterObject($elem);
+    DBSession::unregisterObject($this->elem);
   }
 }
 

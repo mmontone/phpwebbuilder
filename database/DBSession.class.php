@@ -8,31 +8,97 @@ $prepared_to_save = array ();
 class DBSession {
 	var $commands = array (); // Undoable commands
 	var $registeredObjects = array ();
-	var $committing = false; // Whether we are committing a transaction
 	var $lastSQL;
 	var $lastError;
-	var $transaction_started = false;
+	var $nesting = 0;
+	var $rollback_on_error = false;
+	var $rollback=false;
 
 	function DBSession() {
+		// We register a function for cleaning up things when a request finishes
 		pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
 	}
 
-	function setTransactionStarted($bool) {
-		$this->transaction_started = $bool;
-	}
-
+	/*
+	 * The per request cleaner function
+	 */
 	function & shutdown() {
-		if ($this->committing or $this->transaction_started) {
-			print_backtrace_and_exit('DB Error: rolling back transaction. committing: ' . print_r($this->committing, true) . ' transaction started: ' . print_r($this->transaction_started, true));
+		/*
+		if ($this->committing) {
+			print_backtrace_and_exit('DB Error: rolling back transaction. committing: ' . print_r($this->committing, true) . ' transaction started: ' . print_r($this->in_transaction, true));
 			$this->rollbackTransaction();
 			$this->committing = false;
-			$this->transaction_started=false;
 			$a = array ();
 			$this->registeredObjects = & $a;
 		}
 
         $n = null;
-        return $n;
+        return $n;*/
+	}
+
+	/*
+	 * Transaction nesting related methods
+	 */
+
+	function inTransaction() {
+		return $this->nesting > 0;
+	}
+
+	function incrementTransactionNesting() {
+		$this->nesting++;
+	}
+
+	function getTransactionNesting() {
+		return $this->nesting;
+	}
+
+	function decrementTransactionNesting() {
+		$this->nesting--;
+	}
+
+	/*
+	 * The rolling back of nested transactions
+	 */
+	function rollback() {
+		#@sql_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
+		#@sql_echo2 print_backtrace();@#
+
+		if ($this->rollback_on_error) return;
+        return $this->primRollback();
+	}
+
+	function primRollback() {
+		#@gencheck if ($this->getTransactionNesting() <= 0)
+        {
+          print_backtrace('Error: trying to rollback a non existing transaction');
+        }//@#
+
+        #@sql_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
+        #@sql_echo2 print_backtrace();@#
+
+        if ($this->getTransactionNesting() == 1) {
+			$this->rollbackTransaction();
+		}
+		else {
+			#@sql_echo2 print_backtrace('Setting rollback in true <br/>');@#
+
+			$this->rollback=true;
+		}
+
+		$this->decrementTransactionNesting();
+	}
+
+	function commit() {
+		return $this->commitRegisteredObjects($this->registeredObjects);
+	}
+
+	/*
+	 * Primitive DB operations and DB commands
+	 */
+
+	function addCommand(& $command) {
+		#@sql_echo echo 'Adding command ' . $command->debugPrintString() . '<br/>';@#
+		$this->commands[] = & $command;
 	}
 
 	function registerSave(& $object) {
@@ -47,15 +113,17 @@ class DBSession {
 		$this->addCommand(new DeleteObjectDBCommand($object));
 	}
 
-	function addCommand(& $command) {
-		#@sql_echo echo 'Adding command ' . $command->debugPrintString() . '<br/>';@#
-		$this->commands[] = & $command;
+	function beginTransaction() {
+		if (!$this->inTransaction()) {
+			$this->driver->beginTransaction();
+			$this->incrementTransactionNesting();
+			#@sql_echo echo 'Beggining transaction<br/>';@#
+			#@sql_echo2 print_backtrace();@#
+		}
 	}
 
 	function commitTransaction() {
 		#@sql_echo echo 'Committing transaction (committing commands)<br/>';@#
-		$this->beginTransaction();
-		$this->committing = true;
 		$this->driver->commit();
 
 		foreach (array_keys($this->commands) as $c) {
@@ -67,8 +135,6 @@ class DBSession {
 
 		$n = array ();
 		$this->registeredObjects = & $n;
-		$this->committing = false;
-		$this->setTransactionStarted(false);
 	}
 
 	function rollbackTransaction() {
@@ -82,9 +148,11 @@ class DBSession {
 		}
 
 		$this->commands = array ();
-		$this->setTransactionStarted(false);
 	}
 
+	/*
+	 * Persistence by reacheability protocol
+	 */
 	function registerObject(& $object) {
 		#@persistence_echo echo 'Registering ' . $object->debugPrintString() . ' in ' . print_object($this) . '<br/>';@#
 		$set = isset ($this->registeredObjects[$object->getInstanceId()]);
@@ -96,29 +164,25 @@ class DBSession {
 		}
 	}
 
-	function beginTransaction() {
-		if (!$this->transaction_started) {
-			$this->setTransactionStarted(true);
-			$this->driver->beginTransaction();
-			#@sql_echo echo 'Beggining transaction<br/>';@#
-			#@sql_echo2 print_backtrace();@#
-		}
-	}
-
 	// Commits the modified objects in a transaction
-	function CommitInTransaction() {
+	function commitInTransaction() {
 		// Thoughts: explicit calls to CommitInTransaction is semantically irrelevant in the presence of local memory transactions.
 		// Now, we may have commit policies if we wanted. For example, we may commit on shutdown and forget about
 		// doing explicit commits.
 		//                          -- marian
 
 		#@persistence_echo echo 'Committing  global DB transaction</br>';@#
-		$db = & DBSession :: Instance();
-		$db->beginTransaction();
-		$db->doCommit($db->registeredObjects);
+		$this->beginTransaction();
+		$this->commit();
 	}
 
-	// This is a class method
+	/* This method is called from Memory Transactions and not explicitely by the user */
+	function commitMemoryTransaction(& $transaction) {
+		#@persistence_echo echo 'Committing  ' . $object->debugPrintString() . '</br>';@#
+		$this->beginTransaction();
+		$this->commitRegisteredObjects($transaction->registeredObjects);
+	}
+
 	// It is called by ObjectsCreators when they are not able to create the object
 	// because of an error in the DB (ex. a DB restriction).
 	// So, ObjectCreators call them, and ObjectEditors don't.
@@ -130,14 +194,13 @@ class DBSession {
 		// We have to set all objects isPersisted to false so that they get registered for
 		// persistence again afterwards --marian
 
-		$db = & DBSession :: Instance();
-		#@persistence_echo echo 'Unregistering all objects(' . count($db->registeredObjects). ')</br>';@#
-		foreach (array_keys($db->registeredObjects) as $i) {
-			#@persistence_echo echo 'Unpersisting ' . $db->registeredObjects[$i]->debugPrintString() . '<br/>';@#
-			$db->registeredObjects[$i]->toPersist = false;
+		#@persistence_echo echo 'Unregistering all objects(' . count($this->registeredObjects). ')</br>';@#
+		foreach (array_keys($this->registeredObjects) as $i) {
+			#@persistence_echo echo 'Unpersisting ' . $this->registeredObjects[$i]->debugPrintString() . '<br/>';@#
+			$this->registeredObjects[$i]->toPersist = false;
 		}
 		$a = array ();
-		$db->registeredObjects = & $a;
+		$this->registeredObjects = & $a;
 	}
 
 	function unregisterObject(& $object) {
@@ -147,17 +210,41 @@ class DBSession {
 		$object->toPersist = false;
 	}
 
-	function CommitMemoryTransaction(& $transaction) {
-		#@persistence_echo echo 'Committing  ' . $object->debugPrintString() . '</br>';@#
-		$db = & DBSession :: Instance();
-		$db->beginTransaction();
-		$db->doCommit($transaction->registeredObjects);
+	function commitRegisteredObjects(& $registeredObjects) {
+		#@gencheck if ($this->getTransactionNesting() <= 0)
+        {
+		  print_backtrace('Error: trying to commit a non existing transaction');
+		}//@#
+
+		#@persistence_echo echo 'Commiting '.$this->getTransactionNesting().'<br/>';@#
+        if ($this->getTransactionNesting() == 1) {
+			if (!$this->rollback) {
+				#@sql_echo echo 'Commiting transaction ('. $this->getTransactionNesting() . ')<br/>';@#
+                #@sql_echo2 print_backtrace();@#
+				$this->saveRegisteredObjects($registeredObjects);
+				$this->commitTransaction();
+			}
+			else {
+				#@sql_echo	echo ('Rollback transaction ('. $this->getTransactionNesting() . ')<br/>');@#
+                #@sql_echo2 print_backtrace();@#
+				$this->rollbackTransaction();
+			}
+		}
+		#@sql_echo
+		else {
+			if (!$this->rollback) {
+				echo ('Commiting transaction ('. $this->getTransactionNesting() . ')<br/>');
+                #@sql_echo2 print_backtrace();@#
+			}
+			else {
+				echo ('Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');
+                #@sql_echo2 print_backtrace();@#
+			}
+		}//@#
+
+		$this->decrementTransactionNesting();
 	}
 
-	function doCommit(& $registeredObjects) {
-		$this->saveRegisteredObjects($registeredObjects);
-		$this->commitTransaction();
-	}
 	#@php5
 	function saveRegisteredObjects(& $registeredObjects) {
 		global $prepared_to_save;
@@ -179,7 +266,7 @@ class DBSession {
 			PersistentObject :: CollectCycles();
 		} catch (DBError $e) {
 			foreach (array_keys($toRollback) as $i) {
-				echo 'REGISTERING object ' . $toRollback[$i]->debugPrintString() . '<br/>';
+				echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';
 				$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
 			}
 
@@ -205,7 +292,7 @@ class DBSession {
 			}
 			if (is_exception($e =& $this->save($elem))){
 				foreach (array_keys($toRollback) as $i) {
-					echo 'REGISTERING object ' . $toRollback[$i]->debugPrintString() . '<br/>';
+					echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';
 					$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
 				}
 
@@ -215,13 +302,6 @@ class DBSession {
 		PersistentObject :: CollectCycles();
 	}
 	//@#
-
-	function rollback() {
-		#@sql_echo echo ( 'Rolling back transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>');@#
-		#@sql_echo2 print_backtrace();@#
-
-		$this->rollbackTransaction();
-	}
 
 	function & Instance() {
 		$slot = 'db_session';
@@ -377,6 +457,38 @@ class DBSession {
 	}
 	function referenceType() {
 		return $this->driver->referenceType();
+	}
+}
+
+class DBSessionInstance {
+	function BeginTransaction() {
+		$db =& DBSession::Instance();
+		$db->beginTransaction();
+	}
+
+	function Commit() {
+		$db =& DBSession::Instance();
+		$db->commit();
+	}
+
+	function Rollback() {
+		$db =& DBSession::Instance();
+		$db->rollback();
+	}
+
+	function CommitInTransaction() {
+		$db =& DBSession::Instance();
+		$db->commitInTransaction();
+	}
+
+	function CommitMemoryTransaction(&$transaction) {
+		$db =& DBSession::Instance();
+		$db->commitMemoryTransaction($transaction);
+	}
+
+	function UnregisterAllObjects() {
+		$db =& DBSession::Instance();
+		$db->unregisterAllObjects();
 	}
 }
 
