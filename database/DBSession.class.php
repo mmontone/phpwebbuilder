@@ -266,7 +266,7 @@ class DBSession {
 			PersistentObject :: CollectCycles();
 		} catch (DBError $e) {
 			foreach (array_keys($toRollback) as $i) {
-				echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';
+				#@persistence_echo echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';@#
 				$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
 			}
 
@@ -292,7 +292,7 @@ class DBSession {
 			}
 			if (is_exception($e =& $this->save($elem))){
 				foreach (array_keys($toRollback) as $i) {
-					echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';
+					#@persistence_echo echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';@#
 					$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
 				}
 
