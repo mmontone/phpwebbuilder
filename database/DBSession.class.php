@@ -116,10 +116,10 @@ class DBSession {
 	function beginTransaction() {
 		if (!$this->inTransaction()) {
 			$this->driver->beginTransaction();
-			$this->incrementTransactionNesting();
 			#@sql_echo echo 'Beggining transaction<br/>';@#
 			#@sql_echo2 print_backtrace();@#
 		}
+		$this->incrementTransactionNesting();
 	}
 
 	function commitTransaction() {
@@ -395,7 +395,7 @@ class DBSession {
 	#@php5
 	function & save(& $object) {
 		$db = & DBSession :: Instance();
-		$db->beginTransaction();
+		//$db->beginTransaction();
 		$db->registerSave($object);
 		try {
 			$object->save();
@@ -410,7 +410,7 @@ class DBSession {
 	#@php4
 	function & save(& $object) {
 		$db = & DBSession :: Instance();
-		$db->beginTransaction();
+		//$db->beginTransaction();
 		$db->registerSave($object);
 		if (is_exception($e =& $object->save())){
 			$this->rollbackTransaction();
@@ -457,6 +457,10 @@ class DBSession {
 	}
 	function referenceType() {
 		return $this->driver->referenceType();
+	}
+
+	function printString() {
+		return '['  . ucfirst(get_class($this)) . ' transaction nesting: ' . $this->getTransactionNesting() . ']';
 	}
 }
 

@@ -64,9 +64,10 @@ class DescriptedObject extends PWBObject {
             $ret []= $field . ':' .  $this->$field->debugViewValue();
         }
         $ret = implode(',',$ret);
-        return $this->primPrintString($ret);
+        return $this->primPrintString('oid: ' . $this->getID() . ' exists: ' . print_r($this->existsObject,true) . ' ' . $ret);
     }
-	/**
+
+    /**
 	 * Removes all changes made to the object
 	 */
 	function flushChanges() {

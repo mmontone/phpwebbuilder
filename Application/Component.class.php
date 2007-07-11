@@ -435,7 +435,7 @@ class Component extends PWBObject {
     var $transaction; // The transaction the component may begin
 
     function beginMemoryTransaction() {
-        if (is_object($this->memory_transaction)) {
+        if (is_object($this->memory_transaction) and $this->memory_transaction->isActive()) {
         	print_backtrace('Transaction already begun in: ' . $this->debugPrintString());
         }
         else {
@@ -450,15 +450,6 @@ class Component extends PWBObject {
     	return $this->getVeryDynVar('memory_transaction');
     }
 
-    function &getMemoryTransactionOrBegin() {
-    	$t =& $this->getMemoryTransaction();
-        if(!is_object($t)) {
-        	$t =& $this->beginMemoryTransaction();
-        }
-
-        return $t;
-    }
-
     function rollbackMemoryTransaction() {
         if (!is_object($this->memory_transaction)) {
         	print_backtrace_and_exit('Error: you are trying to rollback a non existing transaction in ' . $this->debugPrintString() . '.' .
@@ -469,16 +460,22 @@ class Component extends PWBObject {
 
     function commitMemoryTransaction() {
       if (!is_object($this->memory_transaction)) {
-	print_backtrace_and_exit('Trying to commit a non started transaction in ' . $this->debugPrintString());
+		print_backtrace_and_exit('Trying to commit a non started transaction in ' . $this->debugPrintString());
       }
       $this->memory_transaction->commitInTransaction();
     }
 
+    function commitAndBeginMemoryTransaction() {
+    	$this->commitMemoryTransaction();
+    	$this->beginMemoryTransaction();
+    }
+
     function saveMemoryTransactionObjects() {
-      if (!is_object($this->memory_transaction)) {
+      $transaction =& $this->getMemoryTransaction();
+      if (!is_object($transaction)) {
 	print_backtrace_and_exit('Trying to save  objects of a non started transaction in ' . $this->debugPrintString());
       }
-      $this->memory_transaction->saveObjectsInTransaction();
+      $transaction->saveObjectsInTransaction();
     }
 
     function unregisterAllMemoryTransactionObjects() {
@@ -489,8 +486,39 @@ class Component extends PWBObject {
     }
 
     function registerFieldModification(&$mod) {
-        $t =& $this->getMemoryTransactionOrBegin();
-        $t->registerFieldModification($mod);
+        $t =& $this->getMemoryTransaction();
+        if(!is_object($t)) {
+        	/* What should we do if we don't find a memory transaction?
+        	 * Options:
+        	 * 1) Create a new one in the current component implicitly (the programmer didn't tell to do that)
+        	 * Problems with this one: as a memory transaction means a db-transaction or an increment in the transaction nesting (this is
+        	 * because we want observable collections and so on) and the programmer was not given a chance to commit or rollback it (he is probably
+        	 * not aware of it from code), then we have a memory inconsistency issue or, at least, a transaction nesting inconsistency issue.
+        	 * So, that's not an option if we want to have observable queries all the time.
+        	 * 2) Avoid registering the object modification in any transaction. We should warn the developer about that using sql_echo, though.
+        	 * 3) Raise and error and force the programmer to begin a transaction before the object modification happens.
+        	 *
+        	 * I'm implementing option 2 (with a hack included), but I think option 3 would be the right way to go.
+        	 * The hack is we notify the DBSession of the change anyway (note that these breaks the notion of locality transactions should provide).
+        	 * I don't implement option 3 for the moment because it turned out to be to rigid for the application programmer (for instance, all objects modifications
+        	 * had to be done in the context of a transaction). Implementing only 2, the programmer can decide not to register field modifications in a transactions. However,
+        	 * he should be aware that he is not going to have control over those field changes.
+        	 *                       -- marian
+        	 */
+        	/* Option 1:
+        	$t =& $this->beginMemoryTransaction();
+        	*/
+
+        	/* Option 3:
+        	print_backtrace_and_exit('Error: no active memory transaction to register modifications');
+        	*/
+
+        	/* Option 2: */
+        	#@sql_echo echo 'Not registering ' . $mod->debugPrintString() . '(no memory transaction for: ' . $this->debugPrintString() .')</br>';@#
+        }
+        else {
+	        $t->registerFieldModification($mod);
+        }
     }
 
     function aboutToExecuteFunction(&$function) {

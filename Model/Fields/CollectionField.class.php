@@ -258,7 +258,6 @@ class DirectCollectionFieldType extends CollectionFieldType {
             $this->collection_field->creationParams['reverseField'] }
         ->removeTarget();
         $elem->decrementRefCount();
-       $elem->existsObject = false;
     }
 
     function isDirect() {
