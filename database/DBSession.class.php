@@ -1,6 +1,5 @@
 <?php
 
-
 #@preprocessor Compiler::usesClass(__FILE__, constant('db_driver'));@#
 
 $prepared_to_save = array ();
@@ -397,14 +396,8 @@ class DBSession {
 		$db = & DBSession :: Instance();
 		//$db->beginTransaction();
 		$db->registerSave($object);
-		try {
-			$object->save();
-			return $object;
-		} catch (Exception $e) {
-			$this->rollbackTransaction();
-
-			return $e->raise();
-		}
+		$object->save();
+		return $object;
 	}
 	//@#
 	#@php4
