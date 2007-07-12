@@ -473,9 +473,19 @@ class Component extends PWBObject {
     function saveMemoryTransactionObjects() {
       $transaction =& $this->getMemoryTransaction();
       if (!is_object($transaction)) {
-	print_backtrace_and_exit('Trying to save  objects of a non started transaction in ' . $this->debugPrintString());
+		/* This method is called from CollectionField in order to have observable collections all the time.
+		 * It is not clear to me what we should do when there's not an active memory transaction to save the objects.
+		 * Options:
+		 * a) Do nothing
+		 * b) Raise an error
+		 * c) Commit objects globally (these memory transactions are not local anyway)
+		 * Here we implement c)
+		 */
+		MemoryTransaction::saveObjectsInTransaction();
       }
-      $transaction->saveObjectsInTransaction();
+      else {
+      	$transaction->saveObjectsInTransaction();
+      }
     }
 
     function unregisterAllMemoryTransactionObjects() {

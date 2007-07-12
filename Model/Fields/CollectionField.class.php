@@ -67,6 +67,8 @@ class CollectionField extends DataField {
 		return $this->remove($elem);
 	}
 	function add(& $elem) {
+      $validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
+      $this->owner->$validation_method($elem);
       $current_component =& getdyn('current_component');
 	  $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
       $current_component->saveMemoryTransactionObjects();
@@ -76,12 +78,10 @@ class CollectionField extends DataField {
     }
 
     function primAdd(&$elem) {
-    	$validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
-        $this->owner->$validation_method($elem);
-        // This "commit" may seem to be tricky. We are not doing commitMemoryTransaction because that is not our
+    	$this->type->add($elem);
+		// This "commit" may seem to be tricky. We are not doing commitMemoryTransaction because that is not our
 		// purpose. We don't want to discard rollbackable commands. The transaction is not finished. We only
-		// want to save registered objects to the database.
-		$this->type->add($elem);
+		// want to save registered objects to the database because we want collections to be observable.
 		$current_component =& getdyn('current_component');
     	$current_component->saveMemoryTransactionObjects();
     }

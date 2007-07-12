@@ -72,3 +72,10 @@ b) Send modified objects to the db and perform the queries (the insertion of the
 
     I need to keep each protocol apart from the other so that the db remains hackable at various levels of abstractions.
     How to do that? Is it is well implemented now?
+
+5) Objects deletion
+   How do we delete objects? At the moment we "disconnect" objects but they remain in the db (there's and UPDATE with null values for the connections)
+   Options:
+   a) The db grows (like now)
+   b) GC. Don't know if efficient (I don't think so)
+   c) Manual delete (there's not a clear protocol at the moment)

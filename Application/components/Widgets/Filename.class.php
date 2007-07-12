@@ -24,14 +24,28 @@ class Filename extends Input {
 		$file->filename->setValue($file_data['name']);
 		$file->filesize->setValue($file_data['size']);
 		$file->filetype->setValue($file_data['type']);
-		$ex =& $file->save();
-		$file->bin_data->setValue(null);
-		$file->commitChanges();
-		$db =& DBSession::instance();
-		$db->clearLastSQL();
+
+		/* Now we need to save the file in the DB. For that we cannot use the current DBSession  instance, as
+		 * the INSERT query would remain as a delayed query for the long transaction. To avoid that, we create
+		 * a new DBSession instance and save the file with it. We access the DB "from the outside".
+		 *            -- marian
+		 */
+		$dbsession_class = 'DBSession';
+		if (defined('dbsession_class')) {
+			$dbsession_class = constant('dbsession_class');
+		}
+		$driver_class = constant('db_driver');
+		$dbsession = & new $dbsession_class;
+		$dbsession->driver = & new $driver_class ($dbsession);
+		$dbsession->beginTransaction();
+		$ex =& $dbsession->save($file);
 		if (is_exception($ex)) {
 			return $ex;
 		}
+		$dbsession->commitTransaction();
+
+		$file->bin_data->setValue(null);
+		$file->commitChanges();
 		$this->file =& $file;
         $this->file_holder->setValue($file);
         $this->fileuploaded=true;

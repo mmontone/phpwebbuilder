@@ -45,6 +45,7 @@ class DBSession {
 
 	function incrementTransactionNesting() {
 		$this->nesting++;
+		//print_backtrace('Nesting incremented: ' . $this->nesting);
 	}
 
 	function getTransactionNesting() {
@@ -53,6 +54,7 @@ class DBSession {
 
 	function decrementTransactionNesting() {
 		$this->nesting--;
+		//print_backtrace('Nesting decremented: ' . $this->nesting);
 	}
 
 	/*
@@ -63,28 +65,7 @@ class DBSession {
 		#@sql_echo2 print_backtrace();@#
 
 		if ($this->rollback_on_error) return;
-        return $this->primRollback();
-	}
-
-	function primRollback() {
-		#@gencheck if ($this->getTransactionNesting() <= 0)
-        {
-          print_backtrace('Error: trying to rollback a non existing transaction');
-        }//@#
-
-        #@sql_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
-        #@sql_echo2 print_backtrace();@#
-
-        if ($this->getTransactionNesting() == 1) {
-			$this->rollbackTransaction();
-		}
-		else {
-			#@sql_echo2 print_backtrace('Setting rollback in true <br/>');@#
-
-			$this->rollback=true;
-		}
-
-		$this->decrementTransactionNesting();
+        return $this->rollbackTransaction();
 	}
 
 	function commit() {
@@ -122,31 +103,59 @@ class DBSession {
 	}
 
 	function commitTransaction() {
+		#@gencheck if ($this->getTransactionNesting() <= 0)
+        {
+		  print_backtrace('Error: trying to commit a non existing transaction');
+		}//@#
 		#@sql_echo echo 'Committing transaction (committing commands)<br/>';@#
-		$this->driver->commit();
+		if ($this->getTransactionNesting() == 1) {
+			$this->driver->commit();
 
-		foreach (array_keys($this->commands) as $c) {
-			$cmd = & $this->commands[$c];
-			$cmd->commit();
+			foreach (array_keys($this->commands) as $c) {
+				$cmd = & $this->commands[$c];
+				$cmd->commit();
+			}
+
+			$this->commands = array ();
+
+			$n = array ();
+			$this->registeredObjects = & $n;
 		}
+		#@sql_echo
+		else {
+			if (!$this->rollback) {
+				echo ('Commiting transaction ('. $this->getTransactionNesting() . ')<br/>');
+                #@sql_echo2 print_backtrace();@#
+			}
+			else {
+				echo ('Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');
+                #@sql_echo2 print_backtrace();@#
+			}
+		}//@#
 
-		$this->commands = array ();
-
-		$n = array ();
-		$this->registeredObjects = & $n;
+		$this->decrementTransactionNesting();
 	}
 
 	function rollbackTransaction() {
-		#@sql_echo print_backtrace( 'Rolling back transaction (reverting commands)<br/>');@#
-		$this->driver->rollback();
-		// We want to apply rollbacks in order
-		$cmds = array_reverse($this->commands);
-		foreach (array_keys($cmds) as $c) {
-			$cmd = & $this->commands[$c];
-			$cmd->rollback();
+		if ($this->getTransactionNesting() == 1) {
+			#@sql_echo print_backtrace( 'Rolling back transaction (reverting commands)<br/>');@#
+			$this->driver->rollback();
+			// We want to apply rollbacks in order
+			$cmds = array_reverse($this->commands);
+			foreach (array_keys($cmds) as $c) {
+				$cmd = & $this->commands[$c];
+				$cmd->rollback();
+			}
+
+			$this->commands = array ();
+		}
+		else {
+			#@sql_echo2 print_backtrace('Setting rollback in true <br/>');@#
+
+			$this->rollback=true;
 		}
 
-		$this->commands = array ();
+		$this->decrementTransactionNesting();
 	}
 
 	/*
@@ -214,7 +223,6 @@ class DBSession {
         {
 		  print_backtrace('Error: trying to commit a non existing transaction');
 		}//@#
-
 		#@persistence_echo echo 'Commiting '.$this->getTransactionNesting().'<br/>';@#
         if ($this->getTransactionNesting() == 1) {
 			if (!$this->rollback) {
@@ -229,19 +237,6 @@ class DBSession {
 				$this->rollbackTransaction();
 			}
 		}
-		#@sql_echo
-		else {
-			if (!$this->rollback) {
-				echo ('Commiting transaction ('. $this->getTransactionNesting() . ')<br/>');
-                #@sql_echo2 print_backtrace();@#
-			}
-			else {
-				echo ('Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');
-                #@sql_echo2 print_backtrace();@#
-			}
-		}//@#
-
-		$this->decrementTransactionNesting();
 	}
 
 	#@php5
@@ -394,19 +389,17 @@ class DBSession {
 	#@php5
 	function & save(& $object) {
 		$db = & DBSession :: Instance();
-		//$db->beginTransaction();
 		$db->registerSave($object);
 		$object->save();
 		return $object;
 	}
 	//@#
+
 	#@php4
 	function & save(& $object) {
 		$db = & DBSession :: Instance();
-		//$db->beginTransaction();
 		$db->registerSave($object);
 		if (is_exception($e =& $object->save())){
-			$this->rollbackTransaction();
 			return $e->raise();
 		}
 		return $object;
@@ -415,30 +408,24 @@ class DBSession {
 
 	#@php5
 	function & delete(& $object) {
-		$this->beginTransaction();
 		$this->registerDelete($object);
-
-		try {
-			$object->delete();
-			return $object;
-		} catch (Exception $e) {
-			$this->rollbackTransaction();
-			return $e->raise();
-		}
+		$object->delete();
+		return $object;
 	}
 	//@#
+
 	#@php4
 	function & delete(& $object) {
 		$this->beginTransaction();
 		$this->registerDelete($object);
 
 		if (is_exception($e =& $object->delete())){
-			$this->rollbackTransaction();
 			return $e->raise();
 		}
 		return $object;
 	}
 	//@#
+
 	function tableExists($table) {
 		return $this->driver->tableExists($table);
 	}
