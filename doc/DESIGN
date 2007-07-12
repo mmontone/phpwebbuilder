@@ -1,0 +1,74 @@
+Design decisions and questions:
+
+1) On memory transactions
+   Memory transactions are local model changes observers. They are local because they keep changes made to the model
+   by the current executing component. They can be rolled back if needed.
+   Question: Do they need to begin a transaction in the db when they are created?
+   If that is true, then we need db transaction nesting levels and we cannot leave them alone in memory. We need to
+   explitly commit them or rollback them because not doing that would leave the transaction nesting levels in an unconsistent state.
+   Solution 2: don't begin a new db transaction. Use them only for rolling back changes.
+   Questions: when do we start the db transaction?
+
+   Issues:
+   1) Transaction nesting
+   2) Object modifications outside a memory transaction. What to do?
+   Options:
+   a) Raise an error
+   b) Ignore the modification. What happens if the modification is a collection addition or removal (that means we have to
+   modify the db)?
+   3) Locality. Memory transactions are local, but DBSession is global. That means, when a memory transaction commits *to the database*
+   all DBSession objects are commited. When a memory transaction rollbacks *to the database*, al DBSession objects are rolledback.
+   That means locality is not true.
+
+   Thought: in an ideal design, memory transaction and dbsession should be both local (or be just one object). Then, the objects
+   each memory transaction sees are different from the other memory transactions. It is as if there were different db connections per each memory transaction. I'm not sure that would be desirable, though. But that would solve versioning problems automatically. Each component would be a self contained "application".
+
+2) On observable collections
+We want observable collections. How can we make them observable all the time?
+Options:
+a) Implement in-memory queries. Issues: not trivial to implement.
+b) Send modified objects to the db and perform the queries (the insertion of the collection element).
+   Issues: as we have to send objects to the db to make everything observable.
+   Questions:
+   1) What happens if the collection container object is not registered for persistence? Queries need it to
+   be persisted in order that the collection is observable. It is not clear how to make persistent an object
+   automatically (without intervention from the programmer). For example, an object could be made persistent
+   adding it to other object's collection, or it may be a root object, but the framework doesn't know.
+   2) Suppose we have several collections additions or removals in a single request and there's no current active db transaction.
+   As objects are commited in each addition or removal, we will have several transactions executing. An inconsistency problem may arise
+   because of that (because of not having a single transaction executing everything). Solution: we need an active db transaction enclosing
+   addings and removals of collection elements.
+   3) What happens when the collection container object gets sent to the db and that produces an error. For example, the object was
+   temporarily in an inconsistent state and the db raises an duplicate key error?.
+   Solution:
+   a) Don't have db restrictions. Handle them in memory. For example, when editing an object check with a query key duplications before
+   commiting changes to the db.
+   b) Rollback the transaction. What does this mean?
+   4) What happens if we are in the middle of a transaction and a collection is modified? That means going to the db and making changes.
+   But the programmer didn't want to do that. He didn't commit the transaction yet. That means we *need* long transactions?
+   5) Which objects should be sent to the db before performing an addition or removal?
+   Options: a) All b) Current transaction.
+   6) How do reports get updated from a collection addition or removal?
+   a) All reports depend on the same collection. They get updated automatically. This would answer how? when? and which? :)
+   b) I don't know.
+   7) When do reports get updated
+   a) Collection additions and removals are sent to the db only when some query needs to observe the collection.
+   b) Collection additions and removals are sent to the db when they happen.
+   8) Which reports get updated from a collection addition or removal?
+   a) All
+   b) The dependents
+   c) The dependents of the collection type.
+   9) Are DBSession registered objects needed if objects should be persisted all the time in order to be observable?
+
+3) On long transactions
+	When do we reexecute the delayed queries? Now it is done before doing any other query, which I think is correct.
+
+4) On DBSession implementation.
+   DBSession implements:
+	1) DB Driver access
+    2) Transaction nesting
+    3) Persistence by reachability (registered objects).
+    4) DB commands (in order to rollback objects in case of a db failure when inserting or updating).
+
+    I need to keep each protocol apart from the other so that the db remains hackable at various levels of abstractions.
+    How to do that? Is it is well implemented now?
