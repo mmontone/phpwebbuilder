@@ -14,12 +14,16 @@ class DBDriver {
 	}
 
 	function shutdown() {
-		if ($this->in_transaction) {
+		if ($this->inTransaction()) {
 			$conn = & $this->openDatabase(false);
 			#@sql_echo echo 'Rolling back because transaction didn\'t finish in this request</br>';@#
 			$this->basicRollback($conn);
 		}
 		$this->new_request = true;
+	}
+
+	function inTransaction() {
+		return $this->in_transaction;
 	}
 
 	function initialize() {

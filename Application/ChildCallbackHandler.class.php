@@ -28,6 +28,14 @@ class ChildCallbackHandler {
 
 	}
 
+	function informStopToCallers() {
+
+	}
+
+	function calleeStopped(&$callee) {
+
+	}
+
 	function debugPrintString() {
 	  return print_object($this);
 	}

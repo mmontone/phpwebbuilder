@@ -42,10 +42,25 @@ class MemoryTransaction {
 	var $thread;
 	var $nesting = -1;
 	var $active = true;
+	var $use_db = true;
 
-	function MemoryTransaction(& $thread) {
+	function MemoryTransaction(& $thread, $options = array()) {
 		$this->thread = & $thread;
-		DBSessionInstance :: BeginTransaction();
+
+		/* Options:
+		 * use_db : if false, then the memory transaction does not go to the database. It just rollbacks changes in memory. default: true
+		 */
+		foreach($this->options as $key => $value) {
+			$this->$key = $value;
+		}
+
+		$this->beginDBTransaction();
+	}
+
+	function beginDBTransaction() {
+		if ($this->use_db) {
+			DBSessionInstance :: BeginTransaction();
+		}
 	}
 
 	function isEmpty() {
@@ -63,7 +78,7 @@ class MemoryTransaction {
 
 		#@tm_echo print_backtrace('Rolling back ' . $this->debugPrintString() . '<br/>');@#
 
-		DBSessionInstance :: Rollback();
+		$this->rollbackDBTransaction();
 
 		// We need too rollback modifications in order
 		$original_modifications = array_reverse($this->modifications);
@@ -78,6 +93,12 @@ class MemoryTransaction {
 		$this->active = false;
 
 		#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
+	}
+
+	function rollbackDBTransaction() {
+		if ($this->use_db) {
+			DBSessionInstance :: RollbackTransaction();
+		}
 	}
 
 	function registerFieldModification(& $mod) {
@@ -109,7 +130,7 @@ class MemoryTransaction {
 
 	// DBSession>>flushChanges is not needed because we have >>rollback
 
-	function commitInTransaction() {
+	function commit() {
 		// As MySQL does not support nested transactions, we can only register all object modifications
 		// on a root memory transactions and commit that one. Problems related to the lack of nested transactions
 		// are: 1) Non root memory transaction cannot count on db restrictions (example: repeated key fields restrictions).
@@ -120,14 +141,20 @@ class MemoryTransaction {
 		}
 
 		#@persistence_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
-		//DBSessionInstance::CommitMemoryTransaction($this);
-		DBSessionInstance :: Commit();
+		$this->commitDBTransaction();
 
 		// We remove modifications, contrary to saveObjectsInTransaction
 		$a = array ();
 		$this->modifications = & $a;
 
 		$this->active = false;
+	}
+
+	function commitDBTransaction() {
+		if ($this->use_db) {
+			//DBSessionInstance::CommitMemoryTransaction($this);
+			DBSessionInstance :: CommitRegisteredObjects();
+		}
 	}
 	#@php5
 	function saveObjectsInTransaction() {
@@ -138,10 +165,9 @@ class MemoryTransaction {
 		$db = & DBSession :: Instance();
 		$db->beginTransaction();
 		try {
-			$db->saveRegisteredObjects($db->registeredObjects);
-			$db->decrementTransactionNesting();
+			$db->saveRegisteredObjects();
+			$db->commitTransaction();
 		} catch (DBError $e) {
-			$db->decrementTransactionNesting();
 			$db->rollbackTransaction();
 			$e->raise();
 		}
@@ -155,12 +181,13 @@ class MemoryTransaction {
 
 		$db = & DBSession :: Instance();
 		$db->beginTransaction();
-		if (is_exception($e = & $db->saveRegisteredObjects($db->registeredObjects))) {
-			$db->decrementTransactionNesting();
+		if (is_exception($e = & $db->saveRegisteredObjects())) {
 			$db->rollbackTransaction();
 			$e->raise();
 		}
-		$db->decrementTransactionNesting();
+		else {
+			$db->commitTransaction();
+		}
 	}
 	//@#
 	function unregisterAllObjects() {

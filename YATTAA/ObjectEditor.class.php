@@ -36,6 +36,12 @@ class ObjectEditor extends ObjectPresenter {
  		if (!$this->object_edited) $this->doFlush();
  	}
 
+ 	function calleeStopped(&$dialog) {
+ 		if (!$this->active_callback and !$this->object_edited) {
+ 			$this->doFlush();
+ 		}
+ 	}
+
 	function doFlush(){
 	  $this->rollbackMemoryTransaction();
 	}
@@ -133,7 +139,6 @@ class ObjectEditor extends ObjectPresenter {
         	$this->addComponent(new ValidationErrorsDisplayer($this->object->validation_errors), 'validation_errors');
       }
 	  catch (DBError $e) {
-	  	$this->rollbackTransaction();
 	  	$dialog =& ErrorDialog::Create($e->getMessage());
 	  	$dialog->onAccept(new FunctionObject($this, 'doNothing'));
 	  	$this->call($dialog);
@@ -153,7 +158,6 @@ class ObjectEditor extends ObjectPresenter {
 		} else {
 			$this->edit_function->callWith($this->object);
 			if (is_exception($e =& $this->commitTransaction())){
-			  	$this->rollbackTransaction();
 			  	$dialog =& ErrorDialog::Create($e->getMessage());
 			  	$dialog->onAccept(new FunctionObject($this, 'doNothing'));
 			  	$this->call($dialog);

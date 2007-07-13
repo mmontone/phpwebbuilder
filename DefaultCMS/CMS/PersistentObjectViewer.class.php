@@ -116,12 +116,12 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$db->beginTransaction();
 		$ex =& $db->delete($obj);
 		if (is_exception($ex)) {
-			$db->rollback();
+			$db->rollbackTransaction();
 			$dialog =& NotificationDialog::Create('Error deleting object: ' . $ex->getMessage());
             $dialog->onAccept(new FunctionObject($this, 'doNothing'));
             $this->call($dialog);
 		} else {
-			$db->commit();
+			$db->commitTransaction();
 			$this->callback('object_deleted');
 		}
 	}//@#
@@ -133,11 +133,11 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
         $db->beginTransaction();
         try {
             $db->delete($obj);
-            $db->commit();
+            $db->commitTransaction();
             $this->callback('object_deleted');
         }
         catch (Exception $ex) {
-            $db->rollback();
+            $db->rollbackTransaction();
             $dialog =& NotificationDialog::Create('Error deleting object: ' . $ex->getMessage());
             $dialog->onAccept(new FunctionObject($this, 'doNothing'));
             $this->call($dialog);

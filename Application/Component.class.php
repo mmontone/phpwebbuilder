@@ -13,6 +13,7 @@ class Component extends PWBObject {
 	var $nextChildrenPosition = 1;
 	var $dyn_vars = array ();
 	var $calling=false; // It is true when the component is calling other component (but not calling back)
+    var $calling_back=false; // It is true when then component is calling back
     var $memory_transaction;
 
 	function Component($params = array()) {
@@ -39,6 +40,7 @@ class Component extends PWBObject {
 				$child->stopAll();
 			}
 		}
+
         if ($this->calling) {
         	$this->callStop();
         }
@@ -46,7 +48,40 @@ class Component extends PWBObject {
         	$this->nonCallStop();
         }
         $this->stop();
+        if (!$this->calling_back) {
+        	$this->informStopToCallers($this);
+        }
 	undefdyn('current_component');
+	}
+
+	function informStopToCallers(&$callee) {
+		if (is_object($this->listener)) {
+			$this->listener->calleeStopped($callee);
+			$this->listener->informStopToCallers();
+		}
+	}
+
+	/* This method is called when a callee component is stopped (not for calling back)
+	 * This method is useful to handle memory transactions or long db transactions.
+	 * Example (memory transactions):
+	 * function nonCallStop() {
+	 *     $this->rollbackMemoryTransaction();
+	 * }
+     *
+	 * function calleeStopped(&$dialog) {
+	 *     $this->rollbackMemoryTransaction();
+ 	 * }
+ 	 * Example (long db transactions):
+	 * function nonCallStop() {
+	 *     DBSessionInstance::RollbackTransaction();
+	 * }
+     *
+	 * function calleeStopped(&$dialog) {
+	 *     DBSessionInstance::RollbackTransaction();
+ 	 * }
+	 */
+	function calleeStopped(&$callee) {
+
 	}
 
 	// This function gets called when the component stops because
@@ -279,7 +314,9 @@ class Component extends PWBObject {
 	function callbackWith($callback, & $params) {
 		#@check $this->listener !== null@#
 		#@calling_echo echo $this->printString() . ' calling back: ' . $callback . '<br/>';@#
+        $this->listener->calling_back = true;
         $this->listener->takeControlOf($this, $callback, $params);
+        $this->listener->calling_back = false;
 	}
 
 	function takeControlOf(& $callbackComponent, $callback, & $params) {
@@ -462,7 +499,7 @@ class Component extends PWBObject {
       if (!is_object($this->memory_transaction)) {
 		print_backtrace_and_exit('Trying to commit a non started transaction in ' . $this->debugPrintString());
       }
-      $this->memory_transaction->commitInTransaction();
+      $this->memory_transaction->commit();
     }
 
     function commitAndBeginMemoryTransaction() {

@@ -4,6 +4,18 @@
 
 $prepared_to_save = array ();
 
+/* DBSession can be used at different levels of abstraction. That's because although having for example persistence by
+ * reachability, we don't want to lose control (say, not being able to access the driver, or begin and commit transactions).
+ *
+ * Layers:
+ * 1) Driver level: has to do with raw db operations.
+ *    Protocol: tableExists, beginTransaction, etc.
+ * 2) Objects level: has to do with persisting objects and error handling.
+ *    Protocol: beginTransaction, save, delete, commitTransaction, rollbackTransaction.
+ *    Implementation related: $rollback_on_error, $rollback, $commands.
+ *
+ *
+ */
 class DBSession {
 	var $commands = array (); // Undoable commands
 	var $registeredObjects = array ();
@@ -12,28 +24,6 @@ class DBSession {
 	var $nesting = 0;
 	var $rollback_on_error = false;
 	var $rollback=false;
-
-	function DBSession() {
-		// We register a function for cleaning up things when a request finishes
-		pwb_register_shutdown_function('dbsession', new FunctionObject($this, 'shutdown'));
-	}
-
-	/*
-	 * The per request cleaner function
-	 */
-	function & shutdown() {
-		/*
-		if ($this->committing) {
-			print_backtrace_and_exit('DB Error: rolling back transaction. committing: ' . print_r($this->committing, true) . ' transaction started: ' . print_r($this->in_transaction, true));
-			$this->rollbackTransaction();
-			$this->committing = false;
-			$a = array ();
-			$this->registeredObjects = & $a;
-		}
-
-        $n = null;
-        return $n;*/
-	}
 
 	/*
 	 * Transaction nesting related methods
@@ -58,21 +48,6 @@ class DBSession {
 	}
 
 	/*
-	 * The rolling back of nested transactions
-	 */
-	function rollback() {
-		#@sql_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
-		#@sql_echo2 print_backtrace();@#
-
-		if ($this->rollback_on_error) return;
-        return $this->rollbackTransaction();
-	}
-
-	function commit() {
-		return $this->commitRegisteredObjects($this->registeredObjects);
-	}
-
-	/*
 	 * Primitive DB operations and DB commands
 	 */
 
@@ -93,6 +68,9 @@ class DBSession {
 		$this->addCommand(new DeleteObjectDBCommand($object));
 	}
 
+	/* Begins a transaction in the db if we are not already in one. If not, then it only
+	 * increments the transaction nesting.
+	 */
 	function beginTransaction() {
 		if (!$this->inTransaction()) {
 			$this->driver->beginTransaction();
@@ -102,24 +80,59 @@ class DBSession {
 		$this->incrementTransactionNesting();
 	}
 
-	function commitTransaction() {
+	/* Commits a transaction if we are in the outest. If not, it only decrements the transaction level.
+	 * There's an optional parameter to execute some function in case it has to do a commit to the db.
+	 */
+	function & commitTransaction($commit_func = null) {
 		#@gencheck if ($this->getTransactionNesting() <= 0)
         {
 		  print_backtrace('Error: trying to commit a non existing transaction');
 		}//@#
-		#@sql_echo echo 'Committing transaction (committing commands)<br/>';@#
+
 		if ($this->getTransactionNesting() == 1) {
-			$this->driver->commit();
-
-			foreach (array_keys($this->commands) as $c) {
-				$cmd = & $this->commands[$c];
-				$cmd->commit();
+			if (!$this->rollback) {
+				#@sql_echo echo 'Commiting transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>';@#
+                #@sql_echo2 print_backtrace();@#
+				#@php4
+				if (!is_null($commit_func)) {
+					$e =& $commit_func->call();
+					if (is_exception($e)) {
+						/* Now this is how we handle errors. We rollback db commands to prevent our objects
+					 * from having inconsistent ids or versions.
+					 * Finally, we raise the exception for the client
+					 * to decide what to do (we do not rollback the transaction or modify the transaction levels, that's
+					 * the client responsibility)
+					 *            -- marian
+					 */
+						$this->rollbackDBCommands();
+						return $e;
+					}
+				}//@#
+				#@php5
+				if (!is_null($commit_func)) {
+					try {
+						$commit_func->call();
+					}
+					catch (DBError $e) {
+					/* Now this is how we handle errors. We rollback db commands to prevent our objects
+					 * from having inconsistent ids or versions.
+					 * Finally, we raise the exception for the client
+					 * to decide what to do (we do not rollback the transaction or modify the transaction levels, that's
+					 * the client responsibility)
+					 *            -- marian
+					 */
+						$this->rollbackDBCommands();
+						return $e->raise();
+					}
+				}//@#
+				$this->driver->commit();
+				$this->commitDBCommands();
 			}
-
-			$this->commands = array ();
-
-			$n = array ();
-			$this->registeredObjects = & $n;
+			else {
+				#@sql_echo	echo ('Rollback transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>');@#
+				$this->rollbackTransaction();
+			}
+			$this->rollback=false;
 		}
 		#@sql_echo
 		else {
@@ -137,29 +150,54 @@ class DBSession {
 	}
 
 	function rollbackTransaction() {
+		#@sql_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
+		#@sql_echo2 print_backtrace();@#
+
+		/* If rollback_on_error is true, then the DBSession is in charge of
+		 * rolling back the transaction (see DBSession>>save).
+		 * That means explicit calls to rollback should not take place as we would be
+		 * rollbacking twice. That's why we return in that case.
+		 */
+		if ($this->rollback_on_error) return;
 		if ($this->getTransactionNesting() == 1) {
 			#@sql_echo print_backtrace( 'Rolling back transaction (reverting commands)<br/>');@#
 			$this->driver->rollback();
-			// We want to apply rollbacks in order
-			$cmds = array_reverse($this->commands);
-			foreach (array_keys($cmds) as $c) {
-				$cmd = & $this->commands[$c];
-				$cmd->rollback();
-			}
-
-			$this->commands = array ();
+			$this->rollbackDBCommands();
+			$this->rollback=false;
 		}
 		else {
 			#@sql_echo2 print_backtrace('Setting rollback in true <br/>');@#
-
 			$this->rollback=true;
 		}
 
 		$this->decrementTransactionNesting();
 	}
 
+	function commitDBCommands() {
+		foreach (array_keys($this->commands) as $c) {
+			$cmd = & $this->commands[$c];
+			$cmd->commit();
+		}
+
+		$this->commands = array ();
+
+		$n = array ();
+		$this->registeredObjects = & $n;
+	}
+
+	function rollbackDBCommands() {
+		// We want to apply rollbacks in order
+		$cmds = array_reverse($this->commands);
+		foreach (array_keys($cmds) as $c) {
+			$cmd = & $this->commands[$c];
+			$cmd->rollback();
+		}
+
+		$this->commands = array ();
+	}
+
 	/*
-	 * Persistence by reacheability protocol
+	 * Persistence by reachability protocol
 	 */
 	function registerObject(& $object) {
 		#@persistence_echo echo 'Registering ' . $object->debugPrintString() . ' in ' . print_object($this) . '<br/>';@#
@@ -181,14 +219,7 @@ class DBSession {
 
 		#@persistence_echo echo 'Committing  global DB transaction</br>';@#
 		$this->beginTransaction();
-		$this->commit();
-	}
-
-	/* This method is called from Memory Transactions and not explicitely by the user */
-	function commitMemoryTransaction(& $transaction) {
-		#@persistence_echo echo 'Committing  ' . $object->debugPrintString() . '</br>';@#
-		$this->beginTransaction();
-		$this->commitRegisteredObjects($transaction->registeredObjects);
+		$this->commitTransaction(new FunctionObject($this, 'saveRegisteredObjects'));
 	}
 
 	// It is called by ObjectsCreators when they are not able to create the object
@@ -218,37 +249,20 @@ class DBSession {
 		$object->toPersist = false;
 	}
 
-	function commitRegisteredObjects(& $registeredObjects) {
-		#@gencheck if ($this->getTransactionNesting() <= 0)
-        {
-		  print_backtrace('Error: trying to commit a non existing transaction');
-		}//@#
-		#@persistence_echo echo 'Commiting '.$this->getTransactionNesting().'<br/>';@#
-        if ($this->getTransactionNesting() == 1) {
-			if (!$this->rollback) {
-				#@sql_echo echo 'Commiting transaction ('. $this->getTransactionNesting() . ')<br/>';@#
-                #@sql_echo2 print_backtrace();@#
-				$this->saveRegisteredObjects($registeredObjects);
-				$this->commitTransaction();
-			}
-			else {
-				#@sql_echo	echo ('Rollback transaction ('. $this->getTransactionNesting() . ')<br/>');@#
-                #@sql_echo2 print_backtrace();@#
-				$this->rollbackTransaction();
-			}
-		}
+	function commitRegisteredObjects() {
+		$this->commitTransaction(new FunctionObject($this, 'saveRegisteredObjects'));
 	}
 
 	#@php5
-	function saveRegisteredObjects(& $registeredObjects) {
+	function saveRegisteredObjects() {
 		global $prepared_to_save;
 		try {
-			$toRollback = $registeredObjects;
+			$toRollback = $this->registeredObjects;
 
-			while (!empty ($registeredObjects)) {
-				$ks = array_keys($registeredObjects);
-				$elem = & $registeredObjects[$ks[0]];
-				unset ($registeredObjects[$ks[0]]);
+			while (!empty ($this->registeredObjects)) {
+				$ks = array_keys($this->registeredObjects);
+				$elem = & $this->registeredObjects[$ks[0]];
+				unset ($this->registeredObjects[$ks[0]]);
 
 				if (!isset ($prepared_to_save[$elem->getInstanceId()])) {
 					$prepared_to_save[$elem->getInstanceId()] = true;
@@ -261,7 +275,7 @@ class DBSession {
 		} catch (DBError $e) {
 			foreach (array_keys($toRollback) as $i) {
 				#@persistence_echo echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';@#
-				$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
+				$this->registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
 			}
 
 			$e->raise();
@@ -270,14 +284,14 @@ class DBSession {
 	//@#
 
 	#@php4
-	function saveRegisteredObjects(& $registeredObjects) {
+	function saveRegisteredObjects() {
 		global $prepared_to_save;
-		$toRollback = $registeredObjects;
+		$toRollback = $this->registeredObjects;
 
-		while (!empty ($registeredObjects)) {
-			$ks = array_keys($registeredObjects);
-			$elem = & $registeredObjects[$ks[0]];
-			unset ($registeredObjects[$ks[0]]);
+		while (!empty ($this->registeredObjects)) {
+			$ks = array_keys($this->registeredObjects);
+			$elem = & $this->registeredObjects[$ks[0]];
+			unset ($this->registeredObjects[$ks[0]]);
 
 			if (!isset ($prepared_to_save[$elem->getInstanceId()])) {
 				$prepared_to_save[$elem->getInstanceId()] = true;
@@ -287,7 +301,7 @@ class DBSession {
 			if (is_exception($e =& $this->save($elem))){
 				foreach (array_keys($toRollback) as $i) {
 					#@persistence_echo echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';@#
-					$registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
+					$this->registeredObjects[$toRollback[$i]->getInstanceId()] = & $toRollback[$i];
 				}
 
 				return $e->raise();
@@ -388,19 +402,30 @@ class DBSession {
 	}
 	#@php5
 	function & save(& $object) {
-		$db = & DBSession :: Instance();
-		$db->registerSave($object);
-		$object->save();
-		return $object;
+		try {
+            $this->registerSave($object);
+            $object->save();
+            return $object;
+        }
+        catch (Exception $e) {
+        	if ($db->rollback_on_error) {
+                $db->primRollback();
+            }
+            return $e->raise();
+        }
 	}
 	//@#
 
 	#@php4
 	function & save(& $object) {
-		$db = & DBSession :: Instance();
-		$db->registerSave($object);
-		if (is_exception($e =& $object->save())){
-			return $e->raise();
+		$this->registerSave($object);
+        $e =& $object->save();
+        if (is_exception($e))
+        {
+            if ($db->rollback_on_error) {
+				$db->primRollback();
+			}
+            return $e->raise();
 		}
 		return $object;
 	}
@@ -409,23 +434,37 @@ class DBSession {
 	#@php5
 	function & delete(& $object) {
 		$this->registerDelete($object);
-		$object->delete();
-		return $object;
+
+		try {
+            $e =& $object->delete();
+            return $object;
+		} catch (Exception $e) {
+			if ($this->rollback_on_error) {
+				$this->primRollback();
+			}
+            $e->raise();
+		}
 	}
 	//@#
 
 	#@php4
 	function & delete(& $object) {
-		$this->beginTransaction();
 		$this->registerDelete($object);
 
-		if (is_exception($e =& $object->delete())){
-			return $e->raise();
-		}
-		return $object;
+        $e =& $object->delete();
+        if (is_exception($e))
+        {
+            if ($this->rollback_on_error) {
+                $this->primRollback();
+            }
+            return $e->raise();
+        } else {
+        	return $object;
+        }
 	}
 	//@#
 
+	/* DB Driver layer */
 	function tableExists($table) {
 		return $this->driver->tableExists($table);
 	}
@@ -450,19 +489,24 @@ class DBSessionInstance {
 		$db->beginTransaction();
 	}
 
-	function Commit() {
+	function CommitTransaction() {
 		$db =& DBSession::Instance();
-		$db->commit();
+		$db->commitTransaction();
 	}
 
-	function Rollback() {
+	function RollbackTransaction() {
 		$db =& DBSession::Instance();
-		$db->rollback();
+		$db->rollbackTransaction();
 	}
 
 	function CommitInTransaction() {
 		$db =& DBSession::Instance();
 		$db->commitInTransaction();
+	}
+
+	function CommitRegisteredObjects() {
+		$db =& DBSession::Instance();
+		$db->commitRegisteredObjects();
 	}
 
 	function CommitMemoryTransaction(&$transaction) {
@@ -539,4 +583,37 @@ class DeleteObjectDBCommand extends DBCommand {
 		$this->object->existsObject = TRUE;
 	}
 }
+
+/* PHP4:
+ * $db->beginTransaction();
+ * $db->beginTransaction();
+ * $e =& $db->save($object);
+ * if (is_exception($e)) {
+ * 		$db->rollbackTransaction();
+ * }
+ * else {
+ * 	$db->commitTransaction();
+ * }
+ * $db->commitTransaction(); // This rollback if there was an error
+ * */
+
+ /* PHP5:
+ * $db->beginTransaction();
+ * try {
+	 * $db->beginTransaction();
+	 * try {
+	 * 		$db->save($object);
+	*			$db->commitTransaction();
+	 * }
+	 * catch (DBError $e) {
+	 * 		$db->rollbackTransaction();
+	 * 		$e->raise();
+	 * }
+	 * }
+	 * catch (DBError $e) {
+	 * 		$db->rollbackTransaction();
+	 * 		$this->showDialog($e);
+	 * }
+ */
+
 ?>
