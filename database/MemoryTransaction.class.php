@@ -1,66 +1,26 @@
 <?php
 
-// This is global Memory Transactions manager
-// We are not using this at the moment. It is replaced by dynamically scoped transactions
-
-class MemoryTransactionManager {
-	var $transactions = array ();
-
-	function registerFieldModification(& $mod) {
-		if ($this->noTransactions()) {
-			#@persistence_echo echo 'There are no memory transactions for modification: ' . $mod->debugPrintString() . '<br/>';//@#
-			#@persistence_echo echo 'Creating memory transaction<br/>';//@#
-
-			$this->beginTransaction();
-		}
-
-		$current_transaction = & $this->currentTransaction();
-		$current_transaction->registerFieldModification($mod);
-	}
-
-	function rollbackCurrentTransaction() {
-		$current_transaction = & $this->currentTransaction();
-		$current_transaction->rollback();
-		array_pop($this->transactions);
-	}
-
-	function noTransactions() {
-		return empty ($this->transactions);
-	}
-
-	function & currentTransaction() {
-		return $this->transactions[count($this->transactions) - 1];
-	}
-
-	function beginTransaction() {
-		$this->transactions[] = & new MemoryTransaction;
-	}
-}
-
 class MemoryTransaction {
 	var $modifications = array ();
 	var $thread;
-	var $nesting = -1;
 	var $active = true;
-	var $use_db = true;
+	var $metaclass = 'StandardMemoryTransactionMetaclass';
 
 	function MemoryTransaction(& $thread, $options = array()) {
 		$this->thread = & $thread;
 
 		/* Options:
-		 * use_db : if false, then the memory transaction does not go to the database. It just rollbacks changes in memory. default: true
+		 * metaclass : sets the metaclass. Values: StandardMemoryTransactionMetaclass, InMemoryTransactionMetaclass, DBMemoryTransactionMetaclass
 		 */
-		foreach($this->options as $key => $value) {
+		foreach($options as $key => $value) {
 			$this->$key = $value;
 		}
 
-		$this->beginDBTransaction();
-	}
+		$metaclass = $this->metaclass;
+		$this->metaclass =&  new $metaclass;
 
-	function beginDBTransaction() {
-		if ($this->use_db) {
-			DBSessionInstance :: BeginTransaction();
-		}
+		$this->metaclass->initializeMemoryTransaction();
+		#@tm_echo echo $this->debugPrintString() . ' initialized<br/>';@#
 	}
 
 	function isEmpty() {
@@ -78,8 +38,6 @@ class MemoryTransaction {
 
 		#@tm_echo print_backtrace('Rolling back ' . $this->debugPrintString() . '<br/>');@#
 
-		$this->rollbackDBTransaction();
-
 		// We need too rollback modifications in order
 		$original_modifications = array_reverse($this->modifications);
 		foreach (array_keys($original_modifications) as $key) {
@@ -92,13 +50,30 @@ class MemoryTransaction {
 
 		$this->active = false;
 
+		$this->metaclass->rollbackMemoryTransaction();
+
 		#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
 	}
 
-	function rollbackDBTransaction() {
-		if ($this->use_db) {
-			DBSessionInstance :: RollbackTransaction();
+	function commit() {
+		// As MySQL does not support nested transactions, we can only register all object modifications
+		// on a root memory transactions and commit that one. Problems related to the lack of nested transactions
+		// are: 1) Non root memory transaction cannot count on db restrictions (example: repeated key fields restrictions).
+		// 2) We can only commit and rollback all the changes at once
+		//                                                             -- marian
+		if (!$this->isActive()) {
+			print_backtrace_and_exit('Transaction already commited ' . $this->debugPrintString());
 		}
+
+		#@tm_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
+
+		// We remove modifications, contrary to saveObjectsInTransaction
+		$a = array ();
+		$this->modifications = & $a;
+
+		$this->active = false;
+
+		$this->metaclass->commitMemoryTransaction();
 	}
 
 	function registerFieldModification(& $mod) {
@@ -111,51 +86,41 @@ class MemoryTransaction {
 	}
 
 	function debugPrintString() {
-		return print_object($this, ' modifications: ' . count($this->modifications) . ' thread: ' . $this->thread->debugPrintString());
+		return print_object($this, ' modifications: ' . count($this->modifications) . ' thread: ' . $this->thread->debugPrintString() . ' metaclass: ' . print_object($this->metaclass));
+	}
+}
+
+class DBMemoryTransactionMetaclass {
+	function initializeMemoryTransaction() {
+		DBSessionInstance :: BeginTransaction();
 	}
 
-	// Behaviour that belonged to DBSession
-	var $registered_objects = array ();
-
-	function registerObject(& $object) {
-		#@persistence_echo echo 'Registering ' . $object->debugPrintString() . ' in ' . $this->debugPrintString() .'<br/>';@#
-		$set = isset ($this->registeredObjects[$object->getInstanceId()]);
-		$this->registeredObjects[$object->getInstanceId()] = & $object;
-		$object->toPersist = true;
-
-		if (!$set && !$object->existsObject) {
-			$object->registerCollaborators();
-		}
+	function commitMemoryTransaction() {
+		DBSessionInstance :: CommitTransaction();
 	}
 
-	// DBSession>>flushChanges is not needed because we have >>rollback
+	function rollbackMemoryTransaction() {
+		DBSessionInstance :: RollbackTransaction();
+	}
+}
 
-	function commit() {
-		// As MySQL does not support nested transactions, we can only register all object modifications
-		// on a root memory transactions and commit that one. Problems related to the lack of nested transactions
-		// are: 1) Non root memory transaction cannot count on db restrictions (example: repeated key fields restrictions).
-		// 2) We can only commit and rollback all the changes at once
-		//                                                             -- marian
-		if (!$this->isActive()) {
-			print_backtrace_and_exit('Transaction already commited ' . $this->debugPrintString());
-		}
+class StandardMemoryTransactionMetaclass extends DBMemoryTransactionMetaclass {}
 
-		#@persistence_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
-		$this->commitDBTransaction();
+class InMemoryTransactionMetaclass {
+	function initializeMemoryTransaction() {
 
-		// We remove modifications, contrary to saveObjectsInTransaction
-		$a = array ();
-		$this->modifications = & $a;
-
-		$this->active = false;
 	}
 
-	function commitDBTransaction() {
-		if ($this->use_db) {
-			//DBSessionInstance::CommitMemoryTransaction($this);
-			DBSessionInstance :: CommitRegisteredObjects();
-		}
+	function commitMemoryTransaction() {
+
 	}
+
+	function rollbackMemoryTransaction() {
+
+	}
+}
+
+class GlobalMemoryTransactionMetaclass {
 	#@php5
 	function saveObjectsInTransaction() {
 		// We save our registered objects in a transaction, but we don't remove the commands.
@@ -173,6 +138,7 @@ class MemoryTransaction {
 		}
 	}
 	//@#
+
 	#@php4
 	function saveObjectsInTransaction() {
 		// We save our registered objects in a transaction, but we don't remove the commands.
@@ -193,6 +159,21 @@ class MemoryTransaction {
 	function unregisterAllObjects() {
 		// TODO: make threaded
 		DBSession :: unregisterAllObjects();
+	}
+}
+
+class ThreadedMemoryTransactionMetaclass {
+	var $registered_objects = array ();
+
+	function registerObject(& $object) {
+		#@persistence_echo echo 'Registering ' . $object->debugPrintString() . ' in ' . $this->debugPrintString() .'<br/>';@#
+		$set = isset ($this->registeredObjects[$object->getInstanceId()]);
+		$this->registeredObjects[$object->getInstanceId()] = & $object;
+		$object->toPersist = true;
+
+		if (!$set && !$object->existsObject) {
+			$object->registerCollaborators();
+		}
 	}
 }
 
