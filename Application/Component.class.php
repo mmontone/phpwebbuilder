@@ -48,7 +48,7 @@ class Component extends PWBObject {
         	$this->nonCallStop();
         }
         $this->stop();
-        if (!$this->calling_back) {
+        if (!$this->calling_back and !$this->calling) {
         	$this->informStopToCallers($this);
         }
 	undefdyn('current_component');
