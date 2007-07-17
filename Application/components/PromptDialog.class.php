@@ -39,6 +39,7 @@ class PromptDialog extends Component
 
 	function accept() {
 	  $this->accepted = true;
+	  $this->commitMemoryTransaction();
 	  $this->callbackWith('on_accept', $this->text->getValue());
 	}
 
