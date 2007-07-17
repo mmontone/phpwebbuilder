@@ -79,6 +79,42 @@ class MemoryTransaction {
 		$this->active = false;
 	}
 
+	#@php5
+	function saveObjectsInTransaction() {
+		// We save our registered objects in a transaction, but we don't remove the commands.
+		// In a threaded implementation, object changes should be registered in memory transactions, and not globally in
+		// the DBSession
+
+		$db = & DBSession :: Instance();
+		$db->beginTransaction();
+		try {
+			$db->saveRegisteredObjects();
+			$db->commitTransaction();
+		} catch (DBError $e) {
+			$db->rollbackTransaction();
+			$e->raise();
+		}
+	}
+	//@#
+
+	#@php4
+	function saveObjectsInTransaction() {
+		// We save our registered objects in a transaction, but we don't remove the commands.
+		// In a threaded implementation, object changes should be registered in memory transactions, and not globally in
+		// the DBSession
+
+		$db = & DBSession :: Instance();
+		$db->beginTransaction();
+		if (is_exception($e = & $db->saveRegisteredObjects())) {
+			$db->rollbackTransaction();
+			$e->raise();
+		}
+		else {
+			$db->commitTransaction();
+		}
+	}
+	//@#
+
 	function registerFieldModification(& $mod) {
 		#@tm_echo echo 'Registering ' . $mod->debugPrintString() . ' in ' . $this->debugPrintString() . '<br/>';@#
 		if (!isset ($this->modifications[$mod->getHash()])) {
