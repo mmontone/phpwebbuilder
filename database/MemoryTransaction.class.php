@@ -67,13 +67,16 @@ class MemoryTransaction {
 
 		#@tm_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
 
+		/* First we call the metaclass. There may be exceptions. If no exception ocurred, we remove modifications
+		   and deactivate the transaction */
+
+		$this->metaclass->commitMemoryTransaction();
+
 		// We remove modifications, contrary to saveObjectsInTransaction
 		$a = array ();
 		$this->modifications = & $a;
 
 		$this->active = false;
-
-		$this->metaclass->commitMemoryTransaction();
 	}
 
 	function registerFieldModification(& $mod) {
@@ -96,7 +99,8 @@ class DBMemoryTransactionMetaclass {
 	}
 
 	function commitMemoryTransaction() {
-		DBSessionInstance :: CommitTransaction();
+		$db =& DBSession::Instance();
+		$db->commitTransaction(new FunctionObject($db, 'saveRegisteredObjects'));
 	}
 
 	function rollbackMemoryTransaction() {
