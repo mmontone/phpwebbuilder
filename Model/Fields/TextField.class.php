@@ -22,7 +22,7 @@ class TextField extends DataField {
 	}
 
 	function SQLvalue() {
-		return "'" . $this->getValue() . "'" . ", ";
+		return "'" . addslashes($this->getValue()) . "'" . ", ";
 	}
 
 	function isEmpty() {
@@ -36,7 +36,7 @@ class TextArea extends DataField {
 	}
 
 	function SQLvalue() {
-		return "'" . $this->getValue() . "'" . ", ";
+		return "'" .addslashes( $this->getValue()) . "'" . ", ";
 	}
 }
 ?>

@@ -87,7 +87,7 @@ class Widget extends Component {
 	}
 
 	function valueFromForm(& $params) {
-		return $params;
+		return !get_magic_quotes_gpc()?$params:stripslashes($params);
 	}
 
 	function setValue($value) {
