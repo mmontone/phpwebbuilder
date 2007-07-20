@@ -57,7 +57,7 @@ class Component extends PWBObject {
 	function informStopToCallers(&$callee) {
 		if (is_object($this->listener)) {
 			$this->listener->calleeStopped($callee);
-			$this->listener->informStopToCallers();
+			$this->listener->informStopToCallers($callee);
 		}
 	}
 
