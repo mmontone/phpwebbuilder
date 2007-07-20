@@ -83,7 +83,7 @@ class DBSession {
 	/* Commits a transaction if we are in the outest. If not, it only decrements the transaction level.
 	 * There's an optional parameter to execute some function in case it has to do a commit to the db.
 	 */
-	function & commitTransaction($commit_func = null) {
+	function commitTransaction($commit_func = null) {
 		#@gencheck if ($this->getTransactionNesting() <= 0)
         {
 		  print_backtrace('Error: trying to commit a non existing transaction');
