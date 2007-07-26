@@ -59,14 +59,14 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
 		$ex =& $db->save($object);
 		if (is_exception($ex))
         {
-		   	$db->rollback();
+		   	$db->rollbackTransaction();
 			$dialog =& ErrorDialog::Create($ex->getMessage());
 			$dialog->onAccept(new FunctionObject($this, 'doNothing'));
 			$this->call($dialog);
 		}
 		else
         {
-			$db->commit();
+			$db->commitTransaction();
 			$object->commitChanges();
 		}
 	}//@#
@@ -77,11 +77,11 @@ class PersistentObjectViewer extends PersistentObjectPresenter {
         $db->beginTransaction();
         try {
             $db->save($object);
-            $db->commit();
+            $db->commitTransaction();
             $object->commitChanges();
         }
         catch (Exception $ex) {
-            $db->rollback();
+            $db->rollbackTransaction();
             $dialog =& ErrorDialog::Create($ex->getMessage());
             $dialog->onAccept(new FunctionObject($this, 'doNothing'));
             $this->call($dialog);
