@@ -31,7 +31,7 @@ class DateTimeInput extends DateInput {
 		$this->select->events->atPut('onclick', $a = array('onclick', 'displayCalendar(document.getElementById(\'' . $this->getId() . CHILD_SEPARATOR.'date\'),\''.$this->getDateFormatString().'\',this,true);'));
 	}
 	function getDateFormatString(){
-		return 'yyyy-mm-dd hh:mm';
+		return 'yyyy-mm-dd hh:ii';
 	}
 }
 
