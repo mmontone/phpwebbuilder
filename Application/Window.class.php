@@ -110,6 +110,9 @@ class Window extends PWBObject{
 	function &getParent(){
 		return $this->parent;
 	}
+	function isCalling(){
+		return false;
+	}
 	function Window(&$component, $name){
 		parent::PWBObject();
         $this->setDynVar('window', $this);

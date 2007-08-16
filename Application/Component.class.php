@@ -41,7 +41,7 @@ class Component extends PWBObject {
 			}
 		}
 
-        if ($this->calling) {
+        if ($this->isCalling()) {
         	$this->callStop();
         }
         else {
@@ -60,7 +60,11 @@ class Component extends PWBObject {
 			$this->listener->informStopToCallers($callee);
 		}
 	}
+	function isCalling(){
+		$p =& $this->getParent();
+		return $this->calling || $p->isCalling();
 
+	}
 	/* This method is called when a callee component is stopped (not for calling back)
 	 * This method is useful to handle memory transactions or long db transactions.
 	 * Example (memory transactions):
