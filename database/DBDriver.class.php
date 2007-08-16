@@ -16,7 +16,7 @@ class DBDriver {
 	function shutdown() {
 		if ($this->inTransaction()) {
 			$conn = & $this->openDatabase(false);
-			#@sql_echo echo 'Rolling back because transaction didn\'t finish in this request</br>';@#
+			#@sql_dml_echo echo 'Rolling back because transaction didn\'t finish in this request</br>';@#
 			$this->basicRollback($conn);
 		}
 		$this->new_request = true;
@@ -57,7 +57,8 @@ class DBDriver {
 	}
 
 	function & query($sql, $persistent = false) {
-		#@sql_echo
+		#@sql_query_echo
+		if (substr($sql,0,6)=='SELECT'){
 		if (defined('dbgmode')) {
 			sql_log(array (
 				'Querying: ',
@@ -65,11 +66,25 @@ class DBDriver {
 			));
 		} else {
 			echo ('Querying ' . $sql . '<br/>');
-		} //@#
+		}
+		}//@#
+		#@sql_dml_echo
+		if (!(substr($sql,0,6)=='SELECT')){
+		if (defined('dbgmode')) {
+			sql_log(array (
+				'DMLing: ',
+				$sql
+			));
+		} else {
+			echo ('DMLing ' . $sql . '<br/>');
+		}
+		}//@#
+
+
 
 		$conn = & $this->openDatabase($persistent);
 		$this->setLastSQL($sql);
-		#@sql_echo2 if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ($conn,'EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
+		#@sql_query_echo2 if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ($conn,'EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
 
 		$this->processTransactionQueries($conn);
 
@@ -81,7 +96,7 @@ class DBDriver {
 		$reg = $this->basicQuery($conn, $sql);
 		if (!$reg) {
 			$error = & $this->registerDBError($sql);
-			#@sql_echo $lastError =& $this->getLastError(); echo $lastError->printHtml() . '<br />';@#
+			#@sql_dml_echo $lastError =& $this->getLastError(); echo $lastError->printHtml() . '<br />';@#
 			return $error->raise();
 
 		}
@@ -104,7 +119,8 @@ class DBDriver {
 		/* If transactions are not supported, go on silently (logging is another option)*/
 		$this->in_transaction = true;
 		$this->basicBeginTransaction($conn);
-		#@sql_echo echo 'Beggining DB transaction<br/>';@#
+		#@sql_dml_echo echo 'Beggining DB transaction<br/>';@#
+		#@sql_dml_echo2 print_backtrace('Beggining DB transaction');@#
 		//trigger_error("Starting transaction");
 	}
 	function queryDB($query) {
@@ -136,7 +152,8 @@ class DBDriver {
 		$this->transaction_queries = array ();
 		$this->in_transaction = false;
 		$this->basicCommit($conn);
-		#@sql_echo echo 'Committing DB transaction<br/>';@#
+		#@sql_dml_echo echo 'Committing DB transaction<br/>';@#
+		#@sql_dml_echo2 print_backtrace('Committing DB transaction');@#
 		//trigger_error("Comitting transaction");
 	}
 
@@ -144,7 +161,7 @@ class DBDriver {
 		if ($this->in_transaction) {
 			if ($this->new_request) {
 				$this->beginTransaction();
-				#@sql_echo echo 'Executing delayed transactional queries ('. count($this->transaction_queries) . '):' . print_r($this->transaction_queries, true) . '</br>';@#
+				#@sql_dml_echo echo 'Executing delayed transactional queries ('. count($this->transaction_queries) . '):' . print_r($this->transaction_queries, true) . '</br>';@#
 				foreach ($this->transaction_queries as $query) {
 					$this->basicQuery($conn, $query);
 				}
@@ -161,7 +178,7 @@ class DBDriver {
 		$this->transaction_queries = array ();
 		$this->in_transaction = false;
 		$this->basicRollback($conn);
-		#@sql_echo echo 'Rolling back DB transaction<br/>';@#
+		#@sql_dml_echo echo 'Rolling back DB transaction<br/>';@#
 		//trigger_error("Rolling back transaction");
 	}
 

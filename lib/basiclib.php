@@ -178,8 +178,17 @@ function profile($text) {
 }
 
 function sql_echo($text) {
-	return optionalCompile('sql_echo', $text);
+	return optionalCompile('sql_query_echo', $text) . optionalCompile('sql_dml_echo', $text);;
 }
+
+function sql_query_echo($text) {
+	return optionalCompile('sql_query_echo', $text);
+}
+
+function sql_dml_echo($text) {
+	return optionalCompile('sql_dml_echo', $text);
+}
+
 
 function tm_echo($text) {
 	return optionalCompile('tm_echo', $text);
@@ -199,17 +208,32 @@ function calling_echo($text) {
     return optionalCompile('calling_echo', $text);
 }
 
-function sql_echo1($text) {
+function sql_query_echo1($text) {
 	if (defined('sql_echo') and (constant('sql_echo') >= 1)) {
 		return $text;
 	}
 }
 
-function sql_echo2($text) {
-	if (defined('sql_echo') and (constant('sql_echo') >= 2)) {
+function sql_query_echo2($text) {
+	if (defined('sql_query_echo') and (constant('sql_query_echo') >= 2)) {
 		return $text;
 	}
 }
+
+function persistence_echo2($text) {
+	if (defined('persistence_echo') and (constant('persistence_echo') >= 2)) {
+		return $text;
+	}
+}
+
+
+function sql_dml_echo2($text) {
+	if (defined('sql_dml_echo') and (constant('sql_dml_echo') >= 2)) {
+		return $text;
+	}
+}
+
+
 
 function persistence_echo($text) {
 	return optionalCompile('persistence_echo', $text);

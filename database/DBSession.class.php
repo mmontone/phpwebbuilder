@@ -35,7 +35,7 @@ class DBSession {
 
 	function incrementTransactionNesting() {
 		$this->nesting++;
-		//print_backtrace('Nesting incremented: ' . $this->nesting);
+		#@sql_dml_echo2 print_backtrace('Nesting incremented: ' . $this->nesting);@#
 	}
 
 	function getTransactionNesting() {
@@ -44,7 +44,7 @@ class DBSession {
 
 	function decrementTransactionNesting() {
 		$this->nesting--;
-		//print_backtrace('Nesting decremented: ' . $this->nesting);
+		#@sql_dml_echo2 print_backtrace('Nesting decremented: ' . $this->nesting);@#
 	}
 
 	/*
@@ -52,7 +52,7 @@ class DBSession {
 	 */
 
 	function addCommand(& $command) {
-		#@sql_echo echo 'Adding command ' . $command->debugPrintString() . '<br/>';@#
+		#@sql_dml_echo echo 'Adding command ' . $command->debugPrintString() . '<br/>';@#
 		$this->commands[] = & $command;
 	}
 
@@ -74,8 +74,8 @@ class DBSession {
 	function beginTransaction() {
 		if (!$this->inTransaction()) {
 			$this->driver->beginTransaction();
-			#@sql_echo echo 'Beggining transaction<br/>';@#
-			#@sql_echo2 print_backtrace();@#
+			#@sql_dml_echo echo 'Really Beggining transaction<br/>';@#
+			#@sql_dml_echo2 print_backtrace('Really Beggining transaction');@#
 		}
 		$this->incrementTransactionNesting();
 	}
@@ -91,8 +91,8 @@ class DBSession {
 
 		if ($this->getTransactionNesting() == 1) {
 			if (!$this->rollback) {
-				#@sql_echo echo 'Commiting transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>';@#
-                #@sql_echo2 print_backtrace();@#
+				#@sql_dml_echo echo 'Commiting transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>';@#
+                #@sql_dml_echo2 print_backtrace();@#
 				#@php4
 				if (!is_null($commit_func)) {
 					$e =& $commit_func->call();
@@ -129,20 +129,20 @@ class DBSession {
 				$this->commitDBCommands();
 			}
 			else {
-				#@sql_echo	echo ('Rollback transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>');@#
+				#@sql_dml_echo	echo ('Rollback transaction ('. @$GLOBALS['transactionnesting'] . ')<br/>');@#
 				$this->rollbackTransaction();
 			}
 			$this->rollback=false;
 		}
-		#@sql_echo
+		#@sql_dml_echo
 		else {
 			if (!$this->rollback) {
 				echo ('Commiting transaction ('. $this->getTransactionNesting() . ')<br/>');
-                #@sql_echo2 print_backtrace();@#
+                #@sql_dml_echo2 print_backtrace();@#
 			}
 			else {
 				echo ('Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');
-                #@sql_echo2 print_backtrace();@#
+                #@sql_dml_echo2 print_backtrace();@#
 			}
 		}//@#
 
@@ -150,8 +150,8 @@ class DBSession {
 	}
 
 	function rollbackTransaction() {
-		#@sql_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
-		#@sql_echo2 print_backtrace();@#
+		#@sql_dml_echo echo ( 'Rolling back transaction ('. $this->getTransactionNesting() . ')<br/>');@#
+		#@sql_dml_echo2 print_backtrace();@#
 
 		/* If rollback_on_error is true, then the DBSession is in charge of
 		 * rolling back the transaction (see DBSession>>save).
@@ -160,13 +160,13 @@ class DBSession {
 		 */
 		if ($this->rollback_on_error) return;
 		if ($this->getTransactionNesting() == 1) {
-			#@sql_echo print_backtrace( 'Rolling back transaction (reverting commands)<br/>');@#
+			#@sql_dml_echo print_backtrace( 'Rolling back transaction (reverting commands)<br/>');@#
 			$this->driver->rollback();
 			$this->rollbackDBCommands();
 			$this->rollback=false;
 		}
 		else {
-			#@sql_echo2 print_backtrace('Setting rollback in true <br/>');@#
+			#@sql_dml_echo2 print_backtrace('Setting rollback in true <br/>');@#
 			$this->rollback=true;
 		}
 
@@ -546,13 +546,13 @@ class DBCommand {
 
 class CreateObjectDBCommand extends DBCommand {
 	function commit() {
-		#@sql_echo 	echo 'Committing creation: ' . $this->object->debugPrintString() . '<br />';@#
+		#@sql_dml_echo 	echo 'Committing creation: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->primitiveCommitChanges();
 	}
 
 	function rollback() {
-		#@sql_echo echo 'Rolling back creation: ' . $this->object->debugPrintString() . '<br />';@#
+		#@sql_dml_echo echo 'Rolling back creation: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->flushInsert();
 	}
@@ -560,13 +560,13 @@ class CreateObjectDBCommand extends DBCommand {
 
 class UpdateObjectDBCommand extends DBCommand {
 	function commit() {
-		#@sql_echo echo 'Committing update: ' . $this->object->debugPrintString() . '<br />';@#
+		#@sql_dml_echo echo 'Committing update: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->primitiveCommitChanges();
 	}
 
 	function rollback() {
-		#@sql_echo echo 'Rolling back update: ' . $this->object->debugPrintString() . '<br />';@#
+		#@sql_dml_echo echo 'Rolling back update: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->flushUpdate();
 	}
@@ -578,7 +578,7 @@ class DeleteObjectDBCommand extends DBCommand {
 	}
 
 	function rollback() {
-		#@sql_echo  echo 'Rolling back delete: ' . $this->object->debugPrintString() . '<br />';@#
+		#@sql_dml_echo  echo 'Rolling back delete: ' . $this->object->debugPrintString() . '<br />';@#
 
 		$this->object->existsObject = TRUE;
 	}
