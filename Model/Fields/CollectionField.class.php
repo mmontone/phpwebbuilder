@@ -68,7 +68,9 @@ class CollectionField extends DataField {
 	}
 	function add(& $elem) {
       $validation_method = 'validate' . ucfirst(substr($this->getName(), 0, strlen($this->getName()) - 1)) . 'Addition';
-      $this->owner->$validation_method($elem);
+      if (method_exists($this->owner, $validation_method)){
+      	  $this->owner->$validation_method($elem);
+      }
       $current_component =& getdyn('current_component');
 	  $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
       $current_component->saveMemoryTransactionObjects();
