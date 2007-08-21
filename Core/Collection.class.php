@@ -322,6 +322,11 @@ class Collection extends PWBObject {
     function printString() {
     	return $this->debugPrintString();
     }
+    function &fromArray($array){
+    	$col =& new Collection();
+    	$col->addAll($array);
+    	return $col;
+    }
 
 
 }
