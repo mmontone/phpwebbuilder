@@ -17,7 +17,7 @@ class EmailField extends TextField {
 		'(' . $domain . '{1,63}\.)+' . // Followed by one or max 63 domain characters (dot separated).
 		$domain . '{2,63}' . // Must be followed by one set consisting a period of two
 		'$'; // or max 63 domain characters.
-		return $this->validate_ereg($regex,$this->displayString . ' is not a valid email');
+		return $this->getValue()!='' && $this->validate_ereg($regex,$this->displayString . ' is not a valid email');
 
 	}
 }
