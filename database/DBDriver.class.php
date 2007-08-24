@@ -69,7 +69,7 @@ class DBDriver {
 		}
 		}//@#
 		#@sql_dml_echo
-		if (!(substr($sql,0,6)=='SELECT')){
+		if (substr($sql,0,6)!='SELECT'){
 		if (defined('dbgmode')) {
 			sql_log(array (
 				'DMLing: ',

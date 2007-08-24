@@ -78,7 +78,7 @@ class ObjectsAdmin extends ContextualComponent {
 		$self = & $this;
 		$creator = & $this->getCreatorComponent();
 		$creator->onCreationDo(new LambdaObject('&$object', '$self->objects->add($object);', get_defined_vars()));
-		$creator->registerCallback('object_edited', new FunctionObject($this, 'displayList'));
+		$creator->registerCallback('object_edited', new FunctionObject($this, 'adminObject'));
 		$this->call($creator);
 	}
 

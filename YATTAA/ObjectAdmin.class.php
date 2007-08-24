@@ -117,15 +117,15 @@ class ObjectAdmin extends ContextualComponent {
 	}
 
 	function addDeleteObjectLink($text='Delete') {
-		$this->addActionMenu($text,$this->getDeleteFunction($text));
+		$this->addActionMenu(Translator::translate($text),$this->getDeleteFunction($text));
 	}
 
 	function addViewObjectLink($text='View') {
-		$this->addActionMenu($text,new FunctionObject($this, 'viewObject'));
+		$this->addActionMenu(Translator::translate($text),new FunctionObject($this, 'viewObject'));
 	}
 
 	function addEditObjectLink($text='Edit') {
-		$this->addActionMenu($text,new FunctionObject($this, 'editObject'));
+		$this->addActionMenu(Translator::translate($text),new FunctionObject($this, 'editObject'));
 	}
 
 	function removeDeleteObjectLink(&$comp) {
