@@ -77,7 +77,7 @@ class ContextualComponent extends Component {
 	function removeActionMenu($name){
 		unset($this->actionmenus[$name]);
 		$ctx =& $this->getContext();
-		$act =& $ctx->getActionBar();
+		$act =& $ctx->getActionsBar();
 		$act->deleteComponentAt($this->getInstanceId().$name);
 	}
 	function removeNavigationMenu($name){
