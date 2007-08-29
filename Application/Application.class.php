@@ -125,7 +125,7 @@ class Application {
 		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
 		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
-		$this->addScript(constant('pwb_url') . 'lib/animatedajax.js');
+		if (defined('use_animations'))$this->addScript(constant('pwb_url') . 'lib/animatedajax.js');
 		$this->addScript(constant('pwb_url') . 'lib/history.js');
 	}
 	function rendersAjax(){
