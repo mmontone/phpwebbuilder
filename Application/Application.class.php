@@ -121,8 +121,11 @@ class Application {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
 		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
+		$this->addScript(constant('pwb_url') . 'lib/animatedajax.js');
 		$this->addScript(constant('pwb_url') . 'lib/history.js');
 	}
 	function rendersAjax(){
