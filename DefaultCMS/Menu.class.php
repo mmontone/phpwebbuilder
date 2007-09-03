@@ -14,7 +14,8 @@ class InitialDefaultCMSComponent extends ContextualComponent {
 	}
 	function menus() {
 		$this->realMenus();
-		$this->objMenus();
+		$this->addNavigationMenu('Object Menus',new FunctionObject($this, 'objMenus'));
+		//$this->objMenus();
 	}
 	function realMenus() {
 		$ms = & new PersistentCollection('MenuSection');

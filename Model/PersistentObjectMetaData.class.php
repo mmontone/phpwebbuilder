@@ -87,7 +87,7 @@ class PersistentObjectMetaData {
 		return $this->indexFields;
 	}
 	function allIndexFieldNamesThisLevel() {
-		return (array)$this->indexFieldsLevel[$this->className];
+		return (array)@$this->indexFieldsLevel[$this->className];
 	}
 	/**
 	 * Returns this level's field names (inheritance-wise)
