@@ -9,6 +9,7 @@ class EmailField extends TextField {
 		return "'" . $this->getValue() . "'" . ", ";
 	}
 	function &validate() {
+		if ($this->getValue()=='') return false;
 		$atom = '[-A-Za-z0-9!#$%&\'*+/=?^_`{|}~]'; // allowed characters for part before "at" character
 		$domain = '([A-Za-z]([-A-Za-z0-9]*[A-Za-z0-9]+)?)'; // allowed characters for part after "at" character
 			$regex = '^' . $atom . '+' . // One or more atom characters.
@@ -17,7 +18,7 @@ class EmailField extends TextField {
 		'(' . $domain . '{1,63}\.)+' . // Followed by one or max 63 domain characters (dot separated).
 		$domain . '{2,63}' . // Must be followed by one set consisting a period of two
 		'$'; // or max 63 domain characters.
-		return $this->getValue()!='' && $this->validate_ereg($regex,$this->displayString . ' is not a valid email');
+		return $this->validate_ereg($regex,$this->displayString . ' is not a valid email');
 
 	}
 }
