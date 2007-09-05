@@ -22,6 +22,11 @@ class SubReport extends CompositeReport {
     function addEvalExpression(&$exp){
 		$this->select_exp->addExpression($exp);
     }
+    function &setTargetVar($var,$type) {
+    	parent::setTargetVar($var,$type);
+    	$o =& PersistentObject::getMetaData($type);
+        $this->addTables($o->getTablesPrefixed($var . '_'));
+    }
     function &getTargetVar() {
         if (($this->target_var===null) and ($this->collection!==null)) {
             //print_backtrace('setting collection in' . $this->debugPrintString());
@@ -31,7 +36,7 @@ class SubReport extends CompositeReport {
             //$this->report->setTargetVar($this->collection->var, $this->getDataType());
         }
         //print_backtrace('Returning target var: ' . print_r($this->target_var,true) . ' in ' . $this->printString());
-        if ($this->collection!==null){
+        if (!$this->fromSubQuery){
             return $this->target_var;
         } else {
         	return parent::getTargetVar();
