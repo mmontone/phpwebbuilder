@@ -3,7 +3,7 @@
 class SubReport extends CompositeReport {
     var $parent = null;
     var $collection = null;
-
+	var $fromSubQuery=false;
        function &fromArray($params){
 
         if (!isset($params['subq'])) {
@@ -13,6 +13,7 @@ class SubReport extends CompositeReport {
         }
         else {
         	$s =& new SubReport($params['subq']);
+        	$s->fromSubQuery = true;
         }
         $s->setConfigArray($params);
         return $s;
@@ -37,7 +38,7 @@ class SubReport extends CompositeReport {
         }
     }
     function getDataType() {
-    	if ($this->collection!==null){
+    	if (!$this->fromSubQuery){
             return $this->dataType;
         } else{
         	return parent::getDataType();

@@ -88,6 +88,7 @@ class Condition extends Expression {
     function getExpressionType(&$report){
     	$t1 = $this->exp1->getExpressionType($report);
 		$t2 = $this->exp2->getExpressionType($report);
+		//var_dump("Unifying $t1 and $t2");
 		if($t1==$t2) return $t2;
 		if($t1==null) $nt = $t2;
 		else if($t2==null) $nt = $t1;
@@ -430,6 +431,7 @@ class ObjectPathExpression extends PathExpression {
 	function evaluateIn(&$report) {
 		$ret =& $this->registerPath($report);
 		$o =& $ret[0];
+		$this->ret =& $ret;
 		$type = $this->parent->getExpressionType($report);
 		if ($type!=''){
 			$o =& PersistentObjectMetaData::getMetaData($type);
@@ -438,7 +440,7 @@ class ObjectPathExpression extends PathExpression {
         return $attr;
 	}
 	function getExpressionType(&$report){
-		return $this->type;
+		return $this->type?$this->type:getClass($this->ret[0]);
 	}
 }
 
