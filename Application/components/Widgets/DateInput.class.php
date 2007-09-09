@@ -11,6 +11,9 @@ class DateInput extends Component {
 	function getValue(){
 		return $this->date->getValue();
 	}
+	function getDate(){
+		return $this->value_model;
+	}
 	function initialize() {
 		$this->addComponent(new Input($this->value_model), 'date');
 		$this->addComponent(new Label('&nbsp;'), 'select');
