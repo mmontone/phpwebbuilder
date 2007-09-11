@@ -212,6 +212,12 @@ class Application {
 	function reset_templates(){
 		$this->viewCreator->reloadView();
 	}
+	function releaseSession(){
+		$this->page_renderer->releaseSession();
+	}
+	function checkReleaseSession(){
+		$this->page_renderer->checkReleaseSession();
+	}
 	function defaultTag(){
 		$app =& Application::instance();
 		return $app->page_renderer->defaultTag();

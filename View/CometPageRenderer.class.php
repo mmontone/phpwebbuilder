@@ -39,6 +39,14 @@ class CometPageRenderer extends PageRenderer {
 				'alert(\''.$str.'\');' .
 				'</script>';
 	}
+	function checkReleaseSession(){
+		if($this->lastTime+5*60<time())
+			$this-> releaseSession();
+	}
+	function releaseSession(){
+		$win =&Window::getActiveInstance();
+		$win->setCloseStream();
+	}
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
    		$maxsecs=5;       //seconds
@@ -48,6 +56,7 @@ class CometPageRenderer extends PageRenderer {
 		while(true){
 			$this->ad->dispatchComet();
 			set_time_limit($maxsecs);
+			$this->lastTime=microtime(true);
 			$this->startCometWrapper();
 			$this->renderWindow($win);
 			$win->toFlush =& new ChildModificationsXMLNodeModification($this);

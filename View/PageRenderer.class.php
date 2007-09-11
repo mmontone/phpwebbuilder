@@ -183,7 +183,7 @@ class PageRenderer // extends PWBObject
 	function toAjax($s) {
 		return $this->toXML($this->toHTML($s));
 	}
-
+	function releaseSession(){}
 }
 
 class HTMLPageRenderer extends PageRenderer {}

@@ -1,6 +1,13 @@
 <?php
 
 class ActionDispatcher {
+	function sendData($data){
+		session_name(strtolower($data['app']));
+		$file = ini_get('session.save_path').'/'.$data['app'].'-'.$data[$data['app']].'.cmt';
+		touch($file);
+		return (msg_send(msg_get_queue(ftok($file, 'c')),
+			1,$data,true,FALSE,$ec));
+	}
 	function & dispatch() {
 		$ad =& new ActionDispatcher;
 		$form = array_merge($_REQUEST, $_FILES);
