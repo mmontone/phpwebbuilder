@@ -2,7 +2,7 @@
 SessionHandler::setHooks();
 session_name(strtolower(app_class));
 if (isset($_REQUEST["restart"]) && isset($_COOKIE[session_name()])) {
-  ActionDispatcher::sendData(array(strtolower(app_class)=>$_COOKIE[session_name()],'app'=>strtolower(app_class),'event'=>'releaseSession','event_target'=>'app'));
+  PageRenderer::sendRestart();
   $sessionid = $_COOKIE[session_name()];
   $orgpath = getcwd();
   @chdir(PHP_BINDIR);

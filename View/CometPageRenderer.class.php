@@ -47,6 +47,9 @@ class CometPageRenderer extends PageRenderer {
 		$win =&Window::getActiveInstance();
 		$win->setCloseStream();
 	}
+	function basicSendRestart(){
+		ActionDispatcher::sendData(array(strtolower(app_class)=>$_COOKIE[session_name()],'app'=>strtolower(app_class),'event'=>'releaseSession','event_target'=>'app'));
+	}
 	function cometRenderPage(&$win){
 		#@typecheck $win:Window@#
    		$maxsecs=5;       //seconds

@@ -27,6 +27,11 @@ class PageRenderer // extends PWBObject
 	}
 	function &create(&$app){
 		$v = null;
+		$page_renderer = PageRenderer::getRendererClass();
+		$v =& new $page_renderer($app);
+		return $v;
+	}
+	function getRendererClass(){
 		if (isset($_REQUEST['render'])) {
 			$page_renderer= $_REQUEST['render'].'PageRenderer';
 		} else if (defined('page_renderer')){
@@ -34,9 +39,13 @@ class PageRenderer // extends PWBObject
 		} else {
 			$page_renderer = 'StandardPageRenderer';
 		}
-		$v =& new $page_renderer($app);
-		return $v;
+		return 	$page_renderer;
 	}
+	function sendRestart(){
+		$page_renderer = PageRenderer::getRendererClass();
+		eval("$page_renderer::basicSendRestart();");
+	}
+	function basicSendRestart(){}
 	function initPage(&$win){
 		#@typecheck $win:Window@#
 		$view =& $win->wholeView;
