@@ -303,6 +303,11 @@ class IndirectCollectionFieldType extends CollectionFieldType {
 
     function initialize() {
         $this->collection_field->collection = & $this->buildReport();
+       	$joinCol = & new PersistentCollection($this->getJoinDataType());
+         $joinCol->setPathCondition(new EqualCondition(array('exp1' => new AttrPathExpression('', $this->getReverseField()),
+                                                      'exp2' => new ObjectExpression($this->collection_field->getOwner()))));
+
+        $this->collection_field->joinCollection = & $joinCol;
     }
 
     function &buildReport() {
