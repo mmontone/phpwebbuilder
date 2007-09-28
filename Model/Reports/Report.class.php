@@ -450,7 +450,7 @@ class Report extends Collection{
 			return ' LIMIT ' . $this->getLimit() . $this->offset();
 	}
 
-	function &getLimit() {
+	function getLimit() {
 		return $this->limit;
 	}
 

@@ -147,6 +147,7 @@ class ObjectsNavigator extends ContextualComponent {
     function printConfirmed(){
         $objs =& new CompositeReport($this->list->col);
         $list =& $this->getListComponent($objs);
+        $list->defaultSize=0;
         $list->setDynVar('context', ContextualComponent::newContext());
         $objs->limit = 0;
         $win =& new Window($list, 'imprimir');

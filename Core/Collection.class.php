@@ -6,7 +6,7 @@ class Collection extends PWBObject {
 	 */
 	var $fields = array ();
 	/** element count for pagination */
-	var $limit = 0;
+	var $limit = null;
 	/** starting pointfor pagination */
 	var $offset = 0;
 	/**

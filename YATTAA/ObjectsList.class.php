@@ -3,7 +3,6 @@
 class ObjectsList extends CollectionNavigator {
 	function initialize() {
 		parent::initialize();
-		$this->setPageSize(5);
 		$this->addComponent(new Label($this->getListName()), 'listName' );
 	}
 	function getListName(){

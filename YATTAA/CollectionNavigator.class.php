@@ -3,7 +3,7 @@ class CollectionNavigator extends Component {
 	var $col;
 	var $fields;
 	var $classN;
-
+	var $defaultSize=5;
 	function CollectionNavigator(& $col, $fields = null, $callbacks = array ()) {
 		parent :: Component();
 
@@ -41,7 +41,7 @@ class CollectionNavigator extends Component {
 		$this->pageSize->addInterestIn('changed', new FunctionObject($this, 'refresh'), array (
 			'execute once' => true
 		));
-		$this->pageSize->setValue(5);
+		$this->pageSize->setValue($this->defaultSize);
 		$this->addComponent(new Input($this->pageSize), 'pSize');
 
 		$this->addOrderBar();
@@ -93,7 +93,7 @@ class CollectionNavigator extends Component {
 
 	function refresh() {
 		$col = & $this->col;
-		$col->limit = $this->pageSize->getValue();
+		$col->setLimit($this->pageSize->getValue());
 		$col->offset = $this->firstElement->getValue() - 1;
 		$this->size->setValue($col->size());
 		$this->objs->deleteChildren();
@@ -106,7 +106,6 @@ class CollectionNavigator extends Component {
 
 	function showElements() {
 		$elements = & $this->getElements();
-
 		if (is_array($elements)) {
 			$ks = array_keys($elements);
 			foreach ($ks as $k) {
