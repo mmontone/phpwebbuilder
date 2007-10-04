@@ -50,6 +50,14 @@ class Collection extends PWBObject {
 		$es[$pos] =& $elem;
 		$this->triggerEvent('changed', $elem);
 	}
+
+	function getLimit() {
+		return $this->limit;
+	}
+
+    function setLimit($limit) {
+    	$this->limit = $limit;
+    }
 	/**
 	 *  Returns the index of the first element equal to the parameter
 	 */

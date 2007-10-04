@@ -57,6 +57,10 @@ class DBDriver {
 	}
 
 	function & query($sql, $persistent = false) {
+		$conn = & $this->openDatabase($persistent);
+		$this->setLastSQL($sql);
+
+		$this->processTransactionQueries($conn);
 		#@sql_query_echo
 		if (substr($sql,0,6)=='SELECT'){
 		if (defined('dbgmode')) {
@@ -79,14 +83,7 @@ class DBDriver {
 			echo ('DMLing ' . $sql . '<br/>');
 		}
 		}//@#
-
-
-
-		$conn = & $this->openDatabase($persistent);
-		$this->setLastSQL($sql);
 		#@sql_query_echo2 if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ($conn,'EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
-
-		$this->processTransactionQueries($conn);
 
 		// Before adding a transaction query, we check that it is not a query for reading. Just
 		// for performance reasons. We cannot handle dirty reads anyway. There's no magic with relational
