@@ -218,11 +218,12 @@ class DirectCollectionFieldType extends CollectionFieldType {
 
     function setID($id) {
     	$this->collection_field->collection->setCondition($this->collection_field->creationParams['reverseField'], '=', $id);
+    	$this->collection_field->collection->changed();
     }
 
     function initialize() {
     	$this->collection_field->collection = & new PersistentCollection($this->collection_field->creationParams['type']);
-        $this->collection_field->collection->setCondition($this->collection_field->creationParams['reverseField'], '=', '-1');
+        $this->setId('-1');
     }
 
     function add(&$elem) {
@@ -330,6 +331,7 @@ class IndirectCollectionFieldType extends CollectionFieldType {
     function setID($id) {
         // TODO: implement Report in data-flow style (using ValueHolders) so that it gets
 	// automatically updated. We rebuild it for now.
+		var_dump('setting ID');
         $this->collection_field->collection = & $this->buildReport();
     }
 

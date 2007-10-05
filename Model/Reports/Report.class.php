@@ -147,10 +147,15 @@ class Report extends Collection{
 				'exp1' => new AttrPathExpression($target_var->id, $field),
 				'exp2'=> new ValueExpression($value)));
 		$cond->evaluateIn($this);
-		$this->select_exp->addExpression($cond);
+		$this->addSetConditionExpression($field, &$cond);
+
 		//$this->conditions[]=array($this->parseField($field),$comparator,$value);
 		$n = null;
+		unset($this->sqls['where']);
 		$this->elements=& $n;
+	}
+	function addSetConditionExpression($field, &$exp){
+		$this->select_exp->addExpression($exp);
 	}
 
     function getTargetTable() {
