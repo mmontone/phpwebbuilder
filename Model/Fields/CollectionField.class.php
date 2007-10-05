@@ -331,7 +331,6 @@ class IndirectCollectionFieldType extends CollectionFieldType {
     function setID($id) {
         // TODO: implement Report in data-flow style (using ValueHolders) so that it gets
 	// automatically updated. We rebuild it for now.
-		var_dump('setting ID');
         $this->collection_field->collection = & $this->buildReport();
     }
 
