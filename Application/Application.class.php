@@ -107,15 +107,15 @@ class Application {
 	function initializeScripts() {
 		$this->scripts = array ();
 		$this->jsscripts = array();
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/Proto.Menu.0.5.js');
 		$this->addScript(constant('pwb_url') . 'lib/common.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/pwb/dialogs.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/modal-message.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax-dynamic-content.js');
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/Proto.Menu.0.5.js');
 
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
@@ -217,6 +217,9 @@ class Application {
 	}
 	function releaseSession(){
 		$this->page_renderer->releaseSession();
+	}
+	function closeWindow(){
+		$this->windows[$_POST['window']]->close();
 	}
 	function checkReleaseSession(){
 		$this->page_renderer->checkReleaseSession();
