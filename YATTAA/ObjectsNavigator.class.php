@@ -149,7 +149,7 @@ class ObjectsNavigator extends ContextualComponent {
         $list =& $this->getListComponent($objs);
         $list->defaultSize=0;
         $list->setDynVar('context', ContextualComponent::newContext());
-        $objs->limit = 0;
+        $objs->setLimit(0);
         $win =& new Window($list, 'imprimir');
     	$win->addAjaxCommand(new AjaxCommand('window.print', array()));
         $win->open("status=0,scrollbars=1,resizable=1,width=800,height=620");

@@ -233,6 +233,8 @@ class StandardPageRenderer extends HTMLPageRenderer {
 				}
 				$ret .= "\n<link type=\"text/css\" rel=\"stylesheet\" " . $d . " />";
 			}
+			$ret .='<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">'.
+				   '<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">';
 
 
 			$ret .= '</head><body>';
@@ -268,9 +270,9 @@ class StandardPageRenderer extends HTMLPageRenderer {
 			$this->cached = $ret;
 		}
 		echo $this->cached;
-		echo "\n<script type=\"text/javascript\">";
+		echo "\n<script type=\"text/javascript\">Event.observe(window, 'load', function(){";
 		echo $this->renderJSCommands($win);
-		echo "</script>";
+		echo "});</script>";
 		echo $win->wholeView->render();
 		echo '</body></html>';
 	}
