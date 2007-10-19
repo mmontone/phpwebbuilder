@@ -89,7 +89,8 @@ class CompositeReport extends Report {
 
 	function & getLimit() {
 		if ($this->limit === null) {
-			return $this->report->getLimit();
+			$lim = $this->report->getLimit();
+			return $lim;
 		} else {
 			return $this->limit;
 		}

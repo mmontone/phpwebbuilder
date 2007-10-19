@@ -147,7 +147,7 @@ class Report extends Collection{
 				'exp1' => new AttrPathExpression($target_var->id, $field),
 				'exp2'=> new ValueExpression($value)));
 		$cond->evaluateIn($this);
-		$this->addSetConditionExpression($field, &$cond);
+		$this->addSetConditionExpression($field, $cond);
 
 		//$this->conditions[]=array($this->parseField($field),$comparator,$value);
 		$n = null;
