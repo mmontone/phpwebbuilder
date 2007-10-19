@@ -1,0 +1,75 @@
+.menu {
+	width: 150px;
+	background: white;
+	border-top: 1px solid #ddd;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #666;
+	border-bottom: 1px solid #666;
+	padding: 3px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-family: Trebuchet MS;
+z-index:100000;
+}
+.menu a {
+	display: block;
+	margin: 0 2px;
+	padding: 4px 15px;
+	text-decoration: none;
+	color: #555;
+	font-size: 11px;
+	cursor: pointer;cursor: hand;
+	outline: none;
+}
+.menu a:hover {
+	background: blue;
+	color: #fff;
+}
+.menu a.disabled {
+	color: black;
+font-weight:bold
+
+}
+.menu a.disabled:hover {
+	background:white;
+cursor:default
+}
+.menu .separator {
+	height: 1px;
+	border-bottom: 1px solid #fff;
+	background: #999;
+	margin: 4px 4px;
+	overflow: hidden;
+	padding: 0;
+}
+/* GOOGLE STYLES */
+
+.menu.google {
+	width: 10.5em;
+	background: #fff;
+	border-top: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-bottom: 1px solid #676767;
+	border-right: 1px solid #676767;
+}
+.menu.google a {
+	color: #00c;
+	text-decoration: none;
+	padding: 2px 5px;
+	cursor: pointer;
+	font-size: 12px;
+}
+.menu.google a:hover {
+	background: #D3E3FE;
+}
+.menu.google a.disabled {
+	color: #bbb;
+}
+.menu.google a.disabled:hover {
+	background: #fff;
+	color: #bbb;
+}
+.menu.google .separator {
+	background: #ccc;
+}

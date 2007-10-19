@@ -52,7 +52,7 @@ class DBSession {
 	 */
 
 	function addCommand(& $command) {
-		#@sql_dml_echo echo 'Adding command ' . $command->debugPrintString() . '<br/>';@#
+		#@sql_dml_echo echo print_backtrace('Adding command ' . $command->debugPrintString() . '<br/>');@#
 		$this->commands[] = & $command;
 	}
 

@@ -84,7 +84,8 @@ class MemoryTransaction {
 		// We save our registered objects in a transaction, but we don't remove the commands.
 		// In a threaded implementation, object changes should be registered in memory transactions, and not globally in
 		// the DBSession
-
+		if ($this->saving) return;
+		$this->saving = true;
 		$db = & DBSession :: Instance();
 		$db->beginTransaction();
 		try {
@@ -94,6 +95,7 @@ class MemoryTransaction {
 			$db->rollbackTransaction();
 			$e->raise();
 		}
+		$this->saving = false;
 	}
 	//@#
 
@@ -102,7 +104,8 @@ class MemoryTransaction {
 		// We save our registered objects in a transaction, but we don't remove the commands.
 		// In a threaded implementation, object changes should be registered in memory transactions, and not globally in
 		// the DBSession
-
+		if ($this->saving) return;
+		$this->saving = true;
 		$db = & DBSession :: Instance();
 		$db->beginTransaction();
 		if (is_exception($e = & $db->saveRegisteredObjects())) {
@@ -112,6 +115,7 @@ class MemoryTransaction {
 		else {
 			$db->commitTransaction();
 		}
+		$this->saving = false;
 	}
 	//@#
 
