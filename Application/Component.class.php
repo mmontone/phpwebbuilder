@@ -14,6 +14,7 @@ class Component extends PWBObject {
 	var $dyn_vars = array ();
 	var $calling=false; // It is true when the component is calling other component (but not calling back)
     var $calling_back=false; // It is true when then component is calling back
+	var $__contextMenus=array();
     var $memory_transaction;
 
 	function Component($params = array()) {
@@ -459,6 +460,23 @@ class Component extends PWBObject {
 	function setComponentState($st, $b=true){
 		if ($b){$this->componentstates->atPut($st,$st);}
 		else{$this->componentstates->remove($st);}
+	}
+	function createContextMenu(){
+		$win =& Window::getActiveInstance();
+		$win->addAjaxCommand(new AjaxCommand("contextMenus['{$this->getId()}'] = new Proto.Menu({selector: '#{$this->getId()}',className: 'menu',menuItems: []});",array()));
+	}
+	function destroyContextMenu(){
+
+	}
+	function addContextMenu($name, &$functionObject){
+		if (empty($this->__contextMenus)) {$this->createContextMenu();}
+		$this->__contextMenus[$name] =&$functionObject;
+		$win =& Window::getActiveInstance();
+		$win->addAjaxCommand(new AjaxCommand("contextMenus['{$this->getId()}'].addElement({title:'$name', callback:function(){alert('$name')}});"));
+	}
+	function removeContextMenu($name){
+		unset($this->__contextMenus[$name]);
+		if (empty($this->__contextMenus)) {$this->removeContextMenu();}
 	}
 
     // mixin DBComponent

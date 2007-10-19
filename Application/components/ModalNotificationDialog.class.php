@@ -186,7 +186,7 @@ class AjaxCommand {
 	var $command;
 	var $params;
 
-	function AjaxCommand($command, $params) {
+	function AjaxCommand($command, $params=array()) {
 		$this->command = $command;
 		$this->params = $params;
 	}
@@ -198,9 +198,17 @@ class AjaxCommand {
 		return $xml;
 	}
 	function renderStdResponseCommand() {
-		if (count($this->params)==0) return $this->command.'();';
+
+		if (count($this->params)==0) {
+			if (substr($this->command,-1)==')' || substr($this->command,-2,-1)==')') {
+				return $this->command;
+			} else {
+				return $this->command.'();';
+			}
+		}
 		$xml =  $this->command . '("'.
 			implode('","',$this->params) . '");';
+
 		return $xml;
 	}
 }

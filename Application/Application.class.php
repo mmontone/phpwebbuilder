@@ -112,6 +112,11 @@ class Application {
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/modal-message.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/js/ajax-dynamic-content.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
+		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/Proto.Menu.0.5.js');
+
 		$this->page_renderer->initializeScripts($this);
 		$this->addScripts();
 	}
@@ -121,8 +126,6 @@ class Application {
 	function addStyleSheets() {}
 
 	function addAjaxRenderingSpecificScripts() {
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
 		$this->addScript(constant('pwb_url') . 'lib/dhtmlHistory.js');
 		$this->addScript(constant('pwb_url') . 'lib/ajax.js');
 		if (defined('use_animations'))$this->addScript(constant('pwb_url') . 'lib/animatedajax.js');
