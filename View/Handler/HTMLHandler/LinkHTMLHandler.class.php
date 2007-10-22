@@ -20,4 +20,21 @@ class LinkHTMLHandler extends WidgetHTMLHandler{
 	}
 	function setEvents(&$comp){}
 }
+
+class ImageLinkHTMLHandler extends WidgetHTMLHandler{
+    function & createDefaultView() {
+		$v = & new XMLNodeModificationsTracker;
+		$this->initializeDefaultView($v);
+		return $v;
+	}
+	function prepareToRender(){
+		parent::prepareToRender();
+		$this->view->setAttribute('src', toAjax($this->component->target));
+	}
+	function initializeDefaultView(&$view){
+		$view->setTagName('img');
+	}
+	function setEvents(&$comp){}
+}
+
 ?>

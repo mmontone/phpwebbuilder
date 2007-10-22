@@ -12,4 +12,7 @@ class Link extends Widget
 	}
 	function setEvents() {}
 }
+
+class ImageLink extends Link{}
+
 ?>

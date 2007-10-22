@@ -72,8 +72,10 @@ class CollectionField extends DataField {
       	  $this->owner->$validation_method($elem);
       }
       $current_component =& getdyn('current_component');
-	  $current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
-      $current_component->saveMemoryTransactionObjects();
+      if($current_component) {
+	  	$current_component->registerFieldModification(new CollectionFieldAddition($this, $elem));
+      	$current_component->saveMemoryTransactionObjects();
+      }
       $this->primAdd($elem);
       $this->collection->refresh();
 		$this->collection->changed();
@@ -85,7 +87,9 @@ class CollectionField extends DataField {
 		// purpose. We don't want to discard rollbackable commands. The transaction is not finished. We only
 		// want to save registered objects to the database because we want collections to be observable.
 		$current_component =& getdyn('current_component');
+		if ($current_component){
     	$current_component->saveMemoryTransactionObjects();
+		}
     }
 
 	function remove(& $elem) {
