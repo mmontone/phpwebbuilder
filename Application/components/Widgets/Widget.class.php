@@ -46,6 +46,8 @@ class Widget extends Component {
 		/* Default events, override in subclasses */
 		$class = getClass($this);
 		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue)"));
+		//Fix Autocompletion bug
+		$this->events->atPut('onblur', $a=array('onblur',"enqueueChange(getEventTarget(event),{$class}GetValue)"));
 	}
 
 	function setOnChangeEvent() {
