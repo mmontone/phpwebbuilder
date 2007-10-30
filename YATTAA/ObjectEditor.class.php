@@ -36,11 +36,6 @@ class ObjectEditor extends ObjectPresenter {
 		);
 	}
 
-	function nonCallStop() {
-		if (!$this->object_edited)
-			$this->doFlush();
-	}
-
 	function calleeStopped(& $dialog) {
 		if (!$this->active_callback and !$this->object_edited) {
 			$this->doFlush();
@@ -83,6 +78,7 @@ class ObjectEditor extends ObjectPresenter {
 	}
 
 	function cancelConfirmed() {
+		$this->rollbackMemoryTransaction();
 		$this->callback($this->cancelCallback());
 	}
 
