@@ -106,29 +106,12 @@ class DescriptedObject extends PWBObject {
         }//@#
 	}
 
-	/* Non threaded behaviour: there are not transactions. A single db instance for every thread. Problem:
-	 * what happens when we commit modifications made by a component and there's another editor component
-	 * active? That editor will have saved the changes although the accept button was never hit. That's not
-	 * compositional.
-	 */
-
-	function &currentTransaction() {
-		return DBSession::Instance();
-	}
 	/*
 	 * Threaded behaviour: object changes are registered per thread. That is compositional.
 	 */
-	 /*
 	 function &currentTransaction() {
-	 	$current_component =& getdyn('current_component');
-        if (is_object($current_component)) {
-        	if (is_object($comp =& $current_component->getMemoryTransaction())) {
-        		return $comp;
-        	}
-        }
-
-        return DBSession::Instance();
-     }*/
+		return DBSession::CurrentTransaction();
+     }
 
 	function registerPersistence(){
 		if (!$this->isPersisted()){
