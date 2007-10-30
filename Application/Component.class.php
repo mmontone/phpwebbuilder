@@ -290,10 +290,25 @@ class Component extends PWBObject {
 		$this->basicCall($component);
 		$this->calling = false;
 	}
-
+	function canRelease(){
+		$can = (!is_object($this->memory_transaction)) ||
+			$this->memory_transaction->isEmpty();
+		foreach (array_keys($this->__children) as $c) {
+			$child = & $this->__children[$c]->component;
+			if ($child != null)
+				$can = $can && $child->canRelease();
+		}
+		return $can;
+	}
 	function stopAndCall(& $component) {
-		$this->basicCall($component);
-		$this->releaseAll();
+		if ($this->canRelease()){
+			$this->basicCall($component);
+			$this->releaseAll();
+			return true;
+		} else {
+			var_dump('Cant release !'.$this->getId());
+			return false;
+		}
 	}
 
 	function basicCall(& $component) {
@@ -313,15 +328,16 @@ class Component extends PWBObject {
 		}
 	}
 	function callback($callback = null) {
-		$this->callbackWith($callback, $a = array ());
+		return $this->callbackWith($callback, $a = array ());
 	}
 
 	function callbackWith($callback, & $params) {
 		#@check $this->listener !== null@#
 		#@calling_echo echo $this->printString() . ' calling back: ' . $callback . '<br/>';@#
         $this->listener->calling_back = true;
-        $this->listener->takeControlOf($this, $callback, $params);
+        $res = $this->listener->takeControlOf($this, $callback, $params);
         $this->listener->calling_back = false;
+        return $res;
 	}
 
 	function takeControlOf(& $callbackComponent, $callback, & $params) {
@@ -330,7 +346,11 @@ class Component extends PWBObject {
         $n = null;
 		$callbackComponent->listener = & $n;
 		//Check if there was an enqueued call
-		$callbackComponent->stopAndCall($this);
+		if (!$callbackComponent->stopAndCall($this)) {
+			//Restore the listener of the callback, because it was not possible to remove yet.
+			$callbackComponent->listener = & $this;
+			return false;
+		}
 		/*if (isset($this->enqueuedCall)){
 			echo 'calling from queue '.$this->enqueuedCall->printString();
 			$this->call($this->enqueuedCall);
@@ -340,6 +360,7 @@ class Component extends PWBObject {
 			#@calling_echo echo $this->printString() . ' executing callback: ' . $callback . ' function: ' . $callbackComponent->registered_callbacks[$callback]->printString() .'<br/>';@#
             $callbackComponent->registered_callbacks[$callback]->executeWith($params);
 		}
+		return true;
 	}
 
 	function dynCallback($callback = null) {
@@ -355,7 +376,7 @@ class Component extends PWBObject {
 		#@typecheck $callbackComponent:Component@#
 		$n = null;
 		$callbackComponent->listener = & $n;
-		$callbackComponent->stopAndCall($this);
+		if (!$callbackComponent->stopAndCall($this)) return;
 		if (($callback != null) and ($callbackComponent->registered_callbacks[$callback] != null)) {
 			$callbackComponent->registered_callbacks[$callback]->executeWith($params);
 		} else {
