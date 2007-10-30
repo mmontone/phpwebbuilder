@@ -106,7 +106,8 @@ class DBDriver {
 				$new_values = $matches[3] . ',' . $this->getLastId();
 				$sql = 'INSERT INTO ' . $table_name . ' (' . $new_fields . ') VALUES ('. $new_values .')';
 			}
-			$this->transaction_queries[] = $sql;
+			$mt =& DBSession::currentTransaction();
+			$mt->transaction_queries[] = array('SQL'=>$sql, 'MT'=>$mt->getId());
 		}
 
 		return $reg;
@@ -146,7 +147,6 @@ class DBDriver {
 		$conn = & $this->openDatabase(false);
 		/* If transactions are not supported, go on silently (logging is another option)*/
 		$this->processTransactionQueries($conn);
-		$this->transaction_queries = array ();
 		$this->in_transaction = false;
 		$this->basicCommit($conn);
 		#@sql_dml_echo echo 'Committing DB transaction<br/>';@#
@@ -158,9 +158,11 @@ class DBDriver {
 		if ($this->in_transaction) {
 			if ($this->new_request) {
 				$this->beginTransaction();
-				#@sql_dml_echo echo 'Executing delayed transactional queries ('. count($this->transaction_queries) . '):' . print_r($this->transaction_queries, true) . '</br>';@#
-				foreach ($this->transaction_queries as $query) {
-					$this->basicQuery($conn, $query);
+				foreach ($this->session->memoryTransactions as $mt){
+					foreach ($mt->transaction_queries as $query) {
+						#@sql_dml_echo echo 'Executing delayed transactional query ('. print_r($query, true) . '</br>';@#
+						$this->basicQuery($conn, $query['SQL']);
+					}
 				}
 			}
 		}

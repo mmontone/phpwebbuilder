@@ -2,9 +2,11 @@
 
 class MemoryTransaction {
 	var $modifications = array ();
+	var $objects = array ();
 	var $thread;
 	var $active = true;
 	var $metaclass = 'StandardMemoryTransactionMetaclass';
+	var $transaction_queries = array();
 
 	function MemoryTransaction(& $thread, $options = array()) {
 		$this->thread = & $thread;
@@ -16,27 +18,36 @@ class MemoryTransaction {
 			$this->$key = $value;
 		}
 
+		$this->id =& $thread->getLiveId();
+		$this->parent =& $thread->getMemoryTransaction();
+		if ($this->parent==null){$this->parent=& DBSession::Instance();}
 		$metaclass = $this->metaclass;
 		$this->metaclass =&  new $metaclass;
 
-		$this->metaclass->initializeMemoryTransaction();
+		$this->metaclass->initializeMemoryTransaction($this);
 		#@tm_echo echo $this->debugPrintString() . ' initialized<br/>';@#
+	}
+	function getId(){
+		return $this->id;
 	}
 
 	function isEmpty() {
+		var_dump($this->modifications);
 		return count($this->modifications) == 0;
 	}
 
 	function isActive() {
 		return $this->active;
 	}
-
 	function rollback() {
+		$this->cancel();
+	}
+	function cancel() {
 		if (!$this->isActive()) {
-			print_backtrace_and_exit('You cannot rollback an inactive transaction: ' . $this->debugPrintString());
+			print_backtrace_and_exit('You cannot cancel an inactive transaction: ' . $this->debugPrintString());
 		}
 
-		#@tm_echo print_backtrace('Rolling back ' . $this->debugPrintString() . '<br/>');@#
+		#@tm_echo print_backtrace('Cancelling transaction ' . $this->debugPrintString() . '<br/>');@#
 
 		// We need too rollback modifications in order
 		$original_modifications = array_reverse($this->modifications);
@@ -44,15 +55,35 @@ class MemoryTransaction {
 			$mod = & $original_modifications[$key];
 			$mod->rollback();
 		}
+		/*$original_objects = array_reverse($this->objects);
+		foreach (array_keys($original_objects) as $key) {
+			$mod = & $original_objects[$key];
+			$mod->rollback();
+		}*/
 
-		$a = array ();
-		$this->modifications = & $a;
+		$this->cleanUp();
 
 		$this->active = false;
 
-		$this->metaclass->rollbackMemoryTransaction();
+		$this->metaclass->cancelMemoryTransaction($this);
 
 		#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
+	}
+	function cleanUp(){
+		$a = array ();
+		$this->modifications = & $a;
+		$a = array ();
+		$this->objects = & $a;
+		$a = array ();
+		$this->transaction_queries = & $a;
+	}
+	function pause(){
+		$this->metaclass->cancelMemoryTransaction($this);
+		#@tm_echo echo $this->debugPrintString() . ' paused<br/>';@#
+	}
+	function restart(){
+		$this->metaclass->initializeMemoryTransaction($this);
+		#@tm_echo echo $this->debugPrintString() . ' started<br/>';@#
 	}
 
 	function commit() {
@@ -70,11 +101,8 @@ class MemoryTransaction {
 		/* First we call the metaclass. There may be exceptions. If no exception ocurred, we remove modifications
 		   and deactivate the transaction */
 
-		$this->metaclass->commitMemoryTransaction();
-
-		// We remove modifications, contrary to saveObjectsInTransaction
-		$a = array ();
-		$this->modifications = & $a;
+		$this->parent->registerAllModifications($this);
+		$this->rollback();
 
 		$this->active = false;
 	}
@@ -86,7 +114,7 @@ class MemoryTransaction {
 		// the DBSession
 		if ($this->saving) return;
 		$this->saving = true;
-		$db = & DBSession :: Instance();
+		/*$db = & DBSession :: Instance();
 		$db->beginTransaction();
 		try {
 			$db->saveRegisteredObjects();
@@ -94,7 +122,7 @@ class MemoryTransaction {
 		} catch (DBError $e) {
 			$db->rollbackTransaction();
 			$e->raise();
-		}
+		}*/
 		$this->saving = false;
 	}
 	//@#
@@ -106,7 +134,7 @@ class MemoryTransaction {
 		// the DBSession
 		if ($this->saving) return;
 		$this->saving = true;
-		$db = & DBSession :: Instance();
+		/*$db = & DBSession :: Instance();
 		$db->beginTransaction();
 		if (is_exception($e = & $db->saveRegisteredObjects())) {
 			$db->rollbackTransaction();
@@ -114,11 +142,21 @@ class MemoryTransaction {
 		}
 		else {
 			$db->commitTransaction();
-		}
+		}*/
 		$this->saving = false;
 	}
 	//@#
-
+	function registerObject(& $obj) {
+		#@tm_echo echo 'Registering ' . $obj->debugPrintString() . ' in ' . $this->debugPrintString() . '<br/>';@#
+		$db =& DBSession::Instance();
+		$db->save($obj);
+		if (!isset ($this->objects[getClass($obj).$obj->getId()])) {
+			$db->registerObject($obj);
+			$this->objects[getClass($obj).$obj->getId()] = & $obj;
+		} else {
+			#@tm_echo echo $obj->debugPrintString() . ' already registered in ' . $this->debugPrintString() . '<br/>';@#
+		}
+	}
 	function registerFieldModification(& $mod) {
 		#@tm_echo echo 'Registering ' . $mod->debugPrintString() . ' in ' . $this->debugPrintString() . '<br/>';@#
 		if (!isset ($this->modifications[$mod->getHash()])) {
@@ -127,24 +165,38 @@ class MemoryTransaction {
 			#@tm_echo echo $mod->debugPrintString() . ' already registered in ' . $this->debugPrintString() . '<br/>';@#
 		}
 	}
-
+	function registerAllModifications(&$trans){
+		#@tm_echo echo $this->debugPrintString() . ' adding modifications from ' . $trans->debugPrintString() . '<br/>';@#
+		$mods = $trans->modifications;
+		$count = count($mods);
+		for($i=0;$i<$count;$i++){
+			$this->modifications[] =& $mods[$i];
+		}
+		$objs = $trans->objects;
+		$count = count($objs);
+		for($i=0;$i<$count;$i++){
+			$this->objects[] =& $objs[$i];
+		}
+		$this->transaction_queries = array_merge($trans->transaction_queries, $this->transaction_queries);
+		$trans->cleanUp();
+		#@tm_echo echo $this->debugPrintString() . ' final state<br/>'
+	}
 	function debugPrintString() {
-		return print_object($this, ' modifications: ' . count($this->modifications) . ' thread: ' . $this->thread->debugPrintString() . ' metaclass: ' . print_object($this->metaclass));
+		return print_object($this, ' modifications: ' . count($this->modifications) .' queries: ' . count($this->transaction_queries) . ' thread: ' . $this->thread->debugPrintString() . ' metaclass: ' . print_object($this->metaclass). ' parent: '.$this->parent->debugPrintString());
 	}
 }
 
 class DBMemoryTransactionMetaclass {
-	function initializeMemoryTransaction() {
-		DBSessionInstance :: BeginTransaction();
+	function initializeMemoryTransaction(&$mt) {
+		DBSessionInstance :: BeginMemoryTransaction($mt);
 	}
 
-	function commitMemoryTransaction() {
-		$db =& DBSession::Instance();
-		$db->commitTransaction(new FunctionObject($db, 'saveRegisteredObjects'));
+	function commitMemoryTransaction(&$mt) {
+		DBSessionInstance :: commitMemoryTransaction($mt);
 	}
 
-	function rollbackMemoryTransaction() {
-		DBSessionInstance :: RollbackTransaction();
+	function cancelMemoryTransaction(&$mt) {
+		DBSessionInstance :: cancelMemoryTransaction($mt);
 	}
 }
 
