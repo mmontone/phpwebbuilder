@@ -7,13 +7,16 @@ class ContextualComponent extends Component {
 	function call(&$workspace){
 		$this->follower=&$workspace;
 		if ($this->__module!==null && is_a($workspace,'ContextualComponent')){
+			//We're in a contextual component, do the extra "workspaceCall" steps
 			$this->workspaceCall($workspace);
 		}
 		parent::call($workspace);
 	}
 	function workspaceCall(&$workspace){
+		//Setting the module, adding the reference
 		$workspace->setModule($this->__module);
 		$cont =& $this->getContext();
+		//Adding ourselves to the context
 		$cont->switchTo($workspace->getContext());
 	}
 	function getTitle(){
@@ -22,12 +25,23 @@ class ContextualComponent extends Component {
 	function restoreContext(){
 		if(isset($this->follower)){
 			if (is_a($this->follower,'ContextualComponent')){
-				$this->__module->removeReference($this->follower);
-				$this->follower->restoreContext();
+				//Trying to restore the context
+				if (!$this->follower->restoreContext()) {
+					return false;
+				}
 			}
-			$this->follower->callback();
+			//Trying to restore OUR context
+			if (!$this->follower->callback()) {
+					return false;
+				}
+			if (is_a($this->follower,'ContextualComponent')){
+				//Everything worked, remove next reference.
+				$this->__module->removeReference($this->follower);
+			}
 			unset($this->follower);
+			return true;
 		}
+		return true;
 	}
 	function restoreContextFromStart(){
 		if(isset($this->follower)){
@@ -40,6 +54,7 @@ class ContextualComponent extends Component {
 	}
 	function setModule(&$module){
 		$this->__module=&$module;
+		//Adding the reference
 		$module->addReference($this);
 		$this->setDynVar('context', $this->newContext());
 	}
