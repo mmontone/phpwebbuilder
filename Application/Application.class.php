@@ -263,17 +263,20 @@ class Application {
             return $this->dyn_vars[$name];
         }
         else {
+            /*Search in the listeners, no need to search the parent (it will be searched anyway)*/
+
             if (method_exists($this->listener,'getVeryDynVar')) {
-                return $this->listener->getVeryDynVar($name);
+                return  $this->listener->getVeryDynVar($name);
+	            
+            }
+            /*Search in the parents*/
+            $parent =& $this->getParent();
+            #@check $parent !== null@#
+            if (method_exists($parent,'getVeryDynVar')) {
+                return $parent->getVeryDynVar($name);
             } else {
-                $parent =& $this->getParent();
-                #@check $parent !== null@#
-                if (method_exists($parent,'getVeryDynVar')) {
-                    return $parent->getVeryDynVar($name);
-                } else {
-                    $n = null;
-                    return $n;
-                }
+                $n = null;
+                return $n;
             }
         }
     }

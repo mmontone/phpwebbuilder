@@ -32,18 +32,18 @@ class Component extends PWBObject {
 	function stop() {
 	}
 
-	function stopAll() {
+	function stopAll($isCaller=true) {
 		#@activation_echo echo 'Stopping ' . $this->printString() . '<br/>';@#
         defdyn('current_component', $this);
 		foreach (array_keys($this->__children) as $c) {
 			$child = & $this->__children[$c]->component;
 			if ($child !== null) {
-				$child->stopAll();
+				$child->stopAll(false);
 			}
 		}
 
         if ($this->isCalling()) {
-        	$this->callStop();
+        	$this->metaCallStop($isCaller);
         }
         else {
         	$this->nonCallStop();
@@ -93,8 +93,16 @@ class Component extends PWBObject {
 	// its calling other component. Its useful for some protocols. For example,
 	// object editors dont want to flush the changes when they stop for making a call (See ObjectEditor class).
 	//                                                    -- marian
-	function callStop() {
+	function callStop($isCaller) {
 
+	}
+	function metaCallStop($isCaller) {
+		if ((!$isCaller) && $this->memory_transaction) $this->memory_transaction->pause();
+		$this->callStop($isCaller);
+	}
+	function metaStart() {
+		if ($this->memory_transaction) $this->memory_transaction->restart();
+		$this->start();
 	}
 
 	// This function gets called when the component stops and it is NOT
@@ -195,7 +203,7 @@ class Component extends PWBObject {
 	}
 	function startAll() {
 		#@activation_echo echo 'Starting ' . $this->printString() . '<br/>';@#
-        $this->start();
+        $this->metaStart();
 		foreach (array_keys($this->__children) as $k) {
 			$this->__children[$k]->component->startAll();
 		}
@@ -306,9 +314,13 @@ class Component extends PWBObject {
 			$this->releaseAll();
 			return true;
 		} else {
-			var_dump('Cant release !'.$this->getId());
+			$this->cantReleaseActions();
 			return false;
 		}
+	}
+	function cantReleaseActions(){
+		$this->call($ed =& ErrorDialog::create(Translator::Translate('A transaction is active, please close it before exiting')));
+		$ed->onAccept(new FunctionObject($this, 'doNothing'));
 	}
 
 	function basicCall(& $component) {
@@ -447,6 +459,9 @@ class Component extends PWBObject {
 	function getId() {
 		return $this->holder->getRealId();
 	}
+	function getLiveId() {
+		return $this->holder->getRealId();
+	}
 	//TODO Remove View
 	function & parentView() {
 		return $this->holder->view();
@@ -468,6 +483,9 @@ class Component extends PWBObject {
 		return $this->holder->getParentElement();
 	}
 	function doNothing() {
+	}
+	function debugprintString() {
+		return $this->printString();
 	}
 	function printString() {
 		if (is_object($this->holder)) {
