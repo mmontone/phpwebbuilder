@@ -32,7 +32,6 @@ class MemoryTransaction {
 	}
 
 	function isEmpty() {
-		var_dump($this->modifications);
 		return count($this->modifications) == 0;
 	}
 

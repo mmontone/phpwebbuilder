@@ -185,6 +185,7 @@ class DBSession {
 
 		$n = array ();
 		$this->registeredObjects = & $n;
+		$this->cleanUp();
 	}
 
 	function rollbackDBCommands() {
@@ -266,11 +267,6 @@ class DBSession {
 				$elem = & $this->registeredObjects[$ks[0]];
 				unset ($this->registeredObjects[$ks[0]]);
 
-				if (!isset ($prepared_to_save[$elem->getInstanceId()])) {
-					$prepared_to_save[$elem->getInstanceId()] = true;
-					#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
-					$elem->prepareToSave();
-				}
 				$this->save($elem);
 			}
 			PersistentObject :: CollectCycles();
@@ -295,11 +291,6 @@ class DBSession {
 			$elem = & $this->registeredObjects[$ks[0]];
 			unset ($this->registeredObjects[$ks[0]]);
 
-			if (!isset ($prepared_to_save[$elem->getInstanceId()])) {
-				$prepared_to_save[$elem->getInstanceId()] = true;
-				#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
-				$elem->prepareToSave();
-			}
 			if (is_exception($e =& $this->save($elem))){
 				foreach (array_keys($toRollback) as $i) {
 					#@persistence_echo echo 'Registering back: ' . $toRollback[$i]->debugPrintString() . '<br/>';@#
@@ -407,6 +398,11 @@ class DBSession {
 	function & save(& $object) {
 		try {
             $this->registerSave($object);
+            if (!isset ($prepared_to_save[$object->getInstanceId()])) {
+				$prepared_to_save[$object->getInstanceId()] = true;
+				#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
+				$object->prepareToSave();
+			}
             $object->save();
             return $object;
         }
@@ -422,6 +418,11 @@ class DBSession {
 	#@php4
 	function & save(& $object) {
 		$this->registerSave($object);
+        if (!isset ($prepared_to_save[$object->getInstanceId()])) {
+			$prepared_to_save[$object->getInstanceId()] = true;
+			#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
+			$object->prepareToSave();
+		}
         $e =& $object->save();
         if (is_exception($e))
         {
@@ -516,7 +517,6 @@ class DBSession {
 		if (count($this->memoryTransactions)==1){
 			#@tm_echo echo 'Commiting Memory Transaction<br/>';@#
 			$this->commitTransaction();
-			$this->cleanUp();
 		}
 	}
 	function cleanUp(){

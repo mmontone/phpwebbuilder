@@ -460,7 +460,11 @@ class Component extends PWBObject {
 		return $this->holder->getRealId();
 	}
 	function getLiveId() {
-		return $this->holder->getRealId();
+		if ( $this->holder) {
+			return $this->holder->getRealId();
+		} else{
+			return '';
+		}
 	}
 	//TODO Remove View
 	function & parentView() {
