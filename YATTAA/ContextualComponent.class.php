@@ -73,6 +73,7 @@ class ContextualComponent extends Component {
 	}
 	var $navigationmenus = array();
 	function addNavigationMenu($name, &$function){
+		#@typecheck $function:FunctionObject@#
 		$this->navigationmenus[$name]=&$function;
 		$ctx =& $this->getContext();
 		if ($ctx!==null){
@@ -82,6 +83,7 @@ class ContextualComponent extends Component {
 	}
 	var $actionmenus = array();
 	function addActionMenu($name, &$function){
+		#@typecheck $function:FunctionObject@#
 		$this->actionmenus[$name]=&$function;
 		$ctx =& $this->getContext();
 		if ($ctx!=null){
