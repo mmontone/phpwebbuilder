@@ -157,17 +157,17 @@ class DBDriver {
 	function processTransactionQueries(& $conn) {
 		if ($this->in_transaction) {
 			if ($this->new_request) {
+				$this->new_request = false;
 				$this->beginTransaction();
 				foreach ($this->session->memoryTransactions as $mt){
-					foreach ($mt->transaction_queries as $query) {
+					$mt->runCommands($this);
+					/*foreach ($mt->transaction_queries as $query) {
 						#@sql_dml_echo echo 'Executing delayed transactional query ('. print_r($query, true) . '</br>';@#
 						$this->basicQuery($conn, $query['SQL']);
-					}
+					}*/
 				}
 			}
 		}
-
-		$this->new_request = false;
 	}
 
 	function rollBack() {

@@ -153,7 +153,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
         //         typed values.  -- marian
         if ($data != $this->buffered_value) {
           $this->registerFieldModification();
-	  
+
 
             $this->primSetValue($data);
 		}
@@ -183,7 +183,10 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 		if ($this->buffered_value !== null)
 			return $this->buffered_value;
 		else
-			return $this->value;
+			return $this->getStoredValue();
+	}
+	function getStoredValue(){
+		return $this->value;
 	}
 	/**
 	 * Commits the changes on the field

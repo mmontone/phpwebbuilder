@@ -132,6 +132,7 @@ class PersistentObject extends DescriptedObject {
 			return $ex->raise();
 		}
 		$this->existsObject = true;
+		#@sql_dml_echo echo ("The ID is: {$this->getID()}, {$this->debugPrintString()}");@#
 		return $res;
 	}
 	/**
@@ -140,7 +141,8 @@ class PersistentObject extends DescriptedObject {
 	function updateString($class) {
 		$values = '';
 		$ver = $this->fields[$class]['PWBversion']->getValue();
-		$this->fields[$class]['PWBversion']->setValue($this->fields[$class]['PWBversion']->getValue()+1);
+		#@sql_dml_echo echo ("Current V: $ver, stored version: {$this->fields[$class]['PWBversion']->getStoredValue()}, {$this->debugPrintString()}");@#
+		$this->fields[$class]['PWBversion']->setValue($ver+1);
 		$md =& PersistentObjectMetaData::getMetaData($class);
 		foreach ($this->fields[$class] as $index => $field) {
 			$values .= $field->updateString();
@@ -275,7 +277,6 @@ class PersistentObject extends DescriptedObject {
     function &raiseDBError(&$error) {
     	return $error->primRaise();
     }
-
 	/**
 	 * Updates the object in the database
 	 */
@@ -295,7 +296,7 @@ class PersistentObject extends DescriptedObject {
 		foreach($this->getPersistentClasses() as $sc){
 			$this->fields[$sc]['PWBversion']->primitiveFlushChanges();
 		}
-		//echo 'PWBVersion flushed value: ' . getClass($this) . ' : ' . $this->PWBversion->getValue();
+		#@sql_dml_echo echo ("Flushing to V: {$this->fields[getClass($this)]['PWBversion']->getStoredValue()}, {$this->debugPrintString()}");@#
 	}
 	/**
 	 * Inserts the object in the database
@@ -316,12 +317,6 @@ class PersistentObject extends DescriptedObject {
 	}
 
 	function flushInsert() {
-		foreach($this->getPersistentClasses() as $sc){
-			if (DescriptedObject::isNotTopClass($sc)) {
-				$this->fields[$sc]['super']->primitiveFlushChanges();
-			}
-			$this->fields[$sc]['id']->primitiveFlushChanges();
-		}
 		$this->existsObject = false;
 	}
 

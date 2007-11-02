@@ -7,6 +7,7 @@ class MemoryTransaction {
 	var $active = true;
 	var $metaclass = 'StandardMemoryTransactionMetaclass';
 	var $transaction_queries = array();
+	var $commands = array (); // Undoable commands
 
 	function MemoryTransaction(& $thread, $options = array()) {
 		$this->thread = & $thread;
@@ -49,11 +50,14 @@ class MemoryTransaction {
 		#@tm_echo print_backtrace('Cancelling transaction ' . $this->debugPrintString() . '<br/>');@#
 
 		// We need too rollback modifications in order
+		$this->metaclass->cancelMemoryTransaction($this);
+		$this->rollingBack=true;
 		$original_modifications = array_reverse($this->modifications);
 		foreach (array_keys($original_modifications) as $key) {
 			$mod = & $original_modifications[$key];
 			$mod->rollback();
 		}
+		$this->rollingBack=false;
 		/*$original_objects = array_reverse($this->objects);
 		foreach (array_keys($original_objects) as $key) {
 			$mod = & $original_objects[$key];
@@ -64,17 +68,18 @@ class MemoryTransaction {
 
 		$this->active = false;
 
-		$this->metaclass->cancelMemoryTransaction($this);
 
 		#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
 	}
 	function cleanUp(){
 		$a = array ();
 		$this->modifications = & $a;
-		$a = array ();
-		$this->objects = & $a;
-		$a = array ();
-		$this->transaction_queries = & $a;
+		$b = array ();
+		$this->objects = & $b;
+		$c = array ();
+		$this->transaction_queries = & $c;
+		$d = array ();
+		$this->commands = & $d;
 	}
 	function pause(){
 		$this->metaclass->cancelMemoryTransaction($this);
@@ -147,6 +152,7 @@ class MemoryTransaction {
 	//@#
 	function registerObject(& $obj) {
 		#@tm_echo echo 'Registering ' . $obj->debugPrintString() . ' in ' . $this->debugPrintString() . '<br/>';@#
+		if ($this->rollingBack) return;
 		$db =& DBSession::Instance();
 		$db->save($obj);
 		if (!isset ($this->objects[getClass($obj).$obj->getId()])) {
@@ -154,6 +160,14 @@ class MemoryTransaction {
 			$this->objects[getClass($obj).$obj->getId()] = & $obj;
 		} else {
 			#@tm_echo echo $obj->debugPrintString() . ' already registered in ' . $this->debugPrintString() . '<br/>';@#
+		}
+	}
+	function rebuild(){
+		$objs = $this->commands;
+		$count = count($objs);
+		#@tm_echo echo 'Rebuilding ' . $this->debugPrintString() . '<br/>';@#
+		for($i=0;$i<$count;$i++){
+			$objs[$i]->rollback();
 		}
 	}
 	function registerFieldModification(& $mod) {
@@ -171,6 +185,11 @@ class MemoryTransaction {
 		for($i=0;$i<$count;$i++){
 			$this->modifications[] =& $mods[$i];
 		}
+		$comms = $trans->commands;
+		$count = count($comms);
+		for($i=0;$i<$count;$i++){
+			$this->commands[] =& $comms[$i];
+		}
 		$objs = $trans->objects;
 		$count = count($objs);
 		for($i=0;$i<$count;$i++){
@@ -179,6 +198,11 @@ class MemoryTransaction {
 		$this->transaction_queries = array_merge($trans->transaction_queries, $this->transaction_queries);
 		$trans->cleanUp();
 		#@tm_echo echo $this->debugPrintString() . ' final state<br/>'
+	}
+	function runCommands(&$driver){
+		foreach($this->commands as $com){
+			$com->runCommand($driver);
+		}
 	}
 	function debugPrintString() {
 		return print_object($this, ' modifications: ' . count($this->modifications) .' queries: ' . count($this->transaction_queries) . ' thread: ' . $this->thread->debugPrintString() . ' metaclass: ' . print_object($this->metaclass). ' parent: '.$this->parent->debugPrintString());
@@ -200,77 +224,6 @@ class DBMemoryTransactionMetaclass {
 }
 
 class StandardMemoryTransactionMetaclass extends DBMemoryTransactionMetaclass {}
-
-class InMemoryTransactionMetaclass {
-	function initializeMemoryTransaction() {
-
-	}
-
-	function commitMemoryTransaction() {
-
-	}
-
-	function rollbackMemoryTransaction() {
-
-	}
-}
-
-class GlobalMemoryTransactionMetaclass {
-	#@php5
-	function saveObjectsInTransaction() {
-		// We save our registered objects in a transaction, but we don't remove the commands.
-		// In a threaded implementation, object changes should be registered in memory transactions, and not globally in
-		// the DBSession
-
-		$db = & DBSession :: Instance();
-		$db->beginTransaction();
-		try {
-			$db->saveRegisteredObjects();
-			$db->commitTransaction();
-		} catch (DBError $e) {
-			$db->rollbackTransaction();
-			$e->raise();
-		}
-	}
-	//@#
-
-	#@php4
-	function saveObjectsInTransaction() {
-		// We save our registered objects in a transaction, but we don't remove the commands.
-		// In a threaded implementation, object changes should be registered in memory transactions, and not globally in
-		// the DBSession
-
-		$db = & DBSession :: Instance();
-		$db->beginTransaction();
-		if (is_exception($e = & $db->saveRegisteredObjects())) {
-			$db->rollbackTransaction();
-			$e->raise();
-		}
-		else {
-			$db->commitTransaction();
-		}
-	}
-	//@#
-	function unregisterAllObjects() {
-		// TODO: make threaded
-		DBSession :: unregisterAllObjects();
-	}
-}
-
-class ThreadedMemoryTransactionMetaclass {
-	var $registered_objects = array ();
-
-	function registerObject(& $object) {
-		#@persistence_echo echo 'Registering ' . $object->debugPrintString() . ' in ' . $this->debugPrintString() .'<br/>';@#
-		$set = isset ($this->registeredObjects[$object->getInstanceId()]);
-		$this->registeredObjects[$object->getInstanceId()] = & $object;
-		$object->toPersist = true;
-
-		if (!$set && !$object->existsObject) {
-			$object->registerCollaborators();
-		}
-	}
-}
 
 // Fields modifications
 

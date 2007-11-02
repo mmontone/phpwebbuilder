@@ -17,7 +17,6 @@ $prepared_to_save = array ();
  *
  */
 class DBSession {
-	var $commands = array (); // Undoable commands
 	var $registeredObjects = array ();
 	var $lastSQL;
 	var $lastError;
@@ -26,7 +25,7 @@ class DBSession {
 	var $rollback=false;
 	var $transaction_queries=array();
 	var $memoryTransactions=array();
-
+	var $commands = array (); // Undoable commands
 	/*
 	 * Transaction nesting related methods
 	 */
@@ -55,11 +54,12 @@ class DBSession {
 
 	function addCommand(& $command) {
 		#@sql_dml_echo echo print_backtrace('Adding command ' . $command->debugPrintString() . '<br/>');@#
-		$this->commands[] = & $command;
+		$ct =& DBSession::currentTransaction();
+		$ct->commands[] = & $command;
 	}
 
-	function registerSave(& $object) {
-		if ($object->existsObject()) {
+	function registerSave(& $object, $exists) {
+		if ($exists) {
 			$this->addCommand(new UpdateObjectDBCommand($object));
 		} else {
 			$this->addCommand(new CreateObjectDBCommand($object));
@@ -314,7 +314,7 @@ class DBSession {
 			$driver_class = constant('db_driver');
 			$dbsession = & new $dbsession_class;
 			$dbsession->driver = & new $driver_class ($dbsession);
-			$dbsession->memoryTransactions[]=&$dbsession;
+			$dbsession->memoryTransactions[]=& $dbsession;
 			Session :: setAttribute($slot, $dbsession);
 		}
 		return Session :: getAttribute($slot);
@@ -397,13 +397,14 @@ class DBSession {
 	#@php5
 	function & save(& $object) {
 		try {
-            $this->registerSave($object);
             if (!isset ($prepared_to_save[$object->getInstanceId()])) {
 				$prepared_to_save[$object->getInstanceId()] = true;
 				#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
 				$object->prepareToSave();
 			}
+			$exists =  $object->existsObject();
             $object->save();
+            $this->registerSave($object, $exists);
             return $object;
         }
         catch (Exception $e) {
@@ -417,13 +418,14 @@ class DBSession {
 
 	#@php4
 	function & save(& $object) {
-		$this->registerSave($object);
         if (!isset ($prepared_to_save[$object->getInstanceId()])) {
 			$prepared_to_save[$object->getInstanceId()] = true;
 			#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
 			$object->prepareToSave();
 		}
+		$exists =  $object->existsObject();
         $e =& $object->save();
+		$this->registerSave($object, $exists);
         if (is_exception($e))
         {
             if ($db->rollback_on_error) {
@@ -507,6 +509,7 @@ class DBSession {
 		$miid = $trans->getId();
 		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active, removing '.$miid.'<br/>';@#
 		for ($i=count($this->memoryTransactions)-1; $i>=0; $i--){
+			$this->memoryTransactions[$i]->rebuild();
 			if ($this->memoryTransactions[$i]->getId()!=$miid){
 				$nmts []=&$this->memoryTransactions[$i];
 			}
@@ -522,10 +525,12 @@ class DBSession {
 	function cleanUp(){
 		$a = array ();
 		$this->modifications = & $a;
-		$a = array ();
-		$this->objects = & $a;
-		$a = array ();
-		$this->transaction_queries = & $a;
+		$b = array ();
+		$this->objects = & $b;
+		$c = array ();
+		$this->transaction_queries = & $c;
+		$d = array ();
+		$this->commands = & $d;
 	}
 	function rebuildTransactionQueries() {
 		$conn = & $this->driver->openDatabase(false);
@@ -533,12 +538,24 @@ class DBSession {
 		$this->driver->new_request=true;
 		$this->driver->processTransactionQueries($conn);
 	}
+	function rebuild(){
+		$objs = $this->commands;
+		$count = count($objs);
+		for($i=0;$i<$count;$i++){
+			$objs[$i]->rollback();
+		}
+	}
 	function registerAllModifications(&$trans){
 		#@tm_echo echo $this->debugPrintString() . ' adding modifications from ' . $trans->debugPrintString() . '<br/>';@#
 		$mods = $trans->modifications;
 		$count = count($mods);
 		for($i=0;$i<$count;$i++){
 			$this->modifications[] =& $mods[$i];
+		}
+		$comms = $trans->commands;
+		$count = count($comms);
+		for($i=0;$i<$count;$i++){
+			$this->commands[] =& $comms[$i];
 		}
 		$objs = $trans->objects;
 		$count = count($objs);
@@ -548,6 +565,11 @@ class DBSession {
 		$this->transaction_queries = array_merge($trans->transaction_queries, $this->transaction_queries);
 		$trans->cleanUp();
 		#@tm_echo echo $this->debugPrintString() . ' final state<br/>'
+	}
+	function runCommands(&$driver){
+		foreach($this->commands as $com){
+			$com->runCommand($driver);
+		}
 	}
 	function getId(){
 		return '';
@@ -602,101 +624,5 @@ class DBSessionInstance {
 		$db->unregisterAllObjects();
 	}
 }
-
-class DBCommand {
-	var $object;
-
-	function DBCommand(& $object) {
-		$this->object = & $object;
-	}
-
-	function commit() {
-		print_backtrace_and_exit('Subclass responsibility');
-	}
-
-	function rollback() {
-		print_backtrace_and_exit('Subclass responsibility');
-	}
-
-	function & getObject() {
-		return $this->object;
-	}
-
-	function debugPrintString() {
-		return '[' . getClass($this) . ' target: ' . $this->object->debugPrintString() . ']';
-	}
-}
-
-class CreateObjectDBCommand extends DBCommand {
-	function commit() {
-		#@sql_dml_echo 	echo 'Committing creation: ' . $this->object->debugPrintString() . '<br />';@#
-
-		$this->object->primitiveCommitChanges();
-	}
-
-	function rollback() {
-		#@sql_dml_echo echo 'Rolling back creation: ' . $this->object->debugPrintString() . '<br />';@#
-
-		$this->object->flushInsert();
-	}
-}
-
-class UpdateObjectDBCommand extends DBCommand {
-	function commit() {
-		#@sql_dml_echo echo 'Committing update: ' . $this->object->debugPrintString() . '<br />';@#
-
-		$this->object->primitiveCommitChanges();
-	}
-
-	function rollback() {
-		#@sql_dml_echo echo 'Rolling back update: ' . $this->object->debugPrintString() . '<br />';@#
-
-		$this->object->flushUpdate();
-	}
-}
-
-class DeleteObjectDBCommand extends DBCommand {
-	function commit() {
-
-	}
-
-	function rollback() {
-		#@sql_dml_echo  echo 'Rolling back delete: ' . $this->object->debugPrintString() . '<br />';@#
-
-		$this->object->existsObject = TRUE;
-	}
-}
-
-/* PHP4:
- * $db->beginTransaction();
- * $db->beginTransaction();
- * $e =& $db->save($object);
- * if (is_exception($e)) {
- * 		$db->rollbackTransaction();
- * }
- * else {
- * 	$db->commitTransaction();
- * }
- * $db->commitTransaction(); // This rollback if there was an error
- * */
-
- /* PHP5:
- * $db->beginTransaction();
- * try {
-	 * $db->beginTransaction();
-	 * try {
-	 * 		$db->save($object);
-	*			$db->commitTransaction();
-	 * }
-	 * catch (DBError $e) {
-	 * 		$db->rollbackTransaction();
-	 * 		$e->raise();
-	 * }
-	 * }
-	 * catch (DBError $e) {
-	 * 		$db->rollbackTransaction();
-	 * 		$this->showDialog($e);
-	 * }
- */
 
 ?>

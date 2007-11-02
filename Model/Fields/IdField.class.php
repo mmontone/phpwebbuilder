@@ -7,17 +7,12 @@ class IdField extends NumField {
     function &visit(&$obj) {
         return $obj->visitedIdField($this);
     }
-    function fieldNamePrefixed ($operation, $pfx) {
-        if ($operation == 'SELECT') {
-            return parent::fieldNamePrefixed ($operation, $pfx);
-        }
-    }
 
 	function updateString() {
 		return '';
 	}
     function insertValue() {
-    	return '';
+    	return ($this->value? $this->value:'NULL'). ", " ;
     }
 
     function setID($id) {
@@ -26,6 +21,7 @@ class IdField extends NumField {
 
     function setValue($value) {
 		// Don't register a modification
+		$this->value = $value;
     	$this->buffered_value = $value;
     }
 
