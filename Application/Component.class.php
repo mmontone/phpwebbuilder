@@ -46,7 +46,7 @@ class Component extends PWBObject {
         	$this->metaCallStop($isCaller);
         }
         else {
-        	$this->nonCallStop();
+        	$this->metaNonCallStop();
         }
         $this->stop();
         if (!$this->calling_back and !$this->calling) {
@@ -108,7 +108,11 @@ class Component extends PWBObject {
 	// This function gets called when the component stops and it is NOT
 	// calling other component. Its useful for some protocols. For example,
 	// object editors dont want to flush the changes when they stop (See ObjectEditor class)
-	//                                                    -- marian
+	//                                               -- marian
+	function metaNonCallStop() {
+		if ($this->memory_transaction) $this->memory_transaction->cancel();
+		$this->nonCallStop();
+	}
 	function nonCallStop() {
 
 	}
