@@ -1,13 +1,10 @@
 <?php
 
 class MemoryTransaction {
-	var $modifications = array ();
-	var $objects = array ();
+	#@use_mixin TransactionObject@#
 	var $thread;
 	var $active = true;
 	var $metaclass = 'StandardMemoryTransactionMetaclass';
-	var $transaction_queries = array();
-	var $commands = array (); // Undoable commands
 
 	function MemoryTransaction(& $thread, $options = array()) {
 		$this->thread = & $thread;
@@ -43,20 +40,16 @@ class MemoryTransaction {
 		$this->cancel();
 	}
 	function cancel() {
-		if (!$this->isActive()) {
+		/*if (!$this->isActive()) {
 			print_backtrace_and_exit('You cannot cancel an inactive transaction: ' . $this->debugPrintString());
-		}
+		}*/
 
 		#@tm_echo print_backtrace('Cancelling transaction ' . $this->debugPrintString() . '<br/>');@#
 
 		// We need too rollback modifications in order
 		$this->metaclass->cancelMemoryTransaction($this);
 		$this->rollingBack=true;
-		$original_modifications = array_reverse($this->modifications);
-		foreach (array_keys($original_modifications) as $key) {
-			$mod = & $original_modifications[$key];
-			$mod->rollback();
-		}
+		$this->rollbackModifications();
 		$this->rollingBack=false;
 		/*$original_objects = array_reverse($this->objects);
 		foreach (array_keys($original_objects) as $key) {
@@ -66,20 +59,10 @@ class MemoryTransaction {
 
 		$this->cleanUp();
 
-		$this->active = false;
+		//$this->active = false;
 
 
 		#@tm_echo echo $this->debugPrintString() . ' rolled back<br/>';@#
-	}
-	function cleanUp(){
-		$a = array ();
-		$this->modifications = & $a;
-		$b = array ();
-		$this->objects = & $b;
-		$c = array ();
-		$this->transaction_queries = & $c;
-		$d = array ();
-		$this->commands = & $d;
 	}
 	function pause(){
 		$this->metaclass->cancelMemoryTransaction($this);
@@ -96,9 +79,9 @@ class MemoryTransaction {
 		// are: 1) Non root memory transaction cannot count on db restrictions (example: repeated key fields restrictions).
 		// 2) We can only commit and rollback all the changes at once
 		//                                                             -- marian
-		if (!$this->isActive()) {
+		/*if (!$this->isActive()) {
 			print_backtrace_and_exit('Transaction already commited ' . $this->debugPrintString());
-		}
+		}*/
 
 		#@tm_echo echo 'Committing ' . $this->debugPrintString() . '<br/>';@#
 
@@ -108,7 +91,7 @@ class MemoryTransaction {
 		$this->parent->registerAllModifications($this);
 		$this->rollback();
 
-		$this->active = false;
+		//$this->active = false;
 	}
 
 	#@php5
@@ -162,14 +145,6 @@ class MemoryTransaction {
 			#@tm_echo echo $obj->debugPrintString() . ' already registered in ' . $this->debugPrintString() . '<br/>';@#
 		}
 	}
-	function rebuild(){
-		$objs = $this->commands;
-		$count = count($objs);
-		#@tm_echo echo 'Rebuilding ' . $this->debugPrintString() . '<br/>';@#
-		for($i=0;$i<$count;$i++){
-			$objs[$i]->rollback();
-		}
-	}
 	function registerFieldModification(& $mod) {
 		#@tm_echo echo 'Registering ' . $mod->debugPrintString() . ' in ' . $this->debugPrintString() . '<br/>';@#
 		if (!isset ($this->modifications[$mod->getHash()])) {
@@ -177,35 +152,6 @@ class MemoryTransaction {
 		} else {
 			#@tm_echo echo $mod->debugPrintString() . ' already registered in ' . $this->debugPrintString() . '<br/>';@#
 		}
-	}
-	function registerAllModifications(&$trans){
-		#@tm_echo echo $this->debugPrintString() . ' adding modifications from ' . $trans->debugPrintString() . '<br/>';@#
-		$mods = $trans->modifications;
-		$count = count($mods);
-		for($i=0;$i<$count;$i++){
-			$this->modifications[] =& $mods[$i];
-		}
-		$comms = $trans->commands;
-		$count = count($comms);
-		for($i=0;$i<$count;$i++){
-			$this->commands[] =& $comms[$i];
-		}
-		$objs = $trans->objects;
-		$count = count($objs);
-		for($i=0;$i<$count;$i++){
-			$this->objects[] =& $objs[$i];
-		}
-		$this->transaction_queries = array_merge($trans->transaction_queries, $this->transaction_queries);
-		$trans->cleanUp();
-		#@tm_echo echo $this->debugPrintString() . ' final state<br/>'
-	}
-	function runCommands(&$driver){
-		foreach($this->commands as $com){
-			$com->runCommand($driver);
-		}
-	}
-	function debugPrintString() {
-		return print_object($this, ' modifications: ' . count($this->modifications) .' queries: ' . count($this->transaction_queries) . ' thread: ' . $this->thread->debugPrintString() . ' metaclass: ' . print_object($this->metaclass). ' parent: '.$this->parent->debugPrintString());
 	}
 }
 
