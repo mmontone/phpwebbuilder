@@ -17,15 +17,14 @@ $prepared_to_save = array ();
  *
  */
 class DBSession {
+	#@use_mixin TransactionObject@#
 	var $registeredObjects = array ();
 	var $lastSQL;
 	var $lastError;
 	var $nesting = 0;
 	var $rollback_on_error = false;
 	var $rollback=false;
-	var $transaction_queries=array();
 	var $memoryTransactions=array();
-	var $commands = array (); // Undoable commands
 	/*
 	 * Transaction nesting related methods
 	 */
@@ -53,8 +52,8 @@ class DBSession {
 	 */
 
 	function addCommand(& $command) {
-		#@sql_dml_echo echo print_backtrace('Adding command ' . $command->debugPrintString() . '<br/>');@#
 		$ct =& DBSession::currentTransaction();
+		#@sql_dml_echo echo print_backtrace('Adding command ' . $command->debugPrintString() . ' to '. $ct->debugPrintString() .'<br/>');@#
 		$ct->commands[] = & $command;
 	}
 
@@ -176,12 +175,11 @@ class DBSession {
 	}
 
 	function commitDBCommands() {
+		var_dump($this->commands);
 		foreach (array_keys($this->commands) as $c) {
 			$cmd = & $this->commands[$c];
 			$cmd->commit();
 		}
-
-		$this->commands = array ();
 
 		$n = array ();
 		$this->registeredObjects = & $n;
@@ -314,7 +312,7 @@ class DBSession {
 			$driver_class = constant('db_driver');
 			$dbsession = & new $dbsession_class;
 			$dbsession->driver = & new $driver_class ($dbsession);
-			$dbsession->memoryTransactions[]=& $dbsession;
+			#@sql_dml_echo echo 'Creating a new DBSession';@#
 			Session :: setAttribute($slot, $dbsession);
 		}
 		return Session :: getAttribute($slot);
@@ -487,7 +485,7 @@ class DBSession {
 	function printString() {
 		return '['  . ucfirst(get_class($this)) . ' transaction nesting: ' . $this->getTransactionNesting() . ']';
 	}
-	function currentTransaction(){
+	function &currentTransaction(){
 		$current_component =& getdyn('current_component');
         if (is_object($current_component)) {
         	if (is_object($mt =& $current_component->getMemoryTransaction())){
@@ -497,7 +495,7 @@ class DBSession {
         return DBSession::Instance();
 	}
 	function beginMemoryTransaction(&$trans){
-		if (count($this->memoryTransactions)==1){
+		if (count($this->memoryTransactions)==0){
 			$this->beginTransaction();
 		}
 		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active<br/>';@#
@@ -508,74 +506,42 @@ class DBSession {
 		$nmts = array();
 		$miid = $trans->getId();
 		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active, removing '.$miid.'<br/>';@#
-		for ($i=count($this->memoryTransactions)-1; $i>=0; $i--){
-			$this->memoryTransactions[$i]->rebuild();
-			if ($this->memoryTransactions[$i]->getId()!=$miid){
-				$nmts []=&$this->memoryTransactions[$i];
+		$mts =& $this->memoryTransactions;
+		$count = count($mts);
+		for ($i=$count-1; $i>=0; $i--){
+			$mts[$i]->rebuild();
+			if ($mts[$i]->getId()!=$miid){
+				$nmts []=&$mts[$i];
+			} else {
+				#@tm_echo echo $mts[$i]->debugPrintString() . ' was removed<br/>';@#
 			}
 		}
-		$this->memoryTransactions =& $nmts;
-		$this->rebuildTransactionQueries();
-		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active<br/>';@#
-		if (count($this->memoryTransactions)==1){
-			#@tm_echo echo 'Commiting Memory Transaction<br/>';@#
-			$this->commitTransaction();
+		$empty = array();
+		$this->memoryTransactions =& $empty;
+		$conn = & $this->driver->openDatabase(false);
+		$this->driver->rollback($conn);
+		$this->rebuild();
+		#@tm_echo echo '<h1>Starting to commit all commands</h1><br/>';@#
+		$this->driver->beginTransaction($conn);
+		$this->runCommands();
+		$this->driver->commit($conn);
+		$this->cleanUp();
+		#@tm_echo echo '<h1>Finished to commit all commands</h1><br/>';@#
+		if (count($this->memoryTransactions)==0){
+			$this->rollbackTransaction();
+		} else {
+			$this->driver->beginTransaction($conn);
+			$this->memoryTransactions =& $nmts;
+			$this->driver->new_request=true;
+			$this->driver->processTransactionQueries($conn);
 		}
-	}
-	function cleanUp(){
-		$a = array ();
-		$this->modifications = & $a;
-		$b = array ();
-		$this->objects = & $b;
-		$c = array ();
-		$this->transaction_queries = & $c;
-		$d = array ();
-		$this->commands = & $d;
+		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active<br/>';@#
 	}
 	function rebuildTransactionQueries() {
-		$conn = & $this->driver->openDatabase(false);
-		$this->driver->basicRollback($conn);
-		$this->driver->new_request=true;
-		$this->driver->processTransactionQueries($conn);
 	}
-	function rebuild(){
-		$objs = $this->commands;
-		$count = count($objs);
-		for($i=0;$i<$count;$i++){
-			$objs[$i]->rollback();
-		}
-	}
-	function registerAllModifications(&$trans){
-		#@tm_echo echo $this->debugPrintString() . ' adding modifications from ' . $trans->debugPrintString() . '<br/>';@#
-		$mods = $trans->modifications;
-		$count = count($mods);
-		for($i=0;$i<$count;$i++){
-			$this->modifications[] =& $mods[$i];
-		}
-		$comms = $trans->commands;
-		$count = count($comms);
-		for($i=0;$i<$count;$i++){
-			$this->commands[] =& $comms[$i];
-		}
-		$objs = $trans->objects;
-		$count = count($objs);
-		for($i=0;$i<$count;$i++){
-			$this->objects[] =& $objs[$i];
-		}
-		$this->transaction_queries = array_merge($trans->transaction_queries, $this->transaction_queries);
-		$trans->cleanUp();
-		#@tm_echo echo $this->debugPrintString() . ' final state<br/>'
-	}
-	function runCommands(&$driver){
-		foreach($this->commands as $com){
-			$com->runCommand($driver);
-		}
-	}
+
 	function getId(){
 		return '';
-	}
-	function debugPrintString(){
-		return 'DBSession';
 	}
 
 }
