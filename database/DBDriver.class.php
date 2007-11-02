@@ -3,7 +3,6 @@ class DBDriver {
 	var $session;
 	var $conn;
 	var $pconn;
-	var $transaction_queries = array ();
 	var $in_transaction = false;
 	var $new_request = true;
 
@@ -98,18 +97,6 @@ class DBDriver {
 
 		}
 
-		if (substr($sql, 0, strlen('SELECT')) != 'SELECT') {
-			if (substr($sql, 0, strlen('INSERT')) == 'INSERT') {
-				preg_match('/INSERT\s*INTO\s*(.*)\s\((.*)\)\s*VALUES\s*\((.*)\)/', $sql, $matches);
-				$table_name = $matches[1];
-				$new_fields = $matches[2] . ',id';
-				$new_values = $matches[3] . ',' . $this->getLastId();
-				$sql = 'INSERT INTO ' . $table_name . ' (' . $new_fields . ') VALUES ('. $new_values .')';
-			}
-			$mt =& DBSession::currentTransaction();
-			$mt->transaction_queries[] = array('SQL'=>$sql, 'MT'=>$mt->getId());
-		}
-
 		return $reg;
 	}
 	function beginTransaction() {
@@ -159,12 +146,11 @@ class DBDriver {
 			if ($this->new_request) {
 				$this->new_request = false;
 				$this->beginTransaction();
-				foreach ($this->session->memoryTransactions as $mt){
+				$mts =& $this->session->memoryTransactions;
+				foreach (array_keys($mts) as $mtk){
+					$mt =& $mts[$mtk];
+					#@sql_dml_echo echo 'Running commands: '.$mt->debugPrintString();var_dump($mt->commands);@#
 					$mt->runCommands($this);
-					/*foreach ($mt->transaction_queries as $query) {
-						#@sql_dml_echo echo 'Executing delayed transactional query ('. print_r($query, true) . '</br>';@#
-						$this->basicQuery($conn, $query['SQL']);
-					}*/
 				}
 			}
 		}
@@ -173,8 +159,7 @@ class DBDriver {
 	function rollBack() {
 		$conn = & $this->openDatabase(false);
 		/* If transactions are not supported, go on silently (logging is another option)*/
-		$this->processTransactionQueries($conn);
-		$this->transaction_queries = array ();
+		//$this->processTransactionQueries($conn);
 		$this->in_transaction = false;
 		$this->basicRollback($conn);
 		#@sql_dml_echo echo 'Rolling back DB transaction<br/>';@#
