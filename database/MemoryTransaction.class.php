@@ -21,7 +21,8 @@ class MemoryTransaction {
 		if ($this->parent==null){$this->parent=& DBSession::Instance();}
 		$metaclass = $this->metaclass;
 		$this->metaclass =&  new $metaclass;
-
+	}
+	function start(){
 		$this->metaclass->initializeMemoryTransaction($this);
 		#@tm_echo echo $this->debugPrintString() . ' initialized<br/>';@#
 	}

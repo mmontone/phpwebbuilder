@@ -541,14 +541,12 @@ class Component extends PWBObject {
     var $transaction; // The transaction the component may begin
 
     function beginMemoryTransaction() {
-        if (is_object($this->memory_transaction) and $this->memory_transaction->isActive()) {
-        	print_backtrace('Transaction already begun in: ' . $this->debugPrintString());
-        }
-        else {
+        if (!is_object($this->memory_transaction)) {
             $this->memory_transaction =& new MemoryTransaction($this);
             $this->setDynVar('memory_transaction', $this->memory_transaction);
         }
         #@tm_echo echo 'Beggining memory transaction:' . $this->memory_transaction->debugPrintString() . '<br/>';@#
+        $this->memory_transaction->start();
         return $this->memory_transaction;
     }
 
