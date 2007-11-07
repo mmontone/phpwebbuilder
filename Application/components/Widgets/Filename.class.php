@@ -26,15 +26,12 @@ class Filename extends Input {
 		$file->filetype->setValue($file_data['type']);
 
 		$dbsession = & DBSession::Instance();
-		var_dump($dbsession->memoryTransactions);
 		$in_trans = $dbsession->driver->in_transaction;
 		$dbsession->driver->in_transaction = false;
-		var_dump(DBSession::currentTransaction());
 		$ex =& $file->save();
 		if (is_exception($ex)) {
 			return $ex;
 		}
-		var_dump($dbsession->memoryTransactions);
 		$file->bin_data->setValue(null);
 		$file->commitChanges();
 		$file->primitiveCommitChanges();
