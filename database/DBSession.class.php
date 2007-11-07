@@ -175,7 +175,6 @@ class DBSession {
 	}
 
 	function commitDBCommands() {
-		var_dump($this->commands);
 		foreach (array_keys($this->commands) as $c) {
 			$cmd = & $this->commands[$c];
 			$cmd->commit();
