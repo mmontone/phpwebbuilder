@@ -178,6 +178,7 @@ class Compiler {
 		return $this->compileFile($x);
 	}
 	function getRealPath($file){
+	   $file = str_replace('\\', '/', $file);
 	   if (strpos($file, './')==FALSE) return $file;
 	   $address = split('(/|\\\\)', $file);
 	   $keys = array_keys($address, '..');
@@ -190,7 +191,7 @@ class Compiler {
 	   $address = implode('/', $address);
 	   $address = str_replace('./', '', $address);
 	   //echo 'from '.$file.' to '.$address;
-	   return $address;
+       return $address;
 	}
 	function compile($file) {
 		$file = Compiler::getRealPath($file);
@@ -294,7 +295,7 @@ class Compiler {
 				$this->tempdir = sys_get_temp_dir();
 			}
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
-			$this->tempdir = $this->getRealPath($this->tempdir);
+			$this->tempdir = str_replace('\\','/',$this->getRealPath($this->tempdir));
 		}
 		return $this->tempdir;
 	}
