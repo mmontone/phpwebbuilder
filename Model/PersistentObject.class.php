@@ -165,7 +165,7 @@ class PersistentObject extends DescriptedObject {
 			if ($db->getRowsAffected($res) == 0) {
 				$db =& DBSession::Instance();
 				$md =& PersistentObjectMetaData::getMetaData($class);
-				$rec =& $db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class));
+				$rec =& $db->fetchRecord($db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class)));
 				if ($rec['PWBversion'] !== $this->fields[$class]['PWBversion']->getStoredValue()) {
 					$ex =& new DBError(array('message' => 'Versioning error, '. $this->printString().' has version '.$rec['PWBversion'] .' and '.  $this->fields[$class]['PWBversion']->getStoredValue().' was expected'));
 				}

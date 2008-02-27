@@ -3,6 +3,7 @@ class VersionField extends NumField {
 	function createInstance($params) {
 		parent :: createInstance($params);
 		$this->value = -1;
+		$this->buffered_value = -1;
 	}
 
 	function & visit(& $obj) {

@@ -524,7 +524,7 @@ class DBSession {
 		$this->driver->beginTransaction($conn);
 		$this->runCommands();
 		$this->driver->commit($conn);
-		$this->cleanUp();
+		$this->commitDBCommands();
 		#@tm_echo echo '<h1>Finished to commit all commands</h1><br/>';@#
 		if (count($this->memoryTransactions)==0){
 			$this->rollbackTransaction();

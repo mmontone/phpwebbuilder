@@ -152,10 +152,8 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
         //         strings from somewhere. If you want to change to !==, be sure you are only receiving appropiate
         //         typed values.  -- marian
         if ($data != $this->buffered_value) {
-          $this->registerFieldModification();
-
-
             $this->primSetValue($data);
+            $this->registerFieldModification();
 		}
 	}
 
@@ -180,10 +178,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	 * Returns the value of the field
 	 */
 	function getValue() {
-		if ($this->buffered_value !== null)
-			return $this->buffered_value;
-		else
-			return $this->getStoredValue();
+		return $this->buffered_value;
 	}
 	function getStoredValue(){
 		return $this->value;
@@ -302,7 +297,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
     function registerFieldModification() {
       $current_component =& getdyn('current_component');
       if (is_object($current_component)) {
-	$current_component->registerFieldModification($this->getModificationObject());
+	     $current_component->registerFieldModification($this->getModificationObject());
       }
       else {
 	#@tm_echo echo 'Not registering modification of ' . $this->debugPrintString()  .'<br/>';@#

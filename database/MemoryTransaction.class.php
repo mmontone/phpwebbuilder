@@ -203,20 +203,6 @@ class FieldModification {
 class IndexFieldModification extends FieldModification {
 	var $target;
 
-	function initialize() {
-		parent :: initialize();
-		$this->target = & $this->field->getTarget();
-	}
-
-	function rollback() {
-		parent :: rollback();
-		if (!is_object($this->target)) {
-			$this->field->removeTarget();
-		} else {
-			$this->field->setTarget($this->target);
-		}
-	}
-
 	function debugPrintString() {
 		return print_object($this, ' field: ' . $this->field->debugPrintString() . ' value: ' . $this->value . ' target: ' . print_object($this->target));
 	}
@@ -227,6 +213,8 @@ class CollectionFieldModification extends FieldModification {
 
 	function CollectionFieldModification(& $field, & $elem) {
 		$this->elem = & $elem;
+		$iid =& Session::getAttribute('instance_id');
+		$this->__instance_id = ++$iid;
 		parent :: FieldModification($field);
 	}
 
@@ -234,7 +222,7 @@ class CollectionFieldModification extends FieldModification {
 	}
 
 	function getHash() {
-		return getClass($this) . get_primitive_object_id($this);
+		return getClass($this) . $this->__instance_id;
 	}
 
 	function debugPrintString() {

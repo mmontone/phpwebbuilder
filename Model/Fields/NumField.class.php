@@ -6,6 +6,7 @@ class NumField extends DataField {
 		parent::createInstance($params);
 		$this->range = @$params['range'];
 		$this->value=0;
+		$this->buffered_value=0;
 	}
 	function increment(){
 		$this->setValue($this->getValue()+1);

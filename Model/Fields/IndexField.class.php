@@ -54,7 +54,7 @@ class IndexField extends NumField {
 	      $this->removeTarget();
 	    return;
 	    }
-	  
+
 	    if (($this->buffered_target == null) or !($this->buffered_target->is($target))) {
 	  $this->registerFieldModification();
             $this->removeTarget();
@@ -80,7 +80,7 @@ class IndexField extends NumField {
       // -- marian
       $this->getTarget();
       if ($this->buffered_target !== null){
-	$this->registerFieldModification();
+	        $this->registerFieldModification();
 
             $this->buffered_target->retractInterestIn('id_changed', new FunctionObject($this, 'refreshId'));
 			$self =& $this;
@@ -88,20 +88,21 @@ class IndexField extends NumField {
 				#@lam $e->$e->decrementRefCount();$e->removedAsTarget($self->owner, $self->varName);return $e;@#
 			);
 		}
+
+		$n = null;
+        $this->buffered_target =& $n;
 		$this->setValue(0);
         // We have to set the buffered target in null because
 		// a value setting sets the buffered target in null if
 		// there has been a change in the value. Maybe setValue should
 		// set the buffered target to null always?
-		$n = null;
-        $this->buffered_target =& $n;
 	}
-
+/*
     function &getModificationObject() {
     	$mo =& new IndexFieldModification($this);
     	return $mo;
     }
-
+*/
 	function registerCollaborators(){
 		$t =& $this->getTarget();
 		if ($t!=null){
@@ -123,7 +124,6 @@ class IndexField extends NumField {
 
 	function &loadTarget() {
 		//return $this->collection->getObj($this->getValue());
-
         $o =& PersistentObject::getWithId($this->datatype, $this->getValue());
 		return $o;
 	}
@@ -170,7 +170,6 @@ class IndexField extends NumField {
 		if ($this->buffered_target != null) {
 			$this->buffered_value = $this->getTargetId();
 		}
-
 		$v = parent::getValue();
 		if ($v!=null){
 			return $v;

@@ -60,10 +60,7 @@ class DateTimeField extends DataField {
 		}
 	}
 	function &getValue() {
-		if ($this->buffered_value !== null)
-			return $this->buffered_value;
-		else
-			return $this->value;
+		return $this->buffered_value;
 	}
 
     function &getDate() {
