@@ -396,7 +396,7 @@ class DBSession {
 		try {
             if (!isset ($prepared_to_save[$object->getInstanceId()])) {
 				$prepared_to_save[$object->getInstanceId()] = true;
-				#@persistence_echo echo 'Preparing to save: ' . $elem->debugPrintString() . '<br/>';@#
+				#@persistence_echo echo 'Preparing to save: ' . $object->debugPrintString() . '<br/>';@#
 				$object->prepareToSave();
 			}
 			$exists =  $object->existsObject();

@@ -4,10 +4,11 @@ class FileLoader extends Component{
 	var $label_text;
 	var $desc_text;
 
-	function FileLoader() {
+	function FileLoader(&$file_field) {
 		parent::Component();
 		$this->label_text =& new ValueHolder('');
 		$this->desc_text =& new ValueHolder('');
+		$this->fileField =& $file_field;
 	}
 
 	function permissionNeeded () {
@@ -87,7 +88,8 @@ class FileLoader extends Component{
     }
 
     function addFilenameField() {
-    	$this->addComponent(new Filename(new ValueHolder($f='')),'filename');
+    	echo 'addFilenameField';
+    	$this->addComponent(new Filename(new ValueHolder($f=''), $this->fileField),'filename');
     }
 
     function cancel() {
