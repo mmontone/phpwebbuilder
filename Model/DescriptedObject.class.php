@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * DescriptedObject: Objects with descriptive fields (to be used in persistence)
+ */
+
 class DescriptedObject extends PWBObject {
 	/**
 	 * Parent of the object (inheritance-wise)

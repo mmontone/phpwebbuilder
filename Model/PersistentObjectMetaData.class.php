@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Handles the metadata of a persistentobject class.
+ */
+
 class PersistentObjectMetaData {
 	var $className;
 	var $fields = array();

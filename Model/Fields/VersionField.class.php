@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Field for the version of a PersistentObject
+ */
+
 class VersionField extends NumField {
 	function createInstance($params) {
 		parent :: createInstance($params);

@@ -1,4 +1,9 @@
 <?
+/**
+ * PersistentObject: Model object that is persistable. Has utility methods for 
+ * saving and deleting. Experimental Garbage collection.
+ */
+
 
 class PersistentObject extends DescriptedObject {
 	/**
@@ -303,6 +308,7 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &insert() {
 		$res = null;
+		#@sql_dml_echo2 print_backtrace ("Inserting" .$this->debugPrintString());@#
 		foreach($this->getPersistentClasses() as $sc){
 			if (DescriptedObject::isNotTopClass($sc)) {
 				$this->fields[$sc]['super']->setValue($this->fields[strtolower(get_parent_class($sc))]['id']->getValue());

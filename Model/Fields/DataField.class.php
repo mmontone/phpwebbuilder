@@ -1,5 +1,9 @@
 <?
 
+/**
+ * Abstract class, handles the fields of a DescriptedObject
+ */
+
 class DataField extends PWBObject {#@use_mixin ValueModel@#
 	/**
 	 * The column name
