@@ -961,12 +961,12 @@ function print_object($array, $extra = '') {
 				} else {
 					if (is_object($array)) {
 						#@php4
-                        $r = '[' . getClass($array) . ':' . get_primitive_object_id($array) . $extra . ']';
+                        $r = '[' . getClass($array) . ':' . $extra . ']';
                         //@#
 
                         #@php5
                         //$r = '[' . getClass($array) . ':' . spl_object_hash($array)  .' ]';
-                        $r = '[' . getClass($array) . ':' . get_primitive_object_id($array) . $extra . ']';
+                        $r = '[' . getClass($array) . ':' . $extra . ']';
                         //@#
 
                         return $r;
