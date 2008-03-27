@@ -38,14 +38,17 @@ class MemoryTransaction {
 		return $this->active;
 	}
 	function rollback() {
-		$this->cancel();
+		$this->dequeue();
 	}
 	function cancel() {
+		$this->dequeue();
+	}
+	function dequeue() {
 		/*if (!$this->isActive()) {
 			print_backtrace_and_exit('You cannot cancel an inactive transaction: ' . $this->debugPrintString());
 		}*/
 
-		#@tm_echo print_backtrace('Cancelling transaction ' . $this->debugPrintString() . '<br/>');@#
+		#@tm_echo print_backtrace('Dequeuing transaction ' . $this->debugPrintString() . '<br/>');@#
 
 		// We need too rollback modifications in order
 		$this->metaclass->cancelMemoryTransaction($this);
@@ -90,7 +93,7 @@ class MemoryTransaction {
 		   and deactivate the transaction */
 
 		$this->parent->registerAllModifications($this);
-		$this->rollback();
+		$this->dequeue();
 
 		//$this->active = false;
 	}

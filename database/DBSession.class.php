@@ -505,6 +505,7 @@ class DBSession {
 		$nmts = array();
 		$miid = $trans->getId();
 		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active, removing '.$miid.'<br/>';@#
+		/** Remove the transaction from the queue */
 		$mts =& $this->memoryTransactions;
 		$count = count($mts);
 		for ($i=$count-1; $i>=0; $i--){
@@ -515,20 +516,25 @@ class DBSession {
 				#@tm_echo echo $mts[$i]->debugPrintString() . ' was removed<br/>';@#
 			}
 		}
+		/** Clean up the DB transaction log */
 		$empty = array();
 		$this->memoryTransactions =& $empty;
 		$conn = & $this->driver->openDatabase(false);
 		$this->driver->rollback($conn);
 		$this->rebuild();
 		#@tm_echo echo '<h1>Starting to commit all commands</h1><br/>';@#
+		/** Run the commands that are at level 0, and permamently store them */
 		$this->driver->beginTransaction($conn);
 		$this->runCommands();
 		$this->driver->commit($conn);
 		$this->commitDBCommands();
 		#@tm_echo echo '<h1>Finished to commit all commands</h1><br/>';@#
-		if (count($this->memoryTransactions)==0){
-			$this->rollbackTransaction();
-		} else {
+		if (count($nmts)==0){/** There are no MemoryTransactions active */
+			/** Rollback the commands as well */
+			$this->rollbackTransaction(); 
+		} else {/** There are still MemoryTransactions active */
+			
+			/** Restore the DB from the MemoryTransactions */
 			$this->driver->beginTransaction($conn);
 			$this->memoryTransactions =& $nmts;
 			$this->driver->new_request=true;
