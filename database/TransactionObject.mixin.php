@@ -9,7 +9,9 @@
 		$original_modifications = array_reverse($this->modifications);
 		foreach (array_keys($original_modifications) as $key) {
 			$mod = & $original_modifications[$key];
-			$mod->rollback();
+			/*if ($mod!=null){ Possible array accessing with & somewhere */
+				$mod->rollback();
+			/*}*/
 		}
 	}
 	function cleanUp(){
@@ -26,17 +28,17 @@
 		#@tm_echo echo $this->debugPrintString() . ' adding modifications from ' . $trans->debugPrintString() . '<br/>';@#
 		$mods =& $trans->modifications;
 		$count = count($mods);
-		for($i=0;$i<$count;$i++){
+		foreach(array_keys($mods) as $i){
 			$this->modifications[] =& $mods[$i];
 		}
 		$comms =& $trans->commands;
 		$count = count($comms);
-		for($i=0;$i<$count;$i++){
+		foreach(array_keys($comms) as $i){
 			$this->commands[] =& $comms[$i];
 		}
 		$objs =& $trans->objects;
 		$count = count($objs);
-		for($i=0;$i<$count;$i++){
+		foreach(array_keys($objs) as $i){
 			$this->objects[] =& $objs[$i];
 		}
 		$trans->cleanUp();
