@@ -25,6 +25,9 @@ class DBSession {
 	var $rollback_on_error = false;
 	var $rollback=false;
 	var $memoryTransactions=array();
+	var $thread;
+	var $metaclass;
+	var $parent;
 	/*
 	 * Transaction nesting related methods
 	 */

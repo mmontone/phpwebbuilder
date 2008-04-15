@@ -133,8 +133,8 @@ class Widget extends Component {
 				"document.getElementById('" . $comp->getId() ."').focus();}"));
 	}
 
-	function addInterestIn($event, & $event_callback) {
-		parent :: addInterestIn($event, $event_callback);
+	function addInterestIn($event, & $event_callback, $params=array()) {
+		parent :: addInterestIn($event, $event_callback, $params);
 			switch ($event) {
 				case 'changed' :
 					$this->setOnChangeEvent();
