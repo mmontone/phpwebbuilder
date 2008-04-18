@@ -163,7 +163,6 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 
     function primSetValue($data) {
     	$this->buffered_value = $data;
-        $n = null;
         $this->setModified(true);
         $this->triggerEvent('changed', $this);
     }

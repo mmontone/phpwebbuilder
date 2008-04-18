@@ -1,6 +1,6 @@
 <?
 /**
- * PersistentObject: Model object that is persistable. Has utility methods for 
+ * PersistentObject: Model object that is persistable. Has utility methods for
  * saving and deleting. Experimental Garbage collection.
  */
 
@@ -159,19 +159,22 @@ class PersistentObject extends DescriptedObject {
 	 * Updates this level of the object, taking into account versioning
 	 */
 	function &basicUpdate($class) {
-		$sql = $this->updateString($class);
 		$db =& DBSession::Instance();
-		$rows=0;
+		$db->prepareForModification();
+		#@sql_dml_echo2 echo 'Starting update of '. $this->debugPrintString();@#
+		$sql = $this->updateString($class);
 		$res = $db->query($sql);
+
+		#@sql_dml_echo2 echo 'Finished update of '. $this->debugPrintString();@#
 		if (is_exception($res)) {
 			return $res;
 		}
 		else {
 			if ($db->getRowsAffected($res) == 0) {
-				$db =& DBSession::Instance();
 				$md =& PersistentObjectMetaData::getMetaData($class);
 				$rec =& $db->fetchRecord($db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class)));
-				if ($rec['PWBversion'] !== $this->fields[$class]['PWBversion']->getStoredValue()) {
+				#@sql_dml_echo2 echo 'Problem updating '. $this->debugPrintString().', stored version is '.$rec['PWBversion'];@#
+				if ($rec['PWBversion'] != $this->fields[$class]['PWBversion']->getStoredValue()) {
 					$ex =& new DBError(array('message' => 'Versioning error, '. $this->printString().' has version '.$rec['PWBversion'] .' and '.  $this->fields[$class]['PWBversion']->getStoredValue().' was expected'));
 				}
 				else {

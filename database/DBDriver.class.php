@@ -17,6 +17,14 @@ class DBDriver {
 			$conn = & $this->openDatabase(false);
 			#@sql_dml_echo echo 'Rolling back because transaction didn\'t finish in this request</br>';@#
 			$this->basicRollback($conn);
+			/****Rolling back commands****/
+			#@sql_dml_echo echo 'Rolling back commands</br>';@#
+			$mts =& $this->session->memoryTransactions;
+			$count = count($mts);
+			for ($i = $count -1; $i >= 0; $i--) {
+				$mts[$i]->rebuild();
+			}
+			$this->session->rebuild();
 		}
 		$this->new_request = true;
 	}
@@ -54,34 +62,33 @@ class DBDriver {
 			}
 		return $arr;
 	}
-
 	function & query($sql, $persistent = false) {
 		$conn = & $this->openDatabase($persistent);
 		$this->setLastSQL($sql);
 
 		$this->processTransactionQueries($conn);
 		#@sql_query_echo
-		if (substr($sql,0,6)=='SELECT'){
-		if (defined('dbgmode')) {
-			sql_log(array (
-				'Querying: ',
-				$sql
-			));
-		} else {
-			echo ('Querying ' . $sql . '<br/>');
-		}
-		}//@#
+		if (substr($sql, 0, 6) == 'SELECT') {
+			if (defined('dbgmode')) {
+				sql_log(array (
+					'Querying: ',
+					$sql
+				));
+			} else {
+				echo ('Querying ' . $sql . '<br/>');
+			}
+		} //@#
 		#@sql_dml_echo
-		if (substr($sql,0,6)!='SELECT'){
-		if (defined('dbgmode')) {
-			sql_log(array (
-				'DMLing: ',
-				$sql
-			));
-		} else {
-			echo ('DMLing ' . $sql . '<br/>');
-		}
-		}//@#
+		if (substr($sql, 0, 6) != 'SELECT') {
+			if (defined('dbgmode')) {
+				sql_log(array (
+					'DMLing: ',
+					$sql
+				));
+			} else {
+				echo ('DMLing ' . $sql . '<br/>');
+			}
+		} //@#
 		#@sql_query_echo2 if (substr($sql,0,6)=='SELECT') {$reg = $this->basicQuery ($conn,'EXPLAIN '.$sql);foreach($this->fetchArray($reg) as $r){if ($r['type']!='eq_ref'){print_r($r); echo '<br/>';}}}@#
 
 		// Before adding a transaction query, we check that it is not a query for reading. Just
@@ -146,9 +153,9 @@ class DBDriver {
 			if ($this->new_request) {
 				$this->new_request = false;
 				$this->beginTransaction();
-				$mts =& $this->session->memoryTransactions;
-				foreach (array_keys($mts) as $mtk){
-					$mt =& $mts[$mtk];
+				$mts = & $this->session->memoryTransactions;
+				foreach (array_keys($mts) as $mtk) {
+					$mt = & $mts[$mtk];
 					#@sql_dml_echo echo 'Running commands: '.$mt->debugPrintString();var_dump($mt->commands);@#
 					$mt->runCommands($this);
 				}

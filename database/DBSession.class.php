@@ -534,9 +534,9 @@ class DBSession {
 		#@tm_echo echo '<h1>Finished to commit all commands</h1><br/>';@#
 		if (count($nmts)==0){/** There are no MemoryTransactions active */
 			/** Rollback the commands as well */
-			$this->rollbackTransaction(); 
+			$this->rollbackTransaction();
 		} else {/** There are still MemoryTransactions active */
-			
+
 			/** Restore the DB from the MemoryTransactions */
 			$this->driver->beginTransaction($conn);
 			$this->memoryTransactions =& $nmts;
@@ -545,6 +545,10 @@ class DBSession {
 		}
 		#@tm_echo echo count($this->memoryTransactions) . ' Memory Transactions active<br/>';@#
 	}
+	function prepareForModification(){
+		$this->driver->processTransactionQueries($null);
+	}
+
 	function rebuildTransactionQueries() {
 	}
 
