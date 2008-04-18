@@ -3,7 +3,7 @@
 class DateTimeField extends DataField {
     function DateTimeField($name, $isIndex=null) {
    	  	parent::DataField($name, $isIndex);
-   	  	$this->setValue(PWBDateTime::Now());
+   	  	$this->primSetValue(PWBDateTime::Now());
    	  	$this->primitiveCommitChanges();
     }
 	function primitiveCommitChanges() {
@@ -24,7 +24,7 @@ class DateTimeField extends DataField {
     }
     function createInstance($params){
     	parent::createInstance($params);
-    	$this->setValue(new PWBDateTime(''));
+    	$this->primSetValue(new PWBDateTime(''));
     }
     function SQLvalue() {
         $d =& $this->getValue();
@@ -49,14 +49,20 @@ class DateTimeField extends DataField {
 	function setNow(){
 		$this->setValue(PWBDateTime::now());
 	}
+	function dateObjectChanged(){ //Simulate a normal change of values, the object has changed
+		$d =& $this->getValue();
+		$this->primSetValue($d);
+		$this->buffered_value =& $d;
+        $this->registerFieldModification();
+	}
 	function setValue(&$d){
 		#@typecheck $d : PWBDateTime@#
-		$d->onChangeSend('changed',$this);
+		$d->addInterestIn('changed',new FunctionObject($this,'dateObjectChanged'),array('execute on triggering'=>true));
 
         if (!($d->isLike($this->buffered_value))) {
+			$this->primSetValue($d);
 			$this->buffered_value =& $d;
-			$this->setModified(true);
-			$this->triggerEvent('changed', $no_params = null);
+            $this->registerFieldModification();
 		}
 	}
 	function &getValue() {
