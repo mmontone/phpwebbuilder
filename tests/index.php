@@ -1,25 +1,18 @@
 <?php
 if (!isset($_REQUEST['config'])) {
-	$config = 'default.ini';
+	$config = 'default';
 }
 else {
 	$config = $_REQUEST['config'];
 }
 
-$defines = parse_ini_file('config/' . $config . '.ini');
+require_once dirname(__FILE__).'/../Install/BaseDirExample/Configuration/ConfigReader.class.php';
+$config_reader =& ConfigReader::Instance();
+$config_reader->load(dirname(__FILE__) . '/config/default.ini');
 
-if (!$defines) {
-	echo 'Bad request. Invalid configuration ' . $config . '<br />';
-    echo 'Example request: http://localhost/pwb/tests?config=myconfig and place myconfig.ini in pwb/tests/config';
 
-	exit;
-}
 
-foreach ($defines as $key => $value) {
-	define($key, $value);
-}
 //require_once '../pwb.php';
-require_once constant('basedir') . '/Configuration/pwbapp.php';
 require_once 'pwbtests.php';
 require_once 'PWBHtmlTestsReporter.class.php';
 
