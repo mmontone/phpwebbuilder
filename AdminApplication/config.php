@@ -11,7 +11,7 @@ sitename=Admin application
 
 [server]
 pwb_url=../
-site_url=../
+site_url=
 pwbdir=../
 basedir=
 
