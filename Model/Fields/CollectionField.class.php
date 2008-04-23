@@ -117,7 +117,7 @@ class CollectionField extends DataField {
 			$elem->incrementRefCount();
 			if ($elem->isPersisted()){
             	#@persistence_echo echo 'Registering persistence of: ' . $this->owner->debugPrintString() . '<br/>';@#
-            	$this->owner->registerPersistence();
+            	$this->owner->registerForPersistence();
             } else {
             	#@persistence_echo echo 'NOT registering persistence of: ' . $this->owner->debugPrintString() . '<br/>';@#
             }
@@ -245,13 +245,12 @@ class DirectCollectionFieldType extends CollectionFieldType {
 		// The programmer is still in charge of committing everything before the request finishes.
 		// I wish I had time to implement in-memory collections.
 		//                                          -- marian
-		$elem->registerForPersistence();
 		$elem->{$this->collection_field->getReverseField()}->setTarget($this->collection_field->getOwner());
+		DBSession::Instance()->save($elem);
 		// We need to call setModify explicitly here because we want the object to be persisted
 		// If we don't do this we have a bug, because maybe the elem reversed field target was already set
 		// but the object was not registered for persistence at the moment. Then, when we call setTarget here
 		// no modification is triggered and the object is not persisted, silently.
-		$elem->setModified(true);
 		$elem->incrementRefCount();
         }
 	else {

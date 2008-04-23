@@ -397,14 +397,16 @@ class DBSession {
 	#@php5
 	function & save(& $object) {
 		try {
+			$this->prepareForModification();
+
             if (!isset ($prepared_to_save[$object->getInstanceId()])) {
 				$prepared_to_save[$object->getInstanceId()] = true;
 				#@persistence_echo echo 'Preparing to save: ' . $object->debugPrintString() . '<br/>';@#
 				$object->prepareToSave();
 			}
-			$exists =  $object->existsObject();
+
+            $this->registerSave($object, $object->existsObject());
             $object->save();
-            $this->registerSave($object, $exists);
             return $object;
         }
         catch (Exception $e) {

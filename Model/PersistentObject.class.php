@@ -160,7 +160,6 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &basicUpdate($class) {
 		$db =& DBSession::Instance();
-		$db->prepareForModification();
 		#@sql_dml_echo2 echo 'Starting update of '. $this->debugPrintString();@#
 		$sql = $this->updateString($class);
 		$res = $db->query($sql);
@@ -272,6 +271,7 @@ class PersistentObject extends DescriptedObject {
 		else {
 			$res =& $this->insert();
 			$this->triggerEvent('id_changed',$n=null);
+			$this->registerCollaborators();
 		}
 		foreach($this->getPersistentClasses() as $sc){
 			PersistentCollection::changedClass($sc);

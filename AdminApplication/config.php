@@ -1,6 +1,6 @@
 <?/*
 [global]
-app_class=AdminApplications
+app_class=AdminApplicationsApplication
 error_reporting=E_ALL
 ;page_renderer=AjaxPageRenderer
 compile=

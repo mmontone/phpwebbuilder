@@ -97,6 +97,7 @@ class DescriptedObject extends PWBObject {
 
     function registerForPersistence() {
       $this->toPersist = true;
+
     }
 
 	function registerModifications(){
@@ -119,8 +120,8 @@ class DescriptedObject extends PWBObject {
 
 	function registerPersistence(){
 		if (!$this->isPersisted()){
-			$db =& $this->currentTransaction();
-			$db->registerObject($this);
+			$db =& DBSession::Instance();
+			$db->save($this);
 			#@persistence_echo
             echo 'Registering persistence of ' . $this->debugPrintString() . '<br/>';
         	//@#
