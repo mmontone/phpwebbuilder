@@ -29,7 +29,7 @@ class CompositeSelect extends Component {
     }
 
     function collectionChanged() {
-    	$this->value_model->setValue($n = null);
+    	//$this->value_model->setValue($n = null);
     }
 }
 

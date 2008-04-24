@@ -394,6 +394,13 @@ class DBSession {
 	function batchExec($sqls) {
 		return $this->driver->batchExec($sqls);
 	}
+	function & saveIfModified(& $object) {
+		if ($object->isModified() || $object->isPersisted()){
+			return $this->save($object);
+		} else {
+			return $object;
+		}
+	}
 	#@php5
 	function & save(& $object) {
 		try {
