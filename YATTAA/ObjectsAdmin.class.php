@@ -47,6 +47,9 @@ class ObjectsAdmin extends ContextualComponent {
 
 	function initialize() {
 		$this->displayList();
+		$this->addActionButtons();
+	}
+	function addActionButtons(){
 		$this->addActionMenu($this->newObjectMessage(), new FunctionObject($this, 'newObject'));
 	}
 
