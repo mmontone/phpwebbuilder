@@ -36,7 +36,7 @@
 	 	</div>
 	</template>
 	<template class="CompositeSelect">
-		<container id="display" />
-		<container id="nav" />
+		<container class="Text" />&amp;nbsp;<container class="CommandLink"/>
+		<container class="Component" />
 	</template>
 </templates>

@@ -38,9 +38,7 @@ class InitialDefaultCMSComponent extends ContextualComponent {
 	function objMenus() {
 		$arr = get_subclasses('PersistentObject');
 		$temp = array();
-		foreach ($arr as $p=>$c) {
-			$class =& $arr[$p];
-			$obj =& new $class;
+		foreach ($arr as $p=>$class) {
 			$this->addNavigationMenu($class,new FunctionObject($this, 'showClass', $class));
 		}
 	}

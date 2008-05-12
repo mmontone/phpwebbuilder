@@ -13,19 +13,22 @@ class CompositeSelect extends Component {
 
     function initialize() {
 		$this->addComponent(new Text($this->value_model), 'display');
-		$this->navigator->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
+		$this->addComponent(new CommandLink(array('text'=>Translator::translate('choose'), 'proceedFunction'=>new FunctionObject($this,'showChoose'))), 'choose');
 
-        // FIX: I am assuming that the collection is in $this->navigator->objects !!!
-        // Possible Solution: receive the collection in the constructor
+    }
+    function showChoose(){
+       	$this->navigator->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
+       	$this->display->delete();
+       	$this->choose->delete();
         $objs =& $this->navigator->objects;
         $objs->onChangeSend('collectionChanged', $this);
-        //
-
         $this->addComponent($this->navigator, 'nav');
     }
 
     function elementSelected(&$element) {
         $this->value_model->setValue($element);
+        $this->nav->delete();
+        $this->initialize();
     }
 
     function collectionChanged() {
