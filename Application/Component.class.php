@@ -510,7 +510,7 @@ class Component extends PWBObject {
 	}
 	function createContextMenu(){
 		$win =& Window::getActiveInstance();
-		$win->addAjaxCommand(new AjaxCommand("contextMenus['{$this->getId()}'] = new Proto.Menu({selector: '#{$this->getId()}',className: 'menu',menuItems: []});",array()));
+		$win->addAjaxCommand(new AjaxCommand('contextMenus[\''.$this->getId().'\'] = new Proto.Menu({selector: \'#'.$this->getId().'\',className: \'menu\',menuItems: []});',array()));
 	}
 	function destroyContextMenu(){
 
@@ -519,7 +519,7 @@ class Component extends PWBObject {
 		if (empty($this->__contextMenus)) {$this->createContextMenu();}
 		$this->__contextMenus[$name] =&$functionObject;
 		$win =& Window::getActiveInstance();
-		$win->addAjaxCommand(new AjaxCommand("contextMenus['{$this->getId()}'].addElement({title:'$name', callback:function(){alert('$name')}});"));
+		$win->addAjaxCommand(new AjaxCommand('contextMenus[\''.$this->getId().'\'].addElement({title:\''.$name.'\', callback:function(){alert(\''.$name.'\')}});'));
 	}
 	function removeContextMenu($name){
 		unset($this->__contextMenus[$name]);

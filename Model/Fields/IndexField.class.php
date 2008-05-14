@@ -67,7 +67,8 @@ class IndexField extends NumField {
             $this->triggerEvent('changed', $this);
             if ($this->owner->isPersisted()){
             	#@persistence_echo echo 'Registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
-            	DBSession::Instance()->saveIfModified($target);
+            	$session =& DBSession::Instance();
+				$session->saveIfModified($target);
             } else {
             #@persistence_echo echo 'NOT registering sibling: ' . $this->owner->debugPrintString() . '>>' . $this->getName() . ' is ' . $target->debugPrintString().'<br/>';@#
             }

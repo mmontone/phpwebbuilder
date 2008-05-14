@@ -7,6 +7,15 @@ class PWBDateTime extends PWBObject {
 		$this->setValue($date);
 		parent :: PWBObject();
 	}
+	function &add($interval){
+		$my_array = $this->dateArray();
+		foreach($interval as $unit => $value){
+			$my_array[$unit]+=$value;
+		}
+		$new_date = PWBDateTime::now();
+		$new_date->setDateArr($my_array);
+		return $new_date;
+	}
 
 	function setValue($date) {
 		#@check is_string($date)@#
@@ -28,7 +37,7 @@ class PWBDateTime extends PWBObject {
 		return $this->date;
 	}
 
-	function & dateArray() {
+	function dateArray() {
 		return getDate(strtotime($this->date));
 	}
 
