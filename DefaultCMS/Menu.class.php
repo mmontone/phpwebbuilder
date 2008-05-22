@@ -41,6 +41,7 @@ class InitialDefaultCMSComponent extends ContextualComponent {
 		foreach ($arr as $p=>$class) {
 			$this->addNavigationMenu($class,new FunctionObject($this, 'showClass', $class));
 		}
+		$this->addAllMenus();
 	}
 	function showClass($class){
 		$this->call(new WrapperContextualComponent(new CollectionViewer(new PersistentCollection($class))));
