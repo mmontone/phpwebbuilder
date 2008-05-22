@@ -17,7 +17,7 @@ class CompositeSelect extends Component {
 
     }
     function showChoose(){
-       	$this->navigator->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
+		$this->navigator->registerCallback('element_selected', new FunctionObject($this, 'elementSelected'));
        	$this->display->delete();
        	$this->choose->delete();
         $objs =& $this->navigator->objects;
@@ -27,7 +27,7 @@ class CompositeSelect extends Component {
 
     function elementSelected(&$element) {
         $this->value_model->setValue($element);
-        $this->nav->call(new Component());
+        $this->addComponent(new Component(), 'nav');
         $this->initialize();
     }
 
