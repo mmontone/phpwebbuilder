@@ -27,7 +27,7 @@ class CompositeSelect extends Component {
 
     function elementSelected(&$element) {
         $this->value_model->setValue($element);
-        $this->nav->delete();
+        $this->nav->call(new Component());
         $this->initialize();
     }
 
