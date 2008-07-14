@@ -57,6 +57,7 @@ class PageRenderer // extends PWBObject
 		$this->addVariable($view,'bookmark', $win->urlManager->actUrl);
 		$this->addVariable($view,'basedir', basedir);
 		$this->addVariable($view,'pwb_url', pwb_url);
+		$this->addVariable($view,'pwb_config', $_REQUEST['pwb_config']);
 		$this->addVariable($view,'window', $win->owner_index());
 	}
 	function addVariable(&$view,$name, $val){

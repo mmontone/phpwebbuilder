@@ -101,12 +101,20 @@ class ConfigReader
     }
     function sectionName($file_name){
    		$conf = dirname($file_name)."/serverconfig";
+   		
+   		
+   		//Multiple configs per server
+   		if (@$_REQUEST['pwb_config']!=''){
+   			$extra='-'.$_REQUEST['pwb_config'];
+   		} else {
+   			$_REQUEST['pwb_config'] = '';
+   		}
 		if (file_exists($conf)){
 			$s = file_get_contents($conf);
-			return $s;
+			return $s.$extra;
 		}
 		else {
-	    	return "server";
+	    	return "server".$extra;
 		}
     }
 }
