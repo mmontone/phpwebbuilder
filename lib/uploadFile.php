@@ -1,5 +1,6 @@
 <?
 define('app_class',$_REQUEST["app"]);
+
 require_once $_REQUEST["basedir"]. '/Configuration/pwbapp.php';
 ?>
 <html>
@@ -27,6 +28,7 @@ margin:0;
 <input type="file" id="fileelem" name="fileelem" onchange="submitting()"/>
 <input type="hidden" name="nodeid" id="nodeid" value="<?=$_REQUEST['filenamefield']?>"/>
 <input type="hidden" name="app" id="app" value="<?=$_REQUEST['app']?>"/>
+<input type="hidden" name="pwb_config" id="pwb_config" value="<?=$_REQUEST['pwb_config']?>"/>
 <input type="hidden" name="basedir" id="basedir" value="<?=$_REQUEST['basedir']?>"/>
 </form>
 <? } else {

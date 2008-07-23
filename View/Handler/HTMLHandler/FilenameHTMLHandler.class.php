@@ -9,7 +9,7 @@ class FilenameHTMLHandler extends InputHTMLHandler{
 			$view->setAttribute('src', toAjax(pwb_url.'/lib/uploadFile.php' .
 
 									'?basedir='.basedir.'&filenamefield='.$this->component->getId()
-									. '&app='.app_class));
+									. '&app='.app_class. '&pwb_config='.$_REQUEST['pwb_config']));
 			$view->addCSSClass('uploadfile');
 			$w =& Window::getActiveInstance();
 			$w->closeStream=true;
