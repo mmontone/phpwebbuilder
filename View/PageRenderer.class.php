@@ -174,6 +174,7 @@ class PageRenderer // extends PWBObject
 		$s = str_replace('&iacute;', '&#237;', $s);
 		$s = str_replace('&oacute;', '&#243;', $s);
 		$s = str_replace('&uacute;', '&#250;', $s);
+		$s = str_replace('&acute;', '&#39;', $s);
 		$s = str_replace('&uuml;', '&#252;', $s);
 		$s = str_replace('&ntilde;', '&#241;', $s);
 		$s = str_replace('&Aacute;', '&#193;', $s);
