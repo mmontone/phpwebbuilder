@@ -199,7 +199,7 @@ class FieldModification {
 	}
 
 	function debugPrintString() {
-		return print_object($this, ' field: ' . $this->field->debugPrintString() . ' value: ' . $this->value);
+		return print_object($this, ' field: ' . $this->field->debugPrintString() . ' value: ' . print_object($this->value));
 	}
 }
 
@@ -207,7 +207,7 @@ class IndexFieldModification extends FieldModification {
 	var $target;
 
 	function debugPrintString() {
-		return print_object($this, ' field: ' . $this->field->debugPrintString() . ' value: ' . $this->value . ' target: ' . print_object($this->target));
+		return print_object($this, ' field: ' . $this->field->debugPrintString() . ' value: ' . ($this->value) . ' target: ' . print_object($this->target));
 	}
 }
 
