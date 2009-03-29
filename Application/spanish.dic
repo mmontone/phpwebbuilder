@@ -23,3 +23,5 @@ the bug notification couldn\'t be sent. try again. if the problem persists, cont
 bug notification sent successfully=la notificación del error se envió satisfactoriamente
 a transaction is active, please close it before exiting=una transacción está activa, por favor ciérrela antes de salir
 choose=elegir
+accept=aceptar
+is not a valid email=no es v�lido
