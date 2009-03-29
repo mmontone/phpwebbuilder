@@ -3,16 +3,16 @@ class PWBDateTime extends PWBObject {
 	var $date;
 	#@use_mixin ValueModel@#
 
-    function PWBDateTime($date = '') {
+	function PWBDateTime($date = '') {
 		$this->setValue($date);
 		parent :: PWBObject();
 	}
-	function &add($interval){
+	function & add($interval) {
 		$my_array = $this->dateArray();
-		foreach($interval as $unit => $value){
-			$my_array[$unit]+=$value;
+		foreach ($interval as $unit => $value) {
+			$my_array[$unit] += $value;
 		}
-		$new_date = PWBDateTime::now();
+		$new_date = PWBDateTime :: now();
 		$new_date->setDateArr($my_array);
 		return $new_date;
 	}
@@ -53,6 +53,9 @@ class PWBDateTime extends PWBObject {
 
 	function printString() {
 		return $this->date;
+	}
+	function debugPrintString() {
+
 	}
 
 	function validateDate() {
