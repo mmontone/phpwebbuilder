@@ -284,7 +284,7 @@ class DataField extends PWBObject {#@use_mixin ValueModel@#
 	}
 
     function debugPrintString() {
-    	return $this->primPrintString($this->owner->debugPrintString() . '>>' . $this->getName() . ' value: ' . $this->getValue());
+    	return $this->primPrintString($this->owner->debugPrintString() . '>>' . $this->getName() . ' value: ' . print_object($this->getValue()));
     }
 
 	//GARBAGE COLLECTION
