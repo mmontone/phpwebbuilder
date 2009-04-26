@@ -63,16 +63,28 @@ class EmbedFieldFieldMapper extends FieldMapper {}
 class NumFieldFieldMapper extends FieldMapper {
 	function type (){
 		$nt = @$this->field->creationParams['numtype'];
-		if ($nt != '' && $nt != 'int') {
-			return "float";
+		if ($nt != ''){
+			if ($nt == 'double') {
+				return "double";
+			} else if ($nt == 'int') {
+				return "int";
+			} else {
+				return "float";
+			}
 		} else {
 			return "int(11)";
 		}
 	}
 	function typeEreg(){
 		$nt = @$this->field->creationParams['numtype'];
-		if ($nt != '' && $nt != 'int') {
-			return "float";
+		if ($nt != ''){
+			if ($nt == 'double') {
+				return "double";
+			} else if ($nt == 'int') {
+				return "^int\([0-9]*\)";
+			} else {
+				return "float";
+			}
 		} else {
 			return "^int\([0-9]*\)";
 		}
@@ -119,8 +131,11 @@ class SuperFieldFieldMapper extends NumFieldFieldMapper {
 	function type(){
 		return "int(11) unsigned UNIQUE";
 	}
+	function typeEreg(){
+		return "^int\(11\) unsigned\$";
+	}
 	function getDefault(){
-		return 0;
+		return null;
 	}
 }
 
