@@ -109,7 +109,6 @@ class Application {
 		$this->jsscripts = array();
 		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
 		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/scriptaculous.js');
-		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/prototype.js');
 		$this->addScript(constant('pwb_url') . 'lib/scriptaculous/Proto.Menu.0.5.js');
 		$this->addScript(constant('pwb_url') . 'lib/common.js');
 		$this->addScript(constant('pwb_url') . 'lib/modal-message/pwb/dialogs.js');
@@ -267,7 +266,7 @@ class Application {
 
             if (method_exists($this->listener,'getVeryDynVar')) {
                 return  $this->listener->getVeryDynVar($name);
-	            
+
             }
             /*Search in the parents*/
             $parent =& $this->getParent();
