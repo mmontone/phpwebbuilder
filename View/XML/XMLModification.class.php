@@ -209,6 +209,7 @@ class SetAttributeXMLNodeModification extends XMLNodeModification {
 		$this->value = $value;
 	}
 	function renderAjaxResponseCommand() {
+		if ($this->target->getId()=="") return ""; //The elment is not active anymore
 		$ret = '<setatt id="' . $this->target->getId() . '">';
 		$ret.= '<att>' . $this->attribute . '</att>';
 		$ret.= '<val>' . $this->value . '</val>';
@@ -232,6 +233,7 @@ class RemoveAttributeXMLNodeModification extends XMLNodeModification {
 		$this->attribute = $attribute;
 	}
 	function renderAjaxResponseCommand() {
+		if ($this->target->getId()=="") return ""; //The elment is not active anymore
 		$xml = '<rematt id="' . $this->target->getId() . '">';
 		$xml .= '<att>' . $this->attribute . '</att>';
 		$xml .= '</rematt>';
