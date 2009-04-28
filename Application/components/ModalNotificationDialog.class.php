@@ -35,11 +35,11 @@ class ModalNotificationDialog extends AjaxComponent {
     }
 
     function accept() {
-    	$this->callback('on_accept');
+    	$this->on_accept->call();
     }
 
     function onAccept(&$function) {
-		$this->registerCallback('on_accept', $function);
+		$this->on_accept=&$function;
     }
 }
 
@@ -77,19 +77,19 @@ class ModalPromptDialog extends AjaxComponent {
 
 
     function accept() {
-    	$this->callbackWith('on_accept', $this->text);
+    	$this->on_accept->callWith($this->text);
     }
 
     function cancel() {
-    	$this->callback('on_cancel');
+    	$this->on_cancel->call();
     }
 
     function onAccept(&$function) {
-		$this->registerCallback('on_accept', $function);
+		$this->on_accept=&$function;
     }
 
     function onCancel(&$function) {
-		$this->registerCallback('on_cancel', $function);
+		$this->on_cancel=&$function;
     }
 }
 
@@ -109,11 +109,11 @@ class ModalErrorDialog extends AjaxComponent {
     }
 
     function accept() {
-    	$this->callback('on_accept');
+    	$this->on_accept->call();
     }
 
     function onAccept(&$function) {
-		$this->registerCallback('on_accept', $function);
+		$this->on_accept=&$function;
     }
 }
 
@@ -137,19 +137,20 @@ class ModalQuestionDialog extends AjaxComponent {
     }
 
     function yes() {
-    	$this->callback('on_yes');
+    	//var_dump("yes");
+    	$this->on_yes->call();
     }
 
     function no() {
-    	$this->callback('on_no');
+    	$this->on_no->call();
     }
 
     function onYes(&$function) {
-		$this->registerCallback('on_yes', $function);
+		$this->on_yes=&$function;
     }
 
     function onNo(&$function) {
-		$this->registerCallback('on_no', $function);
+		$this->on_no=&$function;
     }
 }
 
