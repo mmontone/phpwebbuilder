@@ -35,6 +35,7 @@ class ModalNotificationDialog extends AjaxComponent {
     }
 
     function accept() {
+    	$this->callback();
     	$this->on_accept->call();
     }
 
@@ -77,10 +78,12 @@ class ModalPromptDialog extends AjaxComponent {
 
 
     function accept() {
+    	$this->callback();
     	$this->on_accept->callWith($this->text);
     }
 
     function cancel() {
+    	$this->callback();
     	$this->on_cancel->call();
     }
 
@@ -109,6 +112,7 @@ class ModalErrorDialog extends AjaxComponent {
     }
 
     function accept() {
+    	$this->callback();
     	$this->on_accept->call();
     }
 
@@ -138,10 +142,12 @@ class ModalQuestionDialog extends AjaxComponent {
 
     function yes() {
     	//var_dump("yes");
+    	$this->callback();
     	$this->on_yes->call();
     }
 
     function no() {
+    	$this->callback();
     	$this->on_no->call();
     }
 
