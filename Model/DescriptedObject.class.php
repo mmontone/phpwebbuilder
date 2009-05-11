@@ -87,6 +87,7 @@ class DescriptedObject extends PWBObject {
 	 * Returns if the object was modified
 	 */
 	function isModified() {
+		#@persistence_echo echo 'Object ' . $this->debugPrintString() . ' was modified:'.$this->modified.'<br/>';@#
 		return $this->modified;
 	}
 
@@ -133,6 +134,10 @@ class DescriptedObject extends PWBObject {
 			//@#
 	}
 	function isPersisted(){
+	  #@persistence_echo echo 'Object ' . $this->debugPrintString() . ' was toPersist:'.$this->toPersist.'<br/>';@#
+	  #@persistence_echo echo 'Object ' . $this->debugPrintString() . ' was existsObject:'.$this->existsObject.'<br/>';@#
+
+
 	  return $this->existsObject or $this->toPersist;
 	}
 	function registerCollaborators(){
