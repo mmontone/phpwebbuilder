@@ -73,11 +73,15 @@ class Widget extends Component {
 		$this->setComponentState('clickable',true);
 		$this->events->atPut('onclick', $a=array('onclick', 'return '.$this->componentClickedJSFunction() . '(getEventTarget(event));'));
 	}
-
+	function setOnDblClickEvent() {
+		$this->events->atPut('ondblclick', $a=array('ondblclick', 'return '.$this->componentDblClickedJSFunction() . '(getEventTarget(event));'));
+	}
 	function componentClickedJSFunction() {
 		return 'componentClicked';
 	}
-
+	function componentDblClickedJSFunction() {
+		return 'componentDblClicked';
+	}
 	function viewUpdated($params) {
 		$new_value =  $this->valueFromForm($params);
 		$value = $this->getValue();
@@ -114,7 +118,10 @@ class Widget extends Component {
 		#@typecheck $selector:string, $target:object@#
 		$this->addInterestIn('click',new FunctionObject($target, $selector));
 	}
-
+	function onDblClickSend($selector, & $target) {
+		#@typecheck $selector:string, $target:object@#
+		$this->addInterestIn('dblclick',new FunctionObject($target, $selector));
+	}
 	function onEnterClickOn(&$comp) {
 		#@typecheck $comp:Component@#
 		$class = getClass($this);
@@ -147,6 +154,9 @@ class Widget extends Component {
 					break;
 				case 'click' :
 					$this->setOnClickEvent();
+					break;
+				case 'dblclick' :
+					$this->setOnDblClickEvent();
 					break;
 			}
 	}
