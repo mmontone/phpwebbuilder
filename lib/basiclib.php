@@ -411,25 +411,10 @@ function includeAll() {
 	}
 	define('app', "MyInstances,MyComponents");
 
-	if (Compiler :: CompileOpt('recursive') || Compiler :: CompileOpt('optimal') || Compiler :: CompileOpt('minimal')) {
-		$comp = & Compiler :: Instance();
-		$file = $comp->getTempDir('') . strtolower(constant('app_class')) . '.php';
-		if (!file_exists($file)) {
-			$_REQUEST['recompile'] = 'yes';
-		}
-		if (isset ($_REQUEST['recompile'])) {
-			$fo = fopen($file, 'w');
-			$f = '<?php ' . getIncludes() . ' ?>';
-			fwrite($fo, $f);
-			fclose($fo);
-		}
-		$comp->compile($file);
-		//$comp->compiled = array();
-	} else {
-		eval (getIncludes());
-	}
+	$comp =& Compiler::instance();
+	$comp->initRequest();
 	require_once pwbdir . 'Session/SessionStart.php';
-
+	$comp->finishRequest();
 	if (isset ($_REQUEST['recompile'])) {
 		$temp_file = ViewCreator :: getTemplatesFilename();
 		@ unlink($temp_file);

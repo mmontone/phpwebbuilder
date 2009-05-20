@@ -30,26 +30,31 @@ class Compiler {
 	var $file_reqs_class= array();
 	var $usageRules = array();
 	var $compiling=false;
-	function Compiler() {
-		$this->toCompile = explode(',', @constant('compile'));
+	function Compiler($options) {
+		$this->toCompile = $options;
 		$this->toCompileSuffix = implode('-', $this->toCompile);
 		$this->compile_path = array(Compiler::getRealPath($this->tempDir()),Compiler::getRealPath(dirname(dirname(__FILE__)).'/'),Compiler::getRealPath(constant('pwbdir')),Compiler::getRealPath(constant('basedir')));
 	}
+	//Find the option in the options array
 	function CompileOpt($opt) {
 		global $compilerInstance;
 		return in_array($opt, $compilerInstance->toCompile);
 	}
+	/** Compiling the file */
 	function compileFile($file){
 		$f='';
 		$file = $this->getRealPath($file);
+
 		if (!in_array($file, $this->compiled)) {
 				$this->compiled[$file] = $file;
 				$this->actualFile[] = $file;
 		  //echo 'Adding file: ' . $file . '<br />';
 
 				$f = file_get_contents($file);
+				/** Replace the __FILE__ constant with the actual path of the file */
 				$f = $this->compileString($f,'/__FILE__/s',
 					lambda('','$x = \'\\\''.$file.'\\\'\';return $x;'));
+				/** Process the macros */
 				$f = $this->compileString($f,'/'.'#@'.//START_MACRO
 									'([[:alpha:]|\_]+[0-9]*)[\s\t]*' .
 									''.//START_PARAMS
@@ -58,21 +63,26 @@ class Compiler {
 									'/s','processMacro'
 					);
 				if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('recursive') || Compiler::CompileOpt('optimal')) {
-					if (!$this->compilingClasses) {
+					if (!$this->compilingClasses || Compiler::CompileOpt('minimal')) {
 						if (Compiler::CompileOpt('minimal')||Compiler::CompileOpt('optimal')) {
 							$this->getInvolvedClasses($f,$file);
 						}
+						//Remove the PHP tags of the beggining
 						$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
+						//Remove the compile_once tags, they've already been used
 						eval(str_replace('compile_once','',$f));
 					}
 					$self =& $this;
+					/** */
 					$f = $this->compileString($f,'/compile_once[\s\t]*\([\s\t]*([^;]*)[\s\t]*\);/s',
 					$lam = lambda('$matches','$y = $self->compileRecFile($file,$matches[1]); return $y;', get_defined_vars()));
 					delete_lambda($lam);
 				}
 				$f = preg_replace('/(^\<\?php|\?\>[\s\t\n]*$|^\<\?)/','',$f);
+				/** Remove from the files queue */
 				array_pop($this->actualFile);
 		}
+		/** Returns the contents of the file */
 		return $f;
 	}
 	function forCompilation($class){
@@ -83,21 +93,26 @@ class Compiler {
 		eval($f);
 
 	}
+	/** Add a class to the ones used by a file */
 	function usesClass($file, $class){
 		$comp =& Compiler::Instance();
 		$comp->file_uses_class[$file][] = $class;
 	}
+	/** Add a file as compiled, and register the class's file*/
 	function markAsCompiled($class, $file){
 		$comp =& Compiler::Instance();
 		$comp->classesCompiled[$file] = $file;
 		$comp->class_in_file[strtolower($class)] = $file;
 	}
+	/** Returns if a class has already been compiled */
 	function compiledClass($class){
 		return isset($this->classesCompiled[$this->class_in_file[strtolower($class)]]);
 	}
+	/** Returns if a class has already been declared */
 	function declaredClass($class){
 		return isset($this->class_in_file[strtolower($class)]);
 	}
+	/** Returns if a class has already been required. In optimal compilation, adds the class to the compilation file */
 	function requiredClass($class){
 		if(Compiler::CompileOpt('optimal')){
 			$inst =& Compiler::Instance();
@@ -118,9 +133,11 @@ class Compiler {
 		}
 		return class_exists($class);
 	}
+	/** Adds a rule that tells whether a file uses a class */
 	function addClassUsageRule($ereg, $pos){
 		$this->usageRules[]=array('rule'=>$ereg,'pos'=>$pos);
 	}
+	/** Finds all the classes involved by another class */
 	function getInvolvedClasses($str, $file){
 		$int = preg_match_all('/[\s\t\n]+class[\s\t\n]+(\w+)/',$str, $matches_dec);
 		//if ($int>1) {print_r($matches_dec); exit;}
@@ -142,13 +159,14 @@ class Compiler {
 				$this->file_uses_class[$file][] = $m;
 			}
 		}
-
 	}
+	/** Checks if a class was compiled */
 	function classCompiled($class){
 		$inst =& Compiler::Instance();
 		return (isset($inst->classesCompiled[@$inst->class_in_file[strtolower($class)]]))
 			|| (!$inst->compiling && class_exists($class));
 	}
+	/** Compiles a class */
 	function compileClass($class){
 		/*Chequeno no compilada, Compilo las anteriores, marco esta como compilada, compilo las siguientes*/
 		$file = @$this->class_in_file[strtolower($class)];
@@ -223,39 +241,29 @@ class Compiler {
 					find_metadata().
 					' ?>';
 
-				$cf = $this->getCompFile();
-				$cfo = fopen($cf, 'w');
-				$this->compiling = false;
-				fwrite($cfo, serialize($this));
-				$this->compiling = true;
-
-				fclose($cfo);
+				$this->createCompilationFile();
 				fwrite($fo, $f);
 				fclose($fo);
 				return; //DO NOT INCLUDE ANYTHING ELSE.
 			}
-			if (Compiler::CompileOpt('minimal')){
-				$f = '<?php
-							function __autoload($class) {
-
-							  $inst =& Compiler::Instance();
-						      //echo "autoloading $class";print_r($inst->class_in_file);
-   						      $file = @$inst->class_in_file[$class];
-							  if ($file!==null) Compiler::compile($file);
-					        }
-					  ?>';
-				unset($_REQUEST['recompile']);
-				foreach ($this->toCompile as $k=>$v){
-					if ($v=='minimal'){unset($this->toCompile[$k]);}
-				}
-			}
 			fwrite($fo, $f);
 			fclose($fo);
-			if (Compiler::CompileOpt('recursive')){
+			//Do not include, will be included later
+			if (Compiler::CompileOpt('recursive') || Compiler::CompileOpt('minimal')){
 				return;
 			}
 		}
 		require_once $tmpname;
+	}
+	function createCompilationFile(){
+		$cf = $this->getCompFile();
+		$cfo = fopen($cf, 'w');
+		$this->compiling = false;
+		fwrite($cfo, serialize($this));
+		$this->compiling = true;
+
+		fclose($cfo);
+
 	}
 	function compileString($str, $pat, $func) {
 		if (preg_match($pat, $str, $matches) > 0) {
@@ -294,20 +302,27 @@ class Compiler {
 			} else {
 				$this->tempdir = sys_get_temp_dir();
 			}
-			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
+
 			$this->tempdir = str_replace('\\','/',$this->getRealPath($this->tempdir));
+			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
+
 		}
 		return $this->tempdir;
 	}
 	function getTempDir($file) {
 		$file=str_replace('\\','/',$file);
+		$file=str_replace('//','/',$file);
 		$fd = dirname($file);
+
 		foreach($this->compile_path as $p) {
+			//The beggining of the path matches
 			if ($p!=''&&substr($file, 0, strlen($p))==$p) {
+				//Save the relative dir of the file
 				$fd = substr(dirname($file),strlen($p));
 				break;
 			}
 		}
+
 		//print_r($this->compile_path);
 		$dir = $this->tempdir . $fd;
 		if (substr($dir,-1)!=="/") $dir.='/';
@@ -317,7 +332,105 @@ class Compiler {
 		}
 		return $dir;
 	}
+	function Create(){
+		$options = explode(',', @constant('compile'));
+		foreach(array('minimal', 'optimal','recursive')as $opt){
+			if (in_array($opt, $options)){
+				$compilerclass = $opt.'Compiler';
+				return new $compilerclass($options);
+			}
+		}
+		return new StandardCompiler();
+	}
+	function initPrecompilingRequest(){
+
+		$this->compile(dirname(__FILE__).'/Compiler/PHPCC.class.php');
+		$file = $this->getTempDir('') . strtolower(constant('app_class')) . '.php';
+		if (!file_exists($file)) {
+			$_REQUEST['recompile'] = 'yes';
+		}
+		if (isset ($_REQUEST['recompile'])) {
+			$fo = fopen($file, 'w');
+			$f = '<?php ' . getIncludes() . ' ?>';
+			fwrite($fo, $f);
+			fclose($fo);
+
+		}
+		$this->compile($file);
+		//var_dump($this->class_in_file);
+		//$comp->compiled = array();
+	}
+	function initRequest(){
+		$this->compile(dirname(__FILE__).'/Compiler/PHPCC.class.php');
+		eval (getIncludes());
+	}
+	function finishRequest(){}
+	function requireCompiled($class){
+		$file = @$this->class_in_file[strtolower($class)];
+		if ($file!==null) {
+			$tmpname = $this->getTempFile($file, $this->toCompileSuffix);
+			require_once($tmpname);
+		}
+	}
 }
+
+class StandardCompiler extends Compiler{}
+
+class OptimalCompiler extends Compiler{
+	function initRequest(){
+		$this->initPrecompilingRequest();
+	}
+}
+class RecursiveCompiler extends Compiler{
+	function initRequest(){
+		$this->initPrecompilingRequest();
+	}
+}
+
+/**
+ * En el recompile, compila cada uno de los archivos como en la compilación común.
+ * Además, guarda el nombre de cada clase en un array.
+ * En la carga normal, carga una función que busca el archivo de la clase en el
+ * array armado anteriormente.
+*/
+class MinimalCompiler extends Compiler{
+	function initRequest(){
+		$this->compilingClasses= true;
+		$f = '
+					function __autoload($class) {
+					  $inst =& Compiler::Instance();
+				      //echo "autoloading $class<br/>";
+				       $inst->requireCompiled($class);
+			        }';
+		eval($f);
+		$this->initPrecompilingRequest();
+	}
+	function finishRequest(){
+
+	}
+	function initPrecompilingRequest(){
+		$file = $this->getTempDir('') . strtolower(constant('app_class')) . '.php';
+		if (!file_exists($file)) {
+			$_REQUEST['recompile'] = 'yes';
+		}
+		if (isset ($_REQUEST['recompile'])) {
+			$fo = fopen($file, 'w');
+			$f = '<?php ' . getIncludes() . ' ?>';
+			fwrite($fo, $f);
+			fclose($fo);
+			$pre_declared=get_declared_classes();
+			$this->compile(dirname(__FILE__).'/Compiler/PHPCC.class.php');
+			$this->compile($file);
+			//var_dump(array_diff(get_declared_classes(),$pre_declared));
+			$this->createCompilationFile();
+		}
+		//var_dump($this->class_in_file);
+		//$comp->compiled = array();
+	}
+
+
+}
+
 
 if (!function_exists('sys_get_temp_dir')) {
 	// Based on http://www.phpit.net/
@@ -355,27 +468,15 @@ function mkdir_r($dirName, $rights=0777){
    		  @mkdir($dirName, $rights);
 }
 
-$compilerInstance =& new Compiler;
+$compilerInstance =& Compiler::create();
 $compfile = $compilerInstance->getCompFile();
 if ((Compiler::CompileOpt('optimal') || Compiler::CompileOpt('minimal') ) && file_exists($compfile) && !@$_REQUEST['recompile']){
 	$compilerInstance = unserialize(file_get_contents($compfile));
 }
 
-if (defined('compile')){
-	function compile_once($file) {
-		$compilerInstance =& Compiler::instance();
-		$compilerInstance->compile($file);
-	}
-} else {
-	function compile_once($file) {
-		require_once($file);
-	}
+function compile_once($file) {
+	$compilerInstance =& Compiler::instance();
+	$compilerInstance->compile($file);
 }
-
-compile_once(dirname(__FILE__).'/Compiler/PHPCC.class.php');
-$comp =& Compiler::instance();
-$comp->compilingClasses = false;
-
-
 
 ?>
