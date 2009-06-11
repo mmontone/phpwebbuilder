@@ -340,7 +340,7 @@ class Compiler {
 				return new $compilerclass($options);
 			}
 		}
-		return new StandardCompiler();
+		return new StandardCompiler($options);
 	}
 	function initPrecompilingRequest(){
 
@@ -472,6 +472,7 @@ $compilerInstance =& Compiler::create();
 $compfile = $compilerInstance->getCompFile();
 if ((Compiler::CompileOpt('optimal') || Compiler::CompileOpt('minimal') ) && file_exists($compfile) && !@$_REQUEST['recompile']){
 	$compilerInstance = unserialize(file_get_contents($compfile));
+	var_dump($compilerInstance);
 }
 
 function compile_once($file) {
