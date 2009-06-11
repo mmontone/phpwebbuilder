@@ -93,9 +93,15 @@ class ActionDispatcher {
             // We use a FunctionObject here so that the dynamic variable 'current_component''
             // is set. That is needed in order to be able to register model changes in the memory transaction.
             // The current transaction is set in Component>>aboutToExecuteFunction method. See MemoryTransaction implementation
-            //                                          -- marian
-            $f =& new FunctionObject($updates[$k][0], 'viewUpdated');
-            $f->executeWith($updates[$k][1]);
+            //                                     -- marian
+            try{
+	            $f =& new FunctionObject($updates[$k][0], 'viewUpdated');
+	            $f->executeWith($updates[$k][1]);
+            } catch(Exception $e){
+            	//$updates[$k][0]->updatingException($e, $updates[$k][1]);
+            } catch(Error $e){
+            	//$updates[$k][0]->updatingException($e, $updates[$k][1]);
+            }
 		}
 	}
 	function triggerEvent(& $event) {

@@ -132,7 +132,7 @@ class Window extends PWBObject{
 		$this->addAjaxCommand(new AjaxCommand('window.close', array($this->owner_index())));
 		unset($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
 	}
-
+	function updatingException($exception, $value){}
 
 
 	var $component;
