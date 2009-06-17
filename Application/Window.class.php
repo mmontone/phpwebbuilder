@@ -1,20 +1,19 @@
 <?php
-
-class Window extends PWBObject{
-	var $ajaxCommands = array();
+class Window extends PWBObject {
+	var $ajaxCommands = array ();
 	var $urlManager;
 	var $wholeView;
-	var $opened=false;
+	var $opened = false;
 	var $listener;
 	#@use_mixin DynVars@#
-	function &getWindow(){
+	function & getWindow() {
 		return $this;
 	}
-	function setActiveInstance(&$window){
+	function setActiveInstance(& $window) {
 		global $active_window;
-		$active_window[0] =& $window;
+		$active_window[0] = & $window;
 	}
-	function &getActiveInstance(){
+	function & getActiveInstance() {
 		global $active_window;
 		return $active_window[0];
 	}
@@ -22,149 +21,155 @@ class Window extends PWBObject{
 		return $this->wholeView;
 	}
 	function createView() {
-			$this->urlManager =& new UrlManager($this);
-			$this->wholeView = & new XMLNodeModificationsTracker;
-			$this->wholeView->setAttribute('id', $this->getId());
-			$tc =& new HTMLContainer('',array());
-			$tc->setAttribute('class','Component');
-			$app =& Application::instance();
-			$app->page_renderer->initPage($this);
-			$this->toFlush =& new ChildModificationsXMLNodeModification($this);
-			$this->wholeView->parentNode =& $this;
-			$this->wholeView->appendChild($tc);
-			$this->wholeView->controller = & $this;
-			$this->wholeView->getTemplatesAndContainers(false);
-			$this->setTitle($this->parent->getTitle());
-			$this->component->linkToApp($this->parent);
-			$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
-			$app->page_renderer->initialRender($this);
+		$this->urlManager = & new UrlManager($this);
+		$this->wholeView = & new XMLNodeModificationsTracker;
+		$this->wholeView->setAttribute('id', $this->getId());
+		$tc = & new HTMLContainer('', array ());
+		$tc->setAttribute('class', 'Component');
+		$app = & Application :: instance();
+		$app->page_renderer->initPage($this);
+		$this->toFlush = & new ChildModificationsXMLNodeModification($this);
+		$this->wholeView->parentNode = & $this;
+		$this->wholeView->appendChild($tc);
+		$this->wholeView->controller = & $this;
+		$this->wholeView->getTemplatesAndContainers(false);
+		$this->setTitle($this->parent->getTitle());
+		$this->component->linkToApp($this->parent);
+		$this->component->view->toFlush->setTarget(new ReplaceChildXMLNodeModification($this->component, $this->component, $this->wholeView));
+		$app->page_renderer->initialRender($this);
 	}
-	function addChildMod($pos,&$mod){
-		$this->toFlush->addChildMod($pos,$mod);
+	function addChildMod($pos, & $mod) {
+		$this->toFlush->addChildMod($pos, $mod);
 	}
-	function unsetChildWithId(){}
+	function unsetChildWithId() {
+	}
 	function redraw() {
-		$rc =& new ReplaceChildXMLNodeModification($this->wholeView, $this->wholeView, $this->wholeView);
+		$rc = & new ReplaceChildXMLNodeModification($this->wholeView, $this->wholeView, $this->wholeView);
 		$this->wholeView->toFlush->setTarget($rc);
 	}
 
-	function addAjaxCommand(&$cmd) {
-		$this->ajaxCommands[] =& $cmd;
+	function addAjaxCommand(& $cmd) {
+		$this->ajaxCommands[] = & $cmd;
 	}
 
-	function &getAjaxCommands() {
+	function & getAjaxCommands() {
 		return $this->ajaxCommands;
 	}
-	function hasModifications(){
-		return $this->opened && (count($this->toFlush->modifications) + count($this->ajaxCommands)) >0;
+	function hasModifications() {
+		return $this->opened && (count($this->toFlush->modifications) + count($this->ajaxCommands)) > 0;
 	}
 	function render() {
-		$this->closeStream=false;
-		$this->opened=true;
+		$this->closeStream = false;
+		$this->opened = true;
 		$this->modWindows();
 		$this->parent->page_renderer->render($this);
-		$this->toFlush =& new ChildModificationsXMLNodeModification($this);
+		$this->toFlush = & new ChildModificationsXMLNodeModification($this);
 	}
-	function flushCache(){}
-	function modWindows(){
+	function flushCache() {
+	}
+	function modWindows() {
 		$myname = $this->owner_index();
-		$ws =& $this->parent->windows;
-		$modwins= array();
-		foreach(array_keys($ws) as $win){
-			if ($win!=$myname && $ws[$win]->hasModifications()){
-				$modwins[]=$win;
+		$ws = & $this->parent->windows;
+		$modwins = array ();
+		foreach (array_keys($ws) as $win) {
+			if ($win != $myname && $ws[$win]->hasModifications()) {
+				$modwins[] = $win;
 			}
 		}
-		if (count($modwins)>0) {
+		if (count($modwins) > 0) {
 			$this->addAjaxCommand(new AjaxCommand('refreshWindows', $modwins));
-			$this->closeStream=true;
+			$this->closeStream = true;
 		}
 	}
-	function setCloseStream(){
-		$this->closeStream=true;
+	function setCloseStream() {
+		$this->closeStream = true;
 	}
 	function getId() {
 		return "app";
 	}
 	function getRealId() {
-		return $this->parent->getRealId() . CHILD_SEPARATOR.$this->owner_index();
+		return $this->parent->getRealId() . CHILD_SEPARATOR . $this->owner_index();
 	}
-	function setTitle($title){
+	function setTitle($title) {
 		$this->parent->page_renderer->setTitle($this, $title);
 	}
-	function navigate($bookmark, $params){
+	function navigate($bookmark, $params) {
 		$this->urlManager->navigate($bookmark, $params);
 	}
-	function goToUrl($url){
+	function goToUrl($url) {
 		$this->urlManager->goToUrl($url);
 	}
-	function resetUrl(){
+	function resetUrl() {
 		$this->urlManager->resetUrl();
 	}
-	function badUrl($bm, $params){
+	function badUrl($bm, $params) {
 		$this->resetUrl();
 	}
-	function &getParentElement(){
+	function & getParentElement() {
 		return $this;
 	}
-	function &getParent(){
+	function & getParent() {
 		return $this->parent;
 	}
-	function isCalling(){
+	function isCalling() {
 		return false;
 	}
-	function Window(&$component, $name){
-		parent::PWBObject();
-        $this->setDynVar('window', $this);
-		$app =& Application::Instance();
+	function Window(& $component, $name) {
+		parent :: PWBObject();
+		$this->setDynVar('window', $this);
+		$app = & Application :: Instance();
 		$this->ComponentHolder($component, $name, $app);
 		$app->addWindow($this, $name);
 	}
-	function showStopLoading(){
-		$this->addAjaxCommand(new AjaxCommand('loadingStop(--parWin.cometCount);parWin.nothing',array()));
+	function showStopLoading() {
+		$this->addAjaxCommand(new AjaxCommand('loadingStop(--parWin.cometCount);parWin.nothing', array ()));
 	}
-	function open($params=''){
-		$w =& Window::getActiveInstance();
-		$w->addAjaxCommand(new AjaxCommand('openWindow',array($this->owner_index(), $params)));
-		$w->closeStream=true;
+	function open($params = '') {
+		$w = & Window :: getActiveInstance();
+		$w->addAjaxCommand(new AjaxCommand('openWindow', array (
+		$this->owner_index(), $params)));
+		$w->closeStream = true;
 	}
-	function close(){
-		$this->addAjaxCommand(new AjaxCommand('window.close', array($this->owner_index())));
-		unset($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
+	function close() {
+		$this->addAjaxCommand(new AjaxCommand('window.close', array (
+		$this->owner_index())));
+		unset ($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
 	}
-	function updatingException($exception, $value){}
 
+	function updatingException($exception, $value) {
+		throw $exception;
+	}
 
 	var $component;
 	var $__owner_index;
 	var $parent;
-	var $realId =null;
-	function ComponentHolder(&$component,&$owner_index, &$parent) {
-	   $this->__owner_index = $owner_index;
-	   $this->parent =& $parent;
-	   $this->hold($component);
+	var $realId = null;
+	function ComponentHolder(& $component, & $owner_index, & $parent) {
+		$this->__owner_index = $owner_index;
+		$this->parent = & $parent;
+		$this->hold($component);
 	}
 
 	function owner_index() {
 		return $this->__owner_index;
 	}
-	function holds(&$comp){
+	function holds(& $comp) {
 		return $this->component->is($comp);
 	}
-    function hold(&$component) {
-    	$i = $this->owner_index();
-	    $this->parent->$i=&$component;
-		$component->holder =& $this;
-		$this->component =& $component;
+	function hold(& $component) {
+		$i = $this->owner_index();
+		$this->parent-> $i = & $component;
+		$component->holder = & $this;
+		$this->component = & $component;
 	}
 
-    function getSimpleId(){
-    	return $this->__owner_index;
-    }
+	function getSimpleId() {
+		return $this->__owner_index;
+	}
 
-    function &getComponent() {
-    	return $this->component;
-    }
+	function & getComponent() {
+		return $this->component;
+	}
 
 }
 ?>

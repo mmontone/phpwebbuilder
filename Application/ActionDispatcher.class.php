@@ -59,7 +59,7 @@ class ActionDispatcher {
 					if ($c != null) {
 						$temp = & $view_updates[$de++];
 						$temp[] = & $c;
-						$temp[] = $param;
+						$temp[] = utf8_decode($param);
 						$temp[] = $dir;
 					}
 			}
