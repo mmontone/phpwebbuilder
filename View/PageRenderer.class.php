@@ -57,7 +57,7 @@ class PageRenderer // extends PWBObject
 		$this->addVariable($view,'bookmark', $win->urlManager->actUrl);
 		$this->addVariable($view,'basedir', basedir);
 		$this->addVariable($view,'pwb_url', pwb_url);
-		$this->addVariable($view,'pwb_config', $_REQUEST['pwb_config']);
+		$this->addVariable($view,'pwb_config', @$_REQUEST['pwb_config']);
 		$this->addVariable($view,'window', $win->owner_index());
 	}
 	function addVariable(&$view,$name, $val){
@@ -315,7 +315,7 @@ class AjaxPageRenderer extends PageRenderer {
 	}
 	function ajaxRenderPage(&$win){
 		#@typecheck $win:Window@#
-		header("Content-type: text/xml");
+		header("Content-type: text/xml; charset=UTF-8");
 		echo '<?xml version="1.0" encoding="UTF-8" ?>';
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		echo '<ajax>';
