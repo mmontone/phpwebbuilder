@@ -27,6 +27,16 @@ class ObjectViewer extends ObjectPresenter {
 	return $textArea;
 }
 //@#
+
+#@defmdf &getFieldViewer(&$field: BoolField)
+{
+	$checkbox =& new CheckBox($field);
+	$checkbox->disable();
+	return $checkbox;
+}
+//@#
+
+
 #@defmdf &getFieldViewer(&$field: CollectionField)
 {
 	$on =& new ObjectsNavigator($field->getCollection());
