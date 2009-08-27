@@ -305,7 +305,7 @@ class Compiler {
 
 			$this->tempdir = str_replace('\\','/',$this->getRealPath($this->tempdir));
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
-
+            $this->tempdir.=constant('app_class')."/";
 		}
 		return $this->tempdir;
 	}
@@ -388,9 +388,9 @@ class RecursiveCompiler extends Compiler{
 }
 
 /**
- * En el recompile, compila cada uno de los archivos como en la compilación común.
- * Además, guarda el nombre de cada clase en un array.
- * En la carga normal, carga una función que busca el archivo de la clase en el
+ * En el recompile, compila cada uno de los archivos como en la compilaciï¿½n comï¿½n.
+ * Ademï¿½s, guarda el nombre de cada clase en un array.
+ * En la carga normal, carga una funciï¿½n que busca el archivo de la clase en el
  * array armado anteriormente.
 */
 class MinimalCompiler extends Compiler{
