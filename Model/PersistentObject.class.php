@@ -106,6 +106,9 @@ class PersistentObject extends DescriptedObject {
     		return 0;
     	}
     }
+    function getDBId(){
+        return getClass($this).":".$this->getId();
+    }
 	function existsObject() {
 		return $this->existsObject;
 	}
@@ -172,12 +175,13 @@ class PersistentObject extends DescriptedObject {
 			if ($db->getRowsAffected($res) == 0) {
 				$md =& PersistentObjectMetaData::getMetaData($class);
 				$rec =& $db->fetchRecord($db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class)));
+                $expectedVersion= ($this->fields[$class]['PWBversion']->getValue()-1);
 				#@sql_dml_echo2 echo 'Problem updating '. $this->debugPrintString().', stored version is '.$rec['PWBversion'];@#
-				if ($rec['PWBversion'] != $this->fields[$class]['PWBversion']->getStoredValue()) {
-					$ex =& new DBError(array('message' => 'Versioning error, '. $this->printString().' has version '.$rec['PWBversion'] .' and '.  $this->fields[$class]['PWBversion']->getStoredValue().' was expected'));
+				if ($rec['PWBversion'] != $expectedVersion) {
+					$ex =& new DBError(array('message' => 'Versioning error, '. $this->printString().' has version '.$rec['PWBversion'] .' and '.  $expectedVersion.' was expected'));
 				}
 				else {
-					$ex =& new DBError(array('message' => 'Could not update'));
+					$ex =& new DBError(array('message' => 'Could not update'.$db->getError()));
 				}
 
 				return $ex->raise();
