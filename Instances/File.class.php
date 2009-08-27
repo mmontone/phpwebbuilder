@@ -24,6 +24,9 @@ class File extends PersistentObject {
        function displayLink(){
             return site_url."Action.php?app=DisplayFile&fileid=".$this->id->getValue().'&pwb_config='.$_REQUEST['pwb_config'];;
        }
+       function printString(){
+           return $this->filename->getValue();
+       }
 }
 
 ?>
