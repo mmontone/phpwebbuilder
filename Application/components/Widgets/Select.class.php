@@ -7,13 +7,14 @@ class Select extends Widget {
 	var $size = 1;
     function Select(&$value_model, &$collection, $displayF=null) {
     	#@typecheck $collection:Collection@#
-    	parent::Widget($value_model);
+        
+        parent::Widget($value_model); 
 
     	$this->options =& $collection;
 
     	if ($displayF!=null){
     		$this->displayF=$displayF;
-    	} else if (is_object($collection->first())){
+    	} else if ($collection->hasObjects()){
     		$this->displayF =& new FunctionObject($this, 'printObject');
     	} else {
     		$this->displayF =& new FunctionObject($this, 'printPrimitive');
@@ -35,8 +36,12 @@ class Select extends Widget {
 	}
 
 	function &printObject(&$object) {
-		$str = $object->printString();
-		return $str;
+        if ($object!=null){
+            $str = $object->printString();
+            return $str;
+        } else {
+            return "";
+        }
 	}
 
 	function &printPrimitive(&$primitive) {
