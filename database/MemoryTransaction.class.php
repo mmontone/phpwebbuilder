@@ -5,6 +5,8 @@ class MemoryTransaction {
 	var $thread;
 	var $active = true;
 	var $metaclass = 'StandardMemoryTransactionMetaclass';
+    var $saving;
+    var $rollingBack ;
 
 	function MemoryTransaction(& $thread, $options = array()) {
 		$this->thread = & $thread;

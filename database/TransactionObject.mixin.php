@@ -51,8 +51,8 @@
 	}
 	function rebuild(){
 		$objs =& $this->commands;
-		$count = count($objs);
-		for($i=0;$i<$count;$i++){
+		$key = array_keys($objs);
+		foreach($key as $i){
 			$objs[$i]->rollback();
 		}
 	}
