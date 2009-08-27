@@ -63,29 +63,42 @@ class FunctionObject
     function &call() {
       	$this->executePreviousMethod();
         $method_name = $this->method_name;
-      	$ret = '';
-       	eval($this->callString($method_name) . '($this->params);');
+       	$ret = $this->catchEval($this->callString($method_name) . '($this->params);');
         $this->executeNextMethod();
        	return $ret;
     }
 	function execute() {
       	$this->executePreviousMethod();
         $method_name = $this->method_name;
-       	eval($this->executeString($method_name) . '($this->params);');
+       	$ret = $this->catchEval($this->executeString($method_name) . '($this->params);');
         $this->executeNextMethod();
     }
-	function executeWith(&$params) {
+	function executeWith(&$param1) {
       	$this->executePreviousMethod();
         $method_name = $this->method_name;
-       	eval($this->executeString($method_name) . '($params, $this->params);');
+       	$ret = $this->catchEval($this->executeString($method_name) . '($param1, $this->params);', $param1);
         $this->executeNextMethod();
     }
 
 	function executeWithWith(&$param1, &$param2) {
       	$this->executePreviousMethod();
         $method_name = $this->method_name;
-       	eval($this->executeString($method_name) . '($param1, $param2, $this->params);');
+       	$ret = $this->catchEval($this->executeString($method_name) . '($param1, $param2, $this->params);', $param1, $param2);
         $this->executeNextMethod();
+    }
+    function catchEval($evalString, &$param1=null, &$param2=null) {
+        $ret = null;
+        $ex = "Error";
+        eval("try{".$evalString.'; $ex=null;}catch(Exception $e){$ex=$e;}');
+        if($ex!=null){
+            if ($ex=="Error"){
+                throw new PWBException("Unhandled exception");
+            } else {
+                throw $ex;
+            }
+        } else {
+            return $ret;
+        }
     }
 
     function callString($method) {
@@ -117,17 +130,17 @@ class FunctionObject
 		}
 	}
 
-    function &callWith(&$params) {
+    function &callWith(&$param1) {
 		$method_name = $this->method_name;
 		$ret ='';
-    	eval($this->callString($method_name) . '($params, $this->params);');
+    	$ret = $this->catchEval($this->callString($method_name) . '($param1, $this->params);', $param1);
     	return $ret;
     }
 
     function &callWithWith(&$param1, &$param2) {
     	$method_name = $this->method_name;
     	$ret ='';
-    	eval($this->callString($method_name) . '($param1, $param2, $this->params);');
+    	$ret = $this->catchEval($this->callString($method_name) . '($param1, $param2, $this->params);');
     	return $ret;
     }
 
