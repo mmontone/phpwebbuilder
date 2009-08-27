@@ -66,7 +66,28 @@ class PWBObject
 	function isA($class) {
 		return is_a($this,$class);
 	}
-	function hasType($class) {
+    /** Checks for typing, using type parameters is needed */
+	function hasType($type){
+		$params = explode('<',$type, 2);
+        $typeParam = $params[0];
+        if (!$this->basicHasType($typeParam)){ //If I don´t have the class, the I'm done
+            return false;
+        }
+        if (isset($params[1])){
+            $genParams = explode(',',str_replace('>','',$params[1]));
+            $generics = $this->getGenericTypes();
+            for($i=0;$i<count($genParams);$i++){
+                if (!is_subclass(@$generics[$i], $genParams[$i])){
+                    return false;
+                }
+            }
+        }
+        return true;
+	}
+    function getGenericTypes(){
+        return array();
+    }
+	function basicHasType($class) {
 		return is_a($this,$class) or $this->hasMixin($class);
 	}
 	function hasMixin($mixin) {
@@ -288,7 +309,11 @@ class PWBObject
 		if ($str !== '') {
 			$str = ' ' . $str;
 		}
-        return '[' . getClass($this). ':'.$this->getInstanceId() . $str .']';
+        $types = implode(',',$this->getGenericTypes());
+        if ($types!=""){
+            $types = "<$types> ";
+        }
+        return '[' . getClass($this). $types.':'.$this->getInstanceId() . $str .']';
 	}
 
     function printString() {

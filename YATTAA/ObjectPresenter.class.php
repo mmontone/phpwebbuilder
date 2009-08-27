@@ -56,5 +56,8 @@ class ObjectPresenter extends ContextualComponent {
 	function & getModel() {
 		return $this->object;
 	}
+    function getGenericTypes(){
+        return array(getClass($this->object));
+    }
 }
 ?>

@@ -20,6 +20,9 @@ class CollectionNavigator extends Component {
 
 		$this->registerCallbacks($callbacks);
 	}
+    function getGenericTypes(){
+        return $this->col->getGenericTypes();
+    }
 
 	function initialize() {
 		$this->col->addInterestIn('changed', new FunctionObject($this, 'refresh'), array (

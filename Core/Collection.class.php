@@ -32,6 +32,9 @@ class Collection extends PWBObject {
 	function & first() {
 		return $this->at(0);
 	}
+    function hasObjects(){
+        return is_object($this->first());
+    }
 	/**
 	 *  Returns the element of the collection at specified position, or null
 	 */
@@ -307,15 +310,9 @@ class Collection extends PWBObject {
 	function getDataType() {
 		return '';
 	}
-	/** Checks for typing, using type parameters is needed */
-	function hasType($type){
-		$params = explode('<',$type, 2);
-		if (count($params)>1){
-			return parent::hasType($params[0]) && is_subclass($this->getDataType(), str_replace('>','',$params[1]));
-		} else {
-			return parent::hasType($params[0]);
-		}
-	}
+    function getGenericTypes(){
+        return array($this->getDataType());
+    }
 
 	/**
 	 *  Reloads the colelction from it's source

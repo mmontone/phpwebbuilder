@@ -30,6 +30,9 @@ class ObjectsAdmin extends ContextualComponent {
 			'inform_creation_success' => true
 		);
 	}
+    function getGenericTypes(){
+        return $this->objects->getGenericTypes();
+    }
 
 	function setOptions($options) {
 		foreach ($this->options as $key => $value) {
@@ -101,12 +104,12 @@ class ObjectsAdmin extends ContextualComponent {
 
 	function newObjectMessage() {
 		$col = & $this->objects->getCollection();
-		return Translator :: Translate('New ' . strtolower($col->dataType));
+		return Translator :: Translate('New ' . strtolower($col->getDataType()));
 	}
 
 	function listObjectsMessage() {
 		$col = & $this->objects->getCollection();
-		return Translator :: Translate(ucfirst($col->dataType) . 's');
+		return Translator :: Translate(ucfirst($col->getDataType()) . 's');
 	}
 
 	function & adminComponentFor(& $object) {

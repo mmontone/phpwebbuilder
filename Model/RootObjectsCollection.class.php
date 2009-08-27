@@ -13,6 +13,10 @@ class RootObjectsCollection {
   function getDataType() {
     return $this->collection->getDataType();
   }
+  function getGenericTypes(){
+        return $this->collection->getGenericTypes();
+  }
+
 
   function &getCollection() {
     return $this->collection;
@@ -33,7 +37,7 @@ class RootObjectsCollection {
   function validateObjectAddition(&$object) {
     // TODO: implement generic functionality here instead of saying "subclass responsablity".
     // Take object indexfields and generate the validation query
-    print_backtrace_and_exit('Subclass responsibility');
+    // print_backtrace_and_exit('Subclass responsibility');
   }
 
   function remove(&$object) {

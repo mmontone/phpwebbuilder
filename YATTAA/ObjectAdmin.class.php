@@ -28,6 +28,9 @@ class ObjectAdmin extends ContextualComponent {
 	function getDefaultOptions() {
 	  return array('commit' => true, 'ask_deletion' => true);
 	}
+    function getGenericTypes(){
+        return array(getClass($this->object));
+    }
 
 	function setOptions($options) {
 	  foreach($this->options as $key => $value) {
