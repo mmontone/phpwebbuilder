@@ -14,7 +14,9 @@ class ObjectEditor extends ObjectPresenter {
 	var $edit_function;
 
 	function initialize() {
-		$this->beginMemoryTransaction();
+        if ($this->options['start_transaction']) {
+            $this->beginMemoryTransaction();
+        }
 		parent :: initialize();
 		$this->addButtons();
 	}
@@ -32,7 +34,8 @@ class ObjectEditor extends ObjectPresenter {
 			'display_buttons' => true,
 			'commit' => true,
 			'confirm_cancel' => true,
-			'inform_success' => true
+			'inform_success' => true,
+            'start_transaction' => true
 		);
 	}
 
@@ -229,7 +232,7 @@ class ObjectEditor extends ObjectPresenter {
 
 #@defmdf &getFieldEditor[Component](&$field: IndexField)
 {
-	$sel = & new Select($field->asValueModel(), new PersistentCollection($field->getDataType()));
+	$sel = & new Select($field->asValueModel(), new PersistentCollection($field->getDataType(), array('include_blank'=>true)));
 	return $sel;
 }
 //@#

@@ -3,9 +3,9 @@ class PersistentCollection extends Report{
 	/**
 	 * A collection of persisted objects (of the same class)
 	 */
-	function PersistentCollection($dataType = "") {
+	function PersistentCollection($dataType = "", $options=array()) {
 		#@check Compiler::requiredClass($dataType)@#
-		parent::Report();
+		parent::Report($options);
 		$this->setDataType($dataType);
 	}
 	function listen($class, &$listener){

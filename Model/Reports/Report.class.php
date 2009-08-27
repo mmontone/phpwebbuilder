@@ -48,7 +48,7 @@ class Report extends Collection{
       var $evaluated=false;
       var $parent = null;
       var $target_var=null;
-
+      var $include_blank = false;
 
 
 	function Report($params=array()) {
@@ -56,6 +56,9 @@ class Report extends Collection{
 		parent::Collection();
 		$this->setConfigArray($params);
 	}
+    function hasObjects(){
+        return true;
+    }
 
     function &getTargetVar() {
     	return $this->target_var;
@@ -117,6 +120,9 @@ class Report extends Collection{
 
 		if (isset($params['limit'])){
 			$this->setLimit($params['limit']);
+		}
+        if (isset($params['include_blank'])){
+			$this->include_blank = ($params['include_blank']);
 		}
 	}
 
@@ -514,6 +520,9 @@ class Report extends Collection{
 			#@php5
 			$reg = $db->query($sql,true);
 			//@#
+            if ($this->include_blank){
+                $this->addElement($n=null);
+            }
 			while ($data = $db->fetchrecord($reg)) {
 				$this->addElement($this->makeElement($data));
 			}
