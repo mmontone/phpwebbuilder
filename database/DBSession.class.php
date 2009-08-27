@@ -57,7 +57,17 @@ class DBSession {
 	function addCommand(& $command) {
 		$ct =& DBSession::currentTransaction();
 		#@sql_dml_echo echo print_backtrace('Adding command ' . $command->debugPrintString() . ' to '. $ct->debugPrintString() .'<br/>');@#
-		$ct->commands[] = & $command;
+        if (isset($ct->commands[$command->getId()])){
+            $oldCommand =& $ct->commands[$command->getId()];
+            $newCommand =& $oldCommand->mergeWith($command);
+            if ($newCommand!=null){
+                $ct->commands[$command->getId()] =& $newCommand;
+            } else{
+                unset($ct->commands[$command->getId()]);
+            }
+        } else {
+            $ct->commands[$command->getId()] = & $command;
+        }
 	}
 
 	function registerSave(& $object, $exists) {
@@ -324,6 +334,9 @@ class DBSession {
 		$last_error = & DBSession :: GetLastError();
 		return $last_error->getMessage();
 	}
+    function getError() {
+		return $this->driver->getError();
+	}
 
 	function & GetLastError() {
 		$db = & DBSession :: instance();
@@ -411,14 +424,14 @@ class DBSession {
 				#@persistence_echo echo 'Preparing to save: ' . $object->debugPrintString() . '<br/>';@#
 				$object->prepareToSave();
 			}
-
-            $this->registerSave($object, $object->existsObject());
+            $exists = $object->existsObject();
             $object->save();
+            $this->registerSave($object, $exists);
             return $object;
         }
         catch (Exception $e) {
-        	if ($db->rollback_on_error) {
-                $db->primRollback();
+        	if ($this->rollback_on_error) {
+                $this->primRollback();
             }
             return $e->raise();
         }

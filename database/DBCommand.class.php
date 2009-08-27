@@ -19,10 +19,16 @@ class DBCommand {
 	function & getObject() {
 		return $this->object;
 	}
+    function getId(){
+        return $this->object->getDBId();
+    }
 
 	function debugPrintString() {
 		return '[' . getClass($this) . ' target: ' . $this->object->debugPrintString() . ']';
 	}
+    function isDeletion(){
+        return false;
+    }
 }
 
 class CreateObjectDBCommand extends DBCommand {
@@ -39,6 +45,13 @@ class CreateObjectDBCommand extends DBCommand {
 
 		$this->object->flushInsert();
 	}
+    function &mergeWith(&$command){
+        if ($command->isDeletion()){
+            return $n=null;
+        } else {
+            return $this;
+        }
+    }
 }
 
 class UpdateObjectDBCommand extends DBCommand {
@@ -52,9 +65,15 @@ class UpdateObjectDBCommand extends DBCommand {
 	}
 	function rollback() {
 		#@sql_dml_echo echo 'Rolling back update: ' . $this->object->debugPrintString() . '<br />';@#
-
 		$this->object->flushUpdate();
 	}
+    function &mergeWith(&$command){
+        if ($command->isDeletion()){
+            return $n=null;
+        } else {
+            return $this;
+        }
+    }
 }
 
 class DeleteObjectDBCommand extends DBCommand {
@@ -69,6 +88,12 @@ class DeleteObjectDBCommand extends DBCommand {
 
 		$this->object->existsObject = TRUE;
 	}
+    function &mergeWith(&$command){
+        return $this;
+    }
+    function isDeletion(){
+        return true;
+    }
 }
 
 /* PHP4:
