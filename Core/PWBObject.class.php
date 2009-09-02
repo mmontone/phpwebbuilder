@@ -19,7 +19,11 @@ class PWBObject
 	 */
     function PWBObject($params=array()) {
 		#@gencheck if (!is_array($params)) echo getClass($this). ' was not initialized by an array<br/>';@#
-		if (!Session::isStarted()) {
+		$this->obtainId();
+		$this->createInstance($params);
+	}
+    function obtainId(){
+        if (!Session::isStarted()) {
 			$iid=count(@$GLOBALS['allObjectsInMem'])-1000;
 		} else {
 			$iid =& Session::getAttribute('instance_id');
@@ -27,8 +31,7 @@ class PWBObject
 		$this->__instance_id = ++$iid;
 		//$this->creationParams =& $params;
 		$this->__wakeup();
-		$this->createInstance($params);
-	}
+    }
 
     function disableEvent($event) {
         @$this->disabled_events[$event]++;
@@ -121,9 +124,14 @@ class PWBObject
 	}
 	function __wakeup() {
 		$id = $this->getInstanceId();
-		#@gencheck if (isset( $GLOBALS['allObjectsInMem'][$id]) && !$this->is( $GLOBALS['allObjectsInMem'][$this->getInstanceId()])) print_backtrace('In position '.$this->getInstanceId(). ' there is a ' . $GLOBALS['allObjectsInMem'][$id]->printString(). ' instead of a '.$this->printString());@#
+		#@gencheck
+            if (isset( $GLOBALS['allObjectsInMem'][$id]) && !$this->is( $GLOBALS['allObjectsInMem'][$id])) print_backtrace('In position '.$id. ' there is a ' . $GLOBALS['allObjectsInMem'][$id]->debugPrintString(). ' instead of a '.$this->debugPrintString());
+        ////@#
 		$GLOBALS['allObjectsInMem'][$id] =& $this;
 	}
+    function __clone(){
+        print_backtrace_and_exit($this->debugPrintString());
+    }
 	/**
 	 *  Returns if the object is the same as the parameter
 	 */
@@ -309,11 +317,7 @@ class PWBObject
 		if ($str !== '') {
 			$str = ' ' . $str;
 		}
-        $types = implode(',',$this->getGenericTypes());
-        if ($types!=""){
-            $types = "<$types> ";
-        }
-        return '[' . getClass($this). $types.':'.$this->getInstanceId() . $str .']';
+        return '[' . $this->getType(). ':'.$this->getInstanceId() . $str .']';
 	}
 
     function printString() {
@@ -325,7 +329,11 @@ class PWBObject
     }
 
     function getType() {
-    	return getClass($this);
+        $types = implode(',',$this->getGenericTypes());
+        if ($types!=""){
+            $types = "<$types> ";
+        }
+    	return getClass($this).$types;
     }
 }
 ?>
