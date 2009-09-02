@@ -44,6 +44,9 @@ class IndexField extends NumField {
 	function getDataType() {
 		return $this->datatype;
 	}
+    function getGenericTypes(){
+        return array($this->getDataType());
+    }
 	function refreshId(){
 		$this->changed();
 	}
