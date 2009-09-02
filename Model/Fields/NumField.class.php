@@ -31,10 +31,9 @@ class NumField extends DataField {
     function getValue() {
         return str_replace(",",".",parent::getValue());
     }
-    function SQLvalue() {
-        return $this->getValue(). ", " ;
-
-    }
+	function SQLvalue() {
+		return "'" . $this->getValue() . "'" . ", ";
+	}
 
     function &validate() {
         return $this->validate_ereg("[0-9]+(\.[0-9]*)?",$this->displayString . ' is not a number');
