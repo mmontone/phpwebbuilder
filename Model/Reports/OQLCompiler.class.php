@@ -27,7 +27,7 @@ class OQLCompiler {
 									   value::=
 									   		value=>(
 												number=><number>|
-										   		str=>/\'[^\']+\'/|
+										   		str=>/\'[^\']*\'/|
 										   		phpvar=><phpvar>|
 										   		bool=>/TRUE|FALSE/i|
 												plainsql=><plainsql>||
