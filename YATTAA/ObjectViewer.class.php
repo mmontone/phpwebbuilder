@@ -2,25 +2,25 @@
 
 class ObjectViewer extends ObjectPresenter {
 	function chooseFieldDisplayer(&$field){
-		return mdcall('getFieldViewer', array(&$field));
+		return mdcompcall('getFieldViewer', array(&$this,&$field));
 	}
 }
 
-#@defmdf &getFieldViewer(&$field: DataField)
+#@defmdf &getFieldViewer[Component](&$field: DataField)
 {
 	$t =& new Text($field);
 	return $t;
 }
 //@#
 
-#@defmdf &getFieldViewer(&$field: IndexField)
+#@defmdf &getFieldViewer[Component](&$field: IndexField)
 {
 	$lab =& new Text($field->asTextHolder());
 	return $lab;
 }
 //@#
 
-#@defmdf &getFieldViewer(&$field: TextArea)
+#@defmdf &getFieldViewer[Component](&$field: TextArea)
 {
 	$textArea =& new TextAreaComponent($field);
 	$textArea->disable();
@@ -28,7 +28,7 @@ class ObjectViewer extends ObjectPresenter {
 }
 //@#
 
-#@defmdf &getFieldViewer(&$field: BoolField)
+#@defmdf &getFieldViewer[Component](&$field: BoolField)
 {
 	$checkbox =& new CheckBox($field);
 	$checkbox->disable();
@@ -37,7 +37,7 @@ class ObjectViewer extends ObjectPresenter {
 //@#
 
 
-#@defmdf &getFieldViewer(&$field: CollectionField)
+#@defmdf &getFieldViewer[Component](&$field: CollectionField)
 {
 	$on =& new ObjectsNavigator($field->getCollection());
 	return $on;
