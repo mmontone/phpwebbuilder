@@ -34,13 +34,10 @@ class LambdaObject {
 	}
 
 	function & call() {
-		$_self = & $this;
 		if (!function_exists($this->functionName)) {
 			eval ($this->fdef);
 		}
-		$result = null;
-		eval ('$result =& ' . $this->functionName . '($_self);');
-
+		$result =& FunctionObject::catchEval('$ret =& ' . $this->functionName . '($param1);', $this);
 		return $result;
 	}
 
@@ -51,8 +48,7 @@ class LambdaObject {
 			eval ($this->fdef);
 
 		}
-		$result = null;
-		eval ('$result =& ' . $this->functionName . '($_self, $params);');
+        $result =& FunctionObject::catchEval('$ret =& ' . $this->functionName . '($param1, $param2);', $_self, $params);
 		return $result;
 	}
 
