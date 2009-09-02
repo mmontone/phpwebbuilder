@@ -309,7 +309,7 @@ class DescriptedObject extends PWBObject {
 		$i = 1;
 
 		foreach ($fields as $field) {
-			$ret = $ret or $this->checkNotEmptyField($field, 'Fill in the ' . $this->$field->displayString . ', please');
+			$ret = $ret or $this->checkNotEmptyField($field, Translator::translate('Fill in the ' . $this->$field->displayString . ', please'));
 		}
 		return $ret;
 	}
@@ -374,7 +374,8 @@ class DescriptedObject extends PWBObject {
 
 		#@php5
         if (!$this->isValid()) {
-        	$ex =& new PWBValidationError(array('content' => array('object' => $this, 'errors' => $this->validation_errors)));
+        	$ex =& new PWBValidationError(array('content' => array('object' => $this, 'errors' => $this->validation_errors),
+                                        'message'=>Translator::translate("The object is invalid ").$this->printString()));
             $ex->raise();
         }//@#
         return $this->isValid();
