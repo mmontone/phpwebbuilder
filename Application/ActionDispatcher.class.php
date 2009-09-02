@@ -68,7 +68,7 @@ class ActionDispatcher {
         $target = & $this->getComponent(@$event['target'], $event['app']);
         //echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
         //var_dump(getClass($target));
-
+        DBSession::Instance()->prepareForModification();
         Window::setActiveInstance($event['window']);
 		$this->updateViews($view_updates);
 		$this->triggerEvent($event);
@@ -98,9 +98,9 @@ class ActionDispatcher {
 	            $f =& new FunctionObject($updates[$k][0], 'viewUpdated');
 	            $f->executeWith($updates[$k][1]);
             } catch(Exception $e){
-            	//$updates[$k][0]->updatingException($e, $updates[$k][1]);
+            	$updates[$k][0]->updatingException($e, $updates[$k][1]);
             } catch(Error $e){
-            	//$updates[$k][0]->updatingException($e, $updates[$k][1]);
+            	$updates[$k][0]->updatingException($e, $updates[$k][1]);
             }
 		}
 	}
