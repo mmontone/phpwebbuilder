@@ -40,7 +40,8 @@ class Select extends Widget {
             $str = $object->printString();
             return $str;
         } else {
-            return "";
+            $n="";
+            return $n;
         }
 	}
 
