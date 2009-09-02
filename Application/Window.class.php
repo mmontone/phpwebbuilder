@@ -137,7 +137,7 @@ class Window extends PWBObject {
 	}
 
 	function updatingException($exception, $value) {
-		throw $exception;
+		throw new WrappedException($exception);
 	}
 
 	var $component;
