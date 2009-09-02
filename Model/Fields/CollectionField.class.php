@@ -40,6 +40,9 @@ class CollectionField extends DataField {
 	function getDataType() {
 		return $this->collection->getDataType();
 	}
+    function getGenericTypes(){
+        return array($this->getDataType());
+    }
 
     function getJoinDataType() {
         return $this->type->getJoinDataType();
@@ -262,7 +265,7 @@ class DirectCollectionFieldType extends CollectionFieldType {
 	   }
     }
 
-    function remove($elem) {
+    function remove(&$elem) {
     	$elem-> {
             $this->collection_field->creationParams['reverseField'] }
         ->removeTarget();
