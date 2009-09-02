@@ -425,8 +425,9 @@ class DBSession {
 				$object->prepareToSave();
 			}
             $exists = $object->existsObject();
-            $object->save();
+            $object->basicSave();
             $this->registerSave($object, $exists);
+            $object->deepSave($exists);
             return $object;
         }
         catch (Exception $e) {
@@ -462,7 +463,7 @@ class DBSession {
 	#@php5
 	function & delete(& $object) {
 		$this->registerDelete($object);
-
+        $this->unregisterObject($object);
 		try {
             $e =& $object->delete();
             return $object;

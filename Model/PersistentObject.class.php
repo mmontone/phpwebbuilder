@@ -139,7 +139,6 @@ class PersistentObject extends DescriptedObject {
 			$ex =& new PWBException(array('message' => 'Could not insert'));
 			return $ex->raise();
 		}
-		$this->existsObject = true;
 		#@sql_dml_echo echo ("The ID is: {$this->getID()}, {$this->debugPrintString()}");@#
 		return $res;
 	}
@@ -181,7 +180,7 @@ class PersistentObject extends DescriptedObject {
 					$ex =& new DBError(array('message' => 'Versioning error, '. $this->printString().' has version '.$rec['PWBversion'] .' and '.  $expectedVersion.' was expected'));
 				}
 				else {
-					$ex =& new DBError(array('message' => 'Could not update'.$db->getError()));
+					$ex =& new DBError(array('message' => Translator::translate('Could not update').': '.$db->getError()));
 				}
 
 				return $ex->raise();
@@ -202,7 +201,10 @@ class PersistentObject extends DescriptedObject {
 		return $can;
 	}
 	function &basicDelete($class) {
-		if (!$this->existsObject) return true;
+		if (!$this->existsObject) {
+            $true = true;
+            return $true;
+        }
 		$md =& PersistentObjectMetaData::getMetaData($class);
 		$sql = 'DELETE FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class);
 		$db =& DBSession::Instance();
@@ -268,19 +270,30 @@ class PersistentObject extends DescriptedObject {
 	/**
 	 * Persists the object in the database. Returns if everything worked
 	 */
-	function &save() {
-		if ($this->existsObject) {
+    function &basicSave() {
+        if ($this->existsObject) {
 			$res =& $this->update();
 		}
 		else {
 			$res =& $this->insert();
 			$this->triggerEvent('id_changed',$n=null);
+        }
+        return $res;
+    }
+	function &save() {
+        $exists = $this->existsObject;
+        $res =& $this->basicSave();
+        $this->deepSave($exists);
+        return $res;
+    }
+    function deepSave($exists) {
+        if	(!$exists){
 			$this->registerCollaborators();
 		}
 		foreach($this->getPersistentClasses() as $sc){
 			PersistentCollection::changedClass($sc);
 		}
-		return $res;
+	
 	}
 
     /*
@@ -322,7 +335,9 @@ class PersistentObject extends DescriptedObject {
 			}
 			$res =& $this->basicInsert($sc);
 			if (is_exception($res)){break;}
+            $this->existsObject = true;
 		}
+        $this->registerGlobalObject();
 		if (!is_exception($res)){
 			$this->markAsUpdated();
 		}
