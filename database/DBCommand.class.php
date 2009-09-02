@@ -47,7 +47,8 @@ class CreateObjectDBCommand extends DBCommand {
 	}
     function &mergeWith(&$command){
         if ($command->isDeletion()){
-            return $n=null;
+            $n=null;
+            return $n;
         } else {
             return $this;
         }
@@ -68,11 +69,7 @@ class UpdateObjectDBCommand extends DBCommand {
 		$this->object->flushUpdate();
 	}
     function &mergeWith(&$command){
-        if ($command->isDeletion()){
-            return $n=null;
-        } else {
-            return $this;
-        }
+        return $command;
     }
 }
 
