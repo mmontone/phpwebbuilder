@@ -42,13 +42,14 @@ class ErrorMessage extends Component {
 	var $error_msg;
 
 	function ErrorMessage($params) {
+        $this->error_msg = $params['error_message'];
 		parent::Component();
 		$this->createInstance($params); // Patch...
 	}
 
-	function createInstance($params) {
-		$this->error_msg = $params['error_message'];
-	}
+	/*function createInstance($params) {
+		
+	}*/
 
 	function initialize() {
 		$this->addComponent(new Label($this->error_msg),'error_message');

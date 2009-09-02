@@ -24,8 +24,20 @@
 		$d = array ();
 		$this->commands = & $d;
 	}
+    function validateAllObjects(&$trans){
+        $objs =& $trans->objects;
+		$count = count($objs);
+        var_dump("Validating ".$count. " in ".$trans->debugPrintString());
+		foreach(array_keys($objs) as $i){
+            var_dump("Validating ".$objs[$i]->debugPrintString());
+            if ($objs[$i]->isPersisted()){
+                $objs[$i]->validateAll();
+            }
+		}
+    }
 	function registerAllModifications(&$trans){
 		#@tm_echo echo $this->debugPrintString() . ' adding modifications from ' . $trans->debugPrintString() . '<br/>';@#
+        $this->validateAllObjects(&$trans);
 		$mods =& $trans->modifications;
 		$count = count($mods);
 		foreach(array_keys($mods) as $i){

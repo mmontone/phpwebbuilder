@@ -148,7 +148,7 @@ class ObjectEditor extends ObjectPresenter {
 			$this->commitTransaction();
 			$this->objectEdited();
 		} catch (PWBValidationError $e) {
-			$this->addComponent(new ValidationErrorsDisplayer($this->object->validation_errors), 'validation_errors');
+			$this->addComponent(new ValidationErrorsDisplayer($e->content['errors']), 'validation_errors');
 		} catch (DBError $e) {
 			$dialog = & ErrorDialog :: Create($e->getMessage());
 			$dialog->onAccept(new FunctionObject($this, 'doNothing'));
