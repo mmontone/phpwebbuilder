@@ -305,7 +305,7 @@ class Compiler {
 
 			$this->tempdir = str_replace('\\','/',$this->getRealPath($this->tempdir));
 			if (substr($this->tempdir,-1)!=="/") $this->tempdir.='/';
-            $this->tempdir.=constant('app_class')."/";
+            $this->tempdir.=strtolower(constant('app_class'))."/";
 		}
 		return $this->tempdir;
 	}
