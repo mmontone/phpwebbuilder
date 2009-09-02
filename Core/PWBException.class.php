@@ -60,4 +60,11 @@ class PWBException extends Exception {
     }
 }
 
+class WrappedException extends PWBException{
+    public function __construct($exception) {
+        $this->exc =& $exception;
+        parent::__construct(array('message'=>"WRAPPED ".$this->exc->getMessage()), 0);
+    }
+}
+
 ?>

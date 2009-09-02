@@ -20,9 +20,9 @@ class DeferredEventHandler extends EventHandler {
     	 try{
 	        return $this->function->executeWithWith($this->triggerer, $this->params);
             } catch(Exception $e){
-            	//$this->triggerer->updatingException($e, $this->params);
+            	$this->triggerer->updatingException(new WrappedException($e, array('message'=>"Deffered event triggering exception,".$this->printString()."[".$e->getMessage()."]")), $this->params);
             } catch(Error $e){
-            	//$this->triggerer->updatingException($e, $this->params);
+                $this->triggerer->updatingException(new WrappedException($e, array('message'=>"Deffered event triggering exception,".$this->printString()."[".$e->getMessage()."]")), $this->params);
             }
 
     }
