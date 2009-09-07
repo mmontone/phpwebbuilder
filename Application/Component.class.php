@@ -423,7 +423,7 @@ class Component extends PWBObject {
 	 */
 	function viewUpdated($params) {
 	}
-	function updatingException($exception, $value){
+	function updatingException(&$exception, $value){
 		$this->getParent()->updatingException($exception, $value);
 	}
 	// TODO Remove View

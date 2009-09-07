@@ -133,6 +133,7 @@ class Window extends PWBObject {
 	function close() {
 		$this->addAjaxCommand(new AjaxCommand('window.close', array (
 		$this->owner_index())));
+		$this->component->delete();
 		unset ($this->parent->windows[$this->owner_index()]); //Won't work, not rendered and removed.
 	}
 

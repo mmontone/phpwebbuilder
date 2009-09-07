@@ -134,6 +134,12 @@ class Application {
 		$app =& Application::Instance();
 		return $app->page_renderer->rendersAjax();
 	}
+	function preparePage() {
+		$this->page_renderer->preparePage();
+	}
+
+
+
 	function addCometRenderingSpecificScripts() {
 		$this->addAjaxRenderingSpecificScripts();
 		$this->addScript(constant('pwb_url') . 'lib/comet.js');

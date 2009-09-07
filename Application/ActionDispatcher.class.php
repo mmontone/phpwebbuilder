@@ -37,6 +37,7 @@ class ActionDispatcher {
 		$view_updates = array ();
 		$de = 0;
 		$app = & Application::instance();
+		$app->preparePage();
 
 		$event['window'] =&$app->windows['root'];
 		$event['app'] = & $app;
@@ -65,7 +66,7 @@ class ActionDispatcher {
 			}
 		}
 
-        $target = & $this->getComponent(@$event['target'], $event['app']);
+        //$target = & $this->getComponent(@$event['target'], $event['app']);
         //echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
         //var_dump(getClass($target));
         DBSession::Instance()->prepareForModification();
@@ -109,7 +110,16 @@ class ActionDispatcher {
 		//echo 'Triggering event. Target: ' . $event['target'] . '.Event: ' . $event['event'] . '</br>';
 		//var_dump(getClass($target));
 		if ($target!=null){
-			$target->triggerEvent($event['event'], $v = array ());
+			try{
+	            $target->triggerEvent($event['event'], $v = array ());
+            } catch(Exception $e){
+            	var_dump($e);
+            	$event['target']->updatingException($e,  $event['app']);
+            } catch(Error $e){
+            	var_dump($e);
+            	$event['target']->updatingException($e,  $event['app']);
+            }
+
 		}
 	}
 	function & getComponent($path, & $app) {
@@ -123,6 +133,7 @@ class ActionDispatcher {
 			foreach ($path as $p) {
 				$comp1 = & $comp->componentAt($p);
 				if ($comp1 == null) {
+					//print_backtrace();
 					$comp->redraw(); //We sent something to a thing that wasn't there. We render the parent to see what's really there.
 					return $comp1;
 				}
