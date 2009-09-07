@@ -319,6 +319,12 @@ class Collection extends PWBObject {
 	 */
 	function refresh() {
 	}
+	function &cloneCollection() {
+		$col =& new Collection();
+		$col->addAllFromCollection($this);
+		return $col;
+	}
+
 
     function debugPrintString() {
     	return $this->primPrintString('size: ' . $this->size());
