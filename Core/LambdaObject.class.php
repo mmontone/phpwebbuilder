@@ -30,7 +30,8 @@ class LambdaObject {
 	}
 
 	function & weakVersion() {
-		return WeakLambdaObject :: fromLambdaObject($this);
+		$lo =& WeakLambdaObject :: fromLambdaObject($this);
+		return $lo;
 	}
 
 	function & call() {
