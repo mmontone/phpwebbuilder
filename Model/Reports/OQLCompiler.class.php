@@ -104,7 +104,9 @@ class OQLCompiler {
 		}
 		if ($query['order'] !== null) {
 			$o='';
-			foreach($query['order'][1] as $ord){
+			foreach($query['order'][1] as $key=>$ord){
+                if ($key%2==1)continue;
+                //var_dump($ord);
 				$o .= '\''.$ord[0][0].'\'=>\''.$ord[1].'\',';
 			}
 			$ret .= "'order'=>array(" .$o . '),';
