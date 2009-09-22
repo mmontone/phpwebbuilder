@@ -21,6 +21,7 @@ compile_once (dirname(__FILE__).'/components/Widgets/CommandLink.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/JSCommandLink.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/ActionLink.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/Select.class.php');
+compile_once (dirname(__FILE__).'/components/Widgets/Autocomplete.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/SelectMultiple.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/SubdomainSelect.class.php');
 compile_once (dirname(__FILE__).'/components/Widgets/OptionalSelect.class.php');
