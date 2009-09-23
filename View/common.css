@@ -1,5 +1,6 @@
 .clickable{
-	cursor:pointer; cursor:hand;
+	cursor:pointer;
+    cursor:hand;
 }
 
 .debugging,.hiddencontainer, .templateName{
@@ -12,4 +13,22 @@
 .uploadfile {
 	border: none;
 	height:4em;
+}
+
+.autocomplete{
+    background-color:#FFFFFF;
+    border:1px solid grey;
+}
+
+.autocomplete ul{
+    padding: 0;
+}
+
+.autocomplete li{
+    padding:  2px 10px;
+    list-style-type:none;
+}
+
+.autocomplete .selected{
+    background-color:#CCCCCC;
 }

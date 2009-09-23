@@ -6,9 +6,7 @@ class InputHTMLHandler extends WidgetHTMLHandler{
 	}
 	function initializeDefaultView(&$view){
 		$view->setTagName('input');
-        if ($this->component->isHidden()){
-            $view->setAttribute('type', 'hidden');
-        } else {
+        if ($view->getAttribute('type')==null){
             $view->setAttribute('type', 'text');
         }
 	}

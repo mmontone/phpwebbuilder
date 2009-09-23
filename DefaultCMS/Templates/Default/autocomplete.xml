@@ -1,0 +1,7 @@
+<templates>
+	<template class="Autocomplete">
+		<input type="text" id="displayText" />
+		<input type="hidden" id="elementId" />
+        <div class="autocomplete" id="listDisplay"/>
+	</template>
+</templates>

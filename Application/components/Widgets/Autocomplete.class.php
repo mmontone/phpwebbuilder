@@ -25,15 +25,14 @@ class Autocomplete extends Component {
         $this->addComponent(new Input(new ValueHolder($this->displayF->callWith($this->value_model->getValue()))),"displayText");
         $this->addComponent(new Component(),"listDisplay");
         $elementId =& new Input($null);
-        $elementId->beHidden(true);
         $this->addComponent($elementId,"elementId");
 
-        $this->elementId->onChangeSend('valueChanged', $this);
+        $elementId->value_model->onChangeSend('valueChanged', $this);
         $win =& $this->getWindow();
         $win->addAjaxCommand(new AjaxCommand('autocomplete', array($this->getId())));
     }
     function valueChanged(){
-        $this->value_model->setValue($collection->at($this->elementId->getValue()));
+        $this->value_model->setValue($this->options->at($this->elementId->getValue()));
     }
     function &printObject(&$object) {
         if ($object!=null){
@@ -50,7 +49,7 @@ class Autocomplete extends Component {
 	}
     function getElements($value){
         $cc =& new CompositeReport($this->options);
-        $cc->setCondition( $this->filterField, 'LIKE', "$value%");
+        $cc->setCondition( $this->filterField, 'LIKE', "'$value%'");
         return $cc;
 
     }
