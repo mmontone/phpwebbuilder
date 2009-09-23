@@ -16,7 +16,7 @@ function md_echo ($code) {
 }
 
 function defmdf($text) {
-	preg_match('/(&?[[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*)\)[\s\t]*\{(.*)\}/s', $text, $matches);
+	preg_match('/(&?[[:alpha:]]*)[\s\t]*(?:\[(.*)\])?[\s\t]*\((.*?)\)[\s\t]*\{(.*)\}/s', $text, $matches);
 	//print_r($matches);
 	$name = $matches[1];
 	$context = $matches[2];
