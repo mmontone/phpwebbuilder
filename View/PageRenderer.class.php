@@ -95,8 +95,21 @@ class PageRenderer // extends PWBObject
 		} else	{
 			$this->basicPreparePage();
 		}
+		pwb_register_shutdown_function('closePage', new FunctionObject($this, 'closePage'));
 	}
 	function basicPreparePage(){}
+
+	function closePage() {
+		if (isset($_REQUEST['ajax'])){
+			$this->ajaxClosePage();
+		} else if (isset($_REQUEST['comet'])){
+			$this->cometClosePage();
+		} else	{
+			$this->basicClosePage();
+		}
+	}
+	function basicClosePage(){}
+
 
 	function ajaxRenderPage(&$win){
 		#@typecheck $win:Window@#
@@ -329,14 +342,18 @@ class AjaxPageRenderer extends PageRenderer {
 		echo '<?xml version="1.0" encoding="UTF-8" ?>';
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
 		echo '<ajax>';
-		echo '<output>';
+		echo '<output><![CDATA[';
 	}
 
 	function ajaxRenderPage(&$win){
 		#@typecheck $win:Window@#
-		echo '</output>';
+		echo ']]></output>';
 		echo $win->wholeView->renderAjaxResponseCommand();
 		echo $this->renderJSCommands($win);
+		echo '<output><![CDATA[';
+	}
+	function ajaxClosePage(){
+		echo ']]></output>';
 		echo '</ajax>';
 	}
 

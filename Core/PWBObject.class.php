@@ -24,7 +24,7 @@ class PWBObject
 	}
     function obtainId(){
         if (!Session::isStarted()) {
-			$iid=count(@$GLOBALS['allObjectsInMem'])-1000;
+			$iid=count(@$GLOBALS['allObjectsInMem'])-10000;
 		} else {
 			$iid =& Session::getAttribute('instance_id');
 		}
@@ -331,7 +331,7 @@ class PWBObject
     function getType() {
         $types = implode(',',$this->getGenericTypes());
         if ($types!=""){
-            $types = "<$types> ";
+            $types = "[[$types]] ";
         }
     	return getClass($this).$types;
     }

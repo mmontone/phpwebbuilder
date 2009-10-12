@@ -631,7 +631,7 @@ class Component extends PWBObject {
         	*/
 
         	/* Option 2: */
-        	#@sql_echo echo 'Not registering ' . $mod->debugPrintString() . '(no memory transaction for: ' . $this->debugPrintString() .')</br>';@#
+        	#@sql_echo echo 'Not registering ' . $mod->debugPrintString() . '(no memory transaction for: ' . $this->debugPrintString() .')<br/>';@#
         }
         else {
 	        $t->registerFieldModification($mod);

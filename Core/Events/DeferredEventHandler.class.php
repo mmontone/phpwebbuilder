@@ -16,7 +16,7 @@ class DeferredEventHandler extends EventHandler {
     }
 
     function execute() {
-    	#@track_events echo 'Executing ' . $this->printString() .'</br>';@#
+    	#@track_events echo 'Executing ' . $this->printString() .'<br/>';@#
     	 try{
 	        return $this->function->executeWithWith($this->triggerer, $this->params);
             } catch(Exception $e){

@@ -73,6 +73,8 @@ class CometPageRenderer extends PageRenderer {
 		}
 		$this->sendFooters();
 	}
+	function cometPreparePage(){}
+	function cometClosePage(){}
 	function sendHeaders(){
 		echo '<script>parWin = window.frameElement.ownerDocument.window;</script>';
 		 #@profile echo '<a href="" onclick="parWin.closeComet()">close comet</a>'; return; @#

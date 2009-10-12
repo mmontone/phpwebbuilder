@@ -15,10 +15,10 @@ class DBDriver {
 	function shutdown() {
 		if ($this->inTransaction()) {
 			$conn = & $this->openDatabase(false);
-			#@sql_dml_echo echo 'Rolling back because transaction didn\'t finish in this request</br>';@#
+			#@sql_dml_echo echo '<div>Rolling back because transaction didn\'t finish in this request</div>';@#
 			$this->basicRollback($conn);
 			/****Rolling back commands****/
-			#@sql_dml_echo echo 'Rolling back commands</br>';@#
+			#@sql_dml_echo echo '<div>Rolling back commands</div>';@#
 			$mts =& $this->session->memoryTransactions;
 			$count = count($mts);
 			for ($i = $count -1; $i >= 0; $i--) {

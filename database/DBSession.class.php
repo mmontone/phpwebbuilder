@@ -230,7 +230,7 @@ class DBSession {
 		// doing explicit commits.
 		//                          -- marian
 
-		#@persistence_echo echo 'Committing  global DB transaction</br>';@#
+		#@persistence_echo echo 'Committing  global DB transaction<br/>';@#
 		$this->beginTransaction();
 		$this->commitTransaction(new FunctionObject($this, 'saveRegisteredObjects'));
 	}
