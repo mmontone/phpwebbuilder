@@ -2,7 +2,9 @@
 
 
 //require_once 'md2.php';
-if (!defined('md')) {define('md','compiled');}
+if (!defined('md')) {
+	define('md', 'compiled');
+}
 require_once 'md.php';
 //}
 
@@ -58,10 +60,10 @@ function getcached($text) {
 	}
 
 	$out = "if (is_null($var)) {\n
-	    	       $body\n
-	               $var =& $initialize;\n
-	           }\n
-	           $result =& $var;";
+		    	       $body\n
+		               $var =& $initialize;\n
+		           }\n
+		           $result =& $var;";
 	return $out;
 }
 
@@ -178,7 +180,8 @@ function profile($text) {
 }
 
 function sql_echo($text) {
-	return optionalCompile('sql_query_echo', $text) . optionalCompile('sql_dml_echo', $text);;
+	return optionalCompile('sql_query_echo', $text) . optionalCompile('sql_dml_echo', $text);
+	;
 }
 
 function sql_query_echo($text) {
@@ -189,15 +192,14 @@ function sql_dml_echo($text) {
 	return optionalCompile('sql_dml_echo', $text);
 }
 
-
 function tm_echo($text) {
 	return optionalCompile('tm_echo', $text);
 }
 
 function tm_echo2($text) {
 	if (defined('tm_echo') and (constant('tm_echo') >= 2)) {
-        return $text;
-    }
+		return $text;
+	}
 }
 
 function activation_echo($text) {
@@ -205,7 +207,7 @@ function activation_echo($text) {
 }
 
 function calling_echo($text) {
-    return optionalCompile('calling_echo', $text);
+	return optionalCompile('calling_echo', $text);
 }
 
 function sql_query_echo1($text) {
@@ -226,14 +228,11 @@ function persistence_echo2($text) {
 	}
 }
 
-
 function sql_dml_echo2($text) {
 	if (defined('sql_dml_echo') and (constant('sql_dml_echo') >= 2)) {
 		return $text;
 	}
 }
-
-
 
 function persistence_echo($text) {
 	return optionalCompile('persistence_echo', $text);
@@ -331,7 +330,7 @@ $dyn_vars = array ();
 
 function defdyn($var, & $value) {
 	global $dyn_vars;
-	if (!is_array(@$dyn_vars[$var])) {
+	if (!is_array(@ $dyn_vars[$var])) {
 		$dyn_vars[$var] = array ();
 	}
 
@@ -345,8 +344,8 @@ function undefdyn($var) {
 
 function & getdyn($var) {
 	global $dyn_vars;
-	$arr = @$dyn_vars[$var];
-	$ret =& $arr[count($arr) - 1];
+	$arr = @ $dyn_vars[$var];
+	$ret = & $arr[count($arr) - 1];
 	return $ret;
 
 }
@@ -411,7 +410,7 @@ function includeAll() {
 	}
 	define('app', "MyInstances,MyComponents");
 
-	$comp =& Compiler::instance();
+	$comp = & Compiler :: instance();
 	$comp->initRequest();
 	require_once pwbdir . 'Session/SessionStart.php';
 	$comp->finishRequest();
@@ -608,8 +607,8 @@ function htmlshow($str) {
 }
 
 function is_subclass($class_sub, $class_parent) {
-	$class_sub = preg_replace('/\<\w*\>/','',$class_sub);
-	$class_parent = preg_replace('/\<\w*\>/','',$class_parent);
+	$class_sub = preg_replace('/\<\w*\>/', '', $class_sub);
+	$class_parent = preg_replace('/\<\w*\>/', '', $class_parent);
 	return in_array(strtolower($class_sub), get_subclasses_and_class($class_parent));
 }
 function is_strict_subclass($class_sub, $class_parent) {
@@ -727,9 +726,9 @@ assert_options(ASSERT_QUIET_EVAL, 1);
  */
 function my_assert_handler($file, $line, $code) {
 	echo "<hr>Assertion Failed:
-		       <b>File</b> '$file'<br />
-		       <b>Line</b> '$line'<br />
-		       <b>Code</b> '$code'<br />";
+			       <b>File</b> '$file'<br />
+			       <b>Line</b> '$line'<br />
+			       <b>Code</b> '$code'<br />";
 	print_backtrace('');
 	echo "</hr>";
 }
@@ -800,9 +799,10 @@ function & apply_messages(& $u, $mess) {
 function & apply_message(& $u, $mess) {
 	if (substr($mess, -2) == '()') {
 		$m = substr($mess, 0, -2);
-		return $u->$m ();
+		$val = & $u-> $m ();
+		return $val;
 	} else {
-		return $u->$mess;
+		return $u-> $mess;
 	}
 }
 
@@ -818,10 +818,10 @@ function getClass(& $o) {
  */
 if (version_compare(phpversion(), '5.0') < 0) {
 	eval ('
-		    function clone($object) {
-		      return $object;
-		    }
-		    ');
+			    function clone($object) {
+			      return $object;
+			    }
+			    ');
 }
 
 function exceptions_enabled() {
@@ -946,16 +946,16 @@ function print_object($array, $extra = '') {
 				} else {
 					if (is_object($array)) {
 						#@php4
-                        $r = '[' . getClass($array) . ':' . $extra . ']';
-                        //@#
+						$r = '[' . getClass($array) . ':' . $extra . ']';
+						//@#
 
-                        #@php5
-                        //$r = '[' . getClass($array) . ':' . spl_object_hash($array)  .' ]';
-                        $r = '[' . getClass($array) . ':' . $extra . ']';
-                        //@#
+						#@php5
+						//$r = '[' . getClass($array) . ':' . spl_object_hash($array)  .' ]';
+						$r = '[' . getClass($array) . ':' . $extra . ']';
+						//@#
 
-                        return $r;
-                    } else {
+						return $r;
+					} else {
 						return print_r($array, true);
 					}
 				}
@@ -964,13 +964,13 @@ function print_object($array, $extra = '') {
 	}
 }
 
-function get_primitive_object_id(&$object) {
+function get_primitive_object_id(& $object) {
 	ob_start();
-    print($object);
-    $c = ob_get_contents();
-    $c = substr($c, strlen('Object id #'));
-    ob_end_clean();
-    return $c;
+	print ($object);
+	$c = ob_get_contents();
+	$c = substr($c, strlen('Object id #'));
+	ob_end_clean();
+	return $c;
 }
 
 function array_union_values() {
