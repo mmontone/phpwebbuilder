@@ -162,33 +162,35 @@ class PersistentObject extends DescriptedObject {
 	 */
 	function &basicUpdate($class) {
 		$db =& DBSession::Instance();
-		#@sql_dml_echo2 echo 'Starting update of '. $this->debugPrintString();@#
+		try{
+		#@sql_dml_echo2 echo 'Starting update of '.$class. $this->debugPrintString();@#
 		$sql = $this->updateString($class);
 		$res = $db->query($sql);
-
-		#@sql_dml_echo2 echo 'Finished update of '. $this->debugPrintString();@#
-		if (is_exception($res)) {
-			return $res;
+		} catch(Exception $e){
+			$expectedVersion= ($this->fields[$class]['PWBversion']->getValue()-1);
+			#@sql_dml_echo2 echo 'Problem updating '. $this->debugPrintString();@#
+			$this->fields[$class]['PWBversion']->setValue($expectedVersion);
+			#@sql_dml_echo2 echo 'Finished update of '.$class. $this->debugPrintString();@#
+			throw $e;
 		}
-		else {
+
 			if ($db->getRowsAffected($res) == 0) {
 				$md =& PersistentObjectMetaData::getMetaData($class);
 				$rec =& $db->fetchRecord($db->query('SELECT PWBversion FROM ' . $md->tableName() . ' WHERE id=' . $this->getIdOfClass($class)));
                 $expectedVersion= ($this->fields[$class]['PWBversion']->getValue()-1);
 				#@sql_dml_echo2 echo 'Problem updating '. $this->debugPrintString().', stored version is '.$rec['PWBversion'];@#
+				$this->fields[$class]['PWBversion']->setValue($expectedVersion);
 				if ($rec['PWBversion'] != $expectedVersion) {
 					$ex =& new DBError(array('message' => 'Versioning error, '. $this->printString().' has version '.$rec['PWBversion'] .' and '.  $expectedVersion.' was expected'));
 				}
 				else {
 					$ex =& new DBError(array('message' => Translator::translate('Could not update').': '.$db->getError()));
 				}
-
 				return $ex->raise();
 			} else {
 				$error = false;
 				return $error;
 			}
-		}
 	}
 	/**
 	 * Deletes this level of the object. Fails if a collection is not empty
@@ -293,7 +295,7 @@ class PersistentObject extends DescriptedObject {
 		foreach($this->getPersistentClasses() as $sc){
 			PersistentCollection::changedClass($sc);
 		}
-	
+
 	}
 
     /*
