@@ -25,8 +25,10 @@ class ComponentHTMLHandler extends HTMLHandler{
 	}
 	function updateStates(&$col, $ev){
 		$this->view->removeCSSClasses();
-		foreach($col->elements() as $e){
-			$this->updateState($col, $e);
+		if ($col){
+			foreach($col->elements() as $e){
+				$this->updateState($col, $e);
+			}
 		}
 	}
 }
