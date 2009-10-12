@@ -5,8 +5,6 @@ class NumField extends DataField {
 	function createInstance($params){
 		parent::createInstance($params);
 		$this->range = @$params['range'];
-		$this->value=0;
-		$this->buffered_value=0;
 	}
 	function increment(){
 		$this->setValue($this->getValue()+1);
@@ -15,7 +13,7 @@ class NumField extends DataField {
 		$this->setValue($this->getValue()-1);
 	}
 	function defaultValues($params){
-		return array_merge(array('range'=>null, 'numtype'=>'int'), parent::defaultValues($params));
+		return array_merge(array('default'=>0, 'range'=>null, 'numtype'=>'int'), parent::defaultValues($params));
 	}
 	function isRanged() {
 		return $this->range != null;
