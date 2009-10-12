@@ -32,7 +32,8 @@ class WidgetHTMLHandler extends ComponentHTMLHandler{
 		$this->view->setAttribute($ev[0], $ev[1]);
 	}
 	function updateEvents(&$col){
-		foreach($col->elements() as $e){
+		$elems =& $col->elements();
+		foreach($elems as &$e){
 			$this->updateEvent($col, $e);
 		}
 	}
