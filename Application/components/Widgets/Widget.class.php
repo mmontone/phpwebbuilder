@@ -8,12 +8,11 @@ class Widget extends Component {
 	var $events;
 
 	function Widget(& $value_model, $callback_actions = array ()) {
-		parent::Component();
+		parent :: Component();
 
 		if ($value_model == null) {
 			$this->value_model = & new ValueHolder($null = null);
-		}
-		else {
+		} else {
 			#@typecheck $value_model:ValueModel@#
 			$this->value_model = & $value_model;
 		}
@@ -25,34 +24,42 @@ class Widget extends Component {
 			'required_but_empty' => 'fieldRequiredButEmpty'
 		), $this);
 
-		$this->disabled =& new ValueHolder($b2=false);
-		$this->events =& new Collection();
+		$this->disabled = & new ValueHolder($b2 = false);
+		$this->events = & new Collection();
 		$this->setEvents();
 		$this->registerCallbacks($callback_actions);
 	}
 
-	function fieldValidated(&$field) {
-		$this->setComponentState('invalid',false);
+	function fieldValidated(& $field) {
+		$this->setComponentState('invalid', false);
 	}
 
-	function fieldInvalid(&$field) {
-		$this->setComponentState('invalid',true);
+	function fieldInvalid(& $field) {
+		$this->setComponentState('invalid', true);
 	}
 
-	function fieldRequiredButEmpty(&$field) {
-		$this->setComponentState('invalid',true);
+	function fieldRequiredButEmpty(& $field) {
+		$this->setComponentState('invalid', true);
 	}
 	function setEvents() {
 		/* Default events, override in subclasses */
 		$class = getClass($this);
-		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue)"));
+		$this->events->atPut('onchange', $a = array (
+			'onchange',
+			"enqueueChange(getEventTarget(event),{$class}GetValue)"
+		));
 		//Fix Autocompletion bug
-		$this->events->atPut('onblur', $a=array('onblur',"enqueueChange(getEventTarget(event),{$class}GetValue)"));
+		$this->events->atPut('onblur', $a = array (
+			'onblur',
+			"enqueueChange(getEventTarget(event),{$class}GetValue)"
+		));
 	}
 
 	function setOnChangeEvent() {
 		$class = getClass($this);
-		$this->events->atPut('onchange', $a=array('onchange',"enqueueChange(getEventTarget(event),{$class}GetValue); " . $this->componentChangeJSFunction() . "(getEventTarget(event))"));
+		$this->events->atPut('onchange', $a = array (
+			'onchange',
+		"enqueueChange(getEventTarget(event),{$class}GetValue); " . $this->componentChangeJSFunction() . "(getEventTarget(event))"));
 	}
 
 	function componentChangeJSFunction() {
@@ -60,21 +67,34 @@ class Widget extends Component {
 	}
 
 	function setOnBlurEvent() {
-		$this->events->atPut('onblur', $a=array('onblur', "return componentBlur(getEventTarget(event));"));
+		$this->events->atPut('onblur', $a = array (
+			'onblur',
+			"return componentBlur(getEventTarget(event));"
+		));
 	}
 
 	function setOnFocusEvent() {
-		$this->events->atPut('onfocus', $a=array('onfocus', "return componentFocus(getEventTarget(event));"));
+		$this->events->atPut('onfocus', $a = array (
+			'onfocus',
+			"return componentFocus(getEventTarget(event));"
+		));
 	}
-	function setEvent($event,  $function){
-		$this->events->atPut($event, $a=array($event, $function));
+	function setEvent($event, $function) {
+		$this->events->atPut($event, $a = array (
+			$event,
+			$function
+		));
 	}
 	function setOnClickEvent() {
-		$this->setComponentState('clickable',true);
-		$this->events->atPut('onclick', $a=array('onclick', 'return '.$this->componentClickedJSFunction() . '(getEventTarget(event));'));
+		$this->setComponentState('clickable', true);
+		$this->events->atPut('onclick', $a = array (
+			'onclick',
+		'return ' . $this->componentClickedJSFunction() . '(getEventTarget(event));'));
 	}
 	function setOnDblClickEvent() {
-		$this->events->atPut('ondblclick', $a=array('ondblclick', 'return '.$this->componentDblClickedJSFunction() . '(getEventTarget(event));'));
+		$this->events->atPut('ondblclick', $a = array (
+			'ondblclick',
+		'return ' . $this->componentDblClickedJSFunction() . '(getEventTarget(event));'));
 	}
 	function componentClickedJSFunction() {
 		return 'componentClicked';
@@ -83,7 +103,7 @@ class Widget extends Component {
 		return 'componentDblClicked';
 	}
 	function viewUpdated($params) {
-		$new_value =  $this->valueFromForm($params);
+		$new_value = $this->valueFromForm($params);
 		$value = $this->getValue();
 
 		if ($new_value != $value) {
@@ -93,7 +113,7 @@ class Widget extends Component {
 	}
 
 	function valueFromForm(& $params) {
-		return !get_magic_quotes_gpc()?$params:stripslashes($params);
+		return !get_magic_quotes_gpc() ? $params : stripslashes($params);
 	}
 
 	function setValue($value) {
@@ -106,77 +126,84 @@ class Widget extends Component {
 	}
 	function onFocusSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addInterestIn('focus',new FunctionObject($target, $selector));
+		$this->addInterestIn('focus', new FunctionObject($target, $selector));
 	}
 
 	function onBlurSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addInterestIn('blur',new FunctionObject($target, $selector));
+		$this->addInterestIn('blur', new FunctionObject($target, $selector));
 	}
 
 	function onClickSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addInterestIn('click',new FunctionObject($target, $selector));
+		$this->addInterestIn('click', new FunctionObject($target, $selector));
 	}
 	function onDblClickSend($selector, & $target) {
 		#@typecheck $selector:string, $target:object@#
-		$this->addInterestIn('dblclick',new FunctionObject($target, $selector));
+		$this->addInterestIn('dblclick', new FunctionObject($target, $selector));
 	}
-	function onEnterClickOn(&$comp) {
+	function onEnterClickOn(& $comp) {
 		#@typecheck $comp:Component@#
 		$class = getClass($this);
-		$onkeypress = "if(event.which==13||event.keyCode==13) {".
-				"enqueueChange(getEventTarget(event),{$class}GetValue);".
-				"componentClicked(document.getElementById('" . $comp->getId() . "'));return false;}";
+		$onkeypress = "if(event.which==13||event.keyCode==13) {" .
+		"enqueueChange(getEventTarget(event),{$class}GetValue);" .
+		"componentClicked(document.getElementById('" . $comp->getId() . "'));return false;}";
 
-		$this->events->atPut('onkeypress', $a = array('onkeypress',$onkeypress));
+		$this->events->atPut('onkeypress', $a = array (
+			'onkeypress',
+			$onkeypress
+		));
 	}
 
 	// TODO: fix onEnterFocus
-	function onEnterFocus(&$comp) {
+	function onEnterFocus(& $comp) {
 		#@typecheck $comp:Component@#
-		$this->events->atPut('onkeypress', $a = array('onkeypress', "if(event.which==13||event.keyCode==13) {".
-			    "triggerEventIn('change',document.getElementById('" . $this->getId() ."');".
-				"document.getElementById('" . $comp->getId() ."').focus();}"));
+		$this->events->atPut('onkeypress', $a = array (
+			'onkeypress',
+			"if(event.which==13||event.keyCode==13) {" .
+		"triggerEventIn('change',document.getElementById('" . $this->getId() . "');" .
+		"document.getElementById('" . $comp->getId() . "').focus();}"));
 	}
 
-	function addInterestIn($event, & $event_callback, $params=array()) {
+	function addInterestIn($event, & $event_callback, $params = array ()) {
 		parent :: addInterestIn($event, $event_callback, $params);
-			switch ($event) {
-				case 'changed' :
-					$this->setOnChangeEvent();
-					break;
-				case 'blur' :
-					$this->setOnBlurEvent();
-					break;
-				case 'focus' :
-					$this->setOnFocusEvent();
-					break;
-				case 'click' :
-					$this->setOnClickEvent();
-					break;
-				case 'dblclick' :
-					$this->setOnDblClickEvent();
-					break;
-			}
+		switch ($event) {
+			case 'changed' :
+				$this->setOnChangeEvent();
+				break;
+			case 'blur' :
+				$this->setOnBlurEvent();
+				break;
+			case 'focus' :
+				$this->setOnFocusEvent();
+				break;
+			case 'click' :
+				$this->setOnClickEvent();
+				break;
+			case 'dblclick' :
+				$this->setOnDblClickEvent();
+				break;
+		}
 	}
 
 	function & printValue() {
-		return $this->getValue();
+		$val = & $this->getValue();
+		return $val;
 	}
 
 	function disable() {
 		$this->enable(false);
 	}
 
-	function enable($value=true) {
-		$this->disabled->setValue($value=!$value);
+	function enable($value = true) {
+		$this->disabled->setValue($value = !$value);
 	}
 
-	function getWidgets(&$ws){
-		$ws[$this->getId()]=&$this;
-		parent::getWidgets($ws);
+	function getWidgets(& $ws) {
+		$ws[$this->getId()] = & $this;
+		parent :: getWidgets($ws);
 	}
-	function valueChanged(){}
+	function valueChanged() {
+	}
 }
 ?>
