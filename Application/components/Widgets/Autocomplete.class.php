@@ -23,6 +23,7 @@ class Autocomplete extends Component {
     function initialize(){
         parent::initialize();
         $this->addComponent(new Input(new ValueHolder($this->displayF->callWith($this->value_model->getValue()))),"displayText");
+        $this->displayText->onChangeSend("textChanged", $this);
         $this->addComponent(new Component(),"listDisplay");
         $elementId =& new Input($null);
         $this->addComponent($elementId,"elementId");
@@ -30,6 +31,11 @@ class Autocomplete extends Component {
         $elementId->value_model->onChangeSend('valueChanged', $this);
         $win =& $this->getWindow();
         $win->addAjaxCommand(new AjaxCommand('autocomplete', array($this->getId())));
+    }
+    function textChanged(){
+        $elems =& $this->getElements($this->displayText->getValue());
+
+        $this->value_model->setValue($elems->first());
     }
     function valueChanged(){
         $this->value_model->setValue($this->options->at($this->elementId->getValue()));
@@ -43,13 +49,16 @@ class Autocomplete extends Component {
             return $n;
         }
 	}
-
+    function &getValue(){
+        return $this->value_model->getValue();
+    }
 	function &printPrimitive(&$primitive) {
 		return $primitive;
 	}
     function getElements($value){
         $cc =& new CompositeReport($this->options);
         $cc->setCondition( $this->filterField, 'LIKE', "'$value%'");
+        $cc->setLimit(15);
         return $cc;
 
     }
