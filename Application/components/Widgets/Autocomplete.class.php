@@ -22,8 +22,9 @@ class Autocomplete extends Component {
     }
     function initialize(){
         parent::initialize();
-        $this->addComponent(new Input(new ValueHolder($this->displayF->callWith($this->value_model->getValue()))),"displayText");
-        $this->displayText->onChangeSend("textChanged", $this);
+        $this->textDisplayed =& new ValueHolder($this->displayF->callWith($this->value_model->getValue()));
+        $this->addComponent(new Input($this->textDisplayed),"displayText");
+        $this->textDisplayed->onChangeSend("textChanged", $this);
         $this->addComponent(new Component(),"listDisplay");
         $elementId =& new Input($null);
         $this->addComponent($elementId,"elementId");

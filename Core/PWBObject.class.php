@@ -24,7 +24,7 @@ class PWBObject
 	}
     function obtainId(){
         if (!Session::isStarted()) {
-			$iid=count(@$GLOBALS['allObjectsInMem'])-10000;
+			$iid=count(@$GLOBALS['allObjectsInMem'])-100000;
 		} else {
 			$iid =& Session::getAttribute('instance_id');
 		}

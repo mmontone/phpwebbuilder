@@ -254,8 +254,13 @@ class Component extends PWBObject {
 
 	function deleteComponentAt($index) {
 		$c = & $this->componentAt($index);
-		if ($c !== false)
+		if ($c !== false) {
+            try{
 			$c->delete();
+            } catch(Exception $e){
+                echo "Problem removing child ".$index." of ".$this->getId();
+            }
+        }
 	}
 
 	function deleteChildren() {
