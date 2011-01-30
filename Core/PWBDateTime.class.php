@@ -92,5 +92,9 @@ class PWBDateTime extends PWBObject {
 	function dateformat($date) {
 		return $date["year"] . "-" . $date["mon"] . "-" . $date["mday"];
 	}
+        function cloneDate(){
+            return new PWBDateTime($this->getValue());
+        }
+
 }
 ?>

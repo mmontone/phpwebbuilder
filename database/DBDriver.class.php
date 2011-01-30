@@ -156,7 +156,7 @@ class DBDriver {
 				$mts = & $this->session->memoryTransactions;
 				foreach (array_keys($mts) as $mtk) {
 					$mt = & $mts[$mtk];
-					#@sql_dml_echo echo 'Running commands stored from previous requests: '.$mt->debugPrintString();var_dump($mt->commands);@#
+					#@sql_dml_echo echo 'Running commands stored from previous requests: '.$mt->debugPrintString();@#
 					$mt->runCommands($this);
 				}
 			}

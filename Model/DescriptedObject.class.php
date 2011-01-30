@@ -444,7 +444,10 @@ class DescriptedObject extends PWBObject {
 }
 
 class PWBValidationError extends PWBException {
-
+    function __construct($params){
+        parent::__construct($params);
+        $this->message="Validation error in ".$params["content"]["object"]->printString()." on fields ".$params["content"]["errors"][0]->getMessage();
+    }
 }
 
 #@mixin RootObject

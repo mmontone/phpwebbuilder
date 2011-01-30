@@ -1,5 +1,4 @@
-<?
-
+<?php
 /**
  * Includes all files and makes initialization for the application.
  * Controller Version.

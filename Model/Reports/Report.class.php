@@ -53,7 +53,7 @@ class Report extends Collection{
 
 	function Report($params=array()) {
 		$this->initializeSelectExp();
-		parent::Collection();
+		parent::__construct();
 		$this->setConfigArray($params);
 	}
     function hasObjects(){
@@ -375,14 +375,25 @@ class Report extends Collection{
 
 	function orderBy($fieldname, $order='ASC') {
 		$this->order[$this->parseField($fieldname)] = $order;
-        $this->triggerEvent('changed', $n=null);
+                $this->triggerEvent('changed', $n=null);
 	}
-
+	function getColumnOrderBy($fieldname) {
+		return $this->order[$this->parseField($fieldname)];
+	}
+	function getPathOrderBy($path) {
+                $index = $this->getIndexFromPath($path);
+                $index=str_replace("`","",$index);
+		return $this->getColumnOrderBy($index);
+	}
+        function getIndexFromPath(&$path){
+            $attr = $path->evaluateIn($this);
+            $index = substr($attr, 1);
+            $index = substr($index, 0, count($index) - 2);
+            return $index;
+        }
     function orderByPath(&$path, $order='ASC') {
         #@typecheck $path : PathExpression@#
-        $attr = $path->evaluateIn($this);
-        $index = substr($attr, 1);
-        $index = substr($index, 0, count($index) - 2);
+        $index = $this->getIndexFromPath($path);
         $this->order[$index] = $order;
         $this->triggerEvent('changed', $n=null);
     }

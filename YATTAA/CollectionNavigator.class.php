@@ -198,6 +198,7 @@ class SortLink extends Widget {
 		if (isset ($params['unorder'])) {
 			$this->unorder = $params['unorder'];
 		}
+                $this->state=$this->collection->getPathOrderBy($this->exp);
     }
 
     function setEvents() {
