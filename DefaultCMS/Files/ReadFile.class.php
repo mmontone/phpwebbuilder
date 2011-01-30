@@ -11,6 +11,8 @@ class ReadFile {
     function ReadFile() {
         $this->windows['root'] =& new ReadFileWindow;
 	}
+    function preparePage(){}
+
 }
 
 class ReadFileWindow {
@@ -30,7 +32,9 @@ class DisplayFile {
     function DisplayFile() {
         $this->windows['root'] =& new DisplayFileWindow;
     }
+    function preparePage(){}
 }
+
 
 class DisplayFileWindow {
     function render() {
